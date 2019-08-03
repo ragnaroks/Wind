@@ -16,5 +16,14 @@ namespace Host.Entity {
         /// 被控密钥
         /// </summary>
         public String ControlKey{get;set;}
+
+        public override String ToString(){
+            StringBuilder sb=new StringBuilder().Append("{")
+                .Append("\"LogLevel\":").Append(this.LogLevel).Append(",")
+                .Append("\"ControlPort\":").Append(this.ControlPort).Append(",")
+                .Append("\"ControlKey\":\"").Append(this.ControlKey).Append("\"")
+                .Append("}");
+            return sb.ToString();
+        }
     }
 }

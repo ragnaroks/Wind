@@ -14,6 +14,10 @@ namespace Host.Entity {
         /// </summary>
         public String LogDirectory=Environment.CurrentDirectory+Path.DirectorySeparatorChar+"Logs";
         /// <summary>
+        /// 单元存放目录,最后没有路径分隔符
+        /// </summary>
+        public String UnitDirectory=Environment.CurrentDirectory+Path.DirectorySeparatorChar+"Units";
+        /// <summary>
         /// 是否暂停
         /// </summary>
         public Boolean IsPaused=false;

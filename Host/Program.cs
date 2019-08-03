@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Newtonsoft.Json;
 using PeterKottas.DotNetCore.WindowsService;
@@ -17,12 +18,16 @@ namespace Host {
         /// 日志模块
         /// </summary>
         public static Module.Logger Logger=new Module.Logger(Program.Settings.LogDirectory);
-
+        /// <summary>
+        /// 单元
+        /// </summary>
+        public static Dictionary<String,Entity.Unit> Units=new Dictionary<String, Entity.Unit>();
+        
         public static void Main(String[] _args){
             ServiceRunner<HostService>.Run(_config=>{
                 _config.SetDisplayName("Wind2");
                 _config.SetName("Wind2");
-                _config.SetDescription("Wind2 Services Host");
+                _config.SetDescription("Wind2 Services Host,version "+System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
                 _config.Service(_serviceConfig=>{
                     //run
                     _serviceConfig.ServiceFactory((_extraArguments,_microServiceController)=>{
@@ -57,7 +62,7 @@ namespace Host {
                     //错误
                     _serviceConfig.OnError(_ex=>{
                         Console.WriteLine("Wind2 异常: "+_ex.Message+" | "+_ex.StackTrace);
-                        Program.Logger.Log("host","异常: "+_ex.Message+" | "+_ex.StackTrace);
+                        Program.Logger.Log("HostService","异常: "+_ex.Message+" | "+_ex.StackTrace);
                     });
                     //启动
                     _serviceConfig.OnStart((_service,_extraArguments)=>{
