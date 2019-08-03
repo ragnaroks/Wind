@@ -2,22 +2,24 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
+using System.Timers;
 
 namespace Host {
-    class HostService:IMicroService {
-        public void Start() {
-            Program.Logger.Log("服务正在启动");
+    public class HostService:IMicroService {
+        private IMicroServiceController controller;
 
-            var a=Function.AesEncrypt.Encrypt(Program.AppSettings.ControlKey,"1234abcdABCD周吴郑王");
-            var b=Function.AesEncrypt.Decrypt(Program.AppSettings.ControlKey,a).TrimEnd('\0');
-            
-            Program.Logger.Log("服务已启动");
-            this.Stop();
+        public HostService(){this.controller=null;}
+        public HostService(IMicroServiceController _controller) {this.controller=_controller;}
+
+        public void Start() {
+            //var a=Function.AesEncrypt.Encrypt(Program.AppSettings.ControlKey,"1234abcdABCD周吴郑王");
+            //var b=Function.AesEncrypt.Decrypt(Program.AppSettings.ControlKey,a).TrimEnd('\0');
+            Program.Logger.Log("HostService","Start");
         }
 
         public void Stop() {
-            Program.Logger.Log("服务正在停止");
-            Program.Logger.Log("服务已停止");
+            Program.Logger.Log("HostService","Stop");
         }
     }
 }

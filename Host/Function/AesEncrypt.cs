@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
+using Host.Helper;
 
 namespace Host.Function {
     public class AesEncrypt {

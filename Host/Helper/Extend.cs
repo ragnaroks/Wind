@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Host.Function {
+namespace Host.Helper {
     public static class Extend {
         /// <summary>
         /// 获取字符串的SHA1

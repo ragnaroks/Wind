@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace Host.Entity {
-    public class AppSettings {
+    public class AppSettings{
         /// <summary>
         /// 日志等级
         /// </summary>
