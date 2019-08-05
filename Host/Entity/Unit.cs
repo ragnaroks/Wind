@@ -6,7 +6,7 @@ using System.Text;
 namespace Host.Entity {
     public class Unit {
         /// <summary>
-        /// 状态
+        /// 状态,0:stop,1:start,2:running
         /// </summary>
         public Int32 State{get;set;}=0;
         /// <summary>

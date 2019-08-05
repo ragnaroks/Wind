@@ -4,7 +4,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <StartupObject>Host.Program</StartupObject>
-    <AssemblyVersion>0.1.2.0</AssemblyVersion>
+    <AssemblyVersion>0.1.4.0</AssemblyVersion>
     <FileVersion>0.1.2.0</FileVersion>
     <Version>2</Version>
     <Copyright>skydust</Copyright>
@@ -45,8 +45,11 @@
     <None Update="Units\example.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Units\v2ray.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
-  <ProjectExtensions><VisualStudio><UserProperties Units_4aria2_1json__JSONSchema="http://json.schemastore.org/babelrc" /></VisualStudio></ProjectExtensions>
+  <ProjectExtensions><VisualStudio><UserProperties /></VisualStudio></ProjectExtensions>
 
 </Project>

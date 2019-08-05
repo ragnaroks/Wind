@@ -32,10 +32,6 @@ namespace Host.Entity {
         /// </summary>
         public Int32 AutoStartDelay{get;set;}=0;
         /// <summary>
-        /// 是否控制台应用程序
-        /// </summary>
-        public Boolean IsConsoleApp{get;set;}=false;
-        /// <summary>
         /// 是否记录日志
         /// </summary>
         public Boolean EnableLogger{get;set;}=false;

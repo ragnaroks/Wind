@@ -80,31 +80,29 @@ namespace Host {
                 //跳过已存在的进程
                 if(Program.Units.ContainsKey(unitSettings.name)){continue;}
                 //理论进程数据
-                ProcessStartInfo processStartInfo=new ProcessStartInfo{FileName=unitSettings.AbsolutePath,WorkingDirectory=unitSettings.WorkPath};
+                ProcessStartInfo processStartInfo=new ProcessStartInfo{UseShellExecute=false,FileName=unitSettings.AbsolutePath,WorkingDirectory=unitSettings.WorkPath};
                 if(!String.IsNullOrWhiteSpace(unitSettings.Params)){processStartInfo.Arguments=unitSettings.Params;}
-
                 processStartInfo.CreateNoWindow=true;
                 processStartInfo.WindowStyle=ProcessWindowStyle.Hidden;
-                /*if(unitSettings.IsConsoleApp){
-                    processStartInfo.CreateNoWindow=true;
-                    processStartInfo.RedirectStandardError=true;
-                    processStartInfo.RedirectStandardOutput=true;
-                }*/
-
                 Process process=new Process{StartInfo=processStartInfo};
                 Program.Units[unitSettings.name]=new Entity.Unit{UnitSettings=unitSettings,Process=process};
                 //处理
                 if(!unitSettings.AutoStart){continue;}
                 Task.Run(async ()=>{
+                    Program.Units[unitSettings.name].State=1;
                     if (unitSettings.AutoStartDelay>0){await Task.Delay(unitSettings.AutoStartDelay*1000);}
                     Boolean b1=false;
-                    try{b1=process.Start();}catch(Exception _e) {Program.Logger.Log("Unit_"+unitSettings.name,"单元执行异常,"+_e.Message);}
-                    if (b1) {
-                        Program.Units[unitSettings.name].State=1;
-                        Program.Logger.Log("Unit_"+unitSettings.name,"单元执行成功");
-                    } else {
-                        Program.Logger.Log("Unit_"+unitSettings.name,"单元执行失败");
+                    try{
+                        b1=process.Start();
+                    }catch(Exception _e){
+                        Program.Logger.Log("Unit_"+unitSettings.name,"单元执行异常,"+_e.Message);
                     }
+                    if(!b1){
+                        Program.Units[unitSettings.name].State=0;
+                        Program.Logger.Log("Unit_"+unitSettings.name,"单元执行失败");
+                    return;}
+                    Program.Units[unitSettings.name].State=2;
+                    Program.Logger.Log("Unit_"+unitSettings.name,"单元执行成功");
                 });
             }
         }
@@ -112,8 +110,9 @@ namespace Host {
         public void StopUnits() {
             if(Program.Units.Count<1){return;}
             foreach (KeyValuePair<String,Entity.Unit> unit in Program.Units) {
-                if(unit.Value.State!=1 || unit.Value.Process==null){continue;}
+                if(unit.Value.State==0 || unit.Value.Process==null){continue;}
                 try{unit.Value.Process.Kill();}catch(Exception _e){Program.Logger.Log("Unit_"+unit.Key,"单元停止异常,"+_e.Message);continue;}
+                unit.Value.State=0;
                 unit.Value.Process.Dispose();
                 Program.Logger.Log("Unit_"+unit.Key,"单元停止成功");
             }

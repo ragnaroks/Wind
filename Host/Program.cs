@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Principal;
 using Newtonsoft.Json;
 using PeterKottas.DotNetCore.WindowsService;
 
@@ -66,8 +67,15 @@ namespace Host {
                     });
                     //启动
                     _serviceConfig.OnStart((_service,_extraArguments)=>{
+
+                        var identity = WindowsIdentity.GetCurrent();
+                        var principal = new WindowsPrincipal(identity);
+                        Program.Logger.Log("HostService","RunAs "+principal.Identity.Name);
+
+
                         if(!File.Exists(Program.Settings.CurrentDirectory+Path.DirectorySeparatorChar+"AppSettings.json")){
                             Console.WriteLine("配置文件不存在");
+                            Program.Logger.Log("HostService","配置文件不存在");
                             _service.Stop();
                         return;}
                         try {
@@ -79,6 +87,7 @@ namespace Host {
                             Program.AppSettings=JsonConvert.DeserializeObject<Entity.AppSettings>(System.Text.Encoding.UTF8.GetString(buffer));
                         }catch(Exception _e){
                             Console.WriteLine("读取配置异常,"+_e.Message);
+                            Program.Logger.Log("HostService","读取配置异常,"+_e.Message);
                             _service.Stop();
                             return;
                         }
