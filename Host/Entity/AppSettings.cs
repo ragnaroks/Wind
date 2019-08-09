@@ -9,6 +9,14 @@ namespace Host.Entity {
         /// </summary>
         public Int32 LogLevel{get;set;}
         /// <summary>
+        /// 是否启用被控
+        /// </summary>
+        public Boolean ControlEnable{get;set;}
+        /// <summary>
+        /// 被控监听地址
+        /// </summary>
+        public String ControlAddress{get;set;}
+        /// <summary>
         /// 被控监听端口,UDP,WebSocket(TCP)
         /// </summary>
         public Int16 ControlPort{get;set;}
@@ -20,6 +28,8 @@ namespace Host.Entity {
         public override String ToString(){
             StringBuilder sb=new StringBuilder().Append("{")
                 .Append("\"LogLevel\":").Append(this.LogLevel).Append(",")
+                .Append("\"ControlEnable\":").Append(this.ControlEnable?"true":"false").Append(",")
+                .Append("\"ControlAddress\":\"").Append(this.ControlAddress).Append("\",")
                 .Append("\"ControlPort\":").Append(this.ControlPort).Append(",")
                 .Append("\"ControlKey\":\"").Append(this.ControlKey).Append("\"")
                 .Append("}");

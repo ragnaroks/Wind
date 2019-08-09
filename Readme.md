@@ -32,3 +32,18 @@
 - 当前不支持托管有图像界面的应用程序
 - 被托管的应用程序默认不支持**交互**,需要自行在`services.msc`启用
 - 被托管的应用程序默认为LOCAL SYSTEM权限,建议只托管**受信任**的应用程序
+
+#### 全局配置
+全局配置是一个名为**AppSettings.json**的JSON文本文件,编码`ASCII(ANSI)`,位于二进制根目录下,格式如下
+```json
+{
+    //日志级别,当前无效
+    "LogLevel": 0,
+    //被控监听IP地址,其中"localhost"只监听环回,"any"监听所有
+    "ControlAddress": "localhost",
+    //被控端口,不可小于1024
+    "ControlPort": 27015,
+    //被控密钥,任意长度任意字符,建议16字节以上
+    "ControlKey": "https://github.com/ragnaroks/Wind2"
+}
+```

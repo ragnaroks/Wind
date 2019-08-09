@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Principal;
+using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using PeterKottas.DotNetCore.WindowsService;
 
@@ -19,6 +20,10 @@ namespace Host {
         /// 日志模块
         /// </summary>
         public static Module.Logger Logger=new Module.Logger(Program.Settings.LogDirectory);
+        /// <summary>
+        /// Udp被控
+        /// </summary>
+        public static Module.UdpSocketServer UdpSocketServer=null;
         /// <summary>
         /// 单元
         /// </summary>
@@ -67,12 +72,13 @@ namespace Host {
                     });
                     //启动
                     _serviceConfig.OnStart((_service,_extraArguments)=>{
-
+                        Console.WriteLine("正在启动 Wind2");
+                        /*
                         var identity = WindowsIdentity.GetCurrent();
                         var principal = new WindowsPrincipal(identity);
                         Program.Logger.Log("HostService","RunAs "+principal.Identity.Name);
-
-
+                        */
+                        //读取配置
                         if(!File.Exists(Program.Settings.CurrentDirectory+Path.DirectorySeparatorChar+"AppSettings.json")){
                             Console.WriteLine("配置文件不存在");
                             Program.Logger.Log("HostService","配置文件不存在");
@@ -92,7 +98,9 @@ namespace Host {
                             return;
                         }
                         if(Program.AppSettings==null){_service.Stop();return;}
-                        Console.WriteLine("正在启动 Wind2");
+                        //Udp被控模块
+                        Program.UdpSocketServer=new Module.UdpSocketServer();
+                        //完成
                         _service.Start();
                         Console.WriteLine("已启动 Wind2");
                     });

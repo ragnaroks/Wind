@@ -7,6 +7,9 @@ using System.Timers;
 using System.IO;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
+using System.Net;
+using System.Net.Sockets;
 
 namespace Host {
     public class HostService:IMicroService {
@@ -20,7 +23,7 @@ namespace Host {
             //var a=Function.AesEncrypt.Encrypt(Program.AppSettings.ControlKey,"1234abcdABCD周吴郑王");
             //var b=Function.AesEncrypt.Decrypt(Program.AppSettings.ControlKey,a).TrimEnd('\0');
             Program.Logger.Log("HostService","Start");
-            Program.Logger.Log("HostService",Program.AppSettings.ToString());
+            //this.InitUdpSocketServer();
             this.RefreshUnits();
             this.StartUnits();
         }
@@ -107,6 +110,9 @@ namespace Host {
             }
         }
 
+        /// <summary>
+        /// 停止单元
+        /// </summary>
         public void StopUnits() {
             if(Program.Units.Count<1){return;}
             foreach (KeyValuePair<String,Entity.Unit> unit in Program.Units) {
@@ -117,5 +123,27 @@ namespace Host {
                 Program.Logger.Log("Unit_"+unit.Key,"单元停止成功");
             }
         }
+
+        /*
+        /// <summary>
+        /// 初始化被控
+        /// </summary>
+        public void InitUdpSocketServer() {
+            if(!Program.AppSettings.ControlEnable){return;}
+            if(String.IsNullOrWhiteSpace(Program.AppSettings.ControlAddress) || String.IsNullOrWhiteSpace(Program.AppSettings.ControlKey) || Program.AppSettings.ControlPort<1024){Program.Logger.Log("UdpSocketServer","参数缺失");return;}
+            Regex regex_ip=new Regex(@"^[a-f\d\.\:]{3,39}$",RegexOptions.Compiled);
+            if(!regex_ip.IsMatch(Program.AppSettings.ControlAddress) && Program.AppSettings.ControlAddress!="any" && Program.AppSettings.ControlAddress!="localhost"){Program.Logger.Log("UdpSocketServer","ControlAddress 配置有误");return;}
+            IPAddress ip=null;
+            switch (Program.AppSettings.ControlAddress) {
+                case "any":ip=IPAddress.Any;break;//ip=IPAddress.IPv6Any;
+                case "localhost":ip=IPAddress.Loopback;break;//ip=IPAddress.IPv6Loopback;
+                default:if(!IPAddress.TryParse(Program.AppSettings.ControlAddress,out ip)){Program.Logger.Log("UdpSocketServer","ControlAddress 配置有误");return;}break;
+            }
+            IPEndPoint ipep=null;
+            try{ipep=new IPEndPoint(ip,Program.AppSettings.ControlPort);}catch(Exception _e){Program.Logger.Log("UdpSocketServer","创建端点异常,"+_e.Message);return;}
+            //Program.UpdSocketServer=new Module.UpdSocketServer{AddressFamily=AddressFamily.InterNetwork,Local=new NetUri(NetType.Udp,ipep),Port=Program.AppSettings.ControlPort};
+            //Program.UpdSocketServer.Start();
+            Program.UdpSocketServer=new Module.UdpSocketServer();
+        }*/
     }
 }

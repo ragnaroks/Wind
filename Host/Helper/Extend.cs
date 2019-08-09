@@ -29,5 +29,18 @@ namespace Host.Helper {
             String hash=BitConverter.ToString(bytes).Replace("-","");
             return _UpCase?hash:hash.ToLower();
         }
+
+        /// <summary>
+        /// 字节转字符串
+        /// </summary>
+        /// <param name="_this"></param>
+        /// <returns></returns>
+        public static String GetString_Utf8(this Byte[] _this)=>Encoding.UTF8.GetString(_this);
+        /// <summary>
+        /// 字符串转字节
+        /// </summary>
+        /// <param name="_this"></param>
+        /// <returns></returns>
+        public static Byte[] GetBytes_Utf8(this String _this)=>Encoding.UTF8.GetBytes(_this);
     }
 }

@@ -2,9 +2,8 @@
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
-using Host.Helper;
 
-namespace Host.Function {
+namespace Host.Helper {
     public class AesEncrypt {
         private static readonly Byte[] IV=new Byte[16]{55,51,48,99,115,103,111,55,51,53,53,54,48,56,99,52};//"730csgo7355608c4"
         
