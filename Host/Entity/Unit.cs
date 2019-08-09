@@ -17,5 +17,9 @@ namespace Host.Entity {
         /// 单元进程
         /// </summary>
         public Process Process{get;set;}
+        /// <summary>
+        /// 单元进程启动信息
+        /// </summary>
+        public ProcessStartInfo ProcessStartInfo{get;set;}
     }
 }

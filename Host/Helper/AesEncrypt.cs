@@ -9,7 +9,7 @@ namespace Host.Helper {
         
         public static Byte[] Encrypt(String _key,String _text) {
             var aes=AesManaged.Create();
-            aes.IV=IV;
+            //aes.IV=IV;
             aes.BlockSize=128;
             aes.KeySize=128;
             aes.Key=Encoding.UTF8.GetBytes(_key.MD5().Substring(16));
@@ -25,14 +25,21 @@ namespace Host.Helper {
 
         public static String Decrypt(String _key,Byte[] _bytes) {
             var aes=AesManaged.Create();
-            aes.IV=IV;
+            //aes.IV=IV;
             aes.BlockSize=128;
             aes.KeySize=128;
             aes.Key=Encoding.UTF8.GetBytes(_key.MD5().Substring(16));
             aes.Mode=CipherMode.ECB;
             aes.Padding=PaddingMode.Zeros;
             ICryptoTransform crypto=aes.CreateDecryptor(aes.Key,aes.IV);
-            Byte[] result=crypto.TransformFinalBlock(_bytes,0,_bytes.Length);
+            Byte[] result=null;
+            try {
+                result=crypto.TransformFinalBlock(_bytes,0,_bytes.Length);
+            }catch(Exception _e) {
+                crypto.Dispose();
+                aes.Dispose();
+                return null;
+            }
             crypto.Dispose();
             aes.Dispose();
             return Encoding.UTF8.GetString(result);

@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using PeterKottas.DotNetCore.WindowsService;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Principal;
-using System.Text.RegularExpressions;
-using Newtonsoft.Json;
-using PeterKottas.DotNetCore.WindowsService;
 
 namespace Host {
     public class Program {
@@ -28,7 +26,7 @@ namespace Host {
         /// 单元
         /// </summary>
         public static Dictionary<String,Entity.Unit> Units=new Dictionary<String, Entity.Unit>();
-        
+                
         public static void Main(String[] _args){
             ServiceRunner<HostService>.Run(_config=>{
                 _config.SetDisplayName("Wind2");
@@ -99,7 +97,7 @@ namespace Host {
                         }
                         if(Program.AppSettings==null){_service.Stop();return;}
                         //Udp被控模块
-                        Program.UdpSocketServer=new Module.UdpSocketServer();
+                        if(Program.AppSettings.ControlEnable){Program.UdpSocketServer=new Module.UdpSocketServer();}
                         //完成
                         _service.Start();
                         Console.WriteLine("已启动 Wind2");

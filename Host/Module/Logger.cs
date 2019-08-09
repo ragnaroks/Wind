@@ -36,6 +36,8 @@ namespace Host.Module {
             }
             this.LogDirectory=_LogDirectory;
             this.Logs=new Dictionary<String,StringBuilder>();
+            this.Logs["HostService"]=new StringBuilder();
+            this.Logs["UdpSocketServer"]=new StringBuilder();
             this.Timer=new Timer{AutoReset=true,Enabled=true,Interval=this.TimerInterval};
             this.Timer.Elapsed+=this.Timer_Elapsed;
         }

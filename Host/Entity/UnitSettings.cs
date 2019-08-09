@@ -8,10 +8,6 @@ namespace Host.Entity {
     /// </summary>
     public class UnitSettings {
         /// <summary>
-        /// 单元名称
-        /// </summary>
-        public String name{get;set;}
-        /// <summary>
         /// 应用程序绝对路径
         /// </summary>
         public String AbsolutePath{get;set;}
