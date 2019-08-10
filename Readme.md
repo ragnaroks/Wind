@@ -19,11 +19,11 @@
 ```json
 {
     //应用程序绝对路径
-    "AbsolutePath": "C:\\Windows\\System32\\nslookup.exe",
+    "AbsolutePath": "C:\\Program Files\\aria2\\aria2-1.34.0-win-64bit-build1\\aria2c.exe",
     //应用程序工作目录,部分应用程序需要此项,建议都填写
-    "WorkPath": "C:\\Windows\\System32\\",
+    "WorkPath": "C:\\Program Files\\aria2\\aria2-1.34.0-win-64bit-build1\\",
     //应用程序参数
-    "Params": "-qt=A www.ragnaroks.org",
+    "Params": "--conf-path=\"C:\\Program Files\\aria2\\config.conf\"",
     //应用程序是否自启动
     "AutoStart": true,
     //应用程序自启延迟,单位秒
@@ -32,15 +32,16 @@
     "EnableLogger": false
 }
 ```
-以上配置代表在Wind2初始化完成后,等待10秒,再启动`C:\Windows\System32\nslookup.exe -qt=A www.ragnaroks.org`,并且设置工作目录`C:\Windows\System32\`  
+以上配置代表在Wind2初始化完成后,等待10秒,再启动`C:\Program Files\aria2\aria2-1.34.0-win-64bit-build1\aria2c.exe --conf-path="C:\Program Files\aria2\config.conf"`,并且设置工作目录`C:\Program Files\aria2\aria2-1.34.0-win-64bit-build1\`  
 
-格式错误或未填写应用程序绝对路径或应用程序文件不存在,则此单元文件会被忽略,单元配置文件都存放于Wind2目录下的Units文件夹中  
+部分应用程序支持在参数里面使用相对路径,但建议都使用绝对路径
+
+格式错误或未填写应用程序绝对路径或应用程序文件不存在,则此单元文件会被忽略,单元配置文件都存放于Wind2目录下的Units文件夹中
 
 `EnableLogger`如果为`true`,则该单元会记录**来自Wind2的**日志,和应用程序自身日志功能无关,**当前强制记录**
 
-
 #### 全局配置
-全局配置是一个名为**AppSettings.json**的JSON文本文件,编码`ASCII(ANSI)`,位于二进制根目录下,格式如下
+全局配置是一个名为**AppSettings.json**的JSON文本文件,编码`ASCII(ANSI)`,位于根目录下,格式如下
 ```json
 {
     //日志级别,当前无效
@@ -60,3 +61,4 @@
 - 被托管的应用程序默认不支持**交互**,需要自行在`services.msc`启用
 - 当前不支持托管有图像界面的应用程序
 - 被托管的应用程序默认为LOCAL SYSTEM权限,建议只托管**受信任**的应用程序
+- 如果wind2意外退出,可能导致单元失去托管,这种情况下目前只能手动结束单元进程
