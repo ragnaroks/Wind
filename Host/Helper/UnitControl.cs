@@ -78,8 +78,11 @@ namespace Host.Helper {
         public static void StartAllUnits(Boolean _ByAutoStart=false) {
             if(Program.Units.Count<1){return;}
             foreach (KeyValuePair<String,Entity.Unit> kvp in Program.Units){
-                if(kvp.Value.State!=0 || kvp.Value.UnitSettings.AutoStart!=_ByAutoStart){continue;}//跳过已启动的
+                if(kvp.Value.State!=0){continue;}//跳过已启动的
+                if(_ByAutoStart && !kvp.Value.UnitSettings.AutoStart){continue;}//如果是开机自启,则跳过未设置自启的
                 kvp.Value.Process=new Process{StartInfo=kvp.Value.ProcessStartInfo};
+                kvp.Value.Process.EnableRaisingEvents=true;
+                kvp.Value.Process.Exited+=OnUnitExited;
                 Task.Run(async ()=>{
                     kvp.Value.State=1;
                     if (kvp.Value.UnitSettings.AutoStartDelay>0){await Task.Delay(kvp.Value.UnitSettings.AutoStartDelay*1000);}
@@ -107,6 +110,8 @@ namespace Host.Helper {
             if(Program.Units.Count<1 || !Program.Units.ContainsKey(_UnitName) || Program.Units[_UnitName].State!=0){return;}
             Entity.Unit unit=Program.Units[_UnitName];
             unit.Process=new Process{StartInfo=unit.ProcessStartInfo};
+            unit.Process.EnableRaisingEvents=true;
+            unit.Process.Exited+=OnUnitExited;
             unit.State=1;
             Boolean b1=false;
             try {
@@ -153,13 +158,24 @@ namespace Host.Helper {
         }
 
         /// <summary>
-        /// 获取指定单元
+        /// 某个单元被动停止后,遍历所有单元并释放已停止单元
         /// </summary>
-        /// <param name="_UnitName"></param>
-        /// <returns></returns>
-        public static Entity.Unit GetUnit(String _UnitName){
-            if(Program.Units.Count<1 || !Program.Units.ContainsKey(_UnitName)){return null;}
-            return Program.Units[_UnitName];
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private static void OnUnitExited(object sender,EventArgs e) {
+            if(Program.Units.Count<1){return;}
+            List<String> stopped=new List<String>();
+            foreach(KeyValuePair<String,Entity.Unit> kvp in Program.Units) {
+                if(kvp.Value.State==0 || kvp.Value.Process==null || !kvp.Value.Process.HasExited){continue;}
+                stopped.Add(kvp.Key);
+            }
+            if(stopped.Count<1){return;}
+            foreach (String name in stopped) {
+                Program.Units[name].Process.Dispose();
+                Program.Units[name].Process=null;
+                Program.Units[name].State=0;
+                Program.Logger.Log("Unit_"+name,"单元被动停止,已释放");
+            }
         }
     }
 }

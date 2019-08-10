@@ -117,14 +117,17 @@ namespace Host.Module {
             if(String.IsNullOrWhiteSpace(dataJson) || dataJson.IndexOf("ActionId")<0 ||dataJson.IndexOf("ActionName")<0) {
                 this.AsyncNetUdpServer.Post($"UnknownDataPacket,Logged\"{e.RemoteEndPoint.Address}:{e.RemoteEndPoint.Port}\"".GetBytes_Utf8(),e.RemoteEndPoint);
             return;}
-            Entity.UdpSocketPacket packet=null;
-            try {packet=JsonConvert.DeserializeObject<Entity.UdpSocketPacket>(dataJson);} catch{}
+            Entity.UdpSocketPacketRecive packet=null;
+            try {packet=JsonConvert.DeserializeObject<Entity.UdpSocketPacketRecive>(dataJson);} catch{}
             if(packet==null){
                 this.AsyncNetUdpServer.Post($"UnknownDataPacket,Logged\"{e.RemoteEndPoint.Address}:{e.RemoteEndPoint.Port}\"".GetBytes_Utf8(),e.RemoteEndPoint);
             return;}
             switch (packet.ActionId) {
                 case 1:this.PacketAction1(e.RemoteEndPoint);break;
                 case 2:this.PacketAction2(e.RemoteEndPoint);break;
+                case 1001:this.PacketAction1001(e.RemoteEndPoint);break;
+                case 1002:this.PacketAction1002(e.RemoteEndPoint);break;
+                case 1003:this.PacketAction1003(e.RemoteEndPoint,packet);break;
             }
         }
 
@@ -138,7 +141,7 @@ namespace Host.Module {
             } else {
                 this.UpdateRemote(_IPEndPoint);
             }
-            Entity.UdpSocketPacket_Action1 packet=new Entity.UdpSocketPacket_Action1{Message=$"Hello,{_IPEndPoint.Address}:{_IPEndPoint.Port}"};
+            Object packet=new{ErrorCode=0,ErrorMessage=String.Empty,Message=$"Hello,{_IPEndPoint.Address}:{_IPEndPoint.Port}"};
             await this.AsyncNetUdpServer.SendAsync(JsonConvert.SerializeObject(packet).GetBytes_Utf8(),_IPEndPoint);
         }
         /// <summary>
@@ -147,18 +150,72 @@ namespace Host.Module {
         /// <param name="_IPEndPoint"></param>
         async private void PacketAction2(IPEndPoint _IPEndPoint){
             if(!this.IncludeRemote(_IPEndPoint)){return;}else{this.UpdateRemote(_IPEndPoint);}
-            Process p1=System.Diagnostics.Process.GetCurrentProcess();
-            Entity.UdpSocketPacket_Action2 packet=new Entity.UdpSocketPacket_Action2{
+            Process p1=Process.GetCurrentProcess();
+            Object packet=new{
+                ErrorCode=0,
+                ErrorMessage=String.Empty,
                 HostServiceVersion=System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                 HostServicePid=p1.Id,
                 HostServiceMemoryUsageBytes=p1.PrivateMemorySize64,
                 HostServiceThreadsCount=p1.Threads.Count,
                 MachineName=p1.MachineName,
-                MachineMemoryBytes=PerformanceCounters.GetMachineMemoryBytes(),
-                MachineMemoryAvailableBytes=PerformanceCounters.GetMachineMemoryAvailableBytes(),
-                MachineProcessorCount=Environment.ProcessorCount
+                MachineProcessorCount=Environment.ProcessorCount,
+                MachineMemoryTotalBytes=WMI.GetPhysicalMemorySize()
+                //MachineMemoryAvailableBytes=PerformanceCounters.GetMachineMemoryAvailableBytes(),
             };
+            p1.Dispose();
             await this.AsyncNetUdpServer.SendAsync(JsonConvert.SerializeObject(packet).GetBytes_Utf8(),_IPEndPoint);
+        }
+        /// <summary>
+        /// 数据处理 FetchUnits
+        /// </summary>
+        /// <param name="_IPEndPoint"></param>
+        async private void PacketAction1001(IPEndPoint _IPEndPoint) {
+            if(!this.IncludeRemote(_IPEndPoint)){return;}else{this.UpdateRemote(_IPEndPoint);}
+            Dictionary<String,Object> d1=new Dictionary<String,Object>();
+            foreach(KeyValuePair<String,Entity.Unit> kvp in Program.Units) {d1[kvp.Key]=new {State=kvp.Value.State,UnitSettings=kvp.Value.UnitSettings};}
+            Object packet=new{ErrorCode=0,ErrorMessage=String.Empty,Units=d1};
+            await this.AsyncNetUdpServer.SendAsync(JsonConvert.SerializeObject(packet).GetBytes_Utf8(),_IPEndPoint);
+        }
+        /// <summary>
+        /// 数据处理 StartAllUnits
+        /// </summary>
+        /// <param name="_IPEndPoint"></param>
+        async private void PacketAction1002(IPEndPoint _IPEndPoint) {
+            if(!this.IncludeRemote(_IPEndPoint)){return;}else{this.UpdateRemote(_IPEndPoint);}
+            UnitControl.StartAllUnits();
+            await this.AsyncNetUdpServer.SendAsync(JsonConvert.SerializeObject(new{ErrorCode=0,ErrorMessage=String.Empty}).GetBytes_Utf8(),_IPEndPoint);
+        }
+        /// <summary>
+        /// 数据处理 StartUnit
+        /// </summary>
+        /// <param name="_IPEndPoint"></param>
+        /// <param name="_UdpSocketPacketRecive"></param>
+        async private void PacketAction1003(IPEndPoint _IPEndPoint,Entity.UdpSocketPacketRecive _UdpSocketPacketRecive) {
+            if(!this.IncludeRemote(_IPEndPoint)){return;}else{this.UpdateRemote(_IPEndPoint);}
+            UnitControl.StartUnit(_UdpSocketPacketRecive.UnitName);
+            await this.AsyncNetUdpServer.SendAsync(JsonConvert.SerializeObject(new{ErrorCode=0,ErrorMessage=String.Empty}).GetBytes_Utf8(),_IPEndPoint);
+        }
+        /// <summary>
+        /// 数据处理 StopAllUnits
+        /// 还未验证
+        /// </summary>
+        /// <param name="_IPEndPoint"></param>
+        async private void PacketAction1004(IPEndPoint _IPEndPoint) {
+            if(!this.IncludeRemote(_IPEndPoint)){return;}else{this.UpdateRemote(_IPEndPoint);}
+            UnitControl.StopAllUnits();
+            await this.AsyncNetUdpServer.SendAsync(JsonConvert.SerializeObject(new{ErrorCode=0,ErrorMessage=String.Empty}).GetBytes_Utf8(),_IPEndPoint);
+        }
+        /// <summary>
+        /// 数据处理 StopUnit
+        /// 还未验证
+        /// </summary>
+        /// <param name="_IPEndPoint"></param>
+        /// <param name="_UdpSocketPacketRecive"></param>
+        async private void PacketAction1005(IPEndPoint _IPEndPoint,Entity.UdpSocketPacketRecive _UdpSocketPacketRecive) {
+            if(!this.IncludeRemote(_IPEndPoint)){return;}else{this.UpdateRemote(_IPEndPoint);}
+            UnitControl.StopUnit(_UdpSocketPacketRecive.UnitName);
+            await this.AsyncNetUdpServer.SendAsync(JsonConvert.SerializeObject(new{ErrorCode=0,ErrorMessage=String.Empty}).GetBytes_Utf8(),_IPEndPoint);
         }
     }
 }
