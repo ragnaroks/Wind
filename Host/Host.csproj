@@ -4,9 +4,9 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <StartupObject>Host.Program</StartupObject>
-    <AssemblyVersion>2.0.5.7</AssemblyVersion>
-    <FileVersion>2.0.5.7</FileVersion>
-    <Version>2.0.5.7</Version>
+    <AssemblyVersion>2.0.6.13</AssemblyVersion>
+    <FileVersion>2.0.6.13</FileVersion>
+    <Version>2.0.6.13</Version>
     <Copyright>skydust</Copyright>
     <Description>Wind2 Services Host</Description>
     <PackageProjectUrl>https://github.com/ragnaroks/Wind2</PackageProjectUrl>
