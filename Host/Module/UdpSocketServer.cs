@@ -128,6 +128,8 @@ namespace Host.Module {
                 case 1001:this.PacketAction1001(e.RemoteEndPoint);break;
                 case 1002:this.PacketAction1002(e.RemoteEndPoint);break;
                 case 1003:this.PacketAction1003(e.RemoteEndPoint,packet);break;
+                case 1004:this.PacketAction1004(e.RemoteEndPoint);break;
+                case 1005:this.PacketAction1005(e.RemoteEndPoint,packet);break;
             }
         }
 
@@ -141,8 +143,10 @@ namespace Host.Module {
             } else {
                 this.UpdateRemote(_IPEndPoint);
             }
-            Object packet=new{ErrorCode=0,ErrorMessage=String.Empty,Message=$"Hello,{_IPEndPoint.Address}:{_IPEndPoint.Port}"};
-            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,JsonConvert.SerializeObject(packet)),_IPEndPoint);
+            Object packet=new{ActionId=1,ActionName="Hello",ErrorCode=0,ErrorMessage=String.Empty,Message=$"Hello,{_IPEndPoint.Address}:{_IPEndPoint.Port}"};
+            String json=JsonConvert.SerializeObject(packet);
+            Program.Logger.Log("UdpSocketServer",$"UdpPacketSent=>{_IPEndPoint.Address}:{_IPEndPoint.Port}=>{json}");
+            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,json),_IPEndPoint);
         }
         /// <summary>
         /// 数据处理 GetHostVersion
@@ -152,8 +156,7 @@ namespace Host.Module {
             if(!this.IncludeRemote(_IPEndPoint)){return;}else{this.UpdateRemote(_IPEndPoint);}
             Process p1=Process.GetCurrentProcess();
             Object packet=new{
-                ErrorCode=0,
-                ErrorMessage=String.Empty,
+                ActionId=2,ActionName="GetHostVersion",ErrorCode=0,ErrorMessage=String.Empty,
                 HostServiceVersion=System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                 HostServicePid=p1.Id,
                 HostServiceMemoryUsageBytes=p1.PrivateMemorySize64,
@@ -166,7 +169,9 @@ namespace Host.Module {
                 //MachineMemoryAvailableBytes=PerformanceCounters.GetMachineMemoryAvailableBytes(),
             };
             p1.Dispose();
-            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,JsonConvert.SerializeObject(packet)),_IPEndPoint);
+            String json=JsonConvert.SerializeObject(packet);
+            Program.Logger.Log("UdpSocketServer",$"UdpPacketSent=>{_IPEndPoint.Address}:{_IPEndPoint.Port}=>{json}");
+            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,json),_IPEndPoint);
         }
         /// <summary>
         /// 数据处理 FetchUnits
@@ -178,8 +183,10 @@ namespace Host.Module {
 #pragma warning disable IDE0037 // 使用推断的成员名称
             foreach (KeyValuePair<String,Entity.Unit> kvp in Program.Units) {d1[kvp.Key]=new {State=kvp.Value.State,UnitSettings=kvp.Value.UnitSettings}; }
 #pragma warning restore IDE0037 // 使用推断的成员名称
-            Object packet=new{ErrorCode=0,ErrorMessage=String.Empty,Units=d1};
-            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,JsonConvert.SerializeObject(packet)),_IPEndPoint);
+            Object packet=new{ActionId=1001,ActionName="FetchUnits",ErrorCode=0,ErrorMessage=String.Empty,Units=d1};
+            String json=JsonConvert.SerializeObject(packet);
+            Program.Logger.Log("UdpSocketServer",$"UdpPacketSent=>{_IPEndPoint.Address}:{_IPEndPoint.Port}=>{json}");
+            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,json),_IPEndPoint);
         }
         /// <summary>
         /// 数据处理 StartAllUnits
@@ -188,8 +195,10 @@ namespace Host.Module {
         private void PacketAction1002(IPEndPoint _IPEndPoint) {
             if(!this.IncludeRemote(_IPEndPoint)){return;}else{this.UpdateRemote(_IPEndPoint);}
             UnitControl.StartAllUnits();
-            Object packet=new{ErrorCode=0,ErrorMessage=String.Empty};
-            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,JsonConvert.SerializeObject(packet)),_IPEndPoint);
+            Object packet=new{ActionId=1002,ActionName="StartAllUnits",ErrorCode=0,ErrorMessage=String.Empty};
+            String json=JsonConvert.SerializeObject(packet);
+            Program.Logger.Log("UdpSocketServer",$"UdpPacketSent=>{_IPEndPoint.Address}:{_IPEndPoint.Port}=>{json}");
+            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,json),_IPEndPoint);
         }
         /// <summary>
         /// 数据处理 StartUnit
@@ -198,32 +207,38 @@ namespace Host.Module {
         /// <param name="_UdpSocketPacketRecive"></param>
         private void PacketAction1003(IPEndPoint _IPEndPoint,Entity.UdpSocketPacketRecive _UdpSocketPacketRecive) {
             if(!this.IncludeRemote(_IPEndPoint)){return;}else{this.UpdateRemote(_IPEndPoint);}
+            Object packet=new{ActionId=1003,ActionName="StartUnit",ErrorCode=0,ErrorMessage=String.Empty};
+            if(String.IsNullOrWhiteSpace(_UdpSocketPacketRecive.UnitName)){packet=new{ActionId=1003,ActionName="StartUnit",ErrorCode=101,ErrorMessage="单元名称无效"};}//TODO 优化
             UnitControl.StartUnit(_UdpSocketPacketRecive.UnitName);
-            Object packet=new{ErrorCode=0,ErrorMessage=String.Empty};
-            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,JsonConvert.SerializeObject(packet)),_IPEndPoint);
+            String json=JsonConvert.SerializeObject(packet);
+            Program.Logger.Log("UdpSocketServer",$"UdpPacketSent=>{_IPEndPoint.Address}:{_IPEndPoint.Port}=>{json}");
+            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,json),_IPEndPoint);
         }
         /// <summary>
         /// 数据处理 StopAllUnits
-        /// 还未验证
         /// </summary>
         /// <param name="_IPEndPoint"></param>
         private void PacketAction1004(IPEndPoint _IPEndPoint) {
             if(!this.IncludeRemote(_IPEndPoint)){return;}else{this.UpdateRemote(_IPEndPoint);}
             UnitControl.StopAllUnits();
-            Object packet=new{ErrorCode=0,ErrorMessage=String.Empty};
-            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,JsonConvert.SerializeObject(packet)),_IPEndPoint);
+            Object packet=new{ActionId=1004,ActionName="StopAllUnits",ErrorCode=0,ErrorMessage=String.Empty};
+            String json=JsonConvert.SerializeObject(packet);
+            Program.Logger.Log("UdpSocketServer",$"UdpPacketSent=>{_IPEndPoint.Address}:{_IPEndPoint.Port}=>{json}");
+            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,json),_IPEndPoint);
         }
         /// <summary>
         /// 数据处理 StopUnit
-        /// 还未验证
         /// </summary>
         /// <param name="_IPEndPoint"></param>
         /// <param name="_UdpSocketPacketRecive"></param>
         private void PacketAction1005(IPEndPoint _IPEndPoint,Entity.UdpSocketPacketRecive _UdpSocketPacketRecive) {
             if(!this.IncludeRemote(_IPEndPoint)){return;}else{this.UpdateRemote(_IPEndPoint);}
+            Object packet=new{ActionId=1005,ActionName="StopUnit",ErrorCode=0,ErrorMessage=String.Empty};
+            if(String.IsNullOrWhiteSpace(_UdpSocketPacketRecive.UnitName)){packet=new{ActionId=1005,ActionName="StopUnit",ErrorCode=101,ErrorMessage="单元名称无效"};}//TODO 优化
             UnitControl.StopUnit(_UdpSocketPacketRecive.UnitName);
-            Object packet=new{ErrorCode=0,ErrorMessage=String.Empty};
-            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,JsonConvert.SerializeObject(packet)),_IPEndPoint);
+            String json=JsonConvert.SerializeObject(packet);
+            Program.Logger.Log("UdpSocketServer",$"UdpPacketSent=>{_IPEndPoint.Address}:{_IPEndPoint.Port}=>{json}");
+            this.AsyncNetUdpServer.SendAsync(AesEncrypt.Encrypt(Program.AppSettings.ControlKey,json),_IPEndPoint);
         }
     }
 }

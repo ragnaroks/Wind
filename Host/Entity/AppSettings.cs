@@ -19,7 +19,7 @@ namespace Host.Entity {
         /// <summary>
         /// 被控监听端口,UDP,WebSocket(TCP)
         /// </summary>
-        public Int16 ControlPort{get;set;}
+        public UInt16 ControlPort{get;set;}
         /// <summary>
         /// 被控密钥
         /// </summary>

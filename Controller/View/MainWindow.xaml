@@ -1,0 +1,83 @@
+﻿<Window x:Class="Controller.View.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Controller.ViewModel"
+        FontSize="12" SnapsToDevicePixels="True" Title="MainWindow" SizeToContent="WidthAndHeight" ResizeMode="CanMinimize"
+        mc:Ignorable="d" d:DataContext="{d:DesignInstance Type=local:MainWindowViewModel,IsDesignTimeCreatable=True}"
+>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.Column="0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Address" Margin="4" Width="128"/>
+                <TextBox MaxLines="1" MaxLength="39" Margin="4" Width="128" Text="{Binding Path=Address,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Port" Margin="4" Width="128"/>
+                <TextBox MaxLines="1" MaxLength="39" Margin="4" Width="128" Text="{Binding Path=Port,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Key" Margin="4" Width="128"/>
+                <TextBox MaxLines="1" MaxLength="39" Margin="4" Width="128" Text="{Binding Path=Key,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <StackPanel Orientation="Horizontal" Width="128">
+                    <TextBlock Text="发送字节数" Margin="4"/>
+                    <TextBlock Text="{Binding Path=ByteSent}" Margin="4"/>
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" Width="128" Margin="12,0,0,0">
+                    <TextBlock Text="接收字节数" Margin="4"/>
+                    <TextBlock Text="{Binding Path=ByteRecv}" Margin="4"/>
+                </StackPanel>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="链接" Margin="4" Width="128" Command="{Binding Path=ConnectCommand}"/>
+                <Button Content="断开" Margin="4" Width="128" Command="{Binding Path=DisconnectCommand}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="获取服务主机信息" Margin="4" Width="128" Command="{Binding Path=GetHostVersionCommand}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="获取所有单元信息" Margin="4" Width="128" Command="{Binding Path=FetchUnitsCommand}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="启动所有单元" Margin="4" Width="128" Command="{Binding Path=StartAllUnitsCommand}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="停止所有单元" Margin="4" Width="128" Command="{Binding Path=StopAllUnitsCommand}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="启动指定单元" Margin="4" Width="128" Command="{Binding Path=StartUnitCommand}"/>
+                <TextBox Margin="4" Width="128" Text="{Binding Path=UnitName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="停止指定单元" Margin="4" Width="128" Command="{Binding Path=StopUnitCommand}"/>
+                <TextBox Margin="4" Width="128" Text="{Binding Path=UnitName,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            </StackPanel>
+            <StackPanel Background="Gray" Height="1"/>
+            <TextBox Margin="4" MinHeight="64" MaxLines="1" Width="262" TextWrapping="Wrap" Text="{Binding Path=InputString,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+            <StackPanel Orientation="Horizontal">
+                <Button Content="提交" Margin="4" Width="128" Command="{Binding Path=SubmitInputCommand}"/>
+                <Button Content="清空" Margin="4" Width="128" Command="{Binding Path=CleanInputCommand}"/>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel Grid.Row="0" Grid.Column="1" Width="1" Background="Gray"/>
+        <ScrollViewer Grid.Row="0" Grid.Column="2" Width="640" MinHeight="320" MaxHeight="640">
+            <ScrollViewer.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="清空日志" Command="{Binding Path=CleanOutputCommand}"></MenuItem>
+                </ContextMenu>
+            </ScrollViewer.ContextMenu>
+            <TextBlock Text="{Binding Path=OutputString,Mode=OneWay}" TextWrapping="Wrap"/>
+        </ScrollViewer>
+    </Grid>
+</Window>
