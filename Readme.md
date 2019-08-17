@@ -1,69 +1,64 @@
-### ½ø¶È
-- [ ] UdpÐ­Òé±»¿Ø => WIP
-- [ ] UdpÐ­Òé¿ØÖÆ¶Ë
-- [ ] µ¥Ôª¿ÉÑ¡ÊÇ·ñÐèÒªWind2µÄÈÕÖ¾
-- [ ] WebSocketÐ­Òé¿ØÖÆ(¿ØÖÆ¶ËÎÞ¼Æ»®)
-- [ ] µ¥ÔªÖ¸¶¨È¨ÏÞ(ÓÃ»§)ÔËÐÐ
+### è¿›åº¦
+- [ ] Udpåè®®è¢«æŽ§ => WIP
+- [ ] Udpåè®®æŽ§åˆ¶ç«¯ => WIP
+- [ ] å•å…ƒå¯é€‰æ˜¯å¦éœ€è¦Wind2çš„æ—¥å¿—
+- [ ] WebSocketåè®®æŽ§åˆ¶(æŽ§åˆ¶ç«¯æ— è®¡åˆ’)
+- [ ] å•å…ƒæŒ‡å®šæƒé™(ç”¨æˆ·)è¿è¡Œ
 
-### °²×°
-- ¿ò¼ÜÒÀÀµ=>Ê¹ÓÃ¹ÜÀíÔ±È¨ÏÞÖ´ÐÐ`dotnet Host.dll action:install`
-- ¶ÀÁ¢=>Ê¹ÓÃ¹ÜÀíÔ±È¨ÏÞÖ´ÐÐ`Host.exe action:install`
-- ¿ÉÄÜÐèÒªÊÖ¶¯È¥·þÎñ¿ØÖÆÃæ°å(services.msc)ÆôÓÃ Wind2 ·þÎñ
+### å®‰è£…
+- æ¡†æž¶ä¾èµ–=>ä½¿ç”¨ç®¡ç†å‘˜æƒé™æ‰§è¡Œ`dotnet Host.dll action:install`
+- ç‹¬ç«‹=>ä½¿ç”¨ç®¡ç†å‘˜æƒé™æ‰§è¡Œ`Host.exe action:install`
+- å¯èƒ½éœ€è¦æ‰‹åŠ¨åŽ»æœåŠ¡æŽ§åˆ¶é¢æ¿(services.msc)å¯ç”¨ Wind2 æœåŠ¡
 
-### Ð¶ÔØ
-- ¿ò¼ÜÒÀÀµ=>Ê¹ÓÃ¹ÜÀíÔ±È¨ÏÞÖ´ÐÐ`dotnet Host.dll action:uninstall`
-- ¶ÀÁ¢=>Ê¹ÓÃ¹ÜÀíÔ±È¨ÏÞÖ´ÐÐ`Host.exe action:uninstall`
+### å¸è½½
+- æ¡†æž¶ä¾èµ–=>ä½¿ç”¨ç®¡ç†å‘˜æƒé™æ‰§è¡Œ`dotnet Host.dll action:uninstall`
+- ç‹¬ç«‹=>ä½¿ç”¨ç®¡ç†å‘˜æƒé™æ‰§è¡Œ`Host.exe action:uninstall`
 
-### µ¥ÔªÅäÖÃ
-µ¥ÔªÅäÖÃÊÇÒ»¸öJSONÎÄ±¾ÎÄ¼þ,±àÂë`ASCII(ANSI)`,¸ñÊ½ÈçÏÂ
+### å•å…ƒé…ç½®
+å•å…ƒé…ç½®æ˜¯ä¸€ä¸ªJSONæ–‡æœ¬æ–‡ä»¶,ç¼–ç `ASCII(ANSI)`,æ ¼å¼å¦‚ä¸‹
 ```json
 {
-    //Ó¦ÓÃ³ÌÐò¾ø¶ÔÂ·¾¶
+    //åº”ç”¨ç¨‹åºç»å¯¹è·¯å¾„
     "AbsolutePath": "C:\\Program Files\\aria2\\aria2-1.34.0-win-64bit-build1\\aria2c.exe",
-    //Ó¦ÓÃ³ÌÐò¹¤×÷Ä¿Â¼,²¿·ÖÓ¦ÓÃ³ÌÐòÐèÒª´ËÏî,½¨Òé¶¼ÌîÐ´
+    //åº”ç”¨ç¨‹åºå·¥ä½œç›®å½•,éƒ¨åˆ†åº”ç”¨ç¨‹åºéœ€è¦æ­¤é¡¹,å»ºè®®éƒ½å¡«å†™
     "WorkPath": "C:\\Program Files\\aria2\\aria2-1.34.0-win-64bit-build1\\",
-    //Ó¦ÓÃ³ÌÐò²ÎÊý
+    //åº”ç”¨ç¨‹åºå‚æ•°
     "Params": "--conf-path=\"C:\\Program Files\\aria2\\config.conf\"",
-    //Ó¦ÓÃ³ÌÐòÊÇ·ñ×ÔÆô¶¯
+    //åº”ç”¨ç¨‹åºæ˜¯å¦è‡ªå¯åŠ¨
     "AutoStart": true,
-    //Ó¦ÓÃ³ÌÐò×ÔÆôÑÓ³Ù,µ¥Î»Ãë
+    //åº”ç”¨ç¨‹åºè‡ªå¯å»¶è¿Ÿ,å•ä½ç§’
     "AutoStartDelay": 10,
-    //ÊÇ·ñ¼ÇÂ¼ÈÕÖ¾,´ËÏîµ±Ç°ÎÞÐ§,Ïê¼ûÏÂ·½
+    //æ˜¯å¦è®°å½•æ—¥å¿—,æ­¤é¡¹å½“å‰æ— æ•ˆ,è¯¦è§ä¸‹æ–¹
     "EnableLogger": false
 }
 ```
-ÒÔÉÏÅäÖÃ´ú±íÔÚWind2³õÊ¼»¯Íê³Éºó,µÈ´ý10Ãë,ÔÙÆô¶¯`C:\Program Files\aria2\aria2-1.34.0-win-64bit-build1\aria2c.exe --conf-path="C:\Program Files\aria2\config.conf"`,²¢ÇÒÉèÖÃ¹¤×÷Ä¿Â¼`C:\Program Files\aria2\aria2-1.34.0-win-64bit-build1\`  
+ä»¥ä¸Šé…ç½®ä»£è¡¨åœ¨Wind2åˆå§‹åŒ–å®ŒæˆåŽ,ç­‰å¾…10ç§’,å†å¯åŠ¨`C:\Program Files\aria2\aria2-1.34.0-win-64bit-build1\aria2c.exe --conf-path="C:\Program Files\aria2\config.conf"`,å¹¶ä¸”è®¾ç½®å·¥ä½œç›®å½•`C:\Program Files\aria2\aria2-1.34.0-win-64bit-build1\`  
 
-²¿·ÖÓ¦ÓÃ³ÌÐòÖ§³ÖÔÚ²ÎÊýÀïÃæÊ¹ÓÃÏà¶ÔÂ·¾¶,µ«½¨Òé¶¼Ê¹ÓÃ¾ø¶ÔÂ·¾¶
+éƒ¨åˆ†åº”ç”¨ç¨‹åºæ”¯æŒåœ¨å‚æ•°é‡Œé¢ä½¿ç”¨ç›¸å¯¹è·¯å¾„,ä½†å»ºè®®éƒ½ä½¿ç”¨ç»å¯¹è·¯å¾„
 
-¸ñÊ½´íÎó»òÎ´ÌîÐ´Ó¦ÓÃ³ÌÐò¾ø¶ÔÂ·¾¶»òÓ¦ÓÃ³ÌÐòÎÄ¼þ²»´æÔÚ,Ôò´Ëµ¥ÔªÎÄ¼þ»á±»ºöÂÔ,µ¥ÔªÅäÖÃÎÄ¼þ¶¼´æ·ÅÓÚWind2Ä¿Â¼ÏÂµÄUnitsÎÄ¼þ¼ÐÖÐ
+æ ¼å¼é”™è¯¯æˆ–æœªå¡«å†™åº”ç”¨ç¨‹åºç»å¯¹è·¯å¾„æˆ–åº”ç”¨ç¨‹åºæ–‡ä»¶ä¸å­˜åœ¨,åˆ™æ­¤å•å…ƒæ–‡ä»¶ä¼šè¢«å¿½ç•¥,å•å…ƒé…ç½®æ–‡ä»¶éƒ½å­˜æ”¾äºŽWind2ç›®å½•ä¸‹çš„Unitsæ–‡ä»¶å¤¹ä¸­
 
-`EnableLogger`Èç¹ûÎª`true`,Ôò¸Ãµ¥Ôª»á¼ÇÂ¼**À´×ÔWind2µÄ**ÈÕÖ¾,ºÍÓ¦ÓÃ³ÌÐò×ÔÉíÈÕÖ¾¹¦ÄÜÎÞ¹Ø,**µ±Ç°Ç¿ÖÆ¼ÇÂ¼**
+`EnableLogger`å¦‚æžœä¸º`true`,åˆ™è¯¥å•å…ƒä¼šè®°å½•**æ¥è‡ªWind2çš„**æ—¥å¿—,å’Œåº”ç”¨ç¨‹åºè‡ªèº«æ—¥å¿—åŠŸèƒ½æ— å…³,**å½“å‰å¼ºåˆ¶è®°å½•**
 
-### È«¾ÖÅäÖÃ
-È«¾ÖÅäÖÃÊÇÒ»¸öÃûÎª**AppSettings.json**µÄJSONÎÄ±¾ÎÄ¼þ,±àÂë`ASCII(ANSI)`,Î»ÓÚ¸ùÄ¿Â¼ÏÂ,¸ñÊ½ÈçÏÂ
+### å…¨å±€é…ç½®
+å…¨å±€é…ç½®æ˜¯ä¸€ä¸ªåä¸º**AppSettings.json**çš„JSONæ–‡æœ¬æ–‡ä»¶,ç¼–ç `ASCII(ANSI)`,ä½äºŽæ ¹ç›®å½•ä¸‹,æ ¼å¼å¦‚ä¸‹
 ```json
 {
-    //ÈÕÖ¾¼¶±ð,µ±Ç°ÎÞÐ§
+    //æ—¥å¿—çº§åˆ«,å½“å‰æ— æ•ˆ
     "LogLevel": 0,
-    //ÊÇ·ñÆôÓÃ±»¿Ø,¸ß½×ÓÃ»§²»½¨ÒéÆôÓÃ
+    //æ˜¯å¦å¯ç”¨è¢«æŽ§,é«˜é˜¶ç”¨æˆ·ä¸å»ºè®®å¯ç”¨
     "ControlEnable": false,
-    //±»¿Ø¼àÌýIPv4µØÖ·,ÆäÖÐ'localhost'Ö»¼àÌý»·»Ø,'any'¼àÌýËùÓÐ
+    //è¢«æŽ§ç›‘å¬IPv4åœ°å€,å…¶ä¸­'localhost'åªç›‘å¬çŽ¯å›ž,'any'ç›‘å¬æ‰€æœ‰
     "ControlAddress": "localhost",
-    //±»¿Ø¶Ë¿Ú,²»¿ÉÐ¡ÓÚ1024
+    //è¢«æŽ§ç«¯å£,ä¸å¯å°äºŽ1024
     "ControlPort": 27015,
-    //±»¿ØÃÜÔ¿,ÈÎÒâ³¤¶ÈÈÎÒâ×Ö·û,½¨Òé16×Ö½ÚÒÔÉÏ,±»¿ØºÍ¿ØÖÆ¶ËÊ¹ÓÃAES¼ÓÃÜÍ¨ÐÅ
+    //è¢«æŽ§å¯†é’¥,ä»»æ„é•¿åº¦ä»»æ„å­—ç¬¦,å»ºè®®16å­—èŠ‚ä»¥ä¸Š,è¢«æŽ§å’ŒæŽ§åˆ¶ç«¯ä½¿ç”¨AESåŠ å¯†é€šä¿¡
     "ControlKey": "https://github.com/ragnaroks/Wind2"
 }
 ```
 
-### ×¢ÒâÊÂÏî
-- ±»ÍÐ¹ÜµÄÓ¦ÓÃ³ÌÐòÄ¬ÈÏ²»Ö§³Ö**½»»¥**,ÐèÒª×ÔÐÐÔÚ`services.msc`ÆôÓÃ
-- µ±Ç°²»Ö§³ÖÍÐ¹ÜÓÐÍ¼Ïñ½çÃæµÄÓ¦ÓÃ³ÌÐò
-- ±»ÍÐ¹ÜµÄÓ¦ÓÃ³ÌÐòÄ¬ÈÏÎªLOCAL SYSTEMÈ¨ÏÞ,½¨ÒéÖ»ÍÐ¹Ü**ÊÜÐÅÈÎ**µÄÓ¦ÓÃ³ÌÐò,ºóÃæ¿¼ÂÇ¼ÓÈëÊ¹ÓÃÖ¸¶¨ÓÃ»§È¨ÏÞÔËÐÐ
-- Èç¹ûwind2ÒâÍâÍË³ö,¿ÉÄÜµ¼ÖÂµ¥ÔªÊ§È¥ÍÐ¹Ü,ÕâÖÖÇé¿öÏÂÄ¿Ç°Ö»ÄÜÊÖ¶¯½áÊøµ¥Ôª½ø³Ì
-
-### ÏîÄ¿¹¹³É
-- `Host` Wind2·þÎñÖ÷»ú,Ïàµ±ÓÚ±»¿Ø¶Ë,¶ÔÓÚ¸ß½×ÓÃ»§À´ËµÖ»ÐèÒªÕâ¸ö¾Í¿ÉÒÔÁË
-- `ConsoleApp?` Ëæ±ãÐ´µã²âÊÔÓÃ
-- `Controller` Wind2¿ØÖÆÆ÷(Windows°æ),¿ÉÓÃÓÚÍ¼ÐÎ½çÃæ¿ØÖÆ·þÎñÖ÷»ú,ÊÊºÏÆÕÍ¨ÓÃ»§Ê¹ÓÃ
+### æ³¨æ„äº‹é¡¹
+- è¢«æ‰˜ç®¡çš„åº”ç”¨ç¨‹åºé»˜è®¤ä¸æ”¯æŒ**äº¤äº’**,éœ€è¦è‡ªè¡Œåœ¨`services.msc`å¯ç”¨
+- å½“å‰ä¸æ”¯æŒæ‰˜ç®¡æœ‰å›¾åƒç•Œé¢çš„åº”ç”¨ç¨‹åº
+- è¢«æ‰˜ç®¡çš„åº”ç”¨ç¨‹åºé»˜è®¤ä¸ºLOCAL SYSTEMæƒé™,å»ºè®®åªæ‰˜ç®¡**å—ä¿¡ä»»**çš„åº”ç”¨ç¨‹åº,åŽé¢è€ƒè™‘åŠ å…¥ä½¿ç”¨æŒ‡å®šç”¨æˆ·æƒé™è¿è¡Œ
+- å¦‚æžœwind2æ„å¤–é€€å‡º,å¯èƒ½å¯¼è‡´å•å…ƒå¤±åŽ»æ‰˜ç®¡,è¿™ç§æƒ…å†µä¸‹ç›®å‰åªèƒ½æ‰‹åŠ¨ç»“æŸå•å…ƒè¿›ç¨‹
