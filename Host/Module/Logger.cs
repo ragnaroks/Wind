@@ -29,12 +29,13 @@ namespace Host.Module {
         /// <summary>
         /// 构造
         /// </summary>
-        /// <param name="_LogDirectory"></param>
-        public Logger(String _LogDirectory){
-            if(!Directory.Exists(_LogDirectory)){
-                try {Directory.CreateDirectory(_LogDirectory);}catch(Exception _e){throw new IOException("无法创建日志根目录,"+_e.Message);}
+        /// <param name="logDirectory"></param>
+        public Logger(String logDirectory,Int32 writeInterval){
+            if(!Directory.Exists(logDirectory)){
+                try {Directory.CreateDirectory(logDirectory);}catch(Exception _e){throw new IOException("无法创建日志根目录,"+_e.Message);}
             }
-            this.LogDirectory=_LogDirectory;
+            this.LogDirectory=logDirectory;
+            this.TimerInterval=writeInterval;
             this.Logs=new Dictionary<String,StringBuilder>();
             this.Logs["HostService"]=new StringBuilder();
             this.Logs["UdpSocketServer"]=new StringBuilder();
@@ -85,19 +86,19 @@ namespace Host.Module {
             if(this.Logs==null || this.Logs.Count<1){return;}
             String prefix=DateTime.Now.ToString("yyyy-MM-dd");
             FileStream fs=null;
-            foreach (KeyValuePair<String,StringBuilder> _log in this.Logs) {
-                if(_log.Value==null || _log.Value.Length<1){continue;}
+            foreach (KeyValuePair<String,StringBuilder> log in this.Logs) {
+                if(log.Value==null || log.Value.Length<1){continue;}
                 try{
-                    fs=File.OpenWrite(String.Format("{0}{1}{2}_{3}.log",this.LogDirectory,Path.DirectorySeparatorChar,prefix,_log.Key));
+                    fs=File.OpenWrite(String.Format("{0}{1}{2}_{3}.log",this.LogDirectory,Path.DirectorySeparatorChar,prefix,log.Key));
                     fs.Seek(0,SeekOrigin.End);
-                    Byte[] buffer=Encoding.UTF8.GetBytes(_log.Value.ToString());
+                    Byte[] buffer=Encoding.UTF8.GetBytes(log.Value.ToString());
                     fs.Write(buffer,0,buffer.GetLength(0));
-                    fs.Dispose();
-                    _log.Value.Clear();
+                    log.Value.Clear();
                 } catch (Exception _e) {
-                    fs=null;
                     Console.WriteLine("物理写入日志时异常,"+_e.Message);
                     continue;
+                } finally {
+                    fs.Dispose();
                 }
             }
         }
@@ -110,7 +111,7 @@ namespace Host.Module {
         public void Log(String _title,String _text){
             if(String.IsNullOrWhiteSpace(_title) || String.IsNullOrWhiteSpace(_text)){return;}
             if(!this.Logs.ContainsKey(_title) || this.Logs[_title]==null){this.Logs[_title]=new StringBuilder();}
-            this.Logs[_title].Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")).Append(" # ").Append(_text).Append("\n");
+            this.Logs[_title].Append("[").Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")).Append("]\n").Append(_text).Append("\n");
         }
     }
 }

@@ -3,10 +3,10 @@ using PeterKottas.DotNetCore.WindowsService.Interfaces;
 
 namespace Host {
     public class HostService:IMicroService {
-        private IMicroServiceController controller;
+        private readonly IMicroServiceController controller;
         
         public HostService(){this.controller=null;}
-        public HostService(IMicroServiceController _controller) {this.controller=_controller;}
+        public HostService(IMicroServiceController controller) {this.controller=controller;}
 
         public void Start() {
             Program.Logger.Log("HostService","Start");

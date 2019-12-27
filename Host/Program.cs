@@ -17,7 +17,7 @@ namespace Host {
         /// <summary>
         /// 日志模块
         /// </summary>
-        public static Module.Logger Logger=new Module.Logger(Program.Settings.LogDirectory);
+        public static Module.Logger Logger=new Module.Logger(Program.Settings.LogDirectory,1000);
         /// <summary>
         /// Udp被控
         /// </summary>
@@ -27,85 +27,85 @@ namespace Host {
         /// </summary>
         public static Dictionary<String,Entity.Unit> Units=new Dictionary<String, Entity.Unit>();
                 
-        public static void Main(String[] _args){
-            ServiceRunner<HostService>.Run(_config=>{
-                _config.SetDisplayName("Wind2");
-                _config.SetName("Wind2");
-                _config.SetDescription("Wind2 Services Host,version "+System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString());
-                _config.Service(_serviceConfig=>{
+        public static void Main(String[] args){
+            //读取配置
+            if(!File.Exists(Program.Settings.CurrentDirectory+Path.DirectorySeparatorChar+"AppSettings.json")){
+                Console.WriteLine("配置文件不存在");
+                Program.Logger.Log("HostService","配置文件不存在");
+            return;}
+            FileStream fs1=null;
+            try {
+                fs1=File.Open(Program.Settings.CurrentDirectory+Path.DirectorySeparatorChar+"AppSettings.json",FileMode.Open,FileAccess.Read,FileShare.Read);
+                if(fs1.Length>Int32.MaxValue){return;}
+                Byte[] buffer=new Byte[fs1.Length];
+                fs1.Read(buffer,0,(Int32)fs1.Length);
+                Program.AppSettings=JsonConvert.DeserializeObject<Entity.AppSettings>(System.Text.Encoding.UTF8.GetString(buffer));
+            }catch(Exception exception){
+                Console.WriteLine("读取配置异常,"+exception.Message);
+                Program.Logger.Log("HostService","读取配置异常,"+exception.Message);
+                return;
+            } finally {
+                fs1.Dispose();
+            }
+            if(Program.AppSettings==null){return;}
+            //Udp被控模块
+            if(Program.AppSettings.ControlEnable){Program.UdpSocketServer=new Module.UdpSocketServer();}
+
+            ServiceRunner<HostService>.Run(config=>{
+                config.SetDisplayName("Wind2");
+                config.SetName("Wind2");
+                config.SetDescription("Wind2 Services Host");
+                config.Service(serviceConfig=>{
                     //run
-                    _serviceConfig.ServiceFactory((_extraArguments,_microServiceController)=>{
-                        return new HostService(_microServiceController);
+                    serviceConfig.ServiceFactory((extraArguments,microServiceController)=>{
+                        return new HostService(microServiceController);
                     });
                     //安装
-                    _serviceConfig.OnInstall(_server=>{
+                    serviceConfig.OnInstall(server=>{
                         Console.WriteLine("正在安装 Wind2");
                         Console.WriteLine("已安装 Wind2");
                     });
                     //卸载
-                    _serviceConfig.OnUnInstall(_server=>{
+                    serviceConfig.OnUnInstall(server=>{
                         Console.WriteLine("正在卸载 Wind2");
                         Console.WriteLine("已卸载 Wind2");
                     });
                     //继续
-                    _serviceConfig.OnContinue(_server=>{
+                    serviceConfig.OnContinue(server=>{
                         Console.WriteLine("正在恢复 Wind2");
                         Program.Settings.IsPaused=false;
                         Console.WriteLine("已恢复 Wind2");
                     });
                     //暂停
-                    _serviceConfig.OnPause(_server=>{
+                    serviceConfig.OnPause(server=>{
                         Console.WriteLine("正在暂停 Wind2");
                         Program.Settings.IsPaused=true;
                         Console.WriteLine("已暂停 Wind2");
                     });
                     //Shutdown
-                    _serviceConfig.OnShutdown(_server=>{
+                    serviceConfig.OnShutdown(server=>{
                         Console.WriteLine("Shutdown Wind2");
                     });
                     //错误
-                    _serviceConfig.OnError(_ex=>{
-                        Console.WriteLine("Wind2 异常: "+_ex.Message+" | "+_ex.StackTrace);
-                        Program.Logger.Log("HostService","异常: "+_ex.Message+" | "+_ex.StackTrace);
+                    serviceConfig.OnError(exception=>{
+                        Console.WriteLine("Wind2 异常: "+exception.Message+" | "+exception.StackTrace);
+                        Program.Logger.Log("HostService","异常: "+exception.Message+" | "+exception.StackTrace);
                     });
                     //启动
-                    _serviceConfig.OnStart((_service,_extraArguments)=>{
+                    serviceConfig.OnStart((service,extraArguments)=>{
                         Console.WriteLine("正在启动 Wind2");
                         /*
                         var identity = WindowsIdentity.GetCurrent();
                         var principal = new WindowsPrincipal(identity);
                         Program.Logger.Log("HostService","RunAs "+principal.Identity.Name);
                         */
-                        //读取配置
-                        if(!File.Exists(Program.Settings.CurrentDirectory+Path.DirectorySeparatorChar+"AppSettings.json")){
-                            Console.WriteLine("配置文件不存在");
-                            Program.Logger.Log("HostService","配置文件不存在");
-                            _service.Stop();
-                        return;}
-                        try {
-                            FileStream fs1=File.Open(Program.Settings.CurrentDirectory+Path.DirectorySeparatorChar+"AppSettings.json",FileMode.Open,FileAccess.Read,FileShare.Read);
-                            if(fs1.Length>Int32.MaxValue){_service.Stop();return;}
-                            Byte[] buffer=new Byte[fs1.Length];
-                            fs1.Read(buffer,0,(Int32)fs1.Length);
-                            fs1.Dispose();
-                            Program.AppSettings=JsonConvert.DeserializeObject<Entity.AppSettings>(System.Text.Encoding.UTF8.GetString(buffer));
-                        }catch(Exception _e){
-                            Console.WriteLine("读取配置异常,"+_e.Message);
-                            Program.Logger.Log("HostService","读取配置异常,"+_e.Message);
-                            _service.Stop();
-                            return;
-                        }
-                        if(Program.AppSettings==null){_service.Stop();return;}
-                        //Udp被控模块
-                        if(Program.AppSettings.ControlEnable){Program.UdpSocketServer=new Module.UdpSocketServer();}
-                        //完成
-                        _service.Start();
+                        service.Start();
                         Console.WriteLine("已启动 Wind2");
                     });
                     //停止
-                    _serviceConfig.OnStop(_server=>{
+                    serviceConfig.OnStop(server=>{
                         Console.WriteLine("正在停止 Wind2");
-                        _server.Stop();
+                        server.Stop();
                         Console.WriteLine("已停止 Wind2");
                     });
                 });

@@ -6,7 +6,7 @@
     <StartupObject>Host.Program</StartupObject>
     <AssemblyVersion>2.0.6.13</AssemblyVersion>
     <FileVersion>2.0.6.13</FileVersion>
-    <Version>2.0.6.13</Version>
+    <Version>2.0.6.14</Version>
     <Copyright>skydust</Copyright>
     <Description>Wind2 Services Host</Description>
     <PackageProjectUrl>https://github.com/ragnaroks/Wind2</PackageProjectUrl>
@@ -47,9 +47,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="HostService.cs">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Update="HostService.cs" />
   </ItemGroup>
 
   <ItemGroup>
