@@ -165,7 +165,7 @@ namespace Host.Module {
                 MachineName = p1.MachineName,
 #pragma warning restore IDE0037 // 使用推断的成员名称
                 MachineProcessorCount =Environment.ProcessorCount,
-                MachineMemoryTotalBytes=WMI.GetPhysicalMemorySize()
+                //MachineMemoryTotalBytes=WMI.GetPhysicalMemorySize()
                 //MachineMemoryAvailableBytes=PerformanceCounters.GetMachineMemoryAvailableBytes(),
             };
             p1.Dispose();

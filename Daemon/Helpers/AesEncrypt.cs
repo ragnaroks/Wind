@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace Daemon.Helpers{
+    /// <summary>AES 加解密</summary>
+    public static class AesEncrypt {
+        private static readonly Byte[] IV=new Byte[16]{55,51,48,99,115,103,111,55,51,53,53,54,48,56,99,52};//"730csgo7355608c4"
+        
+        public static Byte[] Encrypt(String key,String text) {
+            var aes=AesManaged.Create();
+            //aes.IV=IV;
+            aes.BlockSize=128;
+            aes.KeySize=128;
+            aes.Key=Encoding.UTF8.GetBytes(key.MD5().Substring(16));
+            aes.Mode=CipherMode.ECB;
+            aes.Padding=PaddingMode.Zeros;
+            ICryptoTransform crypto=aes.CreateEncryptor(aes.Key,aes.IV);
+            aes.Dispose();
+            Byte[] bytes = Encoding.UTF8.GetBytes(text);
+            Byte[] result=crypto.TransformFinalBlock(bytes,0,bytes.Length);
+            crypto.Dispose();
+            return result;
+        }
+
+        public static String Decrypt(String key,Byte[] bytes) {
+            var aes=AesManaged.Create();
+            //aes.IV=IV;
+            aes.BlockSize=128;
+            aes.KeySize=128;
+            aes.Key=Encoding.UTF8.GetBytes(key.MD5().Substring(16));
+            aes.Mode=CipherMode.ECB;
+            aes.Padding=PaddingMode.Zeros;
+            ICryptoTransform crypto=aes.CreateDecryptor(aes.Key,aes.IV);
+            aes.Dispose();
+            Byte[] result;
+            try {
+                result=crypto.TransformFinalBlock(bytes,0,bytes.Length);
+            }catch(Exception exception){
+                Program.LoggerModule.Log("Helpers.AesEncrypt.Decrypt[Error]",$"数据解密异常,{exception.Message},{exception.StackTrace}");
+                ConsoleColor cc=Console.ForegroundColor;
+                Console.ForegroundColor=ConsoleColor.Red;
+                Console.WriteLine($"Helpers.AesEncrypt.Decrypt => {exception.Message} | {exception.StackTrace}");
+                Console.ForegroundColor=cc;
+                return null;
+            } finally {
+                crypto.Dispose();
+                //aes.Dispose();
+            }
+            return Encoding.UTF8.GetString(result);
+        }
+    }
+}

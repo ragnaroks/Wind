@@ -1,0 +1,8 @@
+{
+    "Description": "ping test",
+    "ExecuteAbsolutePath": "C:\\Windows\\System32\\ping.exe",
+    "WorkAbsoluteDirectory": "C:\\Windows\\System32\\",
+    "ExecuteParams": "127.0.0.1",
+    "AutoStart": true,
+    "AutoStartDelay": 0
+}

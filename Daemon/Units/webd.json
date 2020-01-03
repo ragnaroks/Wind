@@ -1,0 +1,8 @@
+{
+    "Description": "webd",
+    "ExecuteAbsolutePath": "D:\\webd\\webd.exe",
+    "WorkAbsoluteDirectory": "D:\\webd\\",
+    "ExecuteParams": null,
+    "AutoStart": true,
+    "AutoStartDelay": 5
+}
