@@ -15,9 +15,9 @@
 - `Host`Wind2服务主机,用于托管应用程序(不再维护)
 - `Controller`Wind2控制端,链接到服务主机后即可远程控制(不再维护,且有缺陷)
 - `Daemon`Wind2服务主机,算是用dotnet core 3.1重新实现了一版+优化
-- `WebController`Wind2网页控制端
-
-当前`Daemon`和`WebController`项目还处于开发阶段,不可使用,建议下载`Host`与`Controller`项目体验
+- `WebController`Wind2网页控制端(未开始)
+求稳定的用户可使用`Host`+`Controller`的老搭配,运行1年多非常稳定,但`Controller`有部分缺陷未处理  
+临时尝鲜可以直接使用`Daemon`,作为单机进程托管应该是完全够用了
 
 ### 安装
 - 框架依赖=>使用管理员权限执行`dotnet Host.dll action:install`
@@ -29,6 +29,7 @@
 - 独立=>使用管理员权限执行`Host.exe action:uninstall`
 
 ### 单元配置
+**这是`Daemon`项目的单元配置,`Host`项目的单元配置请参考发布的压缩包内的示例**
 单元配置文件都存放于Wind2目录下的Units文件夹中,单元配置是一个编码UTF-8的JSON文本文件,格式如下
 ```json
 {
@@ -53,6 +54,7 @@
 格式错误或未填写应用程序绝对路径或应用程序文件不存在,则此单元文件会被忽略
 
 ### 全局配置
+**这是`Daemon`项目的全局配置,`Host`项目的全局配置请参考发布的压缩包内的示例**
 全局配置是一个名为**AppSettings.json**的JSON文本文件,编码UTF-8,位于Wind2根目录下,格式如下
 ```json
 {
