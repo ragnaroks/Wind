@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Daemon.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,7 +12,6 @@ namespace Daemon.Modules {
     public class UnitControlModule:IDisposable{
         private Boolean CanLoadAllUnits=true;
         private Boolean CanStartAllAutoStartUnits=true;
-        private Boolean CanStopAllUnits=false;
         private Dictionary<String,Entities.UnitSettings> UnitSettingsDictionary=new Dictionary<String, Entities.UnitSettings>();
         private Dictionary<String,Entities.UnitProcess> UnitProcessDictionary=new Dictionary<String, Entities.UnitProcess>();
 
@@ -25,23 +25,18 @@ namespace Daemon.Modules {
             } else {
                 this.StartAllAutoStartUnits();
             }
-            this.CanStopAllUnits=true;
-            Task.Run(async()=>{
-                await Task.Delay(30*1000);
-                Console.WriteLine(this.UnitProcessDictionary.Count);
-                this.StopAllUnits();
-                Console.WriteLine(this.UnitProcessDictionary.Count);
-            });
         }
 
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用
 
         protected virtual void Dispose(bool disposing) {
+            //先停止所有单元
+            this.StopAllUnits();
+
             if(!disposedValue) {
                 if(disposing) {
                     // TODO: 释放托管状态(托管对象)。
-                    this.StopAllUnits();
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
@@ -54,17 +49,17 @@ namespace Daemon.Modules {
         }
 
         // TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
-        ~UnitControlModule(){
+        //~UnitControlModule(){
             // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
-            Dispose(false);
-        }
+            //Dispose(false);
+        //}
 
         // 添加此代码以正确实现可处置模式。
         public void Dispose() {
             // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
             Dispose(true);
             // TODO: 如果在以上内容中替代了终结器，则取消注释以下行。
-            GC.SuppressFinalize(this);
+            //GC.SuppressFinalize(this);
         }
         #endregion
 
@@ -117,7 +112,7 @@ namespace Daemon.Modules {
                 Program.LoggerModule.Log("Modules.UnitControlModule.ParseUnitFile[Error]",$"单元\"{unitSettingsFileInfo.FullName}\"解析失败,WorkAbsoluteDirectory 配置项无效,可执行文件工作目录不存在或没有读取权限");
                 return null;
             }
-            unitSettings.SetName(unitSettingsFileInfo.Name);
+            unitSettings.SetName(unitSettingsFileInfo.GetOriginName());
             Program.LoggerModule.Log("Modules.UnitControlModule.ParseUnitFile",$"单元\"{unitSettingsFileInfo.FullName}\"解析完成");
             return unitSettings;
         }
@@ -185,48 +180,40 @@ namespace Daemon.Modules {
             this.CanStartAllAutoStartUnits=false;
             Program.LoggerModule.Log("Modules.UnitControlModule.StartAllAutoStartUnits","正在启动所有自启单元");
             if(this.UnitSettingsDictionary==null || this.UnitSettingsDictionary.Count<1){
-                Program.LoggerModule.Log("Modules.UnitControlModule.StartAllAutoStartUnits","没有任何自启单元");
+                Program.LoggerModule.Log("Modules.UnitControlModule.StartAllAutoStartUnits","没有任何单元配置");
                 return;
             }
-            foreach(KeyValuePair<String,Entities.UnitSettings> item in this.UnitSettingsDictionary) {
+            foreach(KeyValuePair<String,Entities.UnitSettings> item in this.UnitSettingsDictionary){
                 Entities.UnitSettings unitSettings=item.Value;
                 if(!unitSettings.AutoStart){continue;}
-                Entities.UnitProcess unitProcess=new Entities.UnitProcess();
-                unitProcess.SetName(unitSettings.Name);
-                unitProcess.ProcessStartInfo=new ProcessStartInfo{UseShellExecute=false,FileName=unitSettings.ExecuteAbsolutePath,WorkingDirectory=unitSettings.WorkAbsoluteDirectory,CreateNoWindow=true,WindowStyle=ProcessWindowStyle.Hidden};
-                if(!String.IsNullOrWhiteSpace(unitSettings.ExecuteParams)){unitProcess.ProcessStartInfo.Arguments=unitSettings.ExecuteParams;}
-                unitProcess.Process=new Process{StartInfo=unitProcess.ProcessStartInfo,EnableRaisingEvents=true};
-                unitProcess.Process.Exited+=OnUnitProcessExited;
-                Task.Run(()=>{
-                    Program.LoggerModule.Log("Modules.UnitControlModule.StartAllAutoStartUnits",$"\"{unitSettings.Name}\"单元所需数据已构造完成,进入启动队列");
-                    unitProcess.State=Enums.UnitProcess.State.正在启动;
-                    if(unitSettings.AutoStartDelay>0){Thread.Sleep(unitSettings.AutoStartDelay*1000);}
-                    try {
-                        unitProcess.Process.Start();
-                    }catch(Exception exception){
-                        Program.LoggerModule.Log("Modules.UnitControlModule.StartAllAutoStartUnits[Error]",$"\"{unitSettings.Name}\"单元启动失败,{exception.Message},{exception.StackTrace}");
-                        unitProcess.State=Enums.UnitProcess.State.停止;
-                        unitProcess.ProcessStartInfo=null;
-                        unitProcess.Process.Dispose();
+                /*
+                Task.Run(async()=>{
+                    if(unitSettings.AutoStartDelay>0){
+                        await Task.Delay(unitSettings.AutoStartDelay*1000);
                     }
-                    Program.LoggerModule.Log("Modules.UnitControlModule.StartAllAutoStartUnits",$"\"{unitSettings.Name}\"单元已启动");
-                    unitProcess.State=Enums.UnitProcess.State.运行中;
-                    this.UnitProcessDictionary.Add(unitProcess.Name,unitProcess);
+                    this.StartUnit(item.Key);
+                });
+                */
+                Task.Factory.StartNew(()=>{
+                    if(unitSettings.AutoStartDelay>0){
+                        Thread.Sleep(unitSettings.AutoStartDelay*1000);
+                    }
+                    this.StartUnit(item.Key);
                 });
             }
         }
 
         /// <summary>
-        /// 单元进程主动退出
+        /// 响应单元进程退出事件
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void OnUnitProcessExited(object sender,EventArgs e) {
+            if(this.UnitProcessDictionary==null) {return;}
             Process process=sender as Process;
             String unitName=null;
             foreach(KeyValuePair<String,Entities.UnitProcess> item in this.UnitProcessDictionary) {
-                if(item.Value.Process==null){continue;}
-                if(item.Value.Process.Id!=process.Id){continue;}
+                if(item.Value.Process==null || item.Value.Process.Id!=process.Id){continue;}
                 item.Value.Process.Dispose();
                 item.Value.Process=null;
                 item.Value.ProcessStartInfo=null;
@@ -234,29 +221,182 @@ namespace Daemon.Modules {
                 unitName=item.Key;
                 break;
             }
-            if(!String.IsNullOrWhiteSpace(unitName)){
+            if(!String.IsNullOrWhiteSpace(unitName) && this.UnitProcessDictionary.ContainsKey(unitName)){
                 this.UnitProcessDictionary.Remove(unitName);
                 Program.LoggerModule.Log("Modules.UnitControlModule.OnUnitProcessExited",$"单元\"{unitName}\"已退出");
             }
         }
 
         /// <summary>
+        /// 刷新单元配置
+        /// </summary>
+        /// <param name="unitName"></param>
+        /// <param name="restartIfUpdate">是否刷新后重启单元</param>
+        public void RefreshUnit(String unitName,Boolean restartIfUpdate=true) {
+            Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"开始刷新单元\"{unitName}\"的配置");
+            String unitFIlePath=Program.AppEnvironment.UnitsDirectory+Path.DirectorySeparatorChar+unitName+".json";
+            //单元配置文件已丢失,将正在运行的单元退出并删除该单元配置
+            if(!File.Exists(unitFIlePath)){
+                Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"单元\"{unitName}\"配置文件不存在,进行退出操作");
+                if(this.UnitSettingsDictionary.ContainsKey(unitName)){
+                    this.UnitSettingsDictionary.Remove(unitName);
+                }
+                this.StopUnit(unitName);
+                return;
+            }
+            //单元配置文件可供更新
+            Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"单元\"{unitName}\"配置文件存在,重新读取");
+            FileInfo fileInfo=null;
+            try {
+                fileInfo=new FileInfo(unitFIlePath);
+            }catch(Exception exception) {
+                Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit[Error]",$"单元\"{unitName}\"配置文件无法读取,{exception.Message},{exception.StackTrace}");
+                return;
+            }
+            if(fileInfo==null){
+                Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit[Error]",$"单元\"{unitName}\"配置文件无效");
+                return;
+            }
+            Entities.UnitSettings unitSettings=this.ParseUnitFile(fileInfo);
+            if(unitSettings==null){
+                Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit[Error]",$"单元\"{unitName}\"配置文件解析失败");
+                return;
+            }
+            if(this.UnitSettingsDictionary.ContainsKey(unitName)) {
+                Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit[Error]",$"单元\"{unitName}\"配置已失效,进行退出操作");
+                this.StopUnit(unitName);
+                return;
+            }
+            this.UnitSettingsDictionary[unitName]=unitSettings;
+            Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"单元\"{unitName}\"配置已更新");
+            if(restartIfUpdate) {
+                this.StopUnit(unitName);
+                this.StartUnit(unitName);
+                Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"单元\"{unitName}\"已重启");
+            }
+        }
+
+        /// <summary>
+        /// 启动单元
+        /// </summary>
+        /// <param name="unitName"></param>
+        public void StartUnit(String unitName){
+            if(this.UnitSettingsDictionary.Count<1) {
+                Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Warning]","当前没有任何单元配置");
+                return;
+            }
+            if(!this.UnitSettingsDictionary.ContainsKey(unitName)) {
+                Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Warning]",$"单元\"{unitName}\"配置不存在");
+                return;
+            }
+            if(this.UnitProcessDictionary.ContainsKey(unitName)) {
+                Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Warning]",$"单元\"{unitName}\"已在运行中");
+                return;
+            }
+            Entities.UnitSettings unitSettings=this.UnitSettingsDictionary[unitName];
+            Entities.UnitProcess unitProcess=new Entities.UnitProcess();
+            unitProcess.SetName(unitSettings.Name);
+            unitProcess.ProcessStartInfo=new ProcessStartInfo{UseShellExecute=false,FileName=unitSettings.ExecuteAbsolutePath,WorkingDirectory=unitSettings.WorkAbsoluteDirectory,CreateNoWindow=true,WindowStyle=ProcessWindowStyle.Hidden};
+            if(!String.IsNullOrWhiteSpace(unitSettings.ExecuteParams)){unitProcess.ProcessStartInfo.Arguments=unitSettings.ExecuteParams;}
+            unitProcess.Process=new Process{StartInfo=unitProcess.ProcessStartInfo,EnableRaisingEvents=true};
+            unitProcess.Process.Exited+=OnUnitProcessExited;
+            Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit",$"单元\"{unitSettings.Name}\"所需数据已构造完成,进入启动队列");
+            unitProcess.State=Enums.UnitProcess.State.正在启动;
+            try {
+                unitProcess.Process.Start();
+            }catch(Exception exception){
+                Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Error]",$"单元\"{unitSettings.Name}\"启动失败,{exception.Message},{exception.StackTrace}");
+                unitProcess.State=Enums.UnitProcess.State.停止;
+                unitProcess.ProcessStartInfo=null;
+                unitProcess.Process.Dispose();
+            }
+            Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit",$"单元\"{unitSettings.Name}\"已启动");
+            unitProcess.State=Enums.UnitProcess.State.运行中;
+            this.UnitProcessDictionary.Add(unitProcess.Name,unitProcess);
+        }
+
+        /// <summary>
+        /// 停止单元
+        /// </summary>
+        /// <param name="unitName"></param>
+        /// <param name="stopBySerivceExited">是否服务主机退出导致的停止单元</param>
+        public void StopUnit(String unitName,Boolean stopBySerivceExited=false) {
+            if(this.UnitProcessDictionary.Count<1){
+                if(!stopBySerivceExited) {
+                    Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit[Warning]","当前没有任何运行中的单元");
+                }
+                return;
+            }
+            if(!this.UnitProcessDictionary.ContainsKey(unitName)){
+                if(!stopBySerivceExited) {
+                    Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit[Warning]",$"单元\"{unitName}\"未运行");
+                }
+                return;
+            }
+            if(!stopBySerivceExited) {
+                Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit",$"单元\"{unitName}\"正在执行停止流程");
+            }
+            try {
+                this.UnitProcessDictionary[unitName].Process.Kill();
+            }catch(Exception exception){
+                //异常之后也要继续停止流程
+                if(!stopBySerivceExited) {
+                    Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit[Error]",$"单元\"{unitName}\"正在执行停止流程时异常,{exception.Message},{exception.StackTrace}");
+                }
+            }
+            this.UnitProcessDictionary[unitName].State=Enums.UnitProcess.State.停止;
+            this.UnitProcessDictionary[unitName].ProcessStartInfo=null;
+            this.UnitProcessDictionary.Remove(unitName);
+            if(!stopBySerivceExited) {
+                Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit",$"单元\"{unitName}\"执行停止流程完毕");
+            }
+        }
+
+        /// <summary>
+        /// 启动所有单元
+        /// </summary>
+        public void StartAllUnits(){
+            Program.LoggerModule.Log("Modules.UnitControlModule.StartAllUnits","正在启动所有单元");
+            if(this.UnitSettingsDictionary==null || this.UnitSettingsDictionary.Count<1){
+                Program.LoggerModule.Log("Modules.UnitControlModule.StartAllUnits","没有任何单元配置");
+                return;
+            }
+            foreach(KeyValuePair<String,Entities.UnitSettings> item in this.UnitSettingsDictionary){
+                Task.Run(()=>{
+                    this.StartUnit(item.Key);
+                });
+            }
+        }
+
+        /// <summary>
+        /// 刷新所有单元配置文件
+        /// </summary>
+        /// <param name="restartIfUpdate">是否刷新后重启单元</param>
+        public void RefreshAllUnits(Boolean restartIfUpdate=true){
+            if(this.UnitSettingsDictionary==null || this.UnitSettingsDictionary.Count<1){return;}
+            Program.LoggerModule.Log("Modules.UnitControlModule.RefreshAllUnits","开始刷新所有单元配置");
+            foreach(KeyValuePair<String,Entities.UnitSettings> item in this.UnitSettingsDictionary) {
+                this.RefreshUnit(item.Key,restartIfUpdate);
+            }
+        }
+
+        /// <summary>
         /// 停止所有单元
         /// </summary>
-        public void StopAllUnits(){
-            if(!this.CanStopAllUnits){return;}
-            //List<String> stoppedUnitNames=new List<String>();
-            foreach(KeyValuePair<String,Entities.UnitProcess> item in this.UnitProcessDictionary) {
-                if(item.Value.Process==null){continue;}
-                Program.LoggerModule.Log("Modules.UnitControlModule.StopAllUnits",$"单元\"{item.Key}\"正在强制停止");
-                item.Value.Process.Kill(true);//kill后自动释放
-                //item.Value.Process.Dispose();
-                //item.Value.Process=null;
-                item.Value.ProcessStartInfo=null;
-                Program.LoggerModule.Log("Modules.UnitControlModule.StopAllUnits",$"单元\"{item.Key}\"已强制停止");
-                //stoppedUnitNames.Add(item.Key);
+        /// <param name="stopBySerivceExited">是否服务主机退出导致的停止所有单元</param>
+        public void StopAllUnits(Boolean stopBySerivceExited=false){
+            if(this.UnitProcessDictionary==null || this.UnitProcessDictionary.Count<1){
+                if(!stopBySerivceExited){
+                    Program.LoggerModule.Log("Modules.UnitControlModule.StopAllUnits[Warning]","当前没有运行中的单元");
+                }
+                return;
             }
-            //this.UnitProcessDictionary.Clear();
+            if(!stopBySerivceExited){
+                Program.LoggerModule.Log("Modules.UnitControlModule.StopAllUnits","开始停止所有运行中的单元");
+            }
+            foreach(KeyValuePair<String,Entities.UnitProcess> item in this.UnitProcessDictionary) {
+                this.StopUnit(item.Key,stopBySerivceExited);
+            }
         }
     }
 }

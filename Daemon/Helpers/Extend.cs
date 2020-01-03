@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace Daemon.Helpers {
+    /// <summary>拓展方法</summary>
     public static class Extend {
+        #region System.String
         /// <summary>
         /// 获取字符串的SHA1
         /// </summary>
@@ -29,5 +32,15 @@ namespace Daemon.Helpers {
             String hash=BitConverter.ToString(bytes).Replace("-","");
             return upCase?hash:hash.ToLower();
         }
+        #endregion
+
+        #region System.IO.FileInfo
+        /// <summary>
+        /// 取文件名的名称部分
+        /// </summary>
+        /// <param name="thisFileInfo"></param>
+        /// <returns></returns>
+        public static String GetOriginName(this FileInfo thisFileInfo)=>thisFileInfo.Name.Replace(thisFileInfo.Extension,"");
+        #endregion
     }
 }

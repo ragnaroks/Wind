@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using PeterKottas.DotNetCore.WindowsService;
 
 namespace Daemon {
@@ -14,6 +15,7 @@ namespace Daemon {
         /// <summary>单元控制模块</summary>
         public static Modules.UnitControlModule UnitControlModule;
         
+        [STAThread]
         public static void Main(String[] args) {
             ServiceRunner<DaemonService>.Run(config=>{
                 config.SetDisplayName("Wind2");
@@ -71,6 +73,17 @@ namespace Daemon {
                     });
                 });
             });
+
+            //如何得知服务主机被意外关闭?
+            Process.GetCurrentProcess().EnableRaisingEvents=true;
+            Process.GetCurrentProcess().Exited+=OnProgramExited;
+        }
+
+        private static void OnProgramExited(object sender,EventArgs e) {
+            //停止所有运行单元
+            if(Program.UnitControlModule!=null) {
+                Program.UnitControlModule.Dispose();
+            }
         }
     }
 }
