@@ -24,12 +24,13 @@ export default {
     ** Global CSS
     */
     css:[
-        '@/assets/style.css'
+        //'@/assets/style.css'
     ],
     /*
     ** Plugins to load before mounting the App
     */
     plugins:[
+        '@/plugins/iview'
     ],
     /*
     ** Nuxt.js dev-modules

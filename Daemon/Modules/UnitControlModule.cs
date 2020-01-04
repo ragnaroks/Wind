@@ -269,11 +269,13 @@ namespace Daemon.Modules {
             }
             this.UnitSettingsDictionary[unitName]=unitSettings;
             Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"单元\"{unitName}\"配置已更新");
-            if(restartIfUpdate) {
+            if(restartIfUpdate){
                 this.StopUnit(unitName);
                 this.StartUnit(unitName);
                 Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"单元\"{unitName}\"已重启");
             }
+            //通知客户端单元配置刷新
+            Program.WebSocketServerModule.NotifyClientsRefreshUnit(unitName,unitSettings);
         }
 
         /// <summary>
@@ -313,6 +315,8 @@ namespace Daemon.Modules {
             Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit",$"单元\"{unitSettings.Name}\"已启动");
             unitProcess.State=Enums.UnitProcess.State.运行中;
             this.UnitProcessDictionary.Add(unitProcess.Name,unitProcess);
+            //通知客户端单元启动
+            Program.WebSocketServerModule.NotifyClientsStartUnit(unitName,unitProcess);
         }
 
         /// <summary>
@@ -349,6 +353,8 @@ namespace Daemon.Modules {
             this.UnitProcessDictionary.Remove(unitName);
             if(!stopBySerivceExited) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit",$"单元\"{unitName}\"执行停止流程完毕");
+                //通知客户端单元启动
+                Program.WebSocketServerModule.NotifyClientsStopUnit(unitName);
             }
         }
 

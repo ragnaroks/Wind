@@ -74,10 +74,6 @@ namespace Daemon.Modules {
                 Console.WriteLine($"Modules.AppSettingsModule.LoadAppSettings[Warning] => 远程控制端口不能小于1024,已重置为25565");
                 appSettings.ControlPort=25565;
             }
-            ConsoleColor cc2=Console.ForegroundColor;
-            Console.ForegroundColor=ConsoleColor.Green;
-            Console.WriteLine($"Modules.AppSettingsModule.LoadAppSettings => {json}");
-            Console.ForegroundColor=cc2;
             return true;
         }
 

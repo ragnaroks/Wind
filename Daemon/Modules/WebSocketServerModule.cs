@@ -1,4 +1,6 @@
-﻿using Fleck;
+﻿using Daemon.Entities;
+using Fleck;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,7 +9,9 @@ using System.Threading;
 
 namespace Daemon.Modules {
     public class WebSocketServerModule:IDisposable {
+        private readonly Char SplitChar='§';
         private readonly WebSocketServer WebSocketServer;
+        private readonly Dictionary<Guid,IWebSocketConnection> InvalidWebSocketConnectionDictionary=new Dictionary<Guid,IWebSocketConnection>();
         private readonly Dictionary<Guid,IWebSocketConnection> WebSocketConnectionDictionary=new Dictionary<Guid,IWebSocketConnection>();
         private readonly Byte[] PingPacket=new Byte[]{0x07,0x03,0x05,0x05,0x06,0x00,0x08};
         private readonly Timer PingTimer;
@@ -100,22 +104,7 @@ namespace Daemon.Modules {
                 this.SocketRequestPingAsync(item.Value);
             }
             this.CanPingTimerState=true;
-            Program.LoggerModule.Log("Modules.WebSocketServerModule.OnPingTimerCallback","ping所有客户端介素");
-        }
-
-        /// <summary>
-        /// 如果客户端链接已失效则会踢出
-        /// </summary>
-        /// <param name="webSocketConnection"></param>
-        /// <returns></returns>
-        private Boolean IsAvailableCheck(IWebSocketConnection webSocketConnection){
-            Program.LoggerModule.Log("Modules.WebSocketServerModule.IsAvailableCheck",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"开始检查");
-            if(webSocketConnection.IsAvailable){return true;}
-            if(this.WebSocketConnectionDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)){
-                Program.LoggerModule.Log("Modules.WebSocketServerModule.IsAvailableCheck",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"因会话失效而被踢出");
-                this.WebSocketConnectionDictionary.Remove(webSocketConnection.ConnectionInfo.Id);
-            }
-            return false;
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.OnPingTimerCallback","ping所有客户端完成");
         }
 
         /// <summary>
@@ -124,92 +113,8 @@ namespace Daemon.Modules {
         /// <param name="webSocketConnection"></param>
         private async void SocketRequestPingAsync(IWebSocketConnection webSocketConnection){
             Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketRequestPingAsync",$"ping客户端\"{webSocketConnection.ConnectionInfo.Id}\"开始");
-            if(!this.IsAvailableCheck(webSocketConnection)){return;}
             await webSocketConnection.SendPing(this.PingPacket);
             Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketRequestPingAsync",$"ping客户端\"{webSocketConnection.ConnectionInfo.Id}\"完成");
-        }
-
-        /// <summary>
-        /// 接收到来自客户端打开链接请求
-        /// </summary>
-        /// <param name="webSocketConnection"></param>
-        private async void SocketOnOpenAsync(IWebSocketConnection webSocketConnection){
-            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnOpenAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求链接");
-            /*
-             * if not allow
-             * code here
-             */
-            this.WebSocketConnectionDictionary.Add(webSocketConnection.ConnectionInfo.Id,webSocketConnection);
-            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnOpenAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"允许链接并加入列表");
-            await webSocketConnection.Send("{}");
-        }
-
-        /// <summary>
-        /// 接收到来自客户端关闭链接请求
-        /// </summary>
-        /// <param name="webSocketConnection"></param>
-#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
-        private async void SocketOnCloseAsync(IWebSocketConnection webSocketConnection){
-#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
-            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnCloseAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"断开链接");
-            if(!this.IsAvailableCheck(webSocketConnection)){return;}            
-            this.WebSocketConnectionDictionary.Remove(webSocketConnection.ConnectionInfo.Id);
-        }
-
-        /// <summary>
-        /// 接收到来自客户端异常
-        /// </summary>
-        /// <param name="webSocketConnection"></param>
-        /// <param name="exception"></param>
-        private async void SocketOnErrorAsync(IWebSocketConnection webSocketConnection,Exception exception) {
-            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnErrorAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"链接异常,{exception.Message},{exception.StackTrace}");
-            if(!this.IsAvailableCheck(webSocketConnection)){return;}
-            await webSocketConnection.Send("SocketOnErrorAsync => exception "+exception.Message);
-        }
-
-        /// <summary>
-        /// 接收到来自客户端ping请求
-        /// </summary>
-        /// <param name="webSocketConnection"></param>
-        /// <param name="bytes"></param>
-        private async void SocketOnPingAsync(IWebSocketConnection webSocketConnection,Byte[] bytes){
-            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnPingAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求Ping");
-            //if(!this.IsAvailableCheck(webSocketConnection)){return;}
-            await webSocketConnection.SendPong(bytes);
-        }
-
-        /// <summary>
-        /// 接收到来自客户端pong响应
-        /// </summary>
-        /// <param name="webSocketConnection"></param>
-        /// <param name="bytes"></param>
-#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
-        private async void SocketOnPongAsync(IWebSocketConnection webSocketConnection,Byte[] bytes) {
-#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
-            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnPongAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"回复Pong");
-            if(!this.IsAvailableCheck(webSocketConnection)){return;}
-        }
-
-        /// <summary>
-        /// 接收到来自客户端的文本消息
-        /// </summary>
-        /// <param name="webSocketConnection"></param>
-        /// <param name="message"></param>
-        private async void SocketOnMessageAsync(IWebSocketConnection webSocketConnection,String message) {
-            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"发来文本消息");
-            if(!this.IsAvailableCheck(webSocketConnection)){return;}
-            await webSocketConnection.Send("SocketOnMessageAsync => you send "+message);
-        }
-
-        /// <summary>
-        /// 接收到来自客户端的字节数组消息
-        /// </summary>
-        /// <param name="webSocketConnection"></param>
-        /// <param name="bytes"></param>
-        private async void SocketOnBinaryAsync(IWebSocketConnection webSocketConnection,Byte[] bytes) {
-            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"发来字节数组消息");
-            if(!this.IsAvailableCheck(webSocketConnection)){return;}
-            await webSocketConnection.Send(Encoding.UTF8.GetBytes("SocketOnBinaryAsync => you send "+bytes.Length+"byte"));
         }
 
         /// <summary>
@@ -226,6 +131,193 @@ namespace Daemon.Modules {
                 webSocketConnection.OnMessage=(message)=>this.SocketOnMessageAsync(webSocketConnection,message);
                 webSocketConnection.OnBinary=(bytes)=>this.SocketOnBinaryAsync(webSocketConnection,bytes);
             });
+        }
+
+        /// <summary>
+        /// 接收到来自客户端打开链接请求
+        /// </summary>
+        /// <param name="webSocketConnection"></param>
+        private async void SocketOnOpenAsync(IWebSocketConnection webSocketConnection){
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnOpenAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求链接");
+            this.InvalidWebSocketConnectionDictionary.Add(webSocketConnection.ConnectionInfo.Id,webSocketConnection);
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnOpenAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"允许链接并加入临时列表");
+            await webSocketConnection.Send($"{webSocketConnection.ConnectionInfo.Id.ToString()}{this.SplitChar}NotifySocketOpened");
+        }
+
+        /// <summary>
+        /// 接收到来自客户端关闭链接请求
+        /// </summary>
+        /// <param name="webSocketConnection"></param>
+#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
+        private async void SocketOnCloseAsync(IWebSocketConnection webSocketConnection){
+#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnCloseAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"断开链接");
+            if(this.InvalidWebSocketConnectionDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)) {
+                this.InvalidWebSocketConnectionDictionary.Remove(webSocketConnection.ConnectionInfo.Id);
+            }
+            if(this.WebSocketConnectionDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)) {
+                this.WebSocketConnectionDictionary.Remove(webSocketConnection.ConnectionInfo.Id);
+            }
+        }
+
+        /// <summary>
+        /// 接收到来自客户端异常
+        /// </summary>
+        /// <param name="webSocketConnection"></param>
+        /// <param name="exception"></param>
+        private async void SocketOnErrorAsync(IWebSocketConnection webSocketConnection,Exception exception) {
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnErrorAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"链接异常,{exception.Message},{exception.StackTrace}");
+            if(this.InvalidWebSocketConnectionDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)) {
+                this.InvalidWebSocketConnectionDictionary.Remove(webSocketConnection.ConnectionInfo.Id);
+                webSocketConnection.Close();
+            }
+            if(this.WebSocketConnectionDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)) {
+                await webSocketConnection.SendPing(this.PingPacket);
+            }
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnErrorAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"链接异常已处理");
+        }
+
+        /// <summary>
+        /// 接收到来自客户端ping请求
+        /// </summary>
+        /// <param name="webSocketConnection"></param>
+        /// <param name="bytes"></param>
+        private async void SocketOnPingAsync(IWebSocketConnection webSocketConnection,Byte[] bytes){
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnPingAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求Ping");
+            await webSocketConnection.SendPong(bytes);
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnPingAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求Ping已回应");
+        }
+
+        /// <summary>
+        /// 接收到来自客户端pong响应
+        /// </summary>
+        /// <param name="webSocketConnection"></param>
+        /// <param name="bytes"></param>
+#pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
+        private async void SocketOnPongAsync(IWebSocketConnection webSocketConnection,Byte[] bytes) {
+#pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnPongAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"回复Pong");
+            //if(!this.WebSocketConnectionDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)){return;}
+        }
+
+        /// <summary>
+        /// 接收到来自客户端的文本消息
+        /// </summary>
+        /// <param name="webSocketConnection"></param>
+        /// <param name="message"></param>
+        private async void SocketOnMessageAsync(IWebSocketConnection webSocketConnection,String message) {
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"发来文本消息");
+            //空消息
+            if(String.IsNullOrWhiteSpace(message)) {
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"发来空消息");
+                return;
+            }
+            String[] args=message.Split(this.SplitChar);
+            if(args.Length<2){
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"发来空消息");
+                return;
+            }
+            if(args[0]!=webSocketConnection.ConnectionInfo.Id.ToString()) {
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"Guid不一致");
+                return;
+            }
+            //Action 验证 $"{ClientGuid}§CheckControlKey§{ControlKey}
+            if(args[1]=="CheckControlKey"){
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求验证");
+                if(String.IsNullOrWhiteSpace(args[2])) {return;}
+                if(args[2]==Program.AppSettings.ControlKey){
+                    Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"验证通过");
+                    this.WebSocketConnectionDictionary.Add(webSocketConnection.ConnectionInfo.Id,webSocketConnection);
+                    this.InvalidWebSocketConnectionDictionary.Remove(webSocketConnection.ConnectionInfo.Id);
+                    await webSocketConnection.Send($"{args[0]}{this.SplitChar}NotifyCheckControlKey{this.SplitChar}success");
+                } else {
+                    Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"验证失败,已被断开链接");
+                    this.InvalidWebSocketConnectionDictionary.Remove(webSocketConnection.ConnectionInfo.Id);
+                    await webSocketConnection.Send($"{args[0]}{this.SplitChar}NotifyCheckControlKey{this.SplitChar}failure");
+                    webSocketConnection.Close();
+                }
+                return;
+            }
+            //Action 刷新所有单元 $"{ClientGuid}§RefreshAllUnits§{RestartIfUpdate}
+            if(args[1]=="RefreshAllUnits"){
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求刷新所有单元");
+                if(String.IsNullOrWhiteSpace(args[2])) {return;}
+                if(!this.WebSocketConnectionDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)){
+                    Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求刷新所有单元,未经验证已被拒绝");
+                    return;
+                }
+                Program.UnitControlModule.RefreshAllUnits(args[2]!="false");
+                return;
+            }
+            //Action 启动所有单元 $"{ClientGuid}§StartAllUnits
+            if(args[1]=="StartAllUnits") {
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求启动所有单元");
+                if(!this.WebSocketConnectionDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)){
+                    Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求启动所有单元,未经验证已被拒绝");
+                    return;
+                }
+                Program.UnitControlModule.StartAllUnits();
+                return;
+            }
+            //Action 停止所有单元 $"{ClientGuid}§StopAllUnits
+            if(args[1]=="StopAllUnits") {
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求停止所有单元");
+                if(!this.WebSocketConnectionDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)){
+                    Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求停止所有单元,未经验证已被拒绝");
+                    return;
+                }
+                Program.UnitControlModule.StopAllUnits();
+                return;
+            }
+            //Action[1005] 刷新单元
+            //Action[1006] 启动单元
+            //Action[1007] 停止单元
+        }
+
+        /// <summary>
+        /// 接收到来自客户端的字节数组消息
+        /// </summary>
+        /// <param name="webSocketConnection"></param>
+        /// <param name="bytes"></param>
+        private async void SocketOnBinaryAsync(IWebSocketConnection webSocketConnection,Byte[] bytes) {
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"发来字节数组消息");
+            await webSocketConnection.Send(bytes);
+        }
+
+        public async void NotifyClientsRefreshUnit(String unitName,Entities.UnitSettings unitSettings){
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsRefreshUnit","通知所有客户端指定单元正在刷新配置");
+            if(this.WebSocketConnectionDictionary.Count<1){
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsRefreshUnit","没有需要通知的客户端");
+                return;
+            }
+            foreach(KeyValuePair<Guid,IWebSocketConnection> item in this.WebSocketConnectionDictionary) {
+                if(!item.Value.IsAvailable){return;}
+                await item.Value.Send($"{item.Key.ToString()}{this.SplitChar}NotifyRefreshUnit{this.SplitChar}{unitName}{this.SplitChar}{JsonConvert.SerializeObject(unitSettings)}");
+            }
+        }
+
+        public async void NotifyClientsStartUnit(String unitName,UnitProcess unitProcess) {
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsStartUnit","通知所有客户端指定单元正在启动");
+            if(this.WebSocketConnectionDictionary.Count<1){
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsStartUnit","没有需要通知的客户端");
+                return;
+            }
+            foreach(KeyValuePair<Guid,IWebSocketConnection> item in this.WebSocketConnectionDictionary) {
+                if(!item.Value.IsAvailable){return;}
+                await item.Value.Send($"{item.Key.ToString()}{this.SplitChar}NotifyStartUnit{this.SplitChar}{unitName}{this.SplitChar}{JsonConvert.SerializeObject(unitProcess)}");
+            }
+        }
+
+        public async void NotifyClientsStopUnit(String unitName) {
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsStopUnit","通知所有客户端指定单元正在停止");
+            if(this.WebSocketConnectionDictionary.Count<1){
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsStopUnit","没有需要通知的客户端");
+                return;
+            }
+            foreach(KeyValuePair<Guid,IWebSocketConnection> item in this.WebSocketConnectionDictionary) {
+                if(!item.Value.IsAvailable){return;}
+                await item.Value.Send($"{item.Key.ToString()}{this.SplitChar}NotifyStopUnit{this.SplitChar}{unitName}");
+            }
         }
     }
 }
