@@ -43,32 +43,48 @@ namespace Daemon.Modules {
         }
         #endregion
 
+        /// <summary>
+        /// 读取应用程序配置
+        /// </summary>
+        /// <param name="appSettings"></param>
+        /// <returns></returns>
         private Boolean LoadAppSettings(ref Entities.AppSettings appSettings) {
-            FileStream fs;
+            FileStream fs=null;
+            Byte[] bytes=null;
             try {
                 fs=File.Open(Program.AppEnvironment.ConfigFilePath,FileMode.Open,FileAccess.Read);
                 if(fs.Length>Int32.MaxValue){return false;}
-                Span<Byte> buffer=new Span<Byte>();
-                fs.Read(buffer);
+                bytes=new Byte[fs.Length];
+                fs.Read(bytes,0,bytes.Length);
                 fs.Close();
-                fs.Dispose();
-                String json=Encoding.UTF8.GetString(buffer);
-                if(String.IsNullOrWhiteSpace(json)){return false;}
-                appSettings=JsonConvert.DeserializeObject<Entities.AppSettings>(json);
-                ConsoleColor cc=Console.ForegroundColor;
-                Console.ForegroundColor=ConsoleColor.Green;
-                Console.WriteLine($"Modules.AppSettingsModule.LoadAppSettings => {json}");
-                Console.ForegroundColor=cc;
-                return true;
             }catch(Exception exception){
                 ConsoleColor cc=Console.ForegroundColor;
                 Console.ForegroundColor=ConsoleColor.Red;
                 Console.WriteLine($"Modules.AppSettingsModule.LoadAppSettings => {exception.Message} | {exception.StackTrace}");
                 Console.ForegroundColor=cc;
                 return false;
+            } finally {
+                if(fs!=null){fs.Dispose();}
             }
+            if(bytes==null || bytes.Length<1){return false;}
+            String json=Encoding.UTF8.GetString(bytes);
+            if(String.IsNullOrWhiteSpace(json)){return false;}
+            appSettings=JsonConvert.DeserializeObject<Entities.AppSettings>(json);
+            if(appSettings.ControlPort<1024){
+                Console.WriteLine($"Modules.AppSettingsModule.LoadAppSettings[Warning] => 远程控制端口不能小于1024,已重置为25565");
+                appSettings.ControlPort=25565;
+            }
+            ConsoleColor cc2=Console.ForegroundColor;
+            Console.ForegroundColor=ConsoleColor.Green;
+            Console.WriteLine($"Modules.AppSettingsModule.LoadAppSettings => {json}");
+            Console.ForegroundColor=cc2;
+            return true;
         }
 
+        /// <summary>
+        /// 应用默认设置
+        /// </summary>
+        /// <param name="appSettings"></param>
         private void ApplyDefaultAppSettings(ref Entities.AppSettings appSettings)=>appSettings=new Entities.AppSettings();
     }
 }

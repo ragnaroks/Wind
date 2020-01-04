@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Daemon.Entities {
     /// <summary>单元配置</summary>

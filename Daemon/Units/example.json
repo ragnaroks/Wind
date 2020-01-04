@@ -1,8 +1,8 @@
 {
-    "Description": "ping test",
-    "ExecuteAbsolutePath": "C:\\Windows\\System32\\ping.exe",
-    "WorkAbsoluteDirectory": "C:\\Windows\\System32\\",
-    "ExecuteParams": "127.0.0.1",
-    "AutoStart": true,
-    "AutoStartDelay": 0
+    "Description": "nginx",
+    "ExecuteAbsolutePath": "C:\\nginx-1.15.12\\nginx.exe",
+    "WorkAbsoluteDirectory": "C:\\nginx-1.15.12\\",
+    "ExecuteParams": null,
+    "AutoStart": false,
+    "AutoStartDelay": 1
 }

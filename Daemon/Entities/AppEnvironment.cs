@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace Daemon.Entities {
     /// <summary>应用程序环境</summary>

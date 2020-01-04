@@ -6,8 +6,15 @@ using System.Text;
 namespace Daemon.Helpers{
     /// <summary>AES 加解密</summary>
     public static class AesEncrypt {
-        private static readonly Byte[] IV=new Byte[16]{55,51,48,99,115,103,111,55,51,53,53,54,48,56,99,52};//"730csgo7355608c4"
+        /// <summary>IV=>"730csgo7355608c4"</summary>
+        private static readonly Byte[] IV=new Byte[16]{55,51,48,99,115,103,111,55,51,53,53,54,48,56,99,52};
         
+        /// <summary>
+        /// 加密
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public static Byte[] Encrypt(String key,String text) {
             var aes=AesManaged.Create();
             //aes.IV=IV;
@@ -24,6 +31,12 @@ namespace Daemon.Helpers{
             return result;
         }
 
+        /// <summary>
+        /// 解密
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
         public static String Decrypt(String key,Byte[] bytes) {
             var aes=AesManaged.Create();
             //aes.IV=IV;

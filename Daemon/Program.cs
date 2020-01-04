@@ -12,11 +12,23 @@ namespace Daemon {
         public static Modules.LoggerModule LoggerModule=new Modules.LoggerModule(Program.AppEnvironment.LogsDirectory,1000);
         /// <summary>应用程序配置模块</summary>
         public static Modules.AppSettingsModule AppSettingsModule=new Modules.AppSettingsModule(ref Program.AppSettings);
+        /// <summary>WebSocket远程控制模块</summary>
+        public static Modules.WebSocketServerModule WebSocketServerModule;
         /// <summary>单元控制模块</summary>
         public static Modules.UnitControlModule UnitControlModule;
         
         [STAThread]
         public static void Main(String[] args) {
+            //远程控制模块
+            if(Program.AppSettings.ControlEnable) {
+                Program.WebSocketServerModule=new Modules.WebSocketServerModule(Program.AppSettings.ControlPort,Program.AppSettings.ControlAddress);
+                Program.WebSocketServerModule.StartServer();
+            }
+
+            //如何得知服务主机被意外关闭?
+            Process.GetCurrentProcess().EnableRaisingEvents=true;
+            Process.GetCurrentProcess().Exited+=OnProgramExited;
+
             ServiceRunner<DaemonService>.Run(config=>{
                 config.SetDisplayName("Wind2");
                 config.SetName("Wind2");
@@ -73,10 +85,6 @@ namespace Daemon {
                     });
                 });
             });
-
-            //如何得知服务主机被意外关闭?
-            Process.GetCurrentProcess().EnableRaisingEvents=true;
-            Process.GetCurrentProcess().Exited+=OnProgramExited;
         }
 
         private static void OnProgramExited(object sender,EventArgs e) {
