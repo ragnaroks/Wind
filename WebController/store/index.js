@@ -162,14 +162,16 @@ export const mutations = {
     set_Unit_To_DaemonUnitStatusArray:function(state,payload){
         if(!state.daemonUnitStatusArray[payload.hostname]){
             Vue.set(state.daemonUnitStatusArray,payload.hostname,[]);
-            state.daemonUnitStatusArray[payload.hostname].push(payload.unitStatusItem);
-            return;
         }
-        for(let i1=0;i1<state.daemonUnitStatusArray[payload.hostname].length;i1++){
-            if(state.daemonUnitStatusArray[payload.hostname][i1].UnitName===payload.UnitName){
-                Vue.set(state.daemonUnitStatusArray[payload.hostname],payload.UnitName,payload.unitStatusItem);
-            }else{
-                state.daemonUnitStatusArray[payload.hostname].push(payload.unitStatusItem);
+        if(state.daemonUnitStatusArray[payload.hostname].UnitName===undefined){
+            state.daemonUnitStatusArray[payload.hostname].push(payload.unitStatusItem);
+        }else{
+            for(let i1=0;i1<state.daemonUnitStatusArray[payload.hostname].length;i1++){
+                if(state.daemonUnitStatusArray[payload.hostname][i1].UnitName===payload.UnitName){
+                    Vue.set(state.daemonUnitStatusArray[payload.hostname],payload.UnitName,payload.unitStatusItem);
+                }else{
+                    state.daemonUnitStatusArray[payload.hostname].push(payload.unitStatusItem);
+                }
             }
         }
     },
@@ -183,6 +185,10 @@ export const mutations = {
         }
         if(index<0){return;}
         state.daemonUnitStatusArray[payload.hostname].splice(index,1);
+    },
+    clear_Units_In_DaemonUnitStatusArray:function(state,payload){
+        if(!state.daemonUnitStatusArray[payload.hostname]){return;}
+        Vue.set(state.daemonUnitStatusArray,payload.hostname,[]);
     },
     set_Unit_UnitProcess_State_In_DaemonUnitStatusArray:function(state,payload){
         if(!state.daemonUnitStatusArray[payload.hostname]){return;}

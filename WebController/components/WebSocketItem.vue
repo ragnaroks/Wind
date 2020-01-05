@@ -112,6 +112,7 @@ export default {
             this.$store.commit('set_WebSocketItem_Connected',{hostname:this.currentWebSocketItem.hostname,connected:false});
             this.$store.commit('set_WebSocketItem_ConnectionId',{hostname:this.currentWebSocketItem.hostname,connectionId:null});
             this.$store.commit('set_WebSocketItem_ConnectionValid',{hostname:this.currentWebSocketItem.hostname,connectionValid:false});
+            this.$store.commit('clear_Units_In_DaemonUnitStatusArray',{hostname:this.currentWebSocketItem.hostname});
             if(oncloseEvent.code!==1000){return;}
             this.$Notice.info({
                 title:this.currentWebSocketItem.hostname,
