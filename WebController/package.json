@@ -1,7 +1,7 @@
 {
   "name": "Wind2WebController",
-  "version": "1.0.0",
-  "description": "My astounding Nuxt.js project",
+  "version": "1.0.1",
+  "description": "Wind2 Web Controller",
   "author": "Ragnaroks",
   "private": true,
   "scripts": {
