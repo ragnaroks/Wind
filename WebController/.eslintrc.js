@@ -37,6 +37,7 @@ module.exports = {
         //vue
         'vue/html-indent':['off'],
         'vue/singleline-html-element-content-newline':['off'],
-        'vue/max-attributes-per-line':['off']
+        'vue/max-attributes-per-line':['off'],
+        'vue/html-closing-bracket-newline':['off']
     }
 };

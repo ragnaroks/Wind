@@ -88,6 +88,10 @@ namespace Daemon.Modules {
                 Program.LoggerModule.Log("Modules.UnitControlModule.ParseUnitFile[Error]",$"单元\"{unitSettingsFileInfo.FullName}\"解析失败,文件内容为空");
                 return null;
             }
+            if(json.IndexOf('§')>-1) {
+                Program.LoggerModule.Log("Modules.UnitControlModule.ParseUnitFile[Error]",$"单元\"{unitSettingsFileInfo.FullName}\"解析失败,文件内容含有保留字符\"§\"");
+                return null;
+            }
             Entities.UnitSettings unitSettings=Newtonsoft.Json.JsonConvert.DeserializeObject<Entities.UnitSettings>(json);
             if(unitSettings==null) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.ParseUnitFile[Error]",$"单元\"{unitSettingsFileInfo.FullName}\"解析失败,文件反序列化失败");
@@ -186,14 +190,6 @@ namespace Daemon.Modules {
             foreach(KeyValuePair<String,Entities.UnitSettings> item in this.UnitSettingsDictionary){
                 Entities.UnitSettings unitSettings=item.Value;
                 if(!unitSettings.AutoStart){continue;}
-                /*
-                Task.Run(async()=>{
-                    if(unitSettings.AutoStartDelay>0){
-                        await Task.Delay(unitSettings.AutoStartDelay*1000);
-                    }
-                    this.StartUnit(item.Key);
-                });
-                */
                 Task.Factory.StartNew(()=>{
                     if(unitSettings.AutoStartDelay>0){
                         Thread.Sleep(unitSettings.AutoStartDelay*1000);
@@ -224,6 +220,7 @@ namespace Daemon.Modules {
             if(!String.IsNullOrWhiteSpace(unitName) && this.UnitProcessDictionary.ContainsKey(unitName)){
                 this.UnitProcessDictionary.Remove(unitName);
                 Program.LoggerModule.Log("Modules.UnitControlModule.OnUnitProcessExited",$"单元\"{unitName}\"已退出");
+                Program.WebSocketServerModule.NotifyClientsStopUnitAsync(unitName);
             }
         }
 
@@ -232,12 +229,12 @@ namespace Daemon.Modules {
         /// </summary>
         /// <param name="unitName"></param>
         /// <param name="restartIfUpdate">是否刷新后重启单元</param>
-        public void RefreshUnit(String unitName,Boolean restartIfUpdate=true) {
-            Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"开始刷新单元\"{unitName}\"的配置");
+        public void ReloadUnit(String unitName,Boolean restartIfUpdate=true) {
+            Program.LoggerModule.Log("Modules.UnitControlModule.ReloadUnit",$"开始刷新单元\"{unitName}\"的配置");
             String unitFIlePath=Program.AppEnvironment.UnitsDirectory+Path.DirectorySeparatorChar+unitName+".json";
             //单元配置文件已丢失,将正在运行的单元退出并删除该单元配置
             if(!File.Exists(unitFIlePath)){
-                Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"单元\"{unitName}\"配置文件不存在,进行退出操作");
+                Program.LoggerModule.Log("Modules.UnitControlModule.ReloadUnit",$"单元\"{unitName}\"配置文件不存在,进行退出操作");
                 if(this.UnitSettingsDictionary.ContainsKey(unitName)){
                     this.UnitSettingsDictionary.Remove(unitName);
                 }
@@ -245,38 +242,38 @@ namespace Daemon.Modules {
                 return;
             }
             //单元配置文件可供更新
-            Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"单元\"{unitName}\"配置文件存在,重新读取");
+            Program.LoggerModule.Log("Modules.UnitControlModule.ReloadUnit",$"单元\"{unitName}\"配置文件存在,重新读取");
             FileInfo fileInfo=null;
             try {
                 fileInfo=new FileInfo(unitFIlePath);
             }catch(Exception exception) {
-                Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit[Error]",$"单元\"{unitName}\"配置文件无法读取,{exception.Message},{exception.StackTrace}");
+                Program.LoggerModule.Log("Modules.UnitControlModule.ReloadUnit[Error]",$"单元\"{unitName}\"配置文件无法读取,{exception.Message},{exception.StackTrace}");
                 return;
             }
             if(fileInfo==null){
-                Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit[Error]",$"单元\"{unitName}\"配置文件无效");
+                Program.LoggerModule.Log("Modules.UnitControlModule.ReloadUnit[Error]",$"单元\"{unitName}\"配置文件无效");
                 return;
             }
             Entities.UnitSettings unitSettings=this.ParseUnitFile(fileInfo);
             if(unitSettings==null){
-                Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit[Error]",$"单元\"{unitName}\"配置文件解析失败");
+                Program.LoggerModule.Log("Modules.UnitControlModule.ReloadUnit[Error]",$"单元\"{unitName}\"配置文件解析失败");
                 return;
             }
             if(!this.UnitSettingsDictionary.ContainsKey(unitName)) {
-                Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit[Error]",$"单元\"{unitName}\"配置已失效,进行退出操作");
+                Program.LoggerModule.Log("Modules.UnitControlModule.ReloadUnit[Error]",$"单元\"{unitName}\"配置已失效,进行退出操作");
                 this.StopUnit(unitName);
                 return;
             }
             this.UnitSettingsDictionary[unitName]=unitSettings;
-            Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"单元\"{unitName}\"配置已更新");
+            Program.LoggerModule.Log("Modules.UnitControlModule.ReloadUnit",$"单元\"{unitName}\"配置已更新");
             //通知客户端单元配置刷新
-            Program.WebSocketServerModule.NotifyClientsRefreshUnitAsync(unitName,unitSettings);
+            Program.WebSocketServerModule.NotifyClientsReloadUnitAsync(unitName,unitSettings);
             if(restartIfUpdate){
                 this.StopUnit(unitName);
                 Task.Factory.StartNew(()=>{
                     Thread.Sleep(1000);
                     this.StartUnit(unitName);
-                    Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"单元\"{unitName}\"已重启");
+                    Program.LoggerModule.Log("Modules.UnitControlModule.ReloadUnit",$"单元\"{unitName}\"已重启");
                 });
             }
         }
@@ -288,14 +285,17 @@ namespace Daemon.Modules {
         public void StartUnit(String unitName){
             if(this.UnitSettingsDictionary.Count<1) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Warning]","当前没有任何单元配置");
+                Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
                 return;
             }
             if(!this.UnitSettingsDictionary.ContainsKey(unitName)) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Warning]",$"单元\"{unitName}\"配置不存在");
+                Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
                 return;
             }
             if(this.UnitProcessDictionary.ContainsKey(unitName)) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Warning]",$"单元\"{unitName}\"已在运行中");
+                //Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
                 return;
             }
             Entities.UnitSettings unitSettings=this.UnitSettingsDictionary[unitName];
@@ -317,6 +317,7 @@ namespace Daemon.Modules {
             }
             Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit",$"单元\"{unitSettings.Name}\"已启动");
             unitProcess.State=Enums.UnitProcess.State.运行中;
+            unitProcess.ProcessId=unitProcess.Process.Id;
             this.UnitProcessDictionary.Add(unitProcess.Name,unitProcess);
             //通知客户端单元启动
             Program.WebSocketServerModule.NotifyClientsStartUnitAsync(unitName,unitProcess);
@@ -331,12 +332,14 @@ namespace Daemon.Modules {
             if(this.UnitProcessDictionary.Count<1){
                 if(!stopBySerivceExited) {
                     Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit[Warning]","当前没有任何运行中的单元");
+                    Program.WebSocketServerModule.NotifyClientsStopUnitFailedAsync(unitName);
                 }
                 return;
             }
             if(!this.UnitProcessDictionary.ContainsKey(unitName)){
                 if(!stopBySerivceExited) {
                     Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit[Warning]",$"单元\"{unitName}\"未运行");
+                    //Program.WebSocketServerModule.NotifyClientsStopUnitFailedAsync(unitName);
                 }
                 return;
             }
@@ -349,6 +352,7 @@ namespace Daemon.Modules {
                 //异常之后也要继续停止流程
                 if(!stopBySerivceExited) {
                     Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit[Error]",$"单元\"{unitName}\"正在执行停止流程时异常,{exception.Message},{exception.StackTrace}");
+                    Program.WebSocketServerModule.NotifyClientsStopUnitFailedAsync(unitName);
                 }
             }
             this.UnitProcessDictionary[unitName].State=Enums.UnitProcess.State.停止;
@@ -356,7 +360,7 @@ namespace Daemon.Modules {
             this.UnitProcessDictionary.Remove(unitName);
             if(!stopBySerivceExited) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit",$"单元\"{unitName}\"执行停止流程完毕");
-                //通知客户端单元启动
+                //通知客户端单元停止
                 Program.WebSocketServerModule.NotifyClientsStopUnitAsync(unitName);
             }
         }
@@ -381,11 +385,11 @@ namespace Daemon.Modules {
         /// 刷新所有单元配置文件
         /// </summary>
         /// <param name="restartIfUpdate">是否刷新后重启单元</param>
-        public void RefreshAllUnits(Boolean restartIfUpdate=true){
+        public void ReloadAllUnits(Boolean restartIfUpdate=true){
             if(this.UnitSettingsDictionary==null || this.UnitSettingsDictionary.Count<1){return;}
-            Program.LoggerModule.Log("Modules.UnitControlModule.RefreshAllUnits","开始刷新所有单元配置");
+            Program.LoggerModule.Log("Modules.UnitControlModule.ReloadAllUnits","开始刷新所有单元配置");
             foreach(KeyValuePair<String,Entities.UnitSettings> item in this.UnitSettingsDictionary) {
-                this.RefreshUnit(item.Key,restartIfUpdate);
+                this.ReloadUnit(item.Key,restartIfUpdate);
             }
         }
 
@@ -406,6 +410,45 @@ namespace Daemon.Modules {
             foreach(KeyValuePair<String,Entities.UnitProcess> item in this.UnitProcessDictionary) {
                 this.StopUnit(item.Key,stopBySerivceExited);
             }
+        }
+
+        /// <summary>
+        /// 获取所有单元的状态
+        /// </summary>
+        /// <returns></returns>
+        public List<Entities.UnitStatus> FetchAllUnitsStatus() {
+            if(this.UnitSettingsDictionary==null || this.UnitSettingsDictionary.Count<1) {
+                Program.LoggerModule.Log("Modules.UnitControlModule.FetchAllUnitsStatus[Warning]","当前没有任何有效单元");
+                return null;
+            }
+            Boolean canForEachUnitProcessDictionary=this.UnitProcessDictionary!=null && this.UnitProcessDictionary.Count>0;
+            List<Entities.UnitStatus> unitStatusList=new List<Entities.UnitStatus>();
+            foreach(KeyValuePair<String,Entities.UnitSettings> item in this.UnitSettingsDictionary) {
+                Entities.UnitStatus unitStatus=new Entities.UnitStatus{UnitName=item.Key,UnitSettings=item.Value};
+                if(canForEachUnitProcessDictionary && this.UnitProcessDictionary.ContainsKey(item.Key)){
+                    unitStatus.UnitProcess=this.UnitProcessDictionary[item.Key];
+                }
+                unitStatusList.Add(unitStatus);
+            }
+            return unitStatusList;
+        }
+
+        /// <summary>
+        /// 获取单元状态
+        /// </summary>
+        /// <param name="unitName"></param>
+        /// <returns></returns>
+        public Entities.UnitStatus FetchUnitStatus(String unitName) {
+            if(this.UnitSettingsDictionary==null || this.UnitSettingsDictionary.Count<1) {
+                Program.LoggerModule.Log("Modules.UnitControlModule.FetchUnitStatus[Warning]","当前没有任何有效单元");
+                return null;
+            }
+            if(!this.UnitSettingsDictionary.ContainsKey(unitName)){return null;}
+            Entities.UnitStatus unitStatus=new Entities.UnitStatus{UnitName=unitName,UnitSettings=this.UnitSettingsDictionary[unitName]};
+            if(this.UnitProcessDictionary!=null && this.UnitProcessDictionary.Count>0) {
+                unitStatus.UnitProcess=this.UnitProcessDictionary[unitName];
+            }
+            return unitStatus;
         }
     }
 }

@@ -68,7 +68,7 @@ namespace Daemon.Modules {
             }
             if(bytes==null || bytes.Length<1){return false;}
             String json=Encoding.UTF8.GetString(bytes);
-            if(String.IsNullOrWhiteSpace(json)){return false;}
+            if(String.IsNullOrWhiteSpace(json) || json.IndexOf('§')>-1){return false;}
             appSettings=JsonConvert.DeserializeObject<Entities.AppSettings>(json);
             if(appSettings.ControlPort<1024){
                 Console.WriteLine($"Modules.AppSettingsModule.LoadAppSettings[Warning] => 远程控制端口不能小于1024,已重置为25565");

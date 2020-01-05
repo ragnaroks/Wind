@@ -11,22 +11,24 @@
 
 对于高阶用户,Wind2已经够用了,但是很多使用windows操作系统的用户,根本不会改配置文件,设置系统服务等操作,于是我又写了个控制端,在图形界面下提供对Wind2服务主机的控制(PS 欢迎有能力的扣德尔实现类似单用户多服务器的控制端)
 
+![WebController](https://i.imgur.com/c0XZAUp.png)
+
 ### 项目
 - `Host`Wind2服务主机,用于托管应用程序(不再维护)
 - `Controller`Wind2控制端,链接到服务主机后即可远程控制(不再维护,且有缺陷)
 - `Daemon`Wind2服务主机,算是用dotnet core 3.1重新实现了一版+优化
-- `WebController`Wind2网页控制端(未开始)
-求稳定的用户可使用`Host`+`Controller`的老搭配,运行1年多非常稳定,但`Controller`有部分缺陷未处理  
-临时尝鲜可以直接使用`Daemon`,作为单机进程托管应该是完全够用了
+- `WebController`Wind2网页控制端 [demo(只能管理本机)](http://w2c.ragnaroks.org/)
+
+**推荐使用`Daemon`+`WebController`的组合**
 
 ### 安装
-- 框架依赖=>使用管理员权限执行`dotnet Host.dll action:install`
-- 独立=>使用管理员权限执行`Host.exe action:install`
+- 框架依赖=>使用管理员权限执行`dotnet Daemon.dll action:install`
+- 独立=>使用管理员权限执行`Daemon.exe action:install`
 - 可能需要手动去服务控制面板(services.msc)启用 Wind2 服务
 
 ### 卸载
-- 框架依赖=>使用管理员权限执行`dotnet Host.dll action:uninstall`
-- 独立=>使用管理员权限执行`Host.exe action:uninstall`
+- 框架依赖=>使用管理员权限执行`dotnet Daemon.dll action:uninstall`
+- 独立=>使用管理员权限执行`Daemon.exe action:uninstall`
 
 ### 单元配置
 **这是`Daemon`项目的单元配置,`Host`项目的单元配置请参考发布的压缩包内的示例**
@@ -49,10 +51,6 @@
 ```
 以上配置代表在Wind2初始化完成后,等待10秒,再启动`C:\DaemonServices\aria2-1.34.0-win-64bit-build1\aria2c.exe --conf-path="C:\DaemonServices\config.conf"`,并且设置工作目录`C:\DaemonServices\aria2-1.34.0-win-64bit-build1\`
 
-部分应用程序支持在参数里面使用相对路径(Wind2不支持使用相对路径),建议都使用绝对路径
-
-格式错误或未填写应用程序绝对路径或应用程序文件不存在,则此单元文件会被忽略
-
 ### 全局配置
 **这是`Daemon`项目的全局配置,`Host`项目的全局配置请参考发布的压缩包内的示例**
 全局配置是一个名为**AppSettings.json**的JSON文本文件,编码UTF-8,位于Wind2根目录下,格式如下
@@ -72,7 +70,7 @@
     "ControlKey": "https://github.com/ragnaroks/Wind2"
 }
 ```
-如果AppSettings.json文件不存在或格式错误,则会使用如上文本作为默认配置使用
+**如果AppSettings.json文件不存在或格式错误,则会使用如上文本作为默认配置使用**
 
 ### 注意事项
 - 被托管的应用程序不支持**交互**
@@ -80,3 +78,5 @@
 - 被托管的应用程序默认为"LOCAL SYSTEM"权限,建议只托管**受信任**的应用程序,后面考虑加入使用指定用户权限运行
 - 如果Wind2意外退出,可能导致单元失去托管(毕竟是在服务里面开服务...),这种情况下目前只能手动结束单元进程
 - **强烈建议注册为系统服务运行,停止服务后被托管的单元会跟随停止运行,若作为普通控制台应用运行,被托管的单元将失去托管,需要用户自行关闭**
+- 托管单元格式错误/应用程序绝对路径无法访问/工作目录不存在 的情况下,单元配置文件会被忽略
+- 托管单元配置文件中,务必使用绝对路径,Wind2当前不支持相对路径

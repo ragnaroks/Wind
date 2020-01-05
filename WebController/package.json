@@ -1,6 +1,6 @@
 {
   "name": "Wind2WebController",
-  "version": "1.0.2",
+  "version": "2.1.18",
   "description": "Wind2 Web Controller",
   "author": "Ragnaroks",
   "private": true,
@@ -13,8 +13,8 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
-    "iview": "^3.5.4",
-    "nuxt": "^2.0.0"
+    "nuxt": "^2.0.0",
+    "view-design": "^4.0.2"
   },
   "devDependencies": {
     "@nuxtjs/eslint-config": "^1.0.1",

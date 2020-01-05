@@ -238,15 +238,15 @@ namespace Daemon.Modules {
                 }
                 return;
             }
-            //Action 刷新所有单元 $"{ClientGuid}§RefreshAllUnits§{RestartIfUpdate}
-            if(args[1]=="RefreshAllUnits"){
+            //Action 刷新所有单元 $"{ClientGuid}§ReloadAllUnits§{RestartIfUpdate}
+            if(args[1]=="ReloadAllUnits"){
                 Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求刷新所有单元");
                 if(String.IsNullOrWhiteSpace(args[2])) {return;}
                 if(!this.WebSocketConnectionDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)){
                     Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求刷新所有单元,未经验证已被拒绝");
                     return;
                 }
-                Program.UnitControlModule.RefreshAllUnits(args[2]!="false");
+                Program.UnitControlModule.ReloadAllUnits(args[2]!="false");
                 return;
             }
             //Action 启动所有单元 $"{ClientGuid}§StartAllUnits
@@ -269,8 +269,8 @@ namespace Daemon.Modules {
                 Program.UnitControlModule.StopAllUnits();
                 return;
             }
-            //Action 刷新单元 $"{ClientGuid}§RefreshUnit§{unitName}
-            if(args[1]=="RefreshUnit") {
+            //Action 刷新单元 $"{ClientGuid}§ReloadUnit§{unitName}
+            if(args[1]=="ReloadUnit") {
                 Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求刷新单元");
                 if(!this.WebSocketConnectionDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)){
                     Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求刷新单元,未经验证已被拒绝");
@@ -280,7 +280,7 @@ namespace Daemon.Modules {
                     Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求刷新单元,未提供参数已被拒绝");
                     return;
                 }
-                Program.UnitControlModule.RefreshUnit(args[2]);
+                Program.UnitControlModule.ReloadUnit(args[2]);
                 return;
             }
             //Action 启动单元 $"{ClientGuid}§StartUnit§{unitName}
@@ -311,6 +311,30 @@ namespace Daemon.Modules {
                 Program.UnitControlModule.StopUnit(args[2]);
                 return;
             }
+            //Action 获取所有单元的状态
+            if(args[1]=="FetchAllUnitsStatus") {
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求所有单元状态");
+                if(!this.WebSocketConnectionDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)){
+                    Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求所有单元状态,未经验证已被拒绝");
+                    return;
+                }
+                this.NotifyClientFetchAllUnitsStatusAsync(webSocketConnection.ConnectionInfo.Id,JsonConvert.SerializeObject(Program.UnitControlModule.FetchAllUnitsStatus()));
+                return;
+            }
+            //Action 获取指定单元的状态
+            if(args[1]=="FetchAllUnitsStatus") {
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"获取指定单元状态");
+                if(!this.WebSocketConnectionDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)){
+                    Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"获取指定单元状态,未经验证已被拒绝");
+                    return;
+                }
+                if(args.Length<3 || args[2]==null) {
+                    Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"获取指定单元状态,未提供参数已被拒绝");
+                    return;
+                }
+                this.NotifyClientFetchUnitStatusAsync(webSocketConnection.ConnectionInfo.Id,JsonConvert.SerializeObject(Program.UnitControlModule.FetchUnitStatus(args[2])));
+                return;
+            }
             Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求未识别,{message}");
         }
 
@@ -324,15 +348,15 @@ namespace Daemon.Modules {
             await webSocketConnection.Send(bytes);
         }
 
-        public async void NotifyClientsRefreshUnitAsync(String unitName,Entities.UnitSettings unitSettings){
-            Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsRefreshUnit","通知所有客户端指定单元正在刷新配置");
+        public async void NotifyClientsReloadUnitAsync(String unitName,Entities.UnitSettings unitSettings){
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsReloadUnit","通知所有客户端指定单元正在刷新配置");
             if(this.WebSocketConnectionDictionary.Count<1){
-                Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsRefreshUnit","没有需要通知的客户端");
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsReloadUnit","没有需要通知的客户端");
                 return;
             }
             foreach(KeyValuePair<Guid,IWebSocketConnection> item in this.WebSocketConnectionDictionary) {
                 if(!item.Value.IsAvailable){return;}
-                await item.Value.Send($"{item.Key.ToString()}{this.SplitChar}NotifyRefreshUnit{this.SplitChar}{unitName}{this.SplitChar}{JsonConvert.SerializeObject(unitSettings)}");
+                await item.Value.Send($"{item.Key.ToString()}{this.SplitChar}NotifyReloadUnit{this.SplitChar}{unitName}{this.SplitChar}{JsonConvert.SerializeObject(unitSettings)}");
             }
         }
 
@@ -342,9 +366,22 @@ namespace Daemon.Modules {
                 Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsStartUnit","没有需要通知的客户端");
                 return;
             }
+            String unitProcessJson=JsonConvert.SerializeObject(unitProcess);
             foreach(KeyValuePair<Guid,IWebSocketConnection> item in this.WebSocketConnectionDictionary) {
                 if(!item.Value.IsAvailable){return;}
-                await item.Value.Send($"{item.Key.ToString()}{this.SplitChar}NotifyStartUnit{this.SplitChar}{unitName}");
+                await item.Value.Send($"{item.Key.ToString()}{this.SplitChar}NotifyStartUnit{this.SplitChar}{unitProcessJson}");
+            }
+        }
+
+        public async void NotifyClientsStartUnitFailedAsync(String unitName) {
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsStartUnitFailedAsync","通知所有客户端指定单元启动失败");
+            if(this.WebSocketConnectionDictionary.Count<1){
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsStartUnitFailedAsync","没有需要通知的客户端");
+                return;
+            }
+            foreach(KeyValuePair<Guid,IWebSocketConnection> item in this.WebSocketConnectionDictionary) {
+                if(!item.Value.IsAvailable){return;}
+                await item.Value.Send($"{item.Key.ToString()}{this.SplitChar}NotifyStartUnitFailed{this.SplitChar}{unitName}");
             }
         }
 
@@ -358,6 +395,36 @@ namespace Daemon.Modules {
                 if(!item.Value.IsAvailable){return;}
                 await item.Value.Send($"{item.Key.ToString()}{this.SplitChar}NotifyStopUnit{this.SplitChar}{unitName}");
             }
+        }
+
+        public async void NotifyClientsStopUnitFailedAsync(String unitName) {
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsStopUnitFailedAsync","通知所有客户端指定单元停止失败");
+            if(this.WebSocketConnectionDictionary.Count<1){
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientsStopUnitFailedAsync","没有需要通知的客户端");
+                return;
+            }
+            foreach(KeyValuePair<Guid,IWebSocketConnection> item in this.WebSocketConnectionDictionary) {
+                if(!item.Value.IsAvailable){return;}
+                await item.Value.Send($"{item.Key.ToString()}{this.SplitChar}NotifyStopUnitFailed{this.SplitChar}{unitName}");
+            }
+        }
+
+        public async void NotifyClientFetchAllUnitsStatusAsync(Guid webSocketConnectionId,String allUnitsStatusJson) {
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientFetchAllUnitsStatusAsync","通知指定客户端获取所有单元状态");
+            if(this.WebSocketConnectionDictionary.Count<1 || !this.WebSocketConnectionDictionary.ContainsKey(webSocketConnectionId)){
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientFetchAllUnitsStatusAsync","没有需要通知的客户端");
+                return;
+            }
+            await this.WebSocketConnectionDictionary[webSocketConnectionId].Send($"{webSocketConnectionId.ToString()}{this.SplitChar}NotifyFetchAllUnitsStatus{this.SplitChar}{allUnitsStatusJson}");
+        }
+
+        public async void NotifyClientFetchUnitStatusAsync(Guid webSocketConnectionId,String unitsStatusJson) {
+            Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientFetchUnitStatusAsync","通知指定客户端获取指定单元状态");
+            if(this.WebSocketConnectionDictionary.Count<1 || !this.WebSocketConnectionDictionary.ContainsKey(webSocketConnectionId)){
+                Program.LoggerModule.Log("Modules.WebSocketServerModule.NotifyClientFetchUnitStatusAsync","没有需要通知的客户端");
+                return;
+            }
+            await this.WebSocketConnectionDictionary[webSocketConnectionId].Send($"{webSocketConnectionId.ToString()}{this.SplitChar}NotifyFetchUnitStatus{this.SplitChar}{unitsStatusJson}");
         }
     }
 }

@@ -4,7 +4,7 @@ export default {
     ** Headers of the page
     */
     head:{
-        title:process.env.npm_package_name + ' ' + process.env.npm_package_version || 'title',
+        title:process.env.npm_package_name + ' v' + process.env.npm_package_version || 'title',
         meta:[
             {charset:'utf-8'},
             {name:'viewport', content:'width=device-width,initial-scale=1'},
@@ -30,7 +30,7 @@ export default {
     ** Plugins to load before mounting the App
     */
     plugins:[
-        '@/plugins/iview'
+        '@/plugins/view-design'
     ],
     /*
     ** Nuxt.js dev-modules
