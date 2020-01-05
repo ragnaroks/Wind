@@ -262,20 +262,23 @@ namespace Daemon.Modules {
                 Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit[Error]",$"单元\"{unitName}\"配置文件解析失败");
                 return;
             }
-            if(this.UnitSettingsDictionary.ContainsKey(unitName)) {
+            if(!this.UnitSettingsDictionary.ContainsKey(unitName)) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit[Error]",$"单元\"{unitName}\"配置已失效,进行退出操作");
                 this.StopUnit(unitName);
                 return;
             }
             this.UnitSettingsDictionary[unitName]=unitSettings;
             Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"单元\"{unitName}\"配置已更新");
+            //通知客户端单元配置刷新
+            Program.WebSocketServerModule.NotifyClientsRefreshUnitAsync(unitName,unitSettings);
             if(restartIfUpdate){
                 this.StopUnit(unitName);
-                this.StartUnit(unitName);
-                Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"单元\"{unitName}\"已重启");
+                Task.Factory.StartNew(()=>{
+                    Thread.Sleep(1000);
+                    this.StartUnit(unitName);
+                    Program.LoggerModule.Log("Modules.UnitControlModule.RefreshUnit",$"单元\"{unitName}\"已重启");
+                });
             }
-            //通知客户端单元配置刷新
-            Program.WebSocketServerModule.NotifyClientsRefreshUnit(unitName,unitSettings);
         }
 
         /// <summary>
@@ -316,7 +319,7 @@ namespace Daemon.Modules {
             unitProcess.State=Enums.UnitProcess.State.运行中;
             this.UnitProcessDictionary.Add(unitProcess.Name,unitProcess);
             //通知客户端单元启动
-            Program.WebSocketServerModule.NotifyClientsStartUnit(unitName,unitProcess);
+            Program.WebSocketServerModule.NotifyClientsStartUnitAsync(unitName,unitProcess);
         }
 
         /// <summary>
@@ -354,7 +357,7 @@ namespace Daemon.Modules {
             if(!stopBySerivceExited) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit",$"单元\"{unitName}\"执行停止流程完毕");
                 //通知客户端单元启动
-                Program.WebSocketServerModule.NotifyClientsStopUnit(unitName);
+                Program.WebSocketServerModule.NotifyClientsStopUnitAsync(unitName);
             }
         }
 

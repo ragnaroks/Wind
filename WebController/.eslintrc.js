@@ -35,7 +35,8 @@ module.exports = {
         'brace-style':['off'],
         'semi-spacing':['error',{'before':false,'after':false}],
         //vue
-        'vue/html-indent': ['off'],
-        'vue/singleline-html-element-content-newline': ['off']
+        'vue/html-indent':['off'],
+        'vue/singleline-html-element-content-newline':['off'],
+        'vue/max-attributes-per-line':['off']
     }
 };

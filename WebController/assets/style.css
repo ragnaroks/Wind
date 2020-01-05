@@ -3,3 +3,5 @@
 ul,ol,li{list-style:none;list-style-type:none;margin:0;padding:0;}
 i.clear{clear:both;}
 */
+.ivu-collapse-content{padding:0 !important;}
+.ivu-collapse-content-box{padding:0 !important;}

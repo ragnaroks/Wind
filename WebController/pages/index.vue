@@ -1,22 +1,26 @@
 <template>
     <div class="pages" data-layout="default" data-page="index">
-        <Sider v-bind:collapsedWidth="164" class="page-sider">
+        <Sider v-bind:collapsedWidth="0" v-model="sider.isCollapsed" class="page-sider" breakpoint="sm" collapsible hide-trigger>
             <Menu v-on:on-select="onSiderMenuSelect" theme="dark" width="auto">
                 <MenuItem name="menu-title" disabled><Icon type="md-list" />Wind2 daemon list</MenuItem>
                 <MenuItem v-for="webSocketItem in webSocketArray" v-bind:key="webSocketItem.hostname" v-bind:name="webSocketItem.hostname" v-text="webSocketItem.hostname" />
                 <MenuItem v-on:click.native="alert" name="menu-add-daemon" disabled><Icon type="md-add" />Add Daemon</MenuItem>
             </Menu>
         </Sider>
-        <Layout class="page-body">
-            <Header class="page-header">Wind2 Web Controller</Header>
+        <Layout v-bind:class="['page-body',sider.isCollapsed?'page-sider-collapsed':'']">
+            <Header class="page-header">
+                <Icon v-on:click="sider.isCollapsed=!sider.isCollapsed" type="md-menu" style="font-size:1.6rem;margin-right:1rem;" />
+                <span>Wind2 Web Controller</span>
+            </Header>
             <Content class="page-content">
                 <Collapse v-model="collapse.value">
                     <Panel name="panel-for-component-websocket-item">
                         daemon connection details
-                        <component-websocket-item slot="content" v-bind:webSocketItem="currentActiveWebSocketItem" />
+                        <component-websocket-item slot="content" v-bind:webSocketItem="currentActiveWebSocketItem" v-on:webSocketItemConnectionValidated="onWebSocketItemConnectionValidated" />
                     </Panel>
-                    <Panel name="panel-for-daemon-controller">
+                    <Panel name="panel-for-daemon-controller" class="panel-for-daemon-controller">
                         daemon control
+                        <component-daemon-controller slot="content" ref="component-daemon-controller" v-bind:webSocketItem="currentActiveWebSocketItem" />
                     </Panel>
                 </Collapse>
             </Content>
@@ -27,26 +31,34 @@
 <style scoped>
 .pages{font-size:16px;/*height:fill-available;*/}
 .page-sider{position:fixed;height:100vh;left:0;overflow:auto;}
-.page-header{background-color:white;box-shadow:0 2px 3px 2px rgba(0,0,0,.1);font-weight:bold;}
+.page-header{background-color:white;box-shadow:0 2px 3px 2px rgba(0,0,0,.1);font-weight:bold;position:fixed;top:0;width:100%;z-index:1;}
 .page-body{margin-left:200px;background-color:white;}
-.page-content{padding:0.5rem;}
+.page-body.page-sider-collapsed{margin-left:0;}
+.page-content{padding:0.5rem;margin-top:4rem;}
+</style>
+<style>
+.panel-for-daemon-controller .ivu-collapse-content{background-color:#f0f0f0;}
 </style>
 
 <script>
 import componentWebSocketItem from '@/components/WebSocketItem';
+import componentDaemonController from '@/components/DaemonController';
+
 export default{
     components:{
-        'component-websocket-item':componentWebSocketItem
+        'component-websocket-item':componentWebSocketItem,
+        'component-daemon-controller':componentDaemonController
     },
     data:function(){
         return {
             sider:{
+                isCollapsed:false,
                 menu:{
                     currentActiveName:null
                 }
             },
             collapse:{
-                value:['panel-for-component-websocket-item']
+                value:['panel-for-component-websocket-item','panel-for-daemon-controller']
             },
             webSocketArray:[
                 {
@@ -61,8 +73,8 @@ export default{
                     sentText:'',
                     recvivedLength:0,
                     sentLength:0
-                },{
-                    hostname:'10.0.0.109',
+                }/*,{
+                    hostname:'localhost[ANY]',
                     instance:null,
                     connected:false,
                     address:'ws://10.0.0.109:25565',
@@ -73,7 +85,7 @@ export default{
                     sentText:'',
                     recvivedLength:0,
                     sentLength:0
-                }
+                }*/
             ]
         };
     },
@@ -88,39 +100,14 @@ export default{
     },
     methods:{
         onSiderMenuSelect:function(name){this.sider.menu.currentActiveName=name;},
-        alert:function(){window.alert('alert');},
-        connectionOnMessage:function(event){
-            console.log('链接收到消息',event);
-            if(!event.data){return;}
-            const args=event.data.split('§');
-            const argsArray=[];
-            for(let i1=0;i1<args.length;i1++){
-                if(!args[i1]){continue;}
-                argsArray.push(args[i1]);
+        onWebSocketItemConnectionValidated:function(webSocketItem){
+            console.log(webSocketItem);
+            if(this.$refs['component-daemon-controller']!==undefined && this.$refs['component-daemon-controller']!==null){
+                this.$refs['component-daemon-controller'].daemonFetchAllUnitsSettings();
             }
-            if(argsArray.length<2){return;}//无效消息
-            switch(argsArray[1]){
-                case 'NotifySocketOpened':
-                    this.webSocket.connectionId=argsArray[0];
-                    this.webSocket.instance.send(this.webSocket.connectionId+'§CheckControlKey§'+this.webSocket.controlKey);
-                break;
-                case 'NotifyCheckControlKey':
-                    if(argsArray[2]!=='success'){break;}
-                    this.webSocket.connectionValid=true;
-                break;
-                case 'NotifyRefreshUnit':
-                    console.log(argsArray[2]+'单元配置已刷新');
-                break;
-                case 'NotifyStartUnit':
-                    console.log(argsArray[2]+'单元配置已启动');
-                break;
-                case 'NotifyStopUnit':
-                    console.log(argsArray[2]+'单元配置已停止');
-                break;
-                default:
-                    //
-                break;
-            }
+        },
+        alert:function(){
+            this.$Message.info('nothing here');
         }
     }
 };
