@@ -24,6 +24,7 @@ export default {
     ** Global CSS
     */
     css:[
+        //'view-design/dist/styles/iview.css',
         '@/assets/style.css'
     ],
     /*
