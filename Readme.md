@@ -1,25 +1,15 @@
 ### 关于
 由于种种原因,我需要将某个可执行文件作为服务运行,并且能随时控制运行与否  
 这期间找了一些解决方案,比如srvany/nssm/srvWrap等,但是都不满意  
-于是我产生了写一个类似于linux下的systemd的项目的想法
-
-这个想法转化为代码后,就是Wind项目了,Wind是一个Win32GUI应用程序,作为第一启动项启动后,拉起其它被托管的应用程序,并且可以在图形界面上随时控制
-
-但是,实际使用一年多以后,发现还是有很多问题,比如类似v2ray的应用程序,我想要它在登录会话之前就启动,又比如syncthing,我想要它在开机一定时间之后再启动,以免过早占用大量磁盘IO
-
-于是有了Wind2,只有控制台应用程序,(强烈建议)可注册为Windows服务运行,达到了开机就托管的目的,且加入了自启延迟,可简单的对托管单元进行排序,比如开机3秒后启动v2ray,然后30秒后启动syncthing,syncthing就可以使用v2ray提供的代理进行同步
-
-对于高阶用户,Wind2已经够用了,但是很多使用windows操作系统的用户,根本不会改配置文件,设置系统服务等操作,于是我又写了个控制端,在图形界面下提供对Wind2服务主机的控制(PS 欢迎有能力的扣德尔实现类似单用户多服务器的控制端)
-
-![WebController](https://i.imgur.com/c0XZAUp.png)
+于是我产生了写一个类似于linux下的systemd的项目的想法  
 
 ### 项目
-- `Host`Wind2服务主机,用于托管应用程序(不再维护)
-- `Controller`Wind2控制端,链接到服务主机后即可远程控制(不再维护,且有缺陷)
-- `Daemon`Wind2服务主机,算是用dotnet core 3.1重新实现了一版+优化
+- `Host`Wind2服务主机,用于托管应用程序(不再维护),内存使用越8M
+- `Controller`Wind2桌面普通控制端,链接到服务主机后即可远程控制(不再维护)
+- `Daemon`Wind2服务主机,用dotnet core 3.1重新实现并针对以前有缺陷的地方进行优化,内存使用约12M
 - `WebController`Wind2网页控制端 [demo(只能管理本机)](http://w2c.ragnaroks.org/)
-
 **推荐使用`Daemon`+`WebController`的组合**
+![WebController](https://i.imgur.com/c0XZAUp.png)
 
 ### 安装
 - 框架依赖=>使用管理员权限执行`dotnet Daemon.dll action:install`
@@ -46,7 +36,9 @@
     //应用程序是否自启动,非必须,若不提供则默认不自启
     "AutoStart": false,
     //应用程序自启延迟,单位秒,非必须,若不提供则默认10秒
-    "AutoStartDelay": 10
+    "AutoStartDelay": 10,
+    //守护进程,若为true,则应用程序不是被Wind2结束的情况下会被重新启动,某些应用程序会自行退出(比如检测到配置异常),且退出代码不等于0,可能导致无限循环启动
+    "DaemonProcess": false
 }
 ```
 以上配置代表在Wind2初始化完成后,等待10秒,再启动`C:\DaemonServices\aria2-1.34.0-win-64bit-build1\aria2c.exe --conf-path="C:\DaemonServices\config.conf"`,并且设置工作目录`C:\DaemonServices\aria2-1.34.0-win-64bit-build1\`
@@ -56,14 +48,10 @@
 全局配置是一个名为**AppSettings.json**的JSON文本文件,编码UTF-8,位于Wind2根目录下,格式如下
 ```json
 {
-    //日志级别,当前无效
-    "LogLevel": 0,
     //是否启用远程控制,高阶用户不建议启用
     "ControlEnable": false,
-    //远程控制监听IPv4地址,其中'localhost'=='127.0.0.1','any'=='0.0.0.0'
-    "ControlAddressV4": "localhost",
-    //远程控制监听IPv6地址,其中'localhost'=='::1','any'=='::',当前无效
-    "ControlAddressV6": "localhost",
+    //远程控制监听地址,其中'localhost'=='127.0.0.1','any'=='0.0.0.0'
+    "ControlAddress": "localhost",
     //远程控制端口,不可小于1024,默认25565
     "ControlPort": 25565,
     //远程控制密钥,任意长度任意字符,建议16字节以上,被控和控制端使用AES加密通信
@@ -80,3 +68,12 @@
 - **强烈建议注册为系统服务运行,停止服务后被托管的单元会跟随停止运行,若作为普通控制台应用运行,被托管的单元将失去托管,需要用户自行关闭**
 - 托管单元格式错误/应用程序绝对路径无法访问/工作目录不存在 的情况下,单元配置文件会被忽略
 - 托管单元配置文件中,务必使用绝对路径,Wind2当前不支持相对路径
+
+### 已知兼容列表
+- [aria2](https://github.com/aria2/aria2)
+- [v2ray](https://github.com/v2ray/v2ray-core)
+
+### 已知不兼容列表
+- 需要"交互"的应用程序,控制台应用程序的话就是独占stdIn的(比如MC服务端),以及大多数图形界面应用程序
+- [nginx](https://github.com/nginx/nginx) 此应用程序使用多进程(调度进程+工作进程)模式,结束主进程并不会像一般多进程应用程序那样让子进程一同退出 (未测试与srvany/nssm的兼容性)
+- [webd](https://webd.cf/) 此应用程序可以被Wind2启动,但是会立刻自主退出,退出代码为**1**,原因不明,且若Wind2不作为服务直接作为控制台应用运行,则可以成功托管webd (另经过测试,srvany/nssm均无法托管此应用程序,都是立刻退出)

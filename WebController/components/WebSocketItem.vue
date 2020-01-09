@@ -165,7 +165,10 @@ export default {
             });
         },
         webSocketItemOnMessage_NotifyReloadUnit:function(argsArray){
-            if(!argsArray[2]){return;}
+            if(!argsArray[2] || !argsArray[3]){return;}
+            const unitSettings=JSON.parse(argsArray[3]);
+            if(!unitSettings){return;}
+            this.$store.commit('set_Unit_UnitSettings_In_DaemonUnitStatusArray',{hostname:this.currentWebSocketItem.hostname,UnitName:argsArray[2],UnitSettings:unitSettings});
             this.$Notice.info({
                 title:this.currentWebSocketItem.hostname,
                 desc:this.currentWebSocketItem.hostname+' unit ['+argsArray[2]+'] has been reload'

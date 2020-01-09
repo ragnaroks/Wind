@@ -35,7 +35,7 @@ namespace Daemon.Modules {
                 Console.ForegroundColor=cc;
                 Program.LoggerModule.Log("Modules.WebSocketServerModule.WebSocketServerModule[Error]",$"创建WebSocketServer异常,{exception.Message},{exception.StackTrace}");
             }
-            this.PingTimer=new Timer(new TimerCallback(OnPingTimerCallback),null,10000,5000);
+            this.PingTimer=new Timer(new TimerCallback(OnPingTimerCallback),null,10_000,30_000);
         }
 
         #region IDisposable Support
@@ -95,6 +95,13 @@ namespace Daemon.Modules {
         /// <param name="state"></param>
         private void OnPingTimerCallback(Object state) {
             Program.LoggerModule.Log("Modules.WebSocketServerModule.OnPingTimerCallback","开始ping所有客户端");
+            if(this.InvalidWebSocketConnectionDictionary.Count>0) {
+                foreach(KeyValuePair<Guid,IWebSocketConnection> item in this.InvalidWebSocketConnectionDictionary) {
+                    if(!item.Value.IsAvailable){continue;}
+                    item.Value.Close();
+                }
+                this.InvalidWebSocketConnectionDictionary.Clear();
+            }
             if(!this.CanPingTimerState || this.WebSocketConnectionDictionary.Count<1){
                 Program.LoggerModule.Log("Modules.WebSocketServerModule.OnPingTimerCallback","当前无任何客户端");
                 return;

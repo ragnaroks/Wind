@@ -207,20 +207,32 @@ namespace Daemon.Modules {
         private void OnUnitProcessExited(object sender,EventArgs e) {
             if(this.UnitProcessDictionary==null) {return;}
             Process process=sender as Process;
+            Program.LoggerModule.Log("Modules.UnitControlModule.OnUnitProcessExited",$"进程[{process.Id}]主动退出,退出代码[{process.ExitCode}]");
             String unitName=null;
+            Boolean daemonProcess=false;
+            Int32 processExitCode=process.ExitCode;
             foreach(KeyValuePair<String,Entities.UnitProcess> item in this.UnitProcessDictionary) {
-                if(item.Value.Process==null || item.Value.Process.Id!=process.Id){continue;}
-                item.Value.Process.Dispose();
-                item.Value.Process=null;
-                item.Value.ProcessStartInfo=null;
-                Program.LoggerModule.Log("Modules.UnitControlModule.OnUnitProcessExited",$"单元\"{item.Key}\"正在退出");
+                if(item.Value.Process.Id!=process.Id){continue;}
                 unitName=item.Key;
+                if(item.Value.Process!=null) {
+                    item.Value.Process.Dispose();
+                }
+                item.Value.ProcessStartInfo=null;
+                if(this.UnitSettingsDictionary.ContainsKey(item.Key) && this.UnitSettingsDictionary[item.Key].DaemonProcess) {daemonProcess=true;}
+                Program.LoggerModule.Log("Modules.UnitControlModule.OnUnitProcessExited",$"进程单元\"{item.Key}\"正在退出");
                 break;
             }
             if(!String.IsNullOrWhiteSpace(unitName) && this.UnitProcessDictionary.ContainsKey(unitName)){
                 this.UnitProcessDictionary.Remove(unitName);
-                Program.LoggerModule.Log("Modules.UnitControlModule.OnUnitProcessExited",$"单元\"{unitName}\"已退出");
-                Program.WebSocketServerModule.NotifyClientsStopUnitAsync(unitName);
+                Program.LoggerModule.Log("Modules.UnitControlModule.OnUnitProcessExited",$"进程单元\"{unitName}\"已退出");
+                //通知远控客户端
+                if(Program.WebSocketServerModule!=null) {
+                    Program.WebSocketServerModule.NotifyClientsStopUnitAsync(unitName);
+                }
+            }
+            if(daemonProcess && processExitCode!=0) {
+                Program.LoggerModule.Log("Modules.UnitControlModule.OnUnitProcessExited",$"进程单元\"{unitName}\"异常退出,已被守护进程重新启动");
+                this.StartUnit(unitName);
             }
         }
 
@@ -267,7 +279,9 @@ namespace Daemon.Modules {
             this.UnitSettingsDictionary[unitName]=unitSettings;
             Program.LoggerModule.Log("Modules.UnitControlModule.ReloadUnit",$"单元\"{unitName}\"配置已更新");
             //通知客户端单元配置刷新
-            Program.WebSocketServerModule.NotifyClientsReloadUnitAsync(unitName,unitSettings);
+            if(Program.WebSocketServerModule!=null) {
+                Program.WebSocketServerModule.NotifyClientsReloadUnitAsync(unitName,unitSettings);
+            }
             if(restartIfUpdate){
                 this.StopUnit(unitName);
                 Task.Factory.StartNew(()=>{
@@ -285,12 +299,18 @@ namespace Daemon.Modules {
         public void StartUnit(String unitName){
             if(this.UnitSettingsDictionary.Count<1) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Warning]","当前没有任何单元配置");
-                Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
+                //通知远控客户端
+                if(Program.WebSocketServerModule!=null) {
+                    Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
+                }
                 return;
             }
             if(!this.UnitSettingsDictionary.ContainsKey(unitName)) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Warning]",$"单元\"{unitName}\"配置不存在");
-                Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
+                //通知远控客户端
+                if(Program.WebSocketServerModule!=null) {
+                    Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
+                }
                 return;
             }
             if(this.UnitProcessDictionary.ContainsKey(unitName)) {
@@ -320,7 +340,9 @@ namespace Daemon.Modules {
             unitProcess.ProcessId=unitProcess.Process.Id;
             this.UnitProcessDictionary.Add(unitProcess.Name,unitProcess);
             //通知客户端单元启动
-            Program.WebSocketServerModule.NotifyClientsStartUnitAsync(unitName,unitProcess);
+            if(Program.WebSocketServerModule!=null) {
+                Program.WebSocketServerModule.NotifyClientsStartUnitAsync(unitName,unitProcess);
+            }
         }
 
         /// <summary>
@@ -332,7 +354,9 @@ namespace Daemon.Modules {
             if(this.UnitProcessDictionary.Count<1){
                 if(!stopBySerivceExited) {
                     Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit[Warning]","当前没有任何运行中的单元");
-                    Program.WebSocketServerModule.NotifyClientsStopUnitFailedAsync(unitName);
+                    if(Program.WebSocketServerModule!=null) {
+                        Program.WebSocketServerModule.NotifyClientsStopUnitFailedAsync(unitName);
+                    }
                 }
                 return;
             }
@@ -352,16 +376,22 @@ namespace Daemon.Modules {
                 //异常之后也要继续停止流程
                 if(!stopBySerivceExited) {
                     Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit[Error]",$"单元\"{unitName}\"正在执行停止流程时异常,{exception.Message},{exception.StackTrace}");
-                    Program.WebSocketServerModule.NotifyClientsStopUnitFailedAsync(unitName);
+                    //通知远控客户端
+                    if(Program.WebSocketServerModule!=null) {
+                        Program.WebSocketServerModule.NotifyClientsStopUnitFailedAsync(unitName);
+                    }
                 }
             }
+            this.UnitProcessDictionary[unitName].Process.Dispose();
             this.UnitProcessDictionary[unitName].State=Enums.UnitProcess.State.停止;
             this.UnitProcessDictionary[unitName].ProcessStartInfo=null;
             this.UnitProcessDictionary.Remove(unitName);
             if(!stopBySerivceExited) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit",$"单元\"{unitName}\"执行停止流程完毕");
                 //通知客户端单元停止
-                Program.WebSocketServerModule.NotifyClientsStopUnitAsync(unitName);
+                if(Program.WebSocketServerModule!=null) {
+                    Program.WebSocketServerModule.NotifyClientsStopUnitAsync(unitName);
+                }
             }
         }
 

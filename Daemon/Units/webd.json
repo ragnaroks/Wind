@@ -1,8 +1,9 @@
 {
-    "Description": "webd (example unit)",
-    "ExecuteAbsolutePath": "D:\\webd\\webd.exe",
-    "WorkAbsoluteDirectory": "D:\\webd\\",
+    "Description": "webd",
+    "ExecuteAbsolutePath": "C:\\Program Files\\webd\\webd.exe",
+    "WorkAbsoluteDirectory": "C:\\Program Files\\webd\\",
     "ExecuteParams": null,
     "AutoStart": false,
-    "AutoStartDelay": 0
+    "AutoStartDelay": 0,
+    "DaemonProcess": false
 }

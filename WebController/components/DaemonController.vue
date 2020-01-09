@@ -21,6 +21,9 @@
                                 <i-switch slot="extra" v-bind:value="currentDaemonUnitStatusItem.UnitSettings.AutoStart" disabled />
                             </Cell>
                             <Cell v-bind:extra="currentDaemonUnitStatusItem.UnitSettings.AutoStartDelay | textFilterUnitSettingsAutoStartDelay" title="AutoStartDelay" />
+                            <Cell title="DaemonProcess">
+                                <i-switch slot="extra" v-bind:value="currentDaemonUnitStatusItem.UnitSettings.DaemonProcess" disabled />
+                            </Cell>
                         </CellGroup>
                         <Divider />
                         <CellGroup class="daemon-unit-item-card-cellgroup-actions">

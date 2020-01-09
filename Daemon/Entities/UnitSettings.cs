@@ -12,11 +12,13 @@ namespace Daemon.Entities {
         /// <summary>单元工作绝对目录</summary>
         public String WorkAbsoluteDirectory{get;set;}
         /// <summary>可执行文件参数</summary>
-        public String ExecuteParams{get;set;}
+        public String ExecuteParams{get;set;}=null;
         /// <summary>单元是否自启,默认不自启</summary>
         public Boolean AutoStart{get;set;}=false;
         /// <summary>单元自启延迟(秒),默认10秒</summary>
         public Int32 AutoStartDelay{get;set;}=10;
+        /// <summary>守护进程</summary>
+        public Boolean DaemonProcess{get;set;}=false;
 
         /// <summary>
         /// 内部设置单元名称

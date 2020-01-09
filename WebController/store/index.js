@@ -163,17 +163,16 @@ export const mutations = {
         if(!state.daemonUnitStatusArray[payload.hostname]){
             Vue.set(state.daemonUnitStatusArray,payload.hostname,[]);
         }
-        if(state.daemonUnitStatusArray[payload.hostname].UnitName===undefined){
+        if(state.daemonUnitStatusArray[payload.hostname].length<1){
             state.daemonUnitStatusArray[payload.hostname].push(payload.unitStatusItem);
-        }else{
-            for(let i1=0;i1<state.daemonUnitStatusArray[payload.hostname].length;i1++){
-                if(state.daemonUnitStatusArray[payload.hostname][i1].UnitName===payload.UnitName){
-                    Vue.set(state.daemonUnitStatusArray[payload.hostname],payload.UnitName,payload.unitStatusItem);
-                }else{
-                    state.daemonUnitStatusArray[payload.hostname].push(payload.unitStatusItem);
-                }
-            }
+            return;
         }
+        for(let i1=0;i1<state.daemonUnitStatusArray[payload.hostname].length;i1++){
+            if(state.daemonUnitStatusArray[payload.hostname][i1].UnitName!==payload.UnitName){continue;}
+            Vue.set(state.daemonUnitStatusArray[payload.hostname],payload.UnitName,payload.unitStatusItem);
+            return;
+        }
+        state.daemonUnitStatusArray[payload.hostname].push(payload.unitStatusItem);
     },
     remove_Unit_From_DaemonUnitStatusArray:function(state,payload){
         if(!state.daemonUnitStatusArray[payload.hostname]){return;}
@@ -208,6 +207,15 @@ export const mutations = {
                 Vue.set(state.daemonUnitStatusArray[payload.hostname][i1].UnitProcess,'ProcessId',payload.ProcessId);
             }
         }
-        //debugger;
+    },
+    set_Unit_UnitSettings_In_DaemonUnitStatusArray:function(state,payload){
+        console.log('set_Unit_UnitSettings_In_DaemonUnitStatusArray',payload);
+        if(!state.daemonUnitStatusArray[payload.hostname]){return;}
+        if(state.daemonUnitStatusArray[payload.hostname].length<1){return;}
+        for(let i1=0;i1<state.daemonUnitStatusArray[payload.hostname].length;i1++){
+            if(state.daemonUnitStatusArray[payload.hostname][i1].UnitName!==payload.UnitName){continue;}
+            Vue.set(state.daemonUnitStatusArray[payload.hostname][i1],'UnitSettings',payload.UnitSettings);
+            return;
+        }
     }
 };
