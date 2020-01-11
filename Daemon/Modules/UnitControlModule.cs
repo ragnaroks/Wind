@@ -315,7 +315,10 @@ namespace Daemon.Modules {
             }
             if(this.UnitProcessDictionary.ContainsKey(unitName)) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Warning]",$"单元\"{unitName}\"已在运行中");
-                //Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
+                //通知远控客户端
+                if(Program.WebSocketServerModule!=null) {
+                    Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
+                }
                 return;
             }
             Entities.UnitSettings unitSettings=this.UnitSettingsDictionary[unitName];
@@ -327,13 +330,30 @@ namespace Daemon.Modules {
             unitProcess.Process.Exited+=OnUnitProcessExited;
             Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit",$"单元\"{unitSettings.Name}\"所需数据已构造完成,进入启动队列");
             unitProcess.State=Enums.UnitProcess.State.正在启动;
+            Boolean started=false;
             try {
-                unitProcess.Process.Start();
+                started=unitProcess.Process.Start();
             }catch(Exception exception){
                 Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Error]",$"单元\"{unitSettings.Name}\"启动失败,{exception.Message},{exception.StackTrace}");
                 unitProcess.State=Enums.UnitProcess.State.停止;
                 unitProcess.ProcessStartInfo=null;
                 unitProcess.Process.Dispose();
+                //通知远控客户端
+                if(Program.WebSocketServerModule!=null) {
+                    Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
+                }
+                return;
+            }
+            if(!started) {
+                Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Error]",$"单元\"{unitSettings.Name}\"启动失败");
+                unitProcess.State=Enums.UnitProcess.State.停止;
+                unitProcess.ProcessStartInfo=null;
+                unitProcess.Process.Dispose();
+                //通知远控客户端
+                if(Program.WebSocketServerModule!=null) {
+                    Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
+                }
+                return;
             }
             Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit",$"单元\"{unitSettings.Name}\"已启动");
             unitProcess.State=Enums.UnitProcess.State.运行中;
