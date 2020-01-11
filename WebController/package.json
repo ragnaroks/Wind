@@ -1,6 +1,6 @@
 {
-  "name": "Wind2WebController",
-  "version": "2.1.19",
+  "name": "web-controller",
+  "version": "2.1.20",
   "description": "Wind2 Web Controller",
   "author": "Ragnaroks",
   "private": true,

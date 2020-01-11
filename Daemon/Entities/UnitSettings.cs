@@ -19,6 +19,8 @@ namespace Daemon.Entities {
         public Int32 AutoStartDelay{get;set;}=10;
         /// <summary>守护进程</summary>
         public Boolean DaemonProcess{get;set;}=false;
+        /// <summary>单元进程是否派生子进程</summary>
+        public Boolean HaveChildProcesses{get;set;}=false;
 
         /// <summary>
         /// 内部设置单元名称

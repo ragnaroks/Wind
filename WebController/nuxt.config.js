@@ -4,7 +4,7 @@ export default {
     ** Headers of the page
     */
     head:{
-        title:process.env.npm_package_name + ' v' + process.env.npm_package_version || 'title',
+        title:'controller for Wind2 v' + process.env.npm_package_version || 'controller for Wind2',
         meta:[
             {charset:'utf-8'},
             {name:'viewport', content:'width=device-width,initial-scale=1'},

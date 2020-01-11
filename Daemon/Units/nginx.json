@@ -1,0 +1,10 @@
+{
+    "Description": "nginx",
+    "ExecuteAbsolutePath": "C:\\nginx-1.15.12\\nginx.exe",
+    "WorkAbsoluteDirectory": "C:\\nginx-1.15.12\\",
+    "ExecuteParams": null,
+    "AutoStart": false,
+    "AutoStartDelay": 0,
+    "DaemonProcess": false,
+    "HaveChildProcesses": true
+}

@@ -4,7 +4,7 @@
             <Menu v-on:on-select="onSiderMenuSelect" theme="dark" width="auto">
                 <MenuItem name="menu-title" disabled><Icon type="md-list" />Wind2 daemon list</MenuItem>
                 <MenuItem v-for="webSocketArrayHostname in webSocketArrayHostnameArray" v-bind:key="webSocketArrayHostname" v-bind:name="webSocketArrayHostname" v-text="webSocketArrayHostname" />
-                <MenuItem v-on:click.native="alert" name="menu-add-daemon" disabled><Icon type="md-add" />Add Daemon</MenuItem>
+                <MenuItem v-on:click.native="showAddDaemonDialog" name="menu-add-daemon" disabled><Icon type="md-add" />Add Daemon</MenuItem>
             </Menu>
         </Sider>
         <Layout v-bind:class="['page-body',sider.isCollapsed?'page-sider-collapsed':'']">
@@ -24,6 +24,9 @@
                     </Panel>
                 </Collapse>
             </Content>
+            <Modal v-model="modalArray.showAddDaemonModal" v-bind:closable="false" v-bind:mask-closable="false" v-on:on-ok="AddDaemon" loading ok-text="Add" cancel-text="Cancel" title="Add Daemon">
+                <div>AddDaemonModal</div>
+            </Modal>
         </Layout>
     </div>
 </template>
@@ -59,6 +62,9 @@ export default{
             },
             collapse:{
                 value:['panel-for-component-websocket-item','panel-for-daemon-controller']
+            },
+            modalArray:{
+                showAddDaemonModal:false
             }
         };
     },
@@ -99,8 +105,15 @@ export default{
                 this.$refs['component-daemon-controller'].daemonFetchAllUnits();
             }
         },
-        alert:function(){
-            this.$Message.info('nothing here');
+        showAddDaemonDialog:function(){
+            if(this.modalArray.showAddDaemonModal){return;}
+            this.modalArray.showAddDaemonModal=true;
+        },
+        AddDaemon:function(){
+            const _this=this;
+            setTimeout(() => {
+                _this.modalArray.showAddDaemonModal=false;
+            }, 1500);
         }
     }
 };

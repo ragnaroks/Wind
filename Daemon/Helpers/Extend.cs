@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -40,6 +41,24 @@ namespace Daemon.Helpers {
         /// <param name="thisFileInfo"></param>
         /// <returns></returns>
         public static String GetOriginName(this FileInfo thisFileInfo)=>thisFileInfo.Name.Replace(thisFileInfo.Extension,"");
+        #endregion
+
+        #region System.Diagnostics.Process
+        /// <summary>
+        /// 结束进程树
+        /// </summary>
+        /// <param name="thisProcess"></param>
+        /// <exception cref="Exception"></exception>
+        public static void KillTree(this Process thisProcess){
+            Int32 thisProcessId=thisProcess.Id;
+            try {
+                thisProcess.Kill();
+            }catch(Exception exception) {
+                throw exception;
+            }
+            //忽略结束子进程时的异常
+            Helpers.ProcessHelper.KillChildProcessByParentProcess(thisProcessId);
+        }
         #endregion
     }
 }

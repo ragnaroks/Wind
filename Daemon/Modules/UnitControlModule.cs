@@ -391,7 +391,11 @@ namespace Daemon.Modules {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit",$"单元\"{unitName}\"正在执行停止流程");
             }
             try {
-                this.UnitProcessDictionary[unitName].Process.Kill();
+                if(this.UnitSettingsDictionary[unitName].HaveChildProcesses) {
+                    this.UnitProcessDictionary[unitName].Process.KillTree();
+                } else {
+                    this.UnitProcessDictionary[unitName].Process.Kill();
+                }
             }catch(Exception exception){
                 //异常之后也要继续停止流程
                 if(!stopBySerivceExited) {
@@ -402,10 +406,12 @@ namespace Daemon.Modules {
                     }
                 }
             }
-            this.UnitProcessDictionary[unitName].Process.Dispose();
-            this.UnitProcessDictionary[unitName].State=Enums.UnitProcess.State.停止;
-            this.UnitProcessDictionary[unitName].ProcessStartInfo=null;
-            this.UnitProcessDictionary.Remove(unitName);
+            if(this.UnitProcessDictionary.ContainsKey(unitName)) {
+                this.UnitProcessDictionary[unitName].Process.Dispose();
+                this.UnitProcessDictionary[unitName].State=Enums.UnitProcess.State.停止;
+                this.UnitProcessDictionary[unitName].ProcessStartInfo=null;
+                this.UnitProcessDictionary.Remove(unitName);
+            }
             if(!stopBySerivceExited) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit",$"单元\"{unitName}\"执行停止流程完毕");
                 //通知客户端单元停止

@@ -4,25 +4,24 @@
 于是我产生了写一个类似于linux下的systemd的项目的想法  
 
 ### 项目
-- `Host`Wind2服务主机,用于托管应用程序(不再维护),内存使用越8M
-- `Controller`Wind2桌面普通控制端,链接到服务主机后即可远程控制(不再维护)
-- `Daemon`Wind2服务主机,用dotnet core 3.1重新实现并针对以前有缺陷的地方进行优化,内存使用约12M
+- ~~`Host`Wind2服务主机,用于托管应用程序(不再维护)~~
+- ~~`Controller`Wind2桌面普通控制端,链接到服务主机后即可远程控制(不再维护)~~
+- `Daemon`Wind2服务主机,用dotnet core 3.1重新实现并针对以前有缺陷的地方进行优化,内存使用约20M
 - `WebController`Wind2网页控制端 [demo(只能管理本机)](http://w2c.ragnaroks.org/)
-**推荐使用`Daemon`+`WebController`的组合**
 ![WebController](https://i.imgur.com/c0XZAUp.png)
 
 ### 安装
 - 框架依赖=>使用管理员权限执行`dotnet Daemon.dll action:install`
 - 独立=>使用管理员权限执行`Daemon.exe action:install`
-- 可能需要手动去服务控制面板(services.msc)启用 Wind2 服务
+- 可能需要手动去服务控制面板(services.msc)启用Wind2服务
+- 建议安装[dotnet core](https://download.visualstudio.microsoft.com/download/pr/5e1c20ea-113f-47fd-9702-22a8bf1e3974/16bf234b587064709d8e7b58439022d4/dotnet-runtime-3.1.0-win-x64.zip)运行时后使用框架依赖模式部署
 
 ### 卸载
 - 框架依赖=>使用管理员权限执行`dotnet Daemon.dll action:uninstall`
 - 独立=>使用管理员权限执行`Daemon.exe action:uninstall`
 
 ### 单元配置
-**这是`Daemon`项目的单元配置,`Host`项目的单元配置请参考发布的压缩包内的示例**
-单元配置文件都存放于Wind2目录下的Units文件夹中,单元配置是一个编码UTF-8的JSON文本文件,格式如下
+单元配置文件都存放于Wind2目录下的Units文件夹中,单元配置是一个编码UTF-8的JSON文本文件,单元名称就是文件名,格式如下
 ```json
 {
     //单元描述,非必须
@@ -37,15 +36,16 @@
     "AutoStart": false,
     //应用程序自启延迟,单位秒,非必须,若不提供则默认10秒
     "AutoStartDelay": 10,
-    //守护进程,若为true,则应用程序不是被Wind2结束的情况下会被重新启动,某些应用程序会自行退出(比如检测到配置异常),且退出代码不等于0,可能导致无限循环启动
-    "DaemonProcess": false
+    //守护进程,若为true,则应用程序不是被Wind2结束的情况下会被重新启动,某些应用程序会自行退出(比如检测到配置异常),且退出代码不等于0,可能导致无限循环启动,除非应用程序本身设计有误,否则不建议设置为true
+    "DaemonProcess": false,
+    //应用程序是否会派生子进程(比如nginx),若为true则在停止单元时会连同子进程一起结束
+    "HaveChildProcesses": false
 }
 ```
 以上配置代表在Wind2初始化完成后,等待10秒,再启动`C:\DaemonServices\aria2-1.34.0-win-64bit-build1\aria2c.exe --conf-path="C:\DaemonServices\config.conf"`,并且设置工作目录`C:\DaemonServices\aria2-1.34.0-win-64bit-build1\`
 
 ### 全局配置
-**这是`Daemon`项目的全局配置,`Host`项目的全局配置请参考发布的压缩包内的示例**
-全局配置是一个名为**AppSettings.json**的JSON文本文件,编码UTF-8,位于Wind2根目录下,格式如下
+全局配置是一个名为**AppSettings.json**且编码为UTF-8的JSON文本文件,位于Wind2根目录下,格式如下
 ```json
 {
     //是否启用远程控制,高阶用户不建议启用
@@ -61,19 +61,18 @@
 **如果AppSettings.json文件不存在或格式错误,则会使用如上文本作为默认配置使用**
 
 ### 注意事项
-- 被托管的应用程序不支持**交互**
-- 当前不支持托管有图像界面的应用程序(可以启动,但不保证正常使用)
-- 被托管的应用程序默认为"LOCAL SYSTEM"权限,建议只托管**受信任**的应用程序,后面考虑加入使用指定用户权限运行
-- 如果Wind2意外退出,可能导致单元失去托管(毕竟是在服务里面开服务...),这种情况下目前只能手动结束单元进程
-- **强烈建议注册为系统服务运行,停止服务后被托管的单元会跟随停止运行,若作为普通控制台应用运行,被托管的单元将失去托管,需要用户自行关闭**
-- 托管单元格式错误/应用程序绝对路径无法访问/工作目录不存在 的情况下,单元配置文件会被忽略
+- 被托管的应用程序继承Wind2的用户权限,默认为"LOCAL SYSTEM"权限,建议只托管**受信任**的应用程序或修改Wind2服务的用户权限
+- 如果Wind2意外退出,可能导致单元失去托管(毕竟是在服务里面开服务),这种情况下目前只能手动结束单元进程
+- 强烈建议注册为系统服务运行,停止服务后被托管的单元会跟随停止运行,若作为普通控制台应用运行,被托管的单元将失去托管,需要用户自行关闭
+- 托管单元格式错误/应用程序绝对路径无法访问/工作目录不存在 的情况下,单元配置文件会被忽略,若发现托管单元有丢失,请查看日志
 - 托管单元配置文件中,务必使用绝对路径,Wind2当前不支持相对路径
 
 ### 已知兼容列表
 - [aria2](https://github.com/aria2/aria2)
 - [v2ray](https://github.com/v2ray/v2ray-core)
+- [nginx](https://github.com/nginx/nginx)
 
 ### 已知不兼容列表
-- 需要"交互"的应用程序,控制台应用程序的话就是独占stdIn的(比如MC服务端),以及大多数图形界面应用程序
-- [nginx](https://github.com/nginx/nginx) 此应用程序使用多进程(调度进程+工作进程)模式,结束主进程并不会像一般多进程应用程序那样让子进程一同退出 (未测试与srvany/nssm的兼容性)
-- [webd](https://webd.cf/) 此应用程序可以被Wind2启动,但是会立刻自主退出,退出代码为**1**,原因不明,且若Wind2不作为服务直接作为控制台应用运行,则可以成功托管webd (另经过测试,srvany/nssm均无法托管此应用程序,都是立刻退出)
+- 任意图形界面应用程序
+- 任意独占stdin的控制台应用程序(比如minecraft server)
+- [webd](https://webd.cf/) 可以被Wind2启动,但是会立刻自主退出,退出代码为**1**,原因不明,且若Wind2不注册服务直接作为控制台应用运行,则可以成功托管webd (另经过测试,srvany/nssm均无法托管此应用程序,都是立刻退出)

@@ -24,6 +24,9 @@
                             <Cell title="DaemonProcess">
                                 <i-switch slot="extra" v-bind:value="currentDaemonUnitStatusItem.UnitSettings.DaemonProcess" disabled />
                             </Cell>
+                            <Cell title="HaveChildProcesses">
+                                <i-switch slot="extra" v-bind:value="currentDaemonUnitStatusItem.UnitSettings.HaveChildProcesses" disabled />
+                            </Cell>
                         </CellGroup>
                         <Divider />
                         <CellGroup class="daemon-unit-item-card-cellgroup-actions">
