@@ -31,7 +31,8 @@ export default {
     ** Plugins to load before mounting the App
     */
     plugins:[
-        '@/plugins/view-design'
+        '@/plugins/view-design',
+        '@/plugins/websocket-instance-wrap'
     ],
     /*
     ** Nuxt.js dev-modules

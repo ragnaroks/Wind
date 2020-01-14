@@ -15,7 +15,7 @@ namespace Daemon.Modules {
         private readonly Dictionary<Guid,IWebSocketConnection> WebSocketConnectionDictionary=new Dictionary<Guid,IWebSocketConnection>();
         private readonly Byte[] PingPacket=new Byte[]{0x07,0x03,0x05,0x05,0x06,0x00,0x08};
         private readonly Timer PingTimer;
-        private Boolean CanPingTimerState=true;
+        private Boolean PingTimerEnable=true;
 
         public WebSocketServerModule(Int16 port,String address){
             if(!this.Check(address)){
@@ -26,8 +26,8 @@ namespace Daemon.Modules {
             if(address=="any"){address="0.0.0.0";}
             Program.LoggerModule.Log("Modules.WebSocketServerModule.WebSocketServerModule","尝试创建WebSocketServer");
             try {
-                this.WebSocketServer=new WebSocketServer($"ws://{address}:{port}",true);
-                this.WebSocketServer.ListenerSocket.NoDelay=true;
+                this.WebSocketServer=new WebSocketServer($"ws://{address}:{port}",false);
+                //this.WebSocketServer.ListenerSocket.NoDelay=true;
             }catch(Exception exception){
                 ConsoleColor cc=Console.ForegroundColor;
                 Console.ForegroundColor=ConsoleColor.Green;
@@ -35,7 +35,7 @@ namespace Daemon.Modules {
                 Console.ForegroundColor=cc;
                 Program.LoggerModule.Log("Modules.WebSocketServerModule.WebSocketServerModule[Error]",$"创建WebSocketServer异常,{exception.Message},{exception.StackTrace}");
             }
-            this.PingTimer=new Timer(new TimerCallback(OnPingTimerCallback),null,10_000,30_000);
+            this.PingTimer=new Timer(OnPingTimerCallback,null,10_000,30_000);
         }
 
         #region IDisposable Support
@@ -102,15 +102,15 @@ namespace Daemon.Modules {
                 }
                 this.InvalidWebSocketConnectionDictionary.Clear();
             }
-            if(!this.CanPingTimerState || this.WebSocketConnectionDictionary.Count<1){
+            if(!this.PingTimerEnable || this.WebSocketConnectionDictionary.Count<1){
                 Program.LoggerModule.Log("Modules.WebSocketServerModule.OnPingTimerCallback","当前无任何客户端");
                 return;
             }
-            this.CanPingTimerState=false;
+            this.PingTimerEnable=false;
             foreach(KeyValuePair<Guid,IWebSocketConnection> item in this.WebSocketConnectionDictionary){
                 this.SocketRequestPingAsync(item.Value);
             }
-            this.CanPingTimerState=true;
+            this.PingTimerEnable=true;
             Program.LoggerModule.Log("Modules.WebSocketServerModule.OnPingTimerCallback","ping所有客户端完成");
         }
 

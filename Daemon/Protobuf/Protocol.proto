@@ -1,0 +1,36 @@
+syntax = "proto3";
+package Protocol;
+option optimize_for = SPEED;
+
+// https://developers.google.com/protocol-buffers/docs/proto3?hl=zh-cn#simple
+// https://www.npmjs.com/package/google-protobuf
+
+// 1xxx 代表客户端=>服务端
+// 2xxx 代表服务端=>客户端
+message WebSocketPacketTest{
+  uint32 Type=1;
+}
+
+// Type 2001
+// 服务端响应客户端链接事件,并回复给客户端
+message WebSocketServerResponseAfterOnOpen{
+  uint32 Type=1;
+  string ClientConnectionGuid=2;
+  string HelloMessage=3;
+}
+
+// Type 1002
+// 客户端向服务端请求验证ControlKey
+message WebSocketClientRequestValidateControlKey{
+  uint32 Type=1;
+  string ClientConnectionGuid=2;
+  string ControlKey=3;
+}
+// Type 2002
+// 服务端回复客户端ControlKey验证结果
+message WebSocketServerResponseValidateControlKey{
+  uint32 Type=1;
+  string ClientConnectionGuid=2;
+  bool Validation=3;
+  string ValidationMessage=4;
+}

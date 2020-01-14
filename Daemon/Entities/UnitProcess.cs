@@ -7,13 +7,11 @@ namespace Daemon.Entities {
         /// <summary>单元名称</summary>
         public String Name{get;private set;}
         /// <summary>单元进程启动信息</summary>
-        [Newtonsoft.Json.JsonIgnore]
         public ProcessStartInfo ProcessStartInfo{get;set;}
         /// <summary>单元进程</summary>
-        [Newtonsoft.Json.JsonIgnore]
         public Process Process{get;set;}
-        /// <summary>单元状态</summary>
-        public Enums.UnitProcess.State State{get;set;}=Enums.UnitProcess.State.停止;
+        /// <summary>单元状态 停止=1,正在启动=2,运行中=3,正在停止=4</summary>
+        public Int32 State{get;set;}=1;
         /// <summary>单元pid</summary>
         public Int32 ProcessId{get;set;}=0;
 

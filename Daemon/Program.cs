@@ -13,7 +13,8 @@ namespace Daemon {
         /// <summary>应用程序配置模块</summary>
         public static Modules.AppSettingsModule AppSettingsModule=new Modules.AppSettingsModule(ref Program.AppSettings);
         /// <summary>WebSocket远程控制模块</summary>
-        public static Modules.WebSocketServerModule WebSocketServerModule;
+        //public static Modules.WebSocketServerModule WebSocketServerModule;
+        public static Modules.ControlServerModule ControlServerModule;
         /// <summary>单元控制模块</summary>
         public static Modules.UnitControlModule UnitControlModule;
         
@@ -21,8 +22,10 @@ namespace Daemon {
         public static void Main(String[] args) {
             //远程控制模块
             if(Program.AppSettings.ControlEnable) {
-                Program.WebSocketServerModule=new Modules.WebSocketServerModule(Program.AppSettings.ControlPort,Program.AppSettings.ControlAddress);
-                Program.WebSocketServerModule.StartServer();
+                /*Program.WebSocketServerModule=new Modules.WebSocketServerModule(Program.AppSettings.ControlPort,Program.AppSettings.ControlAddress);
+                Program.WebSocketServerModule.StartServer();*/
+                Program.ControlServerModule=new Modules.ControlServerModule(Program.AppSettings.ControlPort,Program.AppSettings.ControlAddress);
+                Program.ControlServerModule.StartServer();
             }
 
             //如何得知服务主机被意外关闭?

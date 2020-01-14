@@ -1,23 +1,23 @@
 <template>
-    <div class="components" data-component="web-socket-item">
-        <p v-if="!currentWebSocketItem" class="no-selected-notice">No selected any daemon</p>
-        <CellGroup v-if="currentWebSocketItem">
-            <Cell v-bind:extra="currentWebSocketItem.hostname" title="Hostname" />
+    <div class="components" data-component="daemon-connection-panel">
+        <p v-if="!currentDaemonItem" class="no-selected-notice">No selected any daemon</p>
+        <CellGroup v-if="currentDaemonItem">
+            <Cell v-bind:extra="currentDaemonItem.hostname" title="Hostname" />
+            <Cell v-bind:extra="currentDaemonItem.websocketAddress" title="Address" />
+            <Cell v-bind:extra="currentDaemonItem.websocketControlKey" title="ControlKey" />
             <Cell title="IsConnect">
-                <i-switch slot="extra" v-bind:value="currentWebSocketItem.connected"
-                v-bind:before-change="beforeChangeCurrentWebSocketItemConnected"
-                v-on:click.native="toggleChangeCurrentWebSocketItemConnected" />
+                <i-switch slot="extra" v-bind:value="currentDaemonItem.websocketWrap.connected"
+                v-bind:before-change="beforeChangeCurrentDaemonConnected"
+                v-on:click.native="toggleChangeCurrentDaemonConnected" />
             </Cell>
-            <Cell v-bind:extra="currentWebSocketItem.address" title="Address" />
-            <Cell v-bind:extra="currentWebSocketItem.controlKey" title="ControlKey" />
             <Cell title="ConnectionId">
-                <span slot="extra" v-show="!currentWebSocketItem.connected">No Connected</span>
-                <span slot="extra" v-show="currentWebSocketItem.connected" v-text="currentWebSocketItem.connectionId" />
+                <span slot="extra" v-show="!currentDaemonItem.websocketWrap.connected">No Connection</span>
+                <span slot="extra" v-show="currentDaemonItem.websocketWrap.connected" v-text="currentDaemonItem.websocketWrap.connectionId" />
             </Cell>
             <Cell title="IsConnectionValidated">
-                <span slot="extra" v-show="!currentWebSocketItem.connected">No Connected</span>
-                <span slot="extra" v-show="currentWebSocketItem.connected && !currentWebSocketItem.connectionValid" class="current-web-socket-item-connection-invalid">Invalid</span>
-                <span slot="extra" v-show="currentWebSocketItem.connected && currentWebSocketItem.connectionValid" class="current-web-socket-item-connection-valid">Valid</span>
+                <span slot="extra" v-show="!currentDaemonItem.websocketWrap.connected">No Connection</span>
+                <span slot="extra" v-show="currentDaemonItem.websocketWrap.connected && !currentDaemonItem.websocketWrap.connectionValid" class="current-web-socket-item-connection-invalid">Invalid</span>
+                <span slot="extra" v-show="currentDaemonItem.websocketWrap.connected && currentDaemonItem.websocketWrap.connectionValid" class="current-web-socket-item-connection-valid">Valid</span>
             </Cell>
         </CellGroup>
     </div>
@@ -32,93 +32,25 @@
 <script>
 export default {
     computed:{
-        webSocketMessageSplitChar:function(){return this.$store.state.webSocketMessageSplitChar;},
-        currentWebSocketItem:function(){
-            if(this.$store.state.webSocketArray.length<1){return null;}
-            for(let i1=0;i1<this.$store.state.webSocketArray.length;i1++){
-                if(this.$store.state.webSocketArray[i1].hostname!==this.$store.state.currentWebSocketItemHostname){continue;}
-                return this.$store.state.webSocketArray[i1];
-            }
-            return null;
-        }/*,
-        currentWebSocketItemConnected:{
-            get:function(){return this.currentWebSocketItem.connected;},
-            set:function(value){
-                if(this.currentWebSocketItem.connected){
-                    this.currentWebSocketItem.instance.close(1000,'user-close');
-                    this.$store.commit('set_WebSocketItem_Connected',{hostname:this.currentWebSocketItem.hostname,connected:false});
-                }else{
-                    try{
-                        this.$store.commit('set_WebSocketItem_Instance',{hostname:this.currentWebSocketItem.hostname,instance:new WebSocket(this.currentWebSocketItem.address)});
-                    }catch(exception){
-                        console.error(exception);
-                        this.$Notice.error({
-                            title:this.currentWebSocketItem.hostname,
-                            desc:this.currentWebSocketItem.hostname+' can not connect (see details in devtool)'
-                        });
-                    }
-                    const _this=this;
-                    _this.currentWebSocketItem.instance.onopen=function(onopenEvent){_this.webSocketItemOnOpen(onopenEvent);};
-                    _this.currentWebSocketItem.instance.onerror=function(onerrorEvent){_this.webSocketItemOnError(onerrorEvent);};
-                    _this.currentWebSocketItem.instance.onclose=function(oncloseEvent){_this.webSocketItemOnClose(oncloseEvent);};
-                    _this.currentWebSocketItem.instance.onmessage=function(onmessageEvent){_this.webSocketItemOnMessage(onmessageEvent);};
-                }
-            }
-        }*/
+        currentDaemonHostname:function(){return this.$store.state.currentDaemonHostname;},
+        currentDaemonItem:function(){return this.$store.state.currentDaemonItem;},
+        currentDaemonItemWebsocketWrap:function(){return this.$store.state.currentDaemonItem.websocketWrap;}
     },
     methods:{
-        beforeChangeCurrentWebSocketItemConnected:function(){
-            return new Promise(function(resolve){});
-        },
-        toggleChangeCurrentWebSocketItemConnected:function(){
-            if(this.currentWebSocketItem.connected){
-                this.currentWebSocketItem.instance.close(1000,'user-close');
-                this.$store.commit('set_WebSocketItem_Connected',{hostname:this.currentWebSocketItem.hostname,connected:false});
-            }else{
-                try{
-                    this.$store.commit('set_WebSocketItem_Instance',{hostname:this.currentWebSocketItem.hostname,instance:new WebSocket(this.currentWebSocketItem.address)});
-                }catch(exception){
-                    console.error(exception);
-                    this.$Notice.error({
-                        title:this.currentWebSocketItem.hostname,
-                        desc:this.currentWebSocketItem.hostname+' can not connect (see details in devtool)'
-                    });
-                }
-                const _this=this;
-                _this.currentWebSocketItem.instance.onopen=function(onopenEvent){_this.webSocketItemOnOpen(onopenEvent);};
-                _this.currentWebSocketItem.instance.onerror=function(onerrorEvent){_this.webSocketItemOnError(onerrorEvent);};
-                _this.currentWebSocketItem.instance.onclose=function(oncloseEvent){_this.webSocketItemOnClose(oncloseEvent);};
-                _this.currentWebSocketItem.instance.onmessage=function(onmessageEvent){_this.webSocketItemOnMessage(onmessageEvent);};
+        beforeChangeCurrentDaemonConnected:function(){return new Promise(function(resolve){});},
+        toggleChangeCurrentDaemonConnected:function(){
+            if(this.currentDaemonItem.websocketWrap.connected){
+                this.currentDaemonItem.websocketWrap.Close();
+                return;
             }
-        },
-        webSocketItemOnOpen:function(onopenEvent){
-            console.log(onopenEvent);
-            this.$store.commit('set_WebSocketItem_Connected',{hostname:this.currentWebSocketItem.hostname,connected:true});
-            this.$Notice.info({
-                title:this.currentWebSocketItem.hostname,
-                desc:this.currentWebSocketItem.hostname+' has been connected'
-            });
-        },
-        webSocketItemOnError:function(onerrorEvent){
-            console.error(onerrorEvent);
-            this.currentWebSocketItem.instance.close(1000,'error-close');
-            this.$Notice.error({
-                title:this.currentWebSocketItem.hostname,
-                desc:this.currentWebSocketItem.hostname+' has been disconnected because an error (see details in devtool)'
-            });
-        },
-        webSocketItemOnClose:function(oncloseEvent){
-            console.log(oncloseEvent);
-            this.$store.commit('set_WebSocketItem_Connected',{hostname:this.currentWebSocketItem.hostname,connected:false});
-            this.$store.commit('set_WebSocketItem_ConnectionId',{hostname:this.currentWebSocketItem.hostname,connectionId:null});
-            this.$store.commit('set_WebSocketItem_ConnectionValid',{hostname:this.currentWebSocketItem.hostname,connectionValid:false});
-            this.$store.commit('clear_Units_In_DaemonUnitStatusArray',{hostname:this.currentWebSocketItem.hostname});
-            if(oncloseEvent.code!==1000){return;}
-            this.$Notice.info({
-                title:this.currentWebSocketItem.hostname,
-                desc:this.currentWebSocketItem.hostname+' has been disconnected'
-            });
-        },
+            try{
+                this.currentDaemonItem.websocketWrap.Connect();
+            }catch(error){
+                console.error('websocket connect error',error);
+                this.$Notice.error({title:this.currentDaemonHostname,desc:'connection on error,see details in devtool(F12)',duration:0});
+            }
+        }
+        /*
         webSocketItemOnMessage:function(onmessageEvent){
             console.log(onmessageEvent);
             if(onmessageEvent.data===null || onmessageEvent.data.length<1){return;}
@@ -273,7 +205,7 @@ export default {
                 title:this.currentWebSocketItem.hostname,
                 desc:this.currentWebSocketItem.hostname+' fetched unit status'
             });
-        }
+        }*/
     }
 };
 </script>

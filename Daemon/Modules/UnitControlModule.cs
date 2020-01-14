@@ -226,9 +226,7 @@ namespace Daemon.Modules {
                 this.UnitProcessDictionary.Remove(unitName);
                 Program.LoggerModule.Log("Modules.UnitControlModule.OnUnitProcessExited",$"进程单元\"{unitName}\"已退出");
                 //通知远控客户端
-                if(Program.WebSocketServerModule!=null) {
-                    Program.WebSocketServerModule.NotifyClientsStopUnitAsync(unitName);
-                }
+                //if(Program.WebSocketServerModule!=null){Program.WebSocketServerModule.NotifyClientsStopUnitAsync(unitName);}
             }
             if(daemonProcess && processExitCode!=0) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.OnUnitProcessExited",$"进程单元\"{unitName}\"异常退出,已被守护进程重新启动");
@@ -279,9 +277,7 @@ namespace Daemon.Modules {
             this.UnitSettingsDictionary[unitName]=unitSettings;
             Program.LoggerModule.Log("Modules.UnitControlModule.ReloadUnit",$"单元\"{unitName}\"配置已更新");
             //通知客户端单元配置刷新
-            if(Program.WebSocketServerModule!=null) {
-                Program.WebSocketServerModule.NotifyClientsReloadUnitAsync(unitName,unitSettings);
-            }
+            //if(Program.WebSocketServerModule!=null) {Program.WebSocketServerModule.NotifyClientsReloadUnitAsync(unitName,unitSettings);}
             if(restartIfUpdate){
                 this.StopUnit(unitName);
                 Task.Factory.StartNew(()=>{
@@ -300,25 +296,19 @@ namespace Daemon.Modules {
             if(this.UnitSettingsDictionary.Count<1) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Warning]","当前没有任何单元配置");
                 //通知远控客户端
-                if(Program.WebSocketServerModule!=null) {
-                    Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
-                }
+                //if(Program.WebSocketServerModule!=null) {Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);}
                 return;
             }
             if(!this.UnitSettingsDictionary.ContainsKey(unitName)) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Warning]",$"单元\"{unitName}\"配置不存在");
                 //通知远控客户端
-                if(Program.WebSocketServerModule!=null) {
-                    Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
-                }
+                //if(Program.WebSocketServerModule!=null) {Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);}
                 return;
             }
             if(this.UnitProcessDictionary.ContainsKey(unitName)) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Warning]",$"单元\"{unitName}\"已在运行中");
                 //通知远控客户端
-                if(Program.WebSocketServerModule!=null) {
-                    Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
-                }
+                //if(Program.WebSocketServerModule!=null) {Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);}
                 return;
             }
             Entities.UnitSettings unitSettings=this.UnitSettingsDictionary[unitName];
@@ -329,40 +319,34 @@ namespace Daemon.Modules {
             unitProcess.Process=new Process{StartInfo=unitProcess.ProcessStartInfo,EnableRaisingEvents=true};
             unitProcess.Process.Exited+=OnUnitProcessExited;
             Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit",$"单元\"{unitSettings.Name}\"所需数据已构造完成,进入启动队列");
-            unitProcess.State=Enums.UnitProcess.State.正在启动;
+            unitProcess.State=2;
             Boolean started=false;
             try {
                 started=unitProcess.Process.Start();
             }catch(Exception exception){
                 Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Error]",$"单元\"{unitSettings.Name}\"启动失败,{exception.Message},{exception.StackTrace}");
-                unitProcess.State=Enums.UnitProcess.State.停止;
+                unitProcess.State=1;
                 unitProcess.ProcessStartInfo=null;
                 unitProcess.Process.Dispose();
                 //通知远控客户端
-                if(Program.WebSocketServerModule!=null) {
-                    Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
-                }
+                //if(Program.WebSocketServerModule!=null) {Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);}
                 return;
             }
             if(!started) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit[Error]",$"单元\"{unitSettings.Name}\"启动失败");
-                unitProcess.State=Enums.UnitProcess.State.停止;
+                unitProcess.State=1;
                 unitProcess.ProcessStartInfo=null;
                 unitProcess.Process.Dispose();
                 //通知远控客户端
-                if(Program.WebSocketServerModule!=null) {
-                    Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);
-                }
+                //if(Program.WebSocketServerModule!=null) {Program.WebSocketServerModule.NotifyClientsStartUnitFailedAsync(unitName);}
                 return;
             }
             Program.LoggerModule.Log("Modules.UnitControlModule.StartUnit",$"单元\"{unitSettings.Name}\"已启动");
-            unitProcess.State=Enums.UnitProcess.State.运行中;
+            unitProcess.State=3;
             unitProcess.ProcessId=unitProcess.Process.Id;
             this.UnitProcessDictionary.Add(unitProcess.Name,unitProcess);
             //通知客户端单元启动
-            if(Program.WebSocketServerModule!=null) {
-                Program.WebSocketServerModule.NotifyClientsStartUnitAsync(unitName,unitProcess);
-            }
+            //if(Program.WebSocketServerModule!=null) {Program.WebSocketServerModule.NotifyClientsStartUnitAsync(unitName,unitProcess);}
         }
 
         /// <summary>
@@ -374,9 +358,7 @@ namespace Daemon.Modules {
             if(this.UnitProcessDictionary.Count<1){
                 if(!stopBySerivceExited) {
                     Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit[Warning]","当前没有任何运行中的单元");
-                    if(Program.WebSocketServerModule!=null) {
-                        Program.WebSocketServerModule.NotifyClientsStopUnitFailedAsync(unitName);
-                    }
+                    //if(Program.WebSocketServerModule!=null) {Program.WebSocketServerModule.NotifyClientsStopUnitFailedAsync(unitName);}
                 }
                 return;
             }
@@ -401,23 +383,19 @@ namespace Daemon.Modules {
                 if(!stopBySerivceExited) {
                     Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit[Error]",$"单元\"{unitName}\"正在执行停止流程时异常,{exception.Message},{exception.StackTrace}");
                     //通知远控客户端
-                    if(Program.WebSocketServerModule!=null) {
-                        Program.WebSocketServerModule.NotifyClientsStopUnitFailedAsync(unitName);
-                    }
+                    //if(Program.WebSocketServerModule!=null) {Program.WebSocketServerModule.NotifyClientsStopUnitFailedAsync(unitName);}
                 }
             }
             if(this.UnitProcessDictionary.ContainsKey(unitName)) {
                 this.UnitProcessDictionary[unitName].Process.Dispose();
-                this.UnitProcessDictionary[unitName].State=Enums.UnitProcess.State.停止;
+                this.UnitProcessDictionary[unitName].State=1;
                 this.UnitProcessDictionary[unitName].ProcessStartInfo=null;
                 this.UnitProcessDictionary.Remove(unitName);
             }
             if(!stopBySerivceExited) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit",$"单元\"{unitName}\"执行停止流程完毕");
                 //通知客户端单元停止
-                if(Program.WebSocketServerModule!=null) {
-                    Program.WebSocketServerModule.NotifyClientsStopUnitAsync(unitName);
-                }
+                //if(Program.WebSocketServerModule!=null) {Program.WebSocketServerModule.NotifyClientsStopUnitAsync(unitName);}
             }
         }
 

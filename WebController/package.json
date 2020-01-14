@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.6",
+    "google-protobuf": "^3.11.2",
     "nuxt": "^2.0.0",
+    "require": "^2.4.20",
     "view-design": "^4.0.2"
   },
   "devDependencies": {

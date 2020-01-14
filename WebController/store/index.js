@@ -1,66 +1,117 @@
-import Vue from 'vue';
-
 export const state= () => ({
-    currentWebSocketItemHostname:null,
-    webSocketMessageSplitChar:'§',
-    webSocketArray:[
+    currentDaemonHostname:null,
+    currentDaemonItem:null,//应该只读
+    daemonArray:[
         {
             hostname:'localhost',
-            instance:null,
-            connected:false,
-            address:'ws://localhost:25565',
-            controlKey:'https://github.com/ragnaroks/Wind2',
-            connectionId:null,
-            connectionValid:false,
-            recvivedText:'',
-            sentText:'',
-            recvivedLength:0,
-            sentLength:0
+            websocketAddress:'ws://localhost:25565',
+            websocketControlKey:'https://github.com/ragnaroks/Wind2',
+            websocketWrap:null,
+            unitStatusArray:[]
         },{
             hostname:'127.0.0.1',
-            instance:null,
-            connected:false,
-            address:'ws://127.0.0.1:25565',
-            controlKey:'https://github.com/ragnaroks/Wind2',
-            connectionId:null,
-            connectionValid:false,
-            recvivedText:'',
-            sentText:'',
-            recvivedLength:0,
-            sentLength:0
+            websocketAddress:'ws://127.0.0.1:25565',
+            websocketControlKey:'https://github.com/ragnaroks/Wind2',
+            websocketWrap:null,
+            unitStatusArray:[]
         },{
             hostname:'::1',
-            instance:null,
-            connected:false,
-            address:'ws://[::1]:25565',
-            controlKey:'https://github.com/ragnaroks/Wind2',
-            connectionId:null,
-            connectionValid:false,
-            recvivedText:'',
-            sentText:'',
-            recvivedLength:0,
-            sentLength:0
+            websocketAddress:'ws://[::1]:25565',
+            websocketControlKey:'https://github.com/ragnaroks/Wind2',
+            websocketWrap:null,
+            unitStatusArray:[]
         }
-    ],
-    daemonUnitStatusArray:{}
+    ]
 });
 
-export const getters = {
-    get_WebSocketItem_ByConnectionId:function(state){
-        return function(connectionId){
-            for(let i1=0;i1<state.webSocketArray.length;i1++){
-                if(state.webSocketArray[i1].connectionId!==connectionId){continue;}
-                return state.webSocketArray[i1];
-            }
-        };
-    }
-};
-
 export const mutations = {
-    setCurrentWebSocketItemHostname:function(state,payload){
+    set_currentDaemonHostname:function(state,payload){
         if(!payload.hostname){return;}
-        state.currentWebSocketItemHostname=payload.hostname;
+        if(state.daemonArray.length<1){return;}
+        state.currentDaemonHostname=payload.hostname;
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.hostname){continue;}
+            state.currentDaemonItem=state.daemonArray[i1];
+            break;
+        }
+        if(!state.currentDaemonItem.websocketWrap){
+            state.currentDaemonItem.websocketWrap=new window.WebSocketInstanceWrap();
+            state.currentDaemonItem.websocketWrap.Setup(state.currentDaemonItem.hostname,state.currentDaemonItem.websocketAddress,state.currentDaemonItem.websocketControlKey,this);
+        }
     },
+    set_connected_In_WebsocketWrap_In_DaemonItem:function(state,payload){
+        if(!payload.hostname || payload.connected===undefined){return;}
+        if(state.daemonArray.length<1){return;}
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.hostname){continue;}
+            state.daemonArray[i1].websocketWrap.connected=payload.connected;
+            break;
+        }
+    },
+    set_connectionId_In_WebsocketWrap_In_DaemonItem:function(state,payload){
+        if(!payload.hostname || payload.connectionId===undefined){return;}
+        if(state.daemonArray.length<1){return;}
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.hostname){continue;}
+            state.daemonArray[i1].websocketWrap.connectionId=payload.connectionId;
+            break;
+        }
+    },
+    set_connectionValid_In_WebsocketWrap_In_DaemonItem:function(state,payload){
+        if(!payload.hostname || payload.connectionValid===undefined){return;}
+        if(state.daemonArray.length<1){return;}
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.hostname){continue;}
+            state.daemonArray[i1].websocketWrap.connectionValid=payload.connectionValid;
+            break;
+        }
+    },
+    increase_receivedLength_In_WebsocketWrap_In_DaemonItem:function(state,payload){
+        if(!payload.hostname || payload.length===undefined){return;}
+        if(state.daemonArray.length<1){return;}
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.hostname){continue;}
+            state.daemonArray[i1].websocketWrap.receivedLength+=payload.length;
+            break;
+        }
+    },
+    increase_sentLength_In_WebsocketWrap_In_DaemonItem:function(state,payload){
+        if(!payload.hostname || payload.length===undefined){return;}
+        if(state.daemonArray.length<1){return;}
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.hostname){continue;}
+            state.daemonArray[i1].websocketWrap.sentLength+=payload.length;
+            break;
+        }
+    },
+    clear_unitStatusArray_In_DaemonItem:function(state,payload){
+        if(!payload.hostname){return;}
+        if(state.daemonArray.length<1){return;}
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.hostname){continue;}
+            state.daemonArray[i1].unitStatusArray=[];
+            break;
+        }
+    }
+    /*set_CurrentDaemon:function(state,payload){
+        if(!payload.hostname){return;}
+        if(state.daemonArray.length<1){return;}
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.hostname){continue;}
+            state.currentDaemonItem=state.daemonArray[i1];
+            break;
+        }
+    },*/
+    /*set_WebSocketWrap_In_DaemonItem:function(state,payload){
+        if(!payload.hostname){return;}
+        if(state.daemonArray.length<1){return;}
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.hostname){continue;}
+            state.daemonArray[i1].websocketWrap=payload.websocketWrap;
+            break;
+        }
+    }*/
+    /*
     //set WebSocketItem
     set_WebSocketItem_Instance:function(state,payload){
         if(state.webSocketArray.length<1){return;}
@@ -217,5 +268,5 @@ export const mutations = {
             Vue.set(state.daemonUnitStatusArray[payload.hostname][i1],'UnitSettings',payload.UnitSettings);
             return;
         }
-    }
+    }*/
 };

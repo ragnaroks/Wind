@@ -1,9 +1,9 @@
 <template>
     <div class="pages" data-layout="default" data-page="index">
         <Sider v-bind:collapsedWidth="0" v-model="sider.isCollapsed" class="page-sider" breakpoint="sm" collapsible hide-trigger>
-            <Menu v-on:on-select="onSiderMenuSelect" theme="dark" width="auto">
+            <Menu v-on:on-select="onMenuSelect" theme="dark" width="auto">
                 <MenuItem name="menu-title" disabled><Icon type="md-list" />Wind2 daemon list</MenuItem>
-                <MenuItem v-for="webSocketArrayHostname in webSocketArrayHostnameArray" v-bind:key="webSocketArrayHostname" v-bind:name="webSocketArrayHostname" v-text="webSocketArrayHostname" />
+                <MenuItem v-for="daemonHostnameItem in daemonHostnameArray" v-bind:key="daemonHostnameItem" v-bind:name="daemonHostnameItem" v-text="daemonHostnameItem" />
                 <MenuItem v-on:click.native="showAddDaemonDialog" name="menu-add-daemon" disabled><Icon type="md-add" />Add Daemon</MenuItem>
             </Menu>
         </Sider>
@@ -15,10 +15,13 @@
             <Content class="page-content">
                 <Collapse v-model="collapse.value">
                     <Panel name="panel-for-component-websocket-item">
-                        daemon connection details
+                        <span>daemon connection details</span>
+                        <!--
                         <component-websocket-item slot="content" v-on:webSocketItemConnectionValidated="onWebSocketItemConnectionValidated" />
+                        -->
+                        <component-daemon-connection-panel slot="content" />
                     </Panel>
-                    <Panel name="panel-for-daemon-controller" class="panel-for-daemon-controller">
+                    <Panel v-if="false" name="panel-for-daemon-controller" class="panel-for-daemon-controller">
                         daemon control
                         <component-daemon-controller slot="content" ref="component-daemon-controller" />
                     </Panel>
@@ -44,21 +47,18 @@
 </style>
 
 <script>
-import componentWebSocketItem from '@/components/WebSocketItem';
+import componentDaemonConnectionPanel from '@/components/DaemonConnectionPanel';
 import componentDaemonController from '@/components/DaemonController';
 
 export default{
     components:{
-        'component-websocket-item':componentWebSocketItem,
+        'component-daemon-connection-panel':componentDaemonConnectionPanel,
         'component-daemon-controller':componentDaemonController
     },
     data:function(){
         return {
             sider:{
-                isCollapsed:false,
-                menu:{
-                    currentActiveName:null
-                }
+                isCollapsed:false
             },
             collapse:{
                 value:['panel-for-component-websocket-item','panel-for-daemon-controller']
@@ -69,41 +69,35 @@ export default{
         };
     },
     computed:{
-        currentWebSocketItemHostname:{
+        currentDaemonHostname:{
             get:function(){
-                return this.$store.state.currentWebSocketItemHostname;
+                return this.$store.state.currentDaemonHostname;
             },
             set:function(value){
-                this.$store.commit('setCurrentWebSocketItemHostname',{hostname:value});
+                this.$store.commit('set_currentDaemonHostname',{hostname:value});
             }
         },
-        currentWebSocketItem:function(){
+        daemonHostnameArray:function(){
+            const array=this.$store.state.daemonArray;
+            if(array.length<1){return null;}
+            const hostnameArray=[];
+            for(let i1=0;i1<array.length;i1++){
+                hostnameArray.push(array[i1].hostname);
+            }
+            return hostnameArray;
+        }
+        /*currentWebSocketItem:function(){
             if(this.$store.state.webSocketArray.length<1){return null;}
             for(let i1=0;i1<this.$store.state.webSocketArray.length;i1++){
                 if(this.$store.state.webSocketArray[i1].hostname!==this.$store.state.currentWebSocketItemHostname){continue;}
                 return this.$store.state.webSocketArray[i1];
             }
             return null;
-        },
-        webSocketArrayHostnameArray:function(){
-            const array=this.$store.state.webSocketArray;
-            if(array.length<1){return null;}
-            const hostnameArrya=[];
-            for(let i1=0;i1<array.length;i1++){
-                hostnameArrya.push(array[i1].hostname);
-            }
-            return hostnameArrya;
-        }
+        },*/
     },
     methods:{
-        onSiderMenuSelect:function(name){
-            this.sider.menu.currentActiveName=name;
-            this.currentWebSocketItemHostname=name;
-        },
-        onWebSocketItemConnectionValidated:function(webSocketItemHostname){
-            if(this.$refs['component-daemon-controller']!==undefined && this.$refs['component-daemon-controller']!==null){
-                this.$refs['component-daemon-controller'].daemonFetchAllUnits();
-            }
+        onMenuSelect:function(name){
+            this.currentDaemonHostname=name;
         },
         showAddDaemonDialog:function(){
             if(this.modalArray.showAddDaemonModal){return;}
@@ -114,6 +108,11 @@ export default{
             setTimeout(() => {
                 _this.modalArray.showAddDaemonModal=false;
             }, 1500);
+        },
+        onWebSocketItemConnectionValidated:function(webSocketItemHostname){
+            if(this.$refs['component-daemon-controller']!==undefined && this.$refs['component-daemon-controller']!==null){
+                this.$refs['component-daemon-controller'].daemonFetchAllUnits();
+            }
         }
     }
 };

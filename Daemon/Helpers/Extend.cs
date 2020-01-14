@@ -60,5 +60,22 @@ namespace Daemon.Helpers {
             Helpers.ProcessHelper.KillChildProcessByParentProcess(thisProcessId);
         }
         #endregion
+
+        #region Protocol.*
+        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseAfterOnOpen thisProtobuf) {
+            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
+            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
+            thisProtobuf.WriteTo(codedOutputStream);
+            codedOutputStream.Dispose();
+            return bytes;
+        }
+        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseValidateControlKey thisProtobuf) {
+            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
+            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
+            thisProtobuf.WriteTo(codedOutputStream);
+            codedOutputStream.Dispose();
+            return bytes;
+        }
+        #endregion
     }
 }
