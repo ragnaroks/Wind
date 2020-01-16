@@ -2,3 +2,4 @@
 .ivu-collapse-content{padding:0 !important;}
 .ivu-collapse-content-box{padding:0 !important;}
 .ivu-notice-desc{text-align:left !important;}
+.ivu-collapse>.ivu-collapse-item>.ivu-collapse-header{background-color:#515a6e !important;color:white !important;}

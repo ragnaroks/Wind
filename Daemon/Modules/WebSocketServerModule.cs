@@ -287,7 +287,7 @@ namespace Daemon.Modules {
                     Program.LoggerModule.Log("Modules.WebSocketServerModule.SocketOnMessageAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求刷新单元,未提供参数已被拒绝");
                     return;
                 }
-                Program.UnitControlModule.ReloadUnit(args[2]);
+                Program.UnitControlModule.ReloadUnit(args[2],true);
                 return;
             }
             //Action 启动单元 $"{ClientGuid}§StartUnit§{unitName}

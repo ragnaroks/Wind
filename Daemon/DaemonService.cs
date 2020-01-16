@@ -20,6 +20,10 @@ namespace Daemon {
             Console.WriteLine("DaemonService.Start");
             Program.LoggerModule.Log("DaemonService.Start","DaemonService Start");
             Program.UnitControlModule=new Modules.UnitControlModule();//读取所有单元并启动所有自启单元
+            if(Program.AppSettings.ControlEnable) {
+                Program.ControlServerModule=new Modules.ControlServerModule(Program.AppSettings.ControlPort,Program.AppSettings.ControlAddress);
+                Program.ControlServerModule.StartServer();
+            }
             Console.WriteLine("DaemonService.Started");
             Program.LoggerModule.Log("DaemonService.Start","DaemonService Started");
         }
@@ -31,6 +35,9 @@ namespace Daemon {
             Console.WriteLine("DaemonService.Stop");
             Program.LoggerModule.Log("DaemonService.Stop","DaemonService Stop");
             Program.UnitControlModule.Dispose();//停止所有单元并释放
+            if(Program.AppSettings.ControlEnable && Program.ControlServerModule!=null) {
+                Program.ControlServerModule.Dispose();
+            }
             Console.WriteLine("DaemonService.Stopped");
             Program.LoggerModule.Log("DaemonService.Stop","DaemonService Stopped");
         }

@@ -1,6 +1,6 @@
 {
   "name": "web-controller",
-  "version": "2.1.20",
+  "version": "2.2.21.3",
   "description": "Wind2 Web Controller",
   "author": "Ragnaroks",
   "private": true,
@@ -12,10 +12,7 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore ."
   },
   "dependencies": {
-    "@nuxtjs/axios": "^5.3.6",
-    "google-protobuf": "^3.11.2",
     "nuxt": "^2.0.0",
-    "require": "^2.4.20",
     "view-design": "^4.0.2"
   },
   "devDependencies": {
@@ -26,6 +23,8 @@
     "babel-plugin-import": "^1.13.0",
     "eslint": "^6.1.0",
     "eslint-plugin-nuxt": ">=0.4.2",
+    "google-protobuf": "^3.11.2",
+    "require": "^2.4.20",
     "stylelint": "^10.1.0"
   }
 }

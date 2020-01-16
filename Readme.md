@@ -12,13 +12,15 @@
 
 ### 安装
 - 框架依赖=>使用管理员权限执行`dotnet Daemon.dll action:install`
-- 独立=>使用管理员权限执行`Daemon.exe action:install`
+- 可移植=>使用管理员权限执行`Daemon.exe action:install`
+- 独立(win32/win64)=>使用管理员权限执行`Daemon.exe action:install`
 - 可能需要手动去服务控制面板(services.msc)启用Wind2服务
-- 建议安装[dotnet core](https://download.visualstudio.microsoft.com/download/pr/5e1c20ea-113f-47fd-9702-22a8bf1e3974/16bf234b587064709d8e7b58439022d4/dotnet-runtime-3.1.0-win-x64.zip)运行时后使用框架依赖模式部署
+- 建议安装[dotnet core x64](https://download.visualstudio.microsoft.com/download/pr/5e1c20ea-113f-47fd-9702-22a8bf1e3974/16bf234b587064709d8e7b58439022d4/dotnet-runtime-3.1.0-win-x64.zip)运行时后使用可移植模式部署
 
 ### 卸载
 - 框架依赖=>使用管理员权限执行`dotnet Daemon.dll action:uninstall`
-- 独立=>使用管理员权限执行`Daemon.exe action:uninstall`
+- 可移植=>使用管理员权限执行`Daemon.exe action:uninstall`
+- 独立(win32/win64)=>使用管理员权限执行`Daemon.exe action:uninstall`
 
 ### 单元配置
 单元配置文件都存放于Wind2目录下的Units文件夹中,单元配置是一个编码UTF-8的JSON文本文件,单元名称就是文件名,格式如下

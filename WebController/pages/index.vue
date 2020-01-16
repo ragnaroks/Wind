@@ -14,16 +14,17 @@
             </Header>
             <Content class="page-content">
                 <Collapse v-model="collapse.value">
-                    <Panel name="panel-for-component-websocket-item">
-                        <span>daemon connection details</span>
-                        <!--
-                        <component-websocket-item slot="content" v-on:webSocketItemConnectionValidated="onWebSocketItemConnectionValidated" />
-                        -->
+                    <Panel name="panel-for-component-daemon-connection-panel">
+                        <span>daemon connection</span>
                         <component-daemon-connection-panel slot="content" />
                     </Panel>
-                    <Panel v-if="false" name="panel-for-daemon-controller" class="panel-for-daemon-controller">
-                        daemon control
-                        <component-daemon-controller slot="content" ref="component-daemon-controller" />
+                    <Panel name="panel-for-component-daemon-information-panel">
+                        <span>daemon info</span>
+                        <component-daemon-information-panel slot="content" />
+                    </Panel>
+                    <Panel name="panel-for-daemon-unit-controller" class="panel-for-daemon-controller">
+                        daemon control (if you want re-fetch all units status,just reconnect this connection)
+                        <component-daemon-unit-controller slot="content" ref="component-daemon-unit-controller" />
                     </Panel>
                 </Collapse>
             </Content>
@@ -39,7 +40,8 @@
 .page-sider{position:fixed;height:100vh;left:0;overflow:auto;}
 .page-header{background-color:white;box-shadow:0 2px 3px 2px rgba(0,0,0,.1);font-weight:bold;position:fixed;top:0;width:100%;z-index:1;padding-left:1rem;}
 .page-body{margin-left:200px;background-color:white;}
-.page-body.page-sider-collapsed{margin-left:0;}
+.page-body.page-sider-collapsed{margin-left:0}
+.page-body.page-sider-collapsed .page-header{background-color:#515a6e;color:white;}
 .page-content{padding:0.5rem;margin-top:4rem;}
 </style>
 <style>
@@ -48,12 +50,14 @@
 
 <script>
 import componentDaemonConnectionPanel from '@/components/DaemonConnectionPanel';
-import componentDaemonController from '@/components/DaemonController';
+import componentDaemonInformationPanel from '@/components/DaemonInformationPanel';
+import componentDaemonUnitController from '@/components/DaemonUnitController';
 
 export default{
     components:{
         'component-daemon-connection-panel':componentDaemonConnectionPanel,
-        'component-daemon-controller':componentDaemonController
+        'component-daemon-information-panel':componentDaemonInformationPanel,
+        'component-daemon-unit-controller':componentDaemonUnitController
     },
     data:function(){
         return {
@@ -61,7 +65,7 @@ export default{
                 isCollapsed:false
             },
             collapse:{
-                value:['panel-for-component-websocket-item','panel-for-daemon-controller']
+                value:['panel-for-component-daemon-connection-panel','panel-for-component-daemon-information-panel','panel-for-daemon-unit-controller']
             },
             modalArray:{
                 showAddDaemonModal:false
@@ -86,14 +90,6 @@ export default{
             }
             return hostnameArray;
         }
-        /*currentWebSocketItem:function(){
-            if(this.$store.state.webSocketArray.length<1){return null;}
-            for(let i1=0;i1<this.$store.state.webSocketArray.length;i1++){
-                if(this.$store.state.webSocketArray[i1].hostname!==this.$store.state.currentWebSocketItemHostname){continue;}
-                return this.$store.state.webSocketArray[i1];
-            }
-            return null;
-        },*/
     },
     methods:{
         onMenuSelect:function(name){
@@ -108,11 +104,6 @@ export default{
             setTimeout(() => {
                 _this.modalArray.showAddDaemonModal=false;
             }, 1500);
-        },
-        onWebSocketItemConnectionValidated:function(webSocketItemHostname){
-            if(this.$refs['component-daemon-controller']!==undefined && this.$refs['component-daemon-controller']!==null){
-                this.$refs['component-daemon-controller'].daemonFetchAllUnits();
-            }
         }
     }
 };

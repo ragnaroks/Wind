@@ -2,22 +2,36 @@
     <div class="components" data-component="daemon-connection-panel">
         <p v-if="!currentDaemonItem" class="no-selected-notice">No selected any daemon</p>
         <CellGroup v-if="currentDaemonItem">
-            <Cell v-bind:extra="currentDaemonItem.hostname" title="Hostname" />
-            <Cell v-bind:extra="currentDaemonItem.websocketAddress" title="Address" />
-            <Cell v-bind:extra="currentDaemonItem.websocketControlKey" title="ControlKey" />
+            <Cell v-bind:extra="currentDaemonItem.hostname" title="Hostname">
+                <Icon slot="icon" type="logo-windows" />
+            </Cell>
+            <Cell v-bind:extra="currentDaemonItem.websocketAddress" title="Address">
+                <Icon slot="icon" type="md-at" />
+            </Cell>
+            <Cell v-bind:extra="currentDaemonItem.websocketControlKey" title="ControlKey">
+                <Icon slot="icon" type="md-key" />
+            </Cell>
             <Cell title="IsConnect">
+                <Icon slot="icon" type="ios-wifi" />
                 <i-switch slot="extra" v-bind:value="currentDaemonItem.websocketWrap.connected"
                 v-bind:before-change="beforeChangeCurrentDaemonConnected"
                 v-on:click.native="toggleChangeCurrentDaemonConnected" />
             </Cell>
             <Cell title="ConnectionId">
-                <span slot="extra" v-show="!currentDaemonItem.websocketWrap.connected">No Connection</span>
-                <span slot="extra" v-show="currentDaemonItem.websocketWrap.connected" v-text="currentDaemonItem.websocketWrap.connectionId" />
+                <Icon slot="icon" type="md-contact" />
+                <span slot="extra" v-text="currentDaemonItem.websocketWrap.connected?currentDaemonItem.websocketWrap.connectionId:'No Connection'" />
             </Cell>
             <Cell title="IsConnectionValidated">
+                <Icon slot="icon" type="md-checkmark-circle" />
                 <span slot="extra" v-show="!currentDaemonItem.websocketWrap.connected">No Connection</span>
                 <span slot="extra" v-show="currentDaemonItem.websocketWrap.connected && !currentDaemonItem.websocketWrap.connectionValid" class="current-web-socket-item-connection-invalid">Invalid</span>
                 <span slot="extra" v-show="currentDaemonItem.websocketWrap.connected && currentDaemonItem.websocketWrap.connectionValid" class="current-web-socket-item-connection-valid">Valid</span>
+            </Cell>
+            <Cell v-bind:extra="currentDaemonItem.websocketWrap.sentLength | fixedByteSizeFilter" title="Sent Byte">
+                <Icon slot="icon" type="md-arrow-round-up" />
+            </Cell>
+            <Cell v-bind:extra="currentDaemonItem.websocketWrap.receivedLength | fixedByteSizeFilter" title="Received Byte">
+                <Icon slot="icon" type="md-arrow-round-down" />
             </Cell>
         </CellGroup>
     </div>
@@ -31,10 +45,19 @@
 
 <script>
 export default {
+    filters:{
+        fixedByteSizeFilter:function(value){
+            if(!value){return '0 B';}
+            if(value>0 && value<1024){return value+' B';}
+            if(value>=1024 && value<1048576){return (value/1024).toFixed(2).replace('.00','')+' KiB';}
+            if(value>=1048576 && value<1073741824){return (value/1048576).toFixed(2).replace('.00','')+' MiB';}
+            if(value>=1073741824 && value<109951162776){return (value/1073741824).toFixed(2).replace('.00','')+' GiB';}
+            return (value/1073741824).toFixed(2).replace('.00','')+' GiB';
+        }
+    },
     computed:{
         currentDaemonHostname:function(){return this.$store.state.currentDaemonHostname;},
-        currentDaemonItem:function(){return this.$store.state.currentDaemonItem;},
-        currentDaemonItemWebsocketWrap:function(){return this.$store.state.currentDaemonItem.websocketWrap;}
+        currentDaemonItem:function(){return this.$store.state.currentDaemonItem;}
     },
     methods:{
         beforeChangeCurrentDaemonConnected:function(){return new Promise(function(resolve){});},

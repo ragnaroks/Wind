@@ -7,30 +7,12 @@ using System.Text;
 namespace Daemon.Helpers {
     public static class ProcessHelper {
         /// <summary>
-        /// 获取指定进程Id的所有子进程Id
-        /// </summary>
-        /// <param name="parentProcessId"></param>
-        /// <returns></returns>
-        public static Int32[] GetChildProcessIdArrayByParentProcessId(Int32 parentProcessId){
-            ManagementObjectSearcher managementObjectSearcher=new ManagementObjectSearcher($"SELECT * FROM Win32_Process WHERE ParentProcessID={parentProcessId}");
-            ManagementObjectCollection managementObjectCollection=managementObjectSearcher.Get();
-            managementObjectSearcher.Dispose();
-            if(managementObjectCollection==null || managementObjectCollection.Count<1){return null;}
-            Int32[] idArray=new Int32[managementObjectCollection.Count];
-            Int32 index=0;
-            foreach(ManagementBaseObject item in managementObjectCollection) {
-                Int32.TryParse(item.GetPropertyValue("ProcessID").ToString(),out idArray[index]);
-            }
-            return idArray;
-        }
-
-        /// <summary>
         /// 获取指定进程Id的所有子进程
         /// </summary>
         /// <param name="parentProcessId"></param>
         /// <returns></returns>
         public static Process[] GetChildProcessArrayByParentProcess(Int32 parentProcessId) {
-            Int32[] childProcessIdArray=ProcessHelper.GetChildProcessIdArrayByParentProcessId(parentProcessId);
+            Int32[] childProcessIdArray=WindowsManagementHelper.GetChildProcessIdArrayByParentProcessId(parentProcessId);
             if(childProcessIdArray==null || childProcessIdArray.Length<1){return null;}
             Process[] childProcessArray=new Process[childProcessIdArray.Length];
             for(Int32 i1 = 0;i1<childProcessIdArray.Length;i1++) {
@@ -49,7 +31,7 @@ namespace Daemon.Helpers {
         /// <param name="parentProcess"></param>
         /// <returns></returns>
         public static Process[] GetChildProcessArrayByParentProcess(Process parentProcess) {
-            Int32[] childProcessIdArray=ProcessHelper.GetChildProcessIdArrayByParentProcessId(parentProcess.Id);
+            Int32[] childProcessIdArray=WindowsManagementHelper.GetChildProcessIdArrayByParentProcessId(parentProcess.Id);
             if(childProcessIdArray==null || childProcessIdArray.Length<1){return null;}
             Process[] childProcessArray=new Process[childProcessIdArray.Length];
             for(Int32 i1 = 0;i1<childProcessIdArray.Length;i1++) {
@@ -91,6 +73,7 @@ namespace Daemon.Helpers {
                 try {
                     childProcessArray[i1].Kill();
                 } catch {
+                    //忽略结束子进程时的异常
                     continue;
                 }
             }
