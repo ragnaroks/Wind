@@ -9,7 +9,7 @@
 - `Daemon`Wind2服务主机
 - `WebController`Wind2网页控制端 [offical(当前只能管理本机)](http://w2c.ragnaroks.org/)
 
-![WebController](https://i.imgur.com/rYLQ2f2.png)
+![WebController](https://i.imgur.com/U7iMqN4.png)
 
 ### 安装
 如果主机已安装[dotnet core runtime 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)则可以直接在[release](https://github.com/ragnaroks/Wind2/releases)下载最新发布包,并用管理员权限指向命令行`Daemon.exe action:install`或`dotnet Daemon.dll action:install`,完成后可能需要手动去服务控制面板(services.msc)启用Wind2服务  
