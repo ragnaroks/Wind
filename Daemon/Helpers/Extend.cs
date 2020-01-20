@@ -64,122 +64,12 @@ namespace Daemon.Helpers {
         #endregion
 
         #region Protocol.*
-        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseAfterOnOpen thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
+        public static Byte[] ToBytes<T>(this T thisProtobuf){
+            Google.Protobuf.IMessage protobuf=(Google.Protobuf.IMessage)thisProtobuf;
+            if(protobuf==null){return null;}
+            Byte[] bytes=new Byte[protobuf.CalculateSize()];
             Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseValidateControlKey thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseFetchDaemonMeta thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseFetchDaemonStatus thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseFetchUnitsStatus thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseFetchUnitStatus thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseReloadUnitsSettings thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseReloadUnitSettings thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseStartUnits thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseStartUnit thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseStopUnits thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerResponseStopUnit thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerNotifyClientsThatUnitSettingsReload thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerNotifyClientsThatUnitStarted thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerNotifyClientsThatUnitStopped thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerNotifyClientsThatUnitStartFailed thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
-            codedOutputStream.Dispose();
-            return bytes;
-        }
-        public static Byte[] ToBytes(this Protocol.WebSocketServerNotifyClientsThatUnitStopFailed thisProtobuf) {
-            Byte[] bytes=new Byte[thisProtobuf.CalculateSize()];
-            Google.Protobuf.CodedOutputStream codedOutputStream=new Google.Protobuf.CodedOutputStream(bytes);
-            thisProtobuf.WriteTo(codedOutputStream);
+            protobuf.WriteTo(codedOutputStream);
             codedOutputStream.Dispose();
             return bytes;
         }
