@@ -11,5 +11,7 @@ namespace Daemon.Entities {
         public UnitSettings UnitSettings{get;set;}=null;
         /// <summary>单元进程</summary>
         public UnitProcess UnitProcess{get;set;}=null;
+        /// <summary>单元网络情况</summary>
+        public UnitNetworkCounter UnitNetworkCounter{get;set;}=null;
     }
 }

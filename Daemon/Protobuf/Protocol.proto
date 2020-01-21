@@ -21,6 +21,8 @@ message DaemonStatus{
   uint64 ProcessWorkingSetSize=2;//进程内存占用字节
   uint32 UnitSettingsCount=3;//托管单元数量
   uint32 UnitProcessCount=4;//托管单元运行数量
+  uint64 NetworkTotalSent=5;
+  uint64 NetworkTotalReceived=6;
 }
 // Unit 配置
 message UnitSettings{
@@ -33,18 +35,28 @@ message UnitSettings{
   uint32 AutoStartDelay=7;//单元自启延迟(秒),默认10秒
   bool DaemonProcess=8;//守护进程
   bool HaveChildProcesses=9;//单元进程是否派生子进程
+  bool FetchNetworkUsage=10;//是否获取单元网络使用情况
 }
-// Unit 进程
+// 托管单元进程
 message UnitProcess{
   string Name=1;//单元名称
   uint32 State=2;//单元状态
   uint32 ProcessId=3;//单元进程Id
 }
-// Daemon 托管单元状态
+// 托管单元网络状态
+message UnitNetworkCounter{
+  string Name=1;
+  uint64 TotalSent=2;
+  uint64 TotalReceived=3;
+  uint64 SendSpeed=4;
+  uint64 ReceiveSpeed=5;
+}
+// 托管单元状态
 message UnitStatus{
   string UnitName=1;
   UnitSettings UnitSettings=2;
   UnitProcess UnitProcess=3;
+  UnitNetworkCounter UnitNetworkCounter=4;
 }
 
 // 1xxx 代表客户端=>服务端
@@ -270,4 +282,20 @@ message WebSocketServerNotifyClientsThatUnitStopFailed{
   uint32 Type=1;
   string ClientConnectionGuid=2;
   string UnitName=3;
+}
+
+// Type 1018
+// 客户端向服务端请求指定单元网络状态
+message WebSocketClientRequestFetchUnitStatusNetworkCounter{
+  uint32 Type=1;
+  string ClientConnectionGuid=2;
+  string UnitName=3;
+}
+// Type 2018
+// 服务端回复客户端指定单元网络状态
+message WebSocketServerResponseFetchUnitStatusNetworkCounter{
+  uint32 Type=1;
+  string ClientConnectionGuid=2;
+  string UnitName=3;
+  UnitNetworkCounter UnitNetworkCounter=4;
 }

@@ -9,19 +9,16 @@ namespace Daemon.Modules {
         private readonly Boolean ProcessorTimePerformanceCounterUseable=false;
         private readonly PerformanceCounter WorkingSetPerformanceCounter=null;
         private readonly Boolean WorkingSetPerformanceCounterUseable=false;
-
+        
         public AppPerformanceCounterModule(){
-            Process process=Process.GetCurrentProcess();
-            String instanceName=process.ProcessName;
-            process.Dispose();
             try {
-                this.ProcessorTimePerformanceCounter=new PerformanceCounter{CategoryName="Process",CounterName="% Processor Time",InstanceName=instanceName,ReadOnly=true};
+                this.ProcessorTimePerformanceCounter=new PerformanceCounter{CategoryName="Process",CounterName="% Processor Time",InstanceName=Program.AppProcess.ProcessName,ReadOnly=true};
                 this.ProcessorTimePerformanceCounterUseable=true;
             }catch(Exception exception) {
                 Console.WriteLine($"Modules.AppPerformanceCounterModule.AppPerformanceCounterModule => 创建ProcessorTimePerformanceCounter性能计数器时异常,{exception.Message},{exception.StackTrace}");
             }
             try {
-                this.WorkingSetPerformanceCounter=new PerformanceCounter{CategoryName="Process",CounterName="Working Set",InstanceName=instanceName,ReadOnly=true};
+                this.WorkingSetPerformanceCounter=new PerformanceCounter{CategoryName="Process",CounterName="Working Set",InstanceName=Program.AppProcess.ProcessName,ReadOnly=true};
                 this.WorkingSetPerformanceCounterUseable=true;
             }catch(Exception exception) {
                 Console.WriteLine($"Modules.AppPerformanceCounterModule.AppPerformanceCounterModule => 创建ProcessorTimePerformanceCounter性能计数器时异常,{exception.Message},{exception.StackTrace}");

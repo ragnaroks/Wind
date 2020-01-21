@@ -205,11 +205,13 @@ namespace Daemon.Modules {
             if(this.UnitProcessDictionary==null) {return;}
             Process process=sender as Process;
             Program.LoggerModule.Log("Modules.UnitControlModule.OnUnitProcessExited",$"进程[{process.Id}]主动退出,退出代码[{process.ExitCode}]");
+            Int32 processId=process.Id;
             String unitName=null;
             Boolean daemonProcess=false;
             Int32 processExitCode=process.ExitCode;
+            //process.Dispose();
             foreach(KeyValuePair<String,Entities.UnitProcess> item in this.UnitProcessDictionary) {
-                if(item.Value.Process.Id!=process.Id){continue;}
+                if(item.Value.Process.Id!=processId){continue;}
                 unitName=item.Key;
                 if(item.Value.Process!=null) {
                     item.Value.Process.Dispose();
@@ -222,6 +224,10 @@ namespace Daemon.Modules {
             if(!String.IsNullOrWhiteSpace(unitName) && this.UnitProcessDictionary.ContainsKey(unitName)){
                 this.UnitProcessDictionary.Remove(unitName);
                 Program.LoggerModule.Log("Modules.UnitControlModule.OnUnitProcessExited",$"进程单元\"{unitName}\"已退出");
+                //移出网络IO统计
+                if(Program.UnitNetworkPerformanceTracerModule!=null && processId>0) {
+                    Program.UnitNetworkPerformanceTracerModule.RemoveCounter(processId);
+                }
                 //通知远控客户端
                 if(Program.AppSettings.ControlEnable && Program.ControlServerModule!=null){
                     Program.ControlServerModule.SocketSendBinaryWebSocketServerNotifyClientsThatUnitStoppedAsync(unitName);
@@ -356,6 +362,10 @@ namespace Daemon.Modules {
             unitProcess.State=3;
             unitProcess.ProcessId=unitProcess.Process.Id;
             this.UnitProcessDictionary.Add(unitProcess.Name,unitProcess);
+            //加入网络IO统计
+            if(Program.UnitNetworkPerformanceTracerModule!=null && unitSettings.FetchNetworkUsage) {
+                Program.UnitNetworkPerformanceTracerModule.AddCounter(unitProcess.ProcessId);
+            }
             //通知客户端单元启动
             if(Program.AppSettings.ControlEnable && Program.ControlServerModule!=null){
                 Program.ControlServerModule.SocketSendBinaryWebSocketServerNotifyClientsThatUnitStartedAsync(unitName,unitProcess);
@@ -402,7 +412,9 @@ namespace Daemon.Modules {
                     Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit[Error]",$"单元\"{unitName}\"正在执行停止流程时异常,{exception.Message},{exception.StackTrace}");
                 }
             }
+            Int32 processId=0;
             if(this.UnitProcessDictionary.ContainsKey(unitName)) {
+                processId=this.UnitProcessDictionary[unitName].ProcessId;
                 this.UnitProcessDictionary[unitName].Process.Dispose();
                 this.UnitProcessDictionary[unitName].State=1;
                 this.UnitProcessDictionary[unitName].ProcessStartInfo=null;
@@ -410,6 +422,10 @@ namespace Daemon.Modules {
             }
             if(!stopBySerivceExited) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.StopUnit",$"单元\"{unitName}\"执行停止流程完毕");
+                //移出网络IO统计
+                if(Program.UnitNetworkPerformanceTracerModule!=null && processId>0) {
+                    Program.UnitNetworkPerformanceTracerModule.RemoveCounter(processId);
+                }
                 //通知客户端单元停止
                 if(Program.AppSettings.ControlEnable && Program.ControlServerModule!=null){
                     Program.ControlServerModule.SocketSendBinaryWebSocketServerNotifyClientsThatUnitStoppedAsync(unitName);

@@ -2,28 +2,28 @@
     <div class="pages" data-layout="default" data-page="index">
         <Sider v-bind:collapsedWidth="0" v-model="sider.isCollapsed" class="page-sider" breakpoint="sm" collapsible hide-trigger>
             <Menu v-on:on-select="onMenuSelect" theme="dark" width="auto">
-                <MenuItem name="menu-title" disabled><Icon type="md-list" />Wind2 daemon list</MenuItem>
+                <MenuItem name="menu-title" disabled><Icon type="md-list" />{{ localLanguageText['10002'] }}</MenuItem>
                 <MenuItem v-for="daemonHostnameItem in daemonHostnameArray" v-bind:key="daemonHostnameItem" v-bind:name="daemonHostnameItem" v-text="daemonHostnameItem" />
-                <MenuItem v-on:click.native="showAddDaemonDialog" name="menu-add-daemon" disabled><Icon type="md-add" />Add Daemon</MenuItem>
+                <MenuItem v-on:click.native="showAddDaemonDialog" name="menu-add-daemon" disabled><Icon type="md-add" />{{ localLanguageText['10003'] }}</MenuItem>
             </Menu>
         </Sider>
         <Layout v-bind:class="['page-body',sider.isCollapsed?'page-sider-collapsed':'']">
             <Header class="page-header">
                 <Icon v-on:click="sider.isCollapsed=!sider.isCollapsed" type="md-menu" style="font-size:1.6rem;margin-right:1rem;" />
-                <span>Wind2 Web Controller</span>
+                <span>Wind2 {{ localLanguageText['10001'] }}</span>
             </Header>
             <Content class="page-content">
                 <Collapse v-model="collapse.value">
                     <Panel name="panel-for-component-daemon-connection-panel">
-                        <span>daemon connection</span>
+                        <span>{{ localLanguageText['10004'] }}</span>
                         <component-daemon-connection-panel slot="content" />
                     </Panel>
                     <Panel name="panel-for-component-daemon-information-panel">
-                        <span>daemon info</span>
+                        <span>{{ localLanguageText['10005'] }}</span>
                         <component-daemon-information-panel slot="content" />
                     </Panel>
                     <Panel name="panel-for-daemon-unit-controller" class="panel-for-daemon-controller">
-                        daemon control (if you want re-fetch all units status,just reconnect this connection)
+                        <span>{{ localLanguageText['10006'] }}</span>
                         <component-daemon-unit-controller slot="content" ref="component-daemon-unit-controller" />
                     </Panel>
                 </Collapse>
@@ -73,6 +73,7 @@ export default{
         };
     },
     computed:{
+        localLanguageText:function(){return this.$store.getters.get_localLanguageText;},
         currentDaemonHostname:{
             get:function(){
                 return this.$store.state.currentDaemonHostname;

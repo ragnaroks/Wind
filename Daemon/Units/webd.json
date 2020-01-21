@@ -6,5 +6,6 @@
     "AutoStart": false,
     "AutoStartDelay": 0,
     "DaemonProcess": false,
-    "HaveChildProcesses": false
+    "HaveChildProcesses": false,
+    "FetchNetworkUsage": false
 }

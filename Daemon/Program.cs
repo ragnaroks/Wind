@@ -4,6 +4,8 @@ using PeterKottas.DotNetCore.WindowsService;
 
 namespace Daemon {
     public static class Program {
+        /// <summary>应用程序进程</summary>
+        public static Process AppProcess;
         /// <summary>应用程序环境</summary>
         public readonly static Entities.AppEnvironment AppEnvironment=new Entities.AppEnvironment();
         /// <summary>应用程序配置</summary>
@@ -13,7 +15,9 @@ namespace Daemon {
         /// <summary>应用程序配置模块</summary>
         public static Modules.AppSettingsModule AppSettingsModule=new Modules.AppSettingsModule(ref Program.AppSettings);
         /// <summary>性能计数器模块</summary>
-        public static Modules.AppPerformanceCounterModule AppPerformanceCounterModule=new Modules.AppPerformanceCounterModule();
+        public static Modules.AppPerformanceCounterModule AppPerformanceCounterModule;
+        /// <summary>单元网络IO统计模块</summary>
+        public static Modules.UnitNetworkPerformanceTracerModule UnitNetworkPerformanceTracerModule;
         /// <summary>WebSocket远程控制模块</summary>
         //public static Modules.WebSocketServerModule WebSocketServerModule;
         public static Modules.ControlServerModule ControlServerModule;
@@ -22,9 +26,10 @@ namespace Daemon {
         
         [STAThread]
         public static void Main(String[] args) {
+            Program.AppProcess=Process.GetCurrentProcess();
             //如何得知服务主机被意外关闭?
-            Process.GetCurrentProcess().EnableRaisingEvents=true;
-            Process.GetCurrentProcess().Exited+=OnProgramExited;
+            Program.AppProcess.EnableRaisingEvents=true;
+            Program.AppProcess.Exited+=OnProgramExited;
 
             ServiceRunner<DaemonService>.Run(config=>{
                 config.SetDisplayName("Wind2");
@@ -58,7 +63,7 @@ namespace Daemon {
                     //错误
                     serviceConfig.OnError(exception=>{
                         ConsoleColor cc=Console.ForegroundColor;
-                        Console.ForegroundColor=ConsoleColor.Green;
+                        Console.ForegroundColor=ConsoleColor.Red;
                         Console.WriteLine($"Program.Main => ServiceOnError | {exception.Message} | {exception.StackTrace}");
                         Console.ForegroundColor=cc;
                         Program.LoggerModule.Log("Program.Main[Error]",$"serviceConfigOnError,{exception.Message},{exception.StackTrace}");

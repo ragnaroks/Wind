@@ -27,99 +27,113 @@ namespace Protocol {
             "Cg5Qcm90b2NvbC5wcm90bxIIUHJvdG9jb2widQoKRGFlbW9uTWV0YRIPCgdW",
             "ZXJzaW9uGAEgASgJEhUKDVdvcmtEaXJlY3RvcnkYAiABKAkSFAoMSG9zdENw",
             "dUNvcmVzGAMgASgNEhYKDkhvc3RNZW1vcnlTaXplGAQgASgEEhEKCVByb2Nl",
-            "c3NJZBgFIAEoDSKBAQoMRGFlbW9uU3RhdHVzEh0KFVByb2Nlc3NUaW1lUGVy",
+            "c3NJZBgFIAEoDSK5AQoMRGFlbW9uU3RhdHVzEh0KFVByb2Nlc3NUaW1lUGVy",
             "Y2VudGFnZRgBIAEoAhIdChVQcm9jZXNzV29ya2luZ1NldFNpemUYAiABKAQS",
             "GQoRVW5pdFNldHRpbmdzQ291bnQYAyABKA0SGAoQVW5pdFByb2Nlc3NDb3Vu",
-            "dBgEIAEoDSLiAQoMVW5pdFNldHRpbmdzEgwKBE5hbWUYASABKAkSEwoLRGVz",
-            "Y3JpcHRpb24YAiABKAkSGwoTRXhlY3V0ZUFic29sdXRlUGF0aBgDIAEoCRId",
-            "ChVXb3JrQWJzb2x1dGVEaXJlY3RvcnkYBCABKAkSFQoNRXhlY3V0ZVBhcmFt",
-            "cxgFIAEoCRIRCglBdXRvU3RhcnQYBiABKAgSFgoOQXV0b1N0YXJ0RGVsYXkY",
-            "ByABKA0SFQoNRGFlbW9uUHJvY2VzcxgIIAEoCBIaChJIYXZlQ2hpbGRQcm9j",
-            "ZXNzZXMYCSABKAgiPQoLVW5pdFByb2Nlc3MSDAoETmFtZRgBIAEoCRINCgVT",
-            "dGF0ZRgCIAEoDRIRCglQcm9jZXNzSWQYAyABKA0ieAoKVW5pdFN0YXR1cxIQ",
-            "CghVbml0TmFtZRgBIAEoCRIsCgxVbml0U2V0dGluZ3MYAiABKAsyFi5Qcm90",
-            "b2NvbC5Vbml0U2V0dGluZ3MSKgoLVW5pdFByb2Nlc3MYAyABKAsyFS5Qcm90",
-            "b2NvbC5Vbml0UHJvY2VzcyIjChNXZWJTb2NrZXRQYWNrZXRUZXN0EgwKBFR5",
-            "cGUYASABKA0iZgoiV2ViU29ja2V0U2VydmVyUmVzcG9uc2VBZnRlck9uT3Bl",
-            "bhIMCgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rpb25HdWlkGAIgASgJ",
-            "EhQKDEhlbGxvTWVzc2FnZRgDIAEoCSJqCihXZWJTb2NrZXRDbGllbnRSZXF1",
-            "ZXN0VmFsaWRhdGVDb250cm9sS2V5EgwKBFR5cGUYASABKA0SHAoUQ2xpZW50",
-            "Q29ubmVjdGlvbkd1aWQYAiABKAkSEgoKQ29udHJvbEtleRgDIAEoCSKGAQop",
-            "V2ViU29ja2V0U2VydmVyUmVzcG9uc2VWYWxpZGF0ZUNvbnRyb2xLZXkSDAoE",
-            "VHlwZRgBIAEoDRIcChRDbGllbnRDb25uZWN0aW9uR3VpZBgCIAEoCRISCgpW",
-            "YWxpZGF0aW9uGAMgASgIEhkKEVZhbGlkYXRpb25NZXNzYWdlGAQgASgJIlMK",
-            "JVdlYlNvY2tldENsaWVudFJlcXVlc3RGZXRjaERhZW1vbk1ldGESDAoEVHlw",
-            "ZRgBIAEoDRIcChRDbGllbnRDb25uZWN0aW9uR3VpZBgCIAEoCSJ+CiZXZWJT",
-            "b2NrZXRTZXJ2ZXJSZXNwb25zZUZldGNoRGFlbW9uTWV0YRIMCgRUeXBlGAEg",
-            "ASgNEhwKFENsaWVudENvbm5lY3Rpb25HdWlkGAIgASgJEigKCkRhZW1vbk1l",
-            "dGEYAyABKAsyFC5Qcm90b2NvbC5EYWVtb25NZXRhIlUKJ1dlYlNvY2tldENs",
-            "aWVudFJlcXVlc3RGZXRjaERhZW1vblN0YXR1cxIMCgRUeXBlGAEgASgNEhwK",
-            "FENsaWVudENvbm5lY3Rpb25HdWlkGAIgASgJIoQBCihXZWJTb2NrZXRTZXJ2",
-            "ZXJSZXNwb25zZUZldGNoRGFlbW9uU3RhdHVzEgwKBFR5cGUYASABKA0SHAoU",
-            "Q2xpZW50Q29ubmVjdGlvbkd1aWQYAiABKAkSLAoMRGFlbW9uU3RhdHVzGAMg",
-            "ASgLMhYuUHJvdG9jb2wuRGFlbW9uU3RhdHVzIlQKJldlYlNvY2tldENsaWVu",
-            "dFJlcXVlc3RGZXRjaFVuaXRzU3RhdHVzEgwKBFR5cGUYASABKA0SHAoUQ2xp",
-            "ZW50Q29ubmVjdGlvbkd1aWQYAiABKAkifwonV2ViU29ja2V0U2VydmVyUmVz",
-            "cG9uc2VGZXRjaFVuaXRzU3RhdHVzEgwKBFR5cGUYASABKA0SHAoUQ2xpZW50",
-            "Q29ubmVjdGlvbkd1aWQYAiABKAkSKAoKVW5pdFN0YXR1cxgDIAMoCzIULlBy",
-            "b3RvY29sLlVuaXRTdGF0dXMiZQolV2ViU29ja2V0Q2xpZW50UmVxdWVzdEZl",
-            "dGNoVW5pdFN0YXR1cxIMCgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rp",
-            "b25HdWlkGAIgASgJEhAKCFVuaXROYW1lGAMgASgJIpABCiZXZWJTb2NrZXRT",
-            "ZXJ2ZXJSZXNwb25zZUZldGNoVW5pdFN0YXR1cxIMCgRUeXBlGAEgASgNEhwK",
-            "FENsaWVudENvbm5lY3Rpb25HdWlkGAIgASgJEhAKCFVuaXROYW1lGAMgASgJ",
-            "EigKClVuaXRTdGF0dXMYBCABKAsyFC5Qcm90b2NvbC5Vbml0U3RhdHVzInAK",
-            "KVdlYlNvY2tldENsaWVudFJlcXVlc3RSZWxvYWRVbml0c1NldHRpbmdzEgwK",
-            "BFR5cGUYASABKA0SHAoUQ2xpZW50Q29ubmVjdGlvbkd1aWQYAiABKAkSFwoP",
-            "UmVzdGFydElmVXBkYXRlGAMgASgIIoMBCipXZWJTb2NrZXRTZXJ2ZXJSZXNw",
-            "b25zZVJlbG9hZFVuaXRzU2V0dGluZ3MSDAoEVHlwZRgBIAEoDRIcChRDbGll",
-            "bnRDb25uZWN0aW9uR3VpZBgCIAEoCRIXCg9SZXN0YXJ0SWZVcGRhdGUYAyAB",
-            "KAgSEAoIRXhlY3V0ZWQYBCABKAgigQEKKFdlYlNvY2tldENsaWVudFJlcXVl",
-            "c3RSZWxvYWRVbml0U2V0dGluZ3MSDAoEVHlwZRgBIAEoDRIcChRDbGllbnRD",
-            "b25uZWN0aW9uR3VpZBgCIAEoCRIXCg9SZXN0YXJ0SWZVcGRhdGUYAyABKAgS",
-            "EAoIVW5pdE5hbWUYBCABKAkilAEKKVdlYlNvY2tldFNlcnZlclJlc3BvbnNl",
-            "UmVsb2FkVW5pdFNldHRpbmdzEgwKBFR5cGUYASABKA0SHAoUQ2xpZW50Q29u",
-            "bmVjdGlvbkd1aWQYAiABKAkSFwoPUmVzdGFydElmVXBkYXRlGAMgASgIEhAK",
-            "CFVuaXROYW1lGAQgASgJEhAKCEV4ZWN1dGVkGAUgASgIIk4KIFdlYlNvY2tl",
-            "dENsaWVudFJlcXVlc3RTdGFydFVuaXRzEgwKBFR5cGUYASABKA0SHAoUQ2xp",
-            "ZW50Q29ubmVjdGlvbkd1aWQYAiABKAkiYQohV2ViU29ja2V0U2VydmVyUmVz",
-            "cG9uc2VTdGFydFVuaXRzEgwKBFR5cGUYASABKA0SHAoUQ2xpZW50Q29ubmVj",
-            "dGlvbkd1aWQYAiABKAkSEAoIRXhlY3V0ZWQYAyABKAgiXwofV2ViU29ja2V0",
-            "Q2xpZW50UmVxdWVzdFN0YXJ0VW5pdBIMCgRUeXBlGAEgASgNEhwKFENsaWVu",
-            "dENvbm5lY3Rpb25HdWlkGAIgASgJEhAKCFVuaXROYW1lGAMgASgJInIKIFdl",
-            "YlNvY2tldFNlcnZlclJlc3BvbnNlU3RhcnRVbml0EgwKBFR5cGUYASABKA0S",
-            "HAoUQ2xpZW50Q29ubmVjdGlvbkd1aWQYAiABKAkSEAoIVW5pdE5hbWUYAyAB",
-            "KAkSEAoIRXhlY3V0ZWQYBCABKAgiTQofV2ViU29ja2V0Q2xpZW50UmVxdWVz",
-            "dFN0b3BVbml0cxIMCgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rpb25H",
-            "dWlkGAIgASgJImAKIFdlYlNvY2tldFNlcnZlclJlc3BvbnNlU3RvcFVuaXRz",
-            "EgwKBFR5cGUYASABKA0SHAoUQ2xpZW50Q29ubmVjdGlvbkd1aWQYAiABKAkS",
-            "EAoIRXhlY3V0ZWQYAyABKAgiXgoeV2ViU29ja2V0Q2xpZW50UmVxdWVzdFN0",
-            "b3BVbml0EgwKBFR5cGUYASABKA0SHAoUQ2xpZW50Q29ubmVjdGlvbkd1aWQY",
-            "AiABKAkSEAoIVW5pdE5hbWUYAyABKAkicQofV2ViU29ja2V0U2VydmVyUmVz",
-            "cG9uc2VTdG9wVW5pdBIMCgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rp",
-            "b25HdWlkGAIgASgJEhAKCFVuaXROYW1lGAMgASgJEhAKCEV4ZWN1dGVkGAQg",
-            "ASgIIqABCjJXZWJTb2NrZXRTZXJ2ZXJOb3RpZnlDbGllbnRzVGhhdFVuaXRT",
-            "ZXR0aW5nc1JlbG9hZBIMCgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rp",
-            "b25HdWlkGAIgASgJEhAKCFVuaXROYW1lGAMgASgJEiwKDFVuaXRTZXR0aW5n",
-            "cxgEIAEoCzIWLlByb3RvY29sLlVuaXRTZXR0aW5ncyKXAQorV2ViU29ja2V0",
-            "U2VydmVyTm90aWZ5Q2xpZW50c1RoYXRVbml0U3RhcnRlZBIMCgRUeXBlGAEg",
-            "ASgNEhwKFENsaWVudENvbm5lY3Rpb25HdWlkGAIgASgJEhAKCFVuaXROYW1l",
-            "GAMgASgJEioKC1VuaXRQcm9jZXNzGAQgASgLMhUuUHJvdG9jb2wuVW5pdFBy",
-            "b2Nlc3MiaworV2ViU29ja2V0U2VydmVyTm90aWZ5Q2xpZW50c1RoYXRVbml0",
-            "U3RvcHBlZBIMCgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rpb25HdWlk",
-            "GAIgASgJEhAKCFVuaXROYW1lGAMgASgJIm8KL1dlYlNvY2tldFNlcnZlck5v",
-            "dGlmeUNsaWVudHNUaGF0VW5pdFN0YXJ0RmFpbGVkEgwKBFR5cGUYASABKA0S",
-            "HAoUQ2xpZW50Q29ubmVjdGlvbkd1aWQYAiABKAkSEAoIVW5pdE5hbWUYAyAB",
-            "KAkibgouV2ViU29ja2V0U2VydmVyTm90aWZ5Q2xpZW50c1RoYXRVbml0U3Rv",
-            "cEZhaWxlZBIMCgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rpb25HdWlk",
-            "GAIgASgJEhAKCFVuaXROYW1lGAMgASgJQgJIAWIGcHJvdG8z"));
+            "dBgEIAEoDRIYChBOZXR3b3JrVG90YWxTZW50GAUgASgEEhwKFE5ldHdvcmtU",
+            "b3RhbFJlY2VpdmVkGAYgASgEIv0BCgxVbml0U2V0dGluZ3MSDAoETmFtZRgB",
+            "IAEoCRITCgtEZXNjcmlwdGlvbhgCIAEoCRIbChNFeGVjdXRlQWJzb2x1dGVQ",
+            "YXRoGAMgASgJEh0KFVdvcmtBYnNvbHV0ZURpcmVjdG9yeRgEIAEoCRIVCg1F",
+            "eGVjdXRlUGFyYW1zGAUgASgJEhEKCUF1dG9TdGFydBgGIAEoCBIWCg5BdXRv",
+            "U3RhcnREZWxheRgHIAEoDRIVCg1EYWVtb25Qcm9jZXNzGAggASgIEhoKEkhh",
+            "dmVDaGlsZFByb2Nlc3NlcxgJIAEoCBIZChFGZXRjaE5ldHdvcmtVc2FnZRgK",
+            "IAEoCCI9CgtVbml0UHJvY2VzcxIMCgROYW1lGAEgASgJEg0KBVN0YXRlGAIg",
+            "ASgNEhEKCVByb2Nlc3NJZBgDIAEoDSJ1ChJVbml0TmV0d29ya0NvdW50ZXIS",
+            "DAoETmFtZRgBIAEoCRIRCglUb3RhbFNlbnQYAiABKAQSFQoNVG90YWxSZWNl",
+            "aXZlZBgDIAEoBBIRCglTZW5kU3BlZWQYBCABKAQSFAoMUmVjZWl2ZVNwZWVk",
+            "GAUgASgEIrIBCgpVbml0U3RhdHVzEhAKCFVuaXROYW1lGAEgASgJEiwKDFVu",
+            "aXRTZXR0aW5ncxgCIAEoCzIWLlByb3RvY29sLlVuaXRTZXR0aW5ncxIqCgtV",
+            "bml0UHJvY2VzcxgDIAEoCzIVLlByb3RvY29sLlVuaXRQcm9jZXNzEjgKElVu",
+            "aXROZXR3b3JrQ291bnRlchgEIAEoCzIcLlByb3RvY29sLlVuaXROZXR3b3Jr",
+            "Q291bnRlciIjChNXZWJTb2NrZXRQYWNrZXRUZXN0EgwKBFR5cGUYASABKA0i",
+            "ZgoiV2ViU29ja2V0U2VydmVyUmVzcG9uc2VBZnRlck9uT3BlbhIMCgRUeXBl",
+            "GAEgASgNEhwKFENsaWVudENvbm5lY3Rpb25HdWlkGAIgASgJEhQKDEhlbGxv",
+            "TWVzc2FnZRgDIAEoCSJqCihXZWJTb2NrZXRDbGllbnRSZXF1ZXN0VmFsaWRh",
+            "dGVDb250cm9sS2V5EgwKBFR5cGUYASABKA0SHAoUQ2xpZW50Q29ubmVjdGlv",
+            "bkd1aWQYAiABKAkSEgoKQ29udHJvbEtleRgDIAEoCSKGAQopV2ViU29ja2V0",
+            "U2VydmVyUmVzcG9uc2VWYWxpZGF0ZUNvbnRyb2xLZXkSDAoEVHlwZRgBIAEo",
+            "DRIcChRDbGllbnRDb25uZWN0aW9uR3VpZBgCIAEoCRISCgpWYWxpZGF0aW9u",
+            "GAMgASgIEhkKEVZhbGlkYXRpb25NZXNzYWdlGAQgASgJIlMKJVdlYlNvY2tl",
+            "dENsaWVudFJlcXVlc3RGZXRjaERhZW1vbk1ldGESDAoEVHlwZRgBIAEoDRIc",
+            "ChRDbGllbnRDb25uZWN0aW9uR3VpZBgCIAEoCSJ+CiZXZWJTb2NrZXRTZXJ2",
+            "ZXJSZXNwb25zZUZldGNoRGFlbW9uTWV0YRIMCgRUeXBlGAEgASgNEhwKFENs",
+            "aWVudENvbm5lY3Rpb25HdWlkGAIgASgJEigKCkRhZW1vbk1ldGEYAyABKAsy",
+            "FC5Qcm90b2NvbC5EYWVtb25NZXRhIlUKJ1dlYlNvY2tldENsaWVudFJlcXVl",
+            "c3RGZXRjaERhZW1vblN0YXR1cxIMCgRUeXBlGAEgASgNEhwKFENsaWVudENv",
+            "bm5lY3Rpb25HdWlkGAIgASgJIoQBCihXZWJTb2NrZXRTZXJ2ZXJSZXNwb25z",
+            "ZUZldGNoRGFlbW9uU3RhdHVzEgwKBFR5cGUYASABKA0SHAoUQ2xpZW50Q29u",
+            "bmVjdGlvbkd1aWQYAiABKAkSLAoMRGFlbW9uU3RhdHVzGAMgASgLMhYuUHJv",
+            "dG9jb2wuRGFlbW9uU3RhdHVzIlQKJldlYlNvY2tldENsaWVudFJlcXVlc3RG",
+            "ZXRjaFVuaXRzU3RhdHVzEgwKBFR5cGUYASABKA0SHAoUQ2xpZW50Q29ubmVj",
+            "dGlvbkd1aWQYAiABKAkifwonV2ViU29ja2V0U2VydmVyUmVzcG9uc2VGZXRj",
+            "aFVuaXRzU3RhdHVzEgwKBFR5cGUYASABKA0SHAoUQ2xpZW50Q29ubmVjdGlv",
+            "bkd1aWQYAiABKAkSKAoKVW5pdFN0YXR1cxgDIAMoCzIULlByb3RvY29sLlVu",
+            "aXRTdGF0dXMiZQolV2ViU29ja2V0Q2xpZW50UmVxdWVzdEZldGNoVW5pdFN0",
+            "YXR1cxIMCgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rpb25HdWlkGAIg",
+            "ASgJEhAKCFVuaXROYW1lGAMgASgJIpABCiZXZWJTb2NrZXRTZXJ2ZXJSZXNw",
+            "b25zZUZldGNoVW5pdFN0YXR1cxIMCgRUeXBlGAEgASgNEhwKFENsaWVudENv",
+            "bm5lY3Rpb25HdWlkGAIgASgJEhAKCFVuaXROYW1lGAMgASgJEigKClVuaXRT",
+            "dGF0dXMYBCABKAsyFC5Qcm90b2NvbC5Vbml0U3RhdHVzInAKKVdlYlNvY2tl",
+            "dENsaWVudFJlcXVlc3RSZWxvYWRVbml0c1NldHRpbmdzEgwKBFR5cGUYASAB",
+            "KA0SHAoUQ2xpZW50Q29ubmVjdGlvbkd1aWQYAiABKAkSFwoPUmVzdGFydElm",
+            "VXBkYXRlGAMgASgIIoMBCipXZWJTb2NrZXRTZXJ2ZXJSZXNwb25zZVJlbG9h",
+            "ZFVuaXRzU2V0dGluZ3MSDAoEVHlwZRgBIAEoDRIcChRDbGllbnRDb25uZWN0",
+            "aW9uR3VpZBgCIAEoCRIXCg9SZXN0YXJ0SWZVcGRhdGUYAyABKAgSEAoIRXhl",
+            "Y3V0ZWQYBCABKAgigQEKKFdlYlNvY2tldENsaWVudFJlcXVlc3RSZWxvYWRV",
+            "bml0U2V0dGluZ3MSDAoEVHlwZRgBIAEoDRIcChRDbGllbnRDb25uZWN0aW9u",
+            "R3VpZBgCIAEoCRIXCg9SZXN0YXJ0SWZVcGRhdGUYAyABKAgSEAoIVW5pdE5h",
+            "bWUYBCABKAkilAEKKVdlYlNvY2tldFNlcnZlclJlc3BvbnNlUmVsb2FkVW5p",
+            "dFNldHRpbmdzEgwKBFR5cGUYASABKA0SHAoUQ2xpZW50Q29ubmVjdGlvbkd1",
+            "aWQYAiABKAkSFwoPUmVzdGFydElmVXBkYXRlGAMgASgIEhAKCFVuaXROYW1l",
+            "GAQgASgJEhAKCEV4ZWN1dGVkGAUgASgIIk4KIFdlYlNvY2tldENsaWVudFJl",
+            "cXVlc3RTdGFydFVuaXRzEgwKBFR5cGUYASABKA0SHAoUQ2xpZW50Q29ubmVj",
+            "dGlvbkd1aWQYAiABKAkiYQohV2ViU29ja2V0U2VydmVyUmVzcG9uc2VTdGFy",
+            "dFVuaXRzEgwKBFR5cGUYASABKA0SHAoUQ2xpZW50Q29ubmVjdGlvbkd1aWQY",
+            "AiABKAkSEAoIRXhlY3V0ZWQYAyABKAgiXwofV2ViU29ja2V0Q2xpZW50UmVx",
+            "dWVzdFN0YXJ0VW5pdBIMCgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rp",
+            "b25HdWlkGAIgASgJEhAKCFVuaXROYW1lGAMgASgJInIKIFdlYlNvY2tldFNl",
+            "cnZlclJlc3BvbnNlU3RhcnRVbml0EgwKBFR5cGUYASABKA0SHAoUQ2xpZW50",
+            "Q29ubmVjdGlvbkd1aWQYAiABKAkSEAoIVW5pdE5hbWUYAyABKAkSEAoIRXhl",
+            "Y3V0ZWQYBCABKAgiTQofV2ViU29ja2V0Q2xpZW50UmVxdWVzdFN0b3BVbml0",
+            "cxIMCgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rpb25HdWlkGAIgASgJ",
+            "ImAKIFdlYlNvY2tldFNlcnZlclJlc3BvbnNlU3RvcFVuaXRzEgwKBFR5cGUY",
+            "ASABKA0SHAoUQ2xpZW50Q29ubmVjdGlvbkd1aWQYAiABKAkSEAoIRXhlY3V0",
+            "ZWQYAyABKAgiXgoeV2ViU29ja2V0Q2xpZW50UmVxdWVzdFN0b3BVbml0EgwK",
+            "BFR5cGUYASABKA0SHAoUQ2xpZW50Q29ubmVjdGlvbkd1aWQYAiABKAkSEAoI",
+            "VW5pdE5hbWUYAyABKAkicQofV2ViU29ja2V0U2VydmVyUmVzcG9uc2VTdG9w",
+            "VW5pdBIMCgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rpb25HdWlkGAIg",
+            "ASgJEhAKCFVuaXROYW1lGAMgASgJEhAKCEV4ZWN1dGVkGAQgASgIIqABCjJX",
+            "ZWJTb2NrZXRTZXJ2ZXJOb3RpZnlDbGllbnRzVGhhdFVuaXRTZXR0aW5nc1Jl",
+            "bG9hZBIMCgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rpb25HdWlkGAIg",
+            "ASgJEhAKCFVuaXROYW1lGAMgASgJEiwKDFVuaXRTZXR0aW5ncxgEIAEoCzIW",
+            "LlByb3RvY29sLlVuaXRTZXR0aW5ncyKXAQorV2ViU29ja2V0U2VydmVyTm90",
+            "aWZ5Q2xpZW50c1RoYXRVbml0U3RhcnRlZBIMCgRUeXBlGAEgASgNEhwKFENs",
+            "aWVudENvbm5lY3Rpb25HdWlkGAIgASgJEhAKCFVuaXROYW1lGAMgASgJEioK",
+            "C1VuaXRQcm9jZXNzGAQgASgLMhUuUHJvdG9jb2wuVW5pdFByb2Nlc3Miawor",
+            "V2ViU29ja2V0U2VydmVyTm90aWZ5Q2xpZW50c1RoYXRVbml0U3RvcHBlZBIM",
+            "CgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rpb25HdWlkGAIgASgJEhAK",
+            "CFVuaXROYW1lGAMgASgJIm8KL1dlYlNvY2tldFNlcnZlck5vdGlmeUNsaWVu",
+            "dHNUaGF0VW5pdFN0YXJ0RmFpbGVkEgwKBFR5cGUYASABKA0SHAoUQ2xpZW50",
+            "Q29ubmVjdGlvbkd1aWQYAiABKAkSEAoIVW5pdE5hbWUYAyABKAkibgouV2Vi",
+            "U29ja2V0U2VydmVyTm90aWZ5Q2xpZW50c1RoYXRVbml0U3RvcEZhaWxlZBIM",
+            "CgRUeXBlGAEgASgNEhwKFENsaWVudENvbm5lY3Rpb25HdWlkGAIgASgJEhAK",
+            "CFVuaXROYW1lGAMgASgJInMKM1dlYlNvY2tldENsaWVudFJlcXVlc3RGZXRj",
+            "aFVuaXRTdGF0dXNOZXR3b3JrQ291bnRlchIMCgRUeXBlGAEgASgNEhwKFENs",
+            "aWVudENvbm5lY3Rpb25HdWlkGAIgASgJEhAKCFVuaXROYW1lGAMgASgJIq4B",
+            "CjRXZWJTb2NrZXRTZXJ2ZXJSZXNwb25zZUZldGNoVW5pdFN0YXR1c05ldHdv",
+            "cmtDb3VudGVyEgwKBFR5cGUYASABKA0SHAoUQ2xpZW50Q29ubmVjdGlvbkd1",
+            "aWQYAiABKAkSEAoIVW5pdE5hbWUYAyABKAkSOAoSVW5pdE5ldHdvcmtDb3Vu",
+            "dGVyGAQgASgLMhwuUHJvdG9jb2wuVW5pdE5ldHdvcmtDb3VudGVyQgJIAWIG",
+            "cHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.DaemonMeta), global::Protocol.DaemonMeta.Parser, new[]{ "Version", "WorkDirectory", "HostCpuCores", "HostMemorySize", "ProcessId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.DaemonStatus), global::Protocol.DaemonStatus.Parser, new[]{ "ProcessTimePercentage", "ProcessWorkingSetSize", "UnitSettingsCount", "UnitProcessCount" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.UnitSettings), global::Protocol.UnitSettings.Parser, new[]{ "Name", "Description", "ExecuteAbsolutePath", "WorkAbsoluteDirectory", "ExecuteParams", "AutoStart", "AutoStartDelay", "DaemonProcess", "HaveChildProcesses" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.DaemonStatus), global::Protocol.DaemonStatus.Parser, new[]{ "ProcessTimePercentage", "ProcessWorkingSetSize", "UnitSettingsCount", "UnitProcessCount", "NetworkTotalSent", "NetworkTotalReceived" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.UnitSettings), global::Protocol.UnitSettings.Parser, new[]{ "Name", "Description", "ExecuteAbsolutePath", "WorkAbsoluteDirectory", "ExecuteParams", "AutoStart", "AutoStartDelay", "DaemonProcess", "HaveChildProcesses", "FetchNetworkUsage" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.UnitProcess), global::Protocol.UnitProcess.Parser, new[]{ "Name", "State", "ProcessId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.UnitStatus), global::Protocol.UnitStatus.Parser, new[]{ "UnitName", "UnitSettings", "UnitProcess" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.UnitNetworkCounter), global::Protocol.UnitNetworkCounter.Parser, new[]{ "Name", "TotalSent", "TotalReceived", "SendSpeed", "ReceiveSpeed" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.UnitStatus), global::Protocol.UnitStatus.Parser, new[]{ "UnitName", "UnitSettings", "UnitProcess", "UnitNetworkCounter" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.WebSocketPacketTest), global::Protocol.WebSocketPacketTest.Parser, new[]{ "Type" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.WebSocketServerResponseAfterOnOpen), global::Protocol.WebSocketServerResponseAfterOnOpen.Parser, new[]{ "Type", "ClientConnectionGuid", "HelloMessage" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.WebSocketClientRequestValidateControlKey), global::Protocol.WebSocketClientRequestValidateControlKey.Parser, new[]{ "Type", "ClientConnectionGuid", "ControlKey" }, null, null, null, null),
@@ -148,7 +162,9 @@ namespace Protocol {
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.WebSocketServerNotifyClientsThatUnitStarted), global::Protocol.WebSocketServerNotifyClientsThatUnitStarted.Parser, new[]{ "Type", "ClientConnectionGuid", "UnitName", "UnitProcess" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.WebSocketServerNotifyClientsThatUnitStopped), global::Protocol.WebSocketServerNotifyClientsThatUnitStopped.Parser, new[]{ "Type", "ClientConnectionGuid", "UnitName" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.WebSocketServerNotifyClientsThatUnitStartFailed), global::Protocol.WebSocketServerNotifyClientsThatUnitStartFailed.Parser, new[]{ "Type", "ClientConnectionGuid", "UnitName" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.WebSocketServerNotifyClientsThatUnitStopFailed), global::Protocol.WebSocketServerNotifyClientsThatUnitStopFailed.Parser, new[]{ "Type", "ClientConnectionGuid", "UnitName" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.WebSocketServerNotifyClientsThatUnitStopFailed), global::Protocol.WebSocketServerNotifyClientsThatUnitStopFailed.Parser, new[]{ "Type", "ClientConnectionGuid", "UnitName" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.WebSocketClientRequestFetchUnitStatusNetworkCounter), global::Protocol.WebSocketClientRequestFetchUnitStatusNetworkCounter.Parser, new[]{ "Type", "ClientConnectionGuid", "UnitName" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Protocol.WebSocketServerResponseFetchUnitStatusNetworkCounter), global::Protocol.WebSocketServerResponseFetchUnitStatusNetworkCounter.Parser, new[]{ "Type", "ClientConnectionGuid", "UnitName", "UnitNetworkCounter" }, null, null, null, null)
           }));
     }
     #endregion
@@ -447,6 +463,8 @@ namespace Protocol {
       processWorkingSetSize_ = other.processWorkingSetSize_;
       unitSettingsCount_ = other.unitSettingsCount_;
       unitProcessCount_ = other.unitProcessCount_;
+      networkTotalSent_ = other.networkTotalSent_;
+      networkTotalReceived_ = other.networkTotalReceived_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -511,6 +529,28 @@ namespace Protocol {
       }
     }
 
+    /// <summary>Field number for the "NetworkTotalSent" field.</summary>
+    public const int NetworkTotalSentFieldNumber = 5;
+    private ulong networkTotalSent_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong NetworkTotalSent {
+      get { return networkTotalSent_; }
+      set {
+        networkTotalSent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "NetworkTotalReceived" field.</summary>
+    public const int NetworkTotalReceivedFieldNumber = 6;
+    private ulong networkTotalReceived_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong NetworkTotalReceived {
+      get { return networkTotalReceived_; }
+      set {
+        networkTotalReceived_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as DaemonStatus);
@@ -528,6 +568,8 @@ namespace Protocol {
       if (ProcessWorkingSetSize != other.ProcessWorkingSetSize) return false;
       if (UnitSettingsCount != other.UnitSettingsCount) return false;
       if (UnitProcessCount != other.UnitProcessCount) return false;
+      if (NetworkTotalSent != other.NetworkTotalSent) return false;
+      if (NetworkTotalReceived != other.NetworkTotalReceived) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -538,6 +580,8 @@ namespace Protocol {
       if (ProcessWorkingSetSize != 0UL) hash ^= ProcessWorkingSetSize.GetHashCode();
       if (UnitSettingsCount != 0) hash ^= UnitSettingsCount.GetHashCode();
       if (UnitProcessCount != 0) hash ^= UnitProcessCount.GetHashCode();
+      if (NetworkTotalSent != 0UL) hash ^= NetworkTotalSent.GetHashCode();
+      if (NetworkTotalReceived != 0UL) hash ^= NetworkTotalReceived.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -567,6 +611,14 @@ namespace Protocol {
         output.WriteRawTag(32);
         output.WriteUInt32(UnitProcessCount);
       }
+      if (NetworkTotalSent != 0UL) {
+        output.WriteRawTag(40);
+        output.WriteUInt64(NetworkTotalSent);
+      }
+      if (NetworkTotalReceived != 0UL) {
+        output.WriteRawTag(48);
+        output.WriteUInt64(NetworkTotalReceived);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -586,6 +638,12 @@ namespace Protocol {
       }
       if (UnitProcessCount != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(UnitProcessCount);
+      }
+      if (NetworkTotalSent != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(NetworkTotalSent);
+      }
+      if (NetworkTotalReceived != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(NetworkTotalReceived);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -609,6 +667,12 @@ namespace Protocol {
       }
       if (other.UnitProcessCount != 0) {
         UnitProcessCount = other.UnitProcessCount;
+      }
+      if (other.NetworkTotalSent != 0UL) {
+        NetworkTotalSent = other.NetworkTotalSent;
+      }
+      if (other.NetworkTotalReceived != 0UL) {
+        NetworkTotalReceived = other.NetworkTotalReceived;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -635,6 +699,14 @@ namespace Protocol {
           }
           case 32: {
             UnitProcessCount = input.ReadUInt32();
+            break;
+          }
+          case 40: {
+            NetworkTotalSent = input.ReadUInt64();
+            break;
+          }
+          case 48: {
+            NetworkTotalReceived = input.ReadUInt64();
             break;
           }
         }
@@ -680,6 +752,7 @@ namespace Protocol {
       autoStartDelay_ = other.autoStartDelay_;
       daemonProcess_ = other.daemonProcess_;
       haveChildProcesses_ = other.haveChildProcesses_;
+      fetchNetworkUsage_ = other.fetchNetworkUsage_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -814,6 +887,20 @@ namespace Protocol {
       }
     }
 
+    /// <summary>Field number for the "FetchNetworkUsage" field.</summary>
+    public const int FetchNetworkUsageFieldNumber = 10;
+    private bool fetchNetworkUsage_;
+    /// <summary>
+    ///是否获取单元网络使用情况
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool FetchNetworkUsage {
+      get { return fetchNetworkUsage_; }
+      set {
+        fetchNetworkUsage_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as UnitSettings);
@@ -836,6 +923,7 @@ namespace Protocol {
       if (AutoStartDelay != other.AutoStartDelay) return false;
       if (DaemonProcess != other.DaemonProcess) return false;
       if (HaveChildProcesses != other.HaveChildProcesses) return false;
+      if (FetchNetworkUsage != other.FetchNetworkUsage) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -851,6 +939,7 @@ namespace Protocol {
       if (AutoStartDelay != 0) hash ^= AutoStartDelay.GetHashCode();
       if (DaemonProcess != false) hash ^= DaemonProcess.GetHashCode();
       if (HaveChildProcesses != false) hash ^= HaveChildProcesses.GetHashCode();
+      if (FetchNetworkUsage != false) hash ^= FetchNetworkUsage.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -900,6 +989,10 @@ namespace Protocol {
         output.WriteRawTag(72);
         output.WriteBool(HaveChildProcesses);
       }
+      if (FetchNetworkUsage != false) {
+        output.WriteRawTag(80);
+        output.WriteBool(FetchNetworkUsage);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -933,6 +1026,9 @@ namespace Protocol {
         size += 1 + 1;
       }
       if (HaveChildProcesses != false) {
+        size += 1 + 1;
+      }
+      if (FetchNetworkUsage != false) {
         size += 1 + 1;
       }
       if (_unknownFields != null) {
@@ -972,6 +1068,9 @@ namespace Protocol {
       }
       if (other.HaveChildProcesses != false) {
         HaveChildProcesses = other.HaveChildProcesses;
+      }
+      if (other.FetchNetworkUsage != false) {
+        FetchNetworkUsage = other.FetchNetworkUsage;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1020,6 +1119,10 @@ namespace Protocol {
             HaveChildProcesses = input.ReadBool();
             break;
           }
+          case 80: {
+            FetchNetworkUsage = input.ReadBool();
+            break;
+          }
         }
       }
     }
@@ -1027,7 +1130,7 @@ namespace Protocol {
   }
 
   /// <summary>
-  /// Unit 进程
+  /// 托管单元进程
   /// </summary>
   public sealed partial class UnitProcess : pb::IMessage<UnitProcess> {
     private static readonly pb::MessageParser<UnitProcess> _parser = new pb::MessageParser<UnitProcess>(() => new UnitProcess());
@@ -1224,7 +1327,251 @@ namespace Protocol {
   }
 
   /// <summary>
-  /// Daemon 托管单元状态
+  /// 托管单元网络状态
+  /// </summary>
+  public sealed partial class UnitNetworkCounter : pb::IMessage<UnitNetworkCounter> {
+    private static readonly pb::MessageParser<UnitNetworkCounter> _parser = new pb::MessageParser<UnitNetworkCounter>(() => new UnitNetworkCounter());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<UnitNetworkCounter> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[4]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UnitNetworkCounter() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UnitNetworkCounter(UnitNetworkCounter other) : this() {
+      name_ = other.name_;
+      totalSent_ = other.totalSent_;
+      totalReceived_ = other.totalReceived_;
+      sendSpeed_ = other.sendSpeed_;
+      receiveSpeed_ = other.receiveSpeed_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public UnitNetworkCounter Clone() {
+      return new UnitNetworkCounter(this);
+    }
+
+    /// <summary>Field number for the "Name" field.</summary>
+    public const int NameFieldNumber = 1;
+    private string name_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Name {
+      get { return name_; }
+      set {
+        name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "TotalSent" field.</summary>
+    public const int TotalSentFieldNumber = 2;
+    private ulong totalSent_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong TotalSent {
+      get { return totalSent_; }
+      set {
+        totalSent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "TotalReceived" field.</summary>
+    public const int TotalReceivedFieldNumber = 3;
+    private ulong totalReceived_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong TotalReceived {
+      get { return totalReceived_; }
+      set {
+        totalReceived_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "SendSpeed" field.</summary>
+    public const int SendSpeedFieldNumber = 4;
+    private ulong sendSpeed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong SendSpeed {
+      get { return sendSpeed_; }
+      set {
+        sendSpeed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ReceiveSpeed" field.</summary>
+    public const int ReceiveSpeedFieldNumber = 5;
+    private ulong receiveSpeed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public ulong ReceiveSpeed {
+      get { return receiveSpeed_; }
+      set {
+        receiveSpeed_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as UnitNetworkCounter);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(UnitNetworkCounter other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Name != other.Name) return false;
+      if (TotalSent != other.TotalSent) return false;
+      if (TotalReceived != other.TotalReceived) return false;
+      if (SendSpeed != other.SendSpeed) return false;
+      if (ReceiveSpeed != other.ReceiveSpeed) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Name.Length != 0) hash ^= Name.GetHashCode();
+      if (TotalSent != 0UL) hash ^= TotalSent.GetHashCode();
+      if (TotalReceived != 0UL) hash ^= TotalReceived.GetHashCode();
+      if (SendSpeed != 0UL) hash ^= SendSpeed.GetHashCode();
+      if (ReceiveSpeed != 0UL) hash ^= ReceiveSpeed.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Name.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Name);
+      }
+      if (TotalSent != 0UL) {
+        output.WriteRawTag(16);
+        output.WriteUInt64(TotalSent);
+      }
+      if (TotalReceived != 0UL) {
+        output.WriteRawTag(24);
+        output.WriteUInt64(TotalReceived);
+      }
+      if (SendSpeed != 0UL) {
+        output.WriteRawTag(32);
+        output.WriteUInt64(SendSpeed);
+      }
+      if (ReceiveSpeed != 0UL) {
+        output.WriteRawTag(40);
+        output.WriteUInt64(ReceiveSpeed);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Name.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
+      }
+      if (TotalSent != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(TotalSent);
+      }
+      if (TotalReceived != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(TotalReceived);
+      }
+      if (SendSpeed != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(SendSpeed);
+      }
+      if (ReceiveSpeed != 0UL) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt64Size(ReceiveSpeed);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(UnitNetworkCounter other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Name.Length != 0) {
+        Name = other.Name;
+      }
+      if (other.TotalSent != 0UL) {
+        TotalSent = other.TotalSent;
+      }
+      if (other.TotalReceived != 0UL) {
+        TotalReceived = other.TotalReceived;
+      }
+      if (other.SendSpeed != 0UL) {
+        SendSpeed = other.SendSpeed;
+      }
+      if (other.ReceiveSpeed != 0UL) {
+        ReceiveSpeed = other.ReceiveSpeed;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 10: {
+            Name = input.ReadString();
+            break;
+          }
+          case 16: {
+            TotalSent = input.ReadUInt64();
+            break;
+          }
+          case 24: {
+            TotalReceived = input.ReadUInt64();
+            break;
+          }
+          case 32: {
+            SendSpeed = input.ReadUInt64();
+            break;
+          }
+          case 40: {
+            ReceiveSpeed = input.ReadUInt64();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// 托管单元状态
   /// </summary>
   public sealed partial class UnitStatus : pb::IMessage<UnitStatus> {
     private static readonly pb::MessageParser<UnitStatus> _parser = new pb::MessageParser<UnitStatus>(() => new UnitStatus());
@@ -1234,7 +1581,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[4]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1254,6 +1601,7 @@ namespace Protocol {
       unitName_ = other.unitName_;
       unitSettings_ = other.unitSettings_ != null ? other.unitSettings_.Clone() : null;
       unitProcess_ = other.unitProcess_ != null ? other.unitProcess_.Clone() : null;
+      unitNetworkCounter_ = other.unitNetworkCounter_ != null ? other.unitNetworkCounter_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1295,6 +1643,17 @@ namespace Protocol {
       }
     }
 
+    /// <summary>Field number for the "UnitNetworkCounter" field.</summary>
+    public const int UnitNetworkCounterFieldNumber = 4;
+    private global::Protocol.UnitNetworkCounter unitNetworkCounter_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Protocol.UnitNetworkCounter UnitNetworkCounter {
+      get { return unitNetworkCounter_; }
+      set {
+        unitNetworkCounter_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as UnitStatus);
@@ -1311,6 +1670,7 @@ namespace Protocol {
       if (UnitName != other.UnitName) return false;
       if (!object.Equals(UnitSettings, other.UnitSettings)) return false;
       if (!object.Equals(UnitProcess, other.UnitProcess)) return false;
+      if (!object.Equals(UnitNetworkCounter, other.UnitNetworkCounter)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1320,6 +1680,7 @@ namespace Protocol {
       if (UnitName.Length != 0) hash ^= UnitName.GetHashCode();
       if (unitSettings_ != null) hash ^= UnitSettings.GetHashCode();
       if (unitProcess_ != null) hash ^= UnitProcess.GetHashCode();
+      if (unitNetworkCounter_ != null) hash ^= UnitNetworkCounter.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1345,6 +1706,10 @@ namespace Protocol {
         output.WriteRawTag(26);
         output.WriteMessage(UnitProcess);
       }
+      if (unitNetworkCounter_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(UnitNetworkCounter);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -1361,6 +1726,9 @@ namespace Protocol {
       }
       if (unitProcess_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(UnitProcess);
+      }
+      if (unitNetworkCounter_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(UnitNetworkCounter);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1387,6 +1755,12 @@ namespace Protocol {
           UnitProcess = new global::Protocol.UnitProcess();
         }
         UnitProcess.MergeFrom(other.UnitProcess);
+      }
+      if (other.unitNetworkCounter_ != null) {
+        if (unitNetworkCounter_ == null) {
+          UnitNetworkCounter = new global::Protocol.UnitNetworkCounter();
+        }
+        UnitNetworkCounter.MergeFrom(other.UnitNetworkCounter);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1417,6 +1791,13 @@ namespace Protocol {
             input.ReadMessage(UnitProcess);
             break;
           }
+          case 34: {
+            if (unitNetworkCounter_ == null) {
+              UnitNetworkCounter = new global::Protocol.UnitNetworkCounter();
+            }
+            input.ReadMessage(UnitNetworkCounter);
+            break;
+          }
         }
       }
     }
@@ -1436,7 +1817,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[5]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1569,7 +1950,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[6]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1758,7 +2139,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[7]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1947,7 +2328,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[8]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2164,7 +2545,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[9]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2325,7 +2706,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[10]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2520,7 +2901,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[11]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2681,7 +3062,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[12]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[13]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2876,7 +3257,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[13]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[14]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3037,7 +3418,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[14]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[15]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3218,7 +3599,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[15]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[16]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3407,7 +3788,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[16]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[17]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3630,7 +4011,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[17]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[18]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3819,7 +4200,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[18]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[19]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4036,7 +4417,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[19]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[20]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4253,7 +4634,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[20]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[21]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4498,7 +4879,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[21]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[22]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4659,7 +5040,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[22]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[23]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4848,7 +5229,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[23]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[24]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5037,7 +5418,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[24]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[25]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5254,7 +5635,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[25]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[26]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5415,7 +5796,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[26]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[27]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5604,7 +5985,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[27]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[28]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5793,7 +6174,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[28]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[29]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6010,7 +6391,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[29]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[30]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6233,7 +6614,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[30]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[31]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6456,7 +6837,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[31]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[32]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6645,7 +7026,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[32]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[33]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6834,7 +7215,7 @@ namespace Protocol {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[33]; }
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[34]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7003,6 +7384,418 @@ namespace Protocol {
           }
           case 26: {
             UnitName = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// Type 1018
+  /// 客户端向服务端请求指定单元网络状态
+  /// </summary>
+  public sealed partial class WebSocketClientRequestFetchUnitStatusNetworkCounter : pb::IMessage<WebSocketClientRequestFetchUnitStatusNetworkCounter> {
+    private static readonly pb::MessageParser<WebSocketClientRequestFetchUnitStatusNetworkCounter> _parser = new pb::MessageParser<WebSocketClientRequestFetchUnitStatusNetworkCounter>(() => new WebSocketClientRequestFetchUnitStatusNetworkCounter());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<WebSocketClientRequestFetchUnitStatusNetworkCounter> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[35]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WebSocketClientRequestFetchUnitStatusNetworkCounter() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WebSocketClientRequestFetchUnitStatusNetworkCounter(WebSocketClientRequestFetchUnitStatusNetworkCounter other) : this() {
+      type_ = other.type_;
+      clientConnectionGuid_ = other.clientConnectionGuid_;
+      unitName_ = other.unitName_;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WebSocketClientRequestFetchUnitStatusNetworkCounter Clone() {
+      return new WebSocketClientRequestFetchUnitStatusNetworkCounter(this);
+    }
+
+    /// <summary>Field number for the "Type" field.</summary>
+    public const int TypeFieldNumber = 1;
+    private uint type_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint Type {
+      get { return type_; }
+      set {
+        type_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ClientConnectionGuid" field.</summary>
+    public const int ClientConnectionGuidFieldNumber = 2;
+    private string clientConnectionGuid_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ClientConnectionGuid {
+      get { return clientConnectionGuid_; }
+      set {
+        clientConnectionGuid_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "UnitName" field.</summary>
+    public const int UnitNameFieldNumber = 3;
+    private string unitName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string UnitName {
+      get { return unitName_; }
+      set {
+        unitName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as WebSocketClientRequestFetchUnitStatusNetworkCounter);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(WebSocketClientRequestFetchUnitStatusNetworkCounter other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Type != other.Type) return false;
+      if (ClientConnectionGuid != other.ClientConnectionGuid) return false;
+      if (UnitName != other.UnitName) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Type != 0) hash ^= Type.GetHashCode();
+      if (ClientConnectionGuid.Length != 0) hash ^= ClientConnectionGuid.GetHashCode();
+      if (UnitName.Length != 0) hash ^= UnitName.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Type != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(Type);
+      }
+      if (ClientConnectionGuid.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ClientConnectionGuid);
+      }
+      if (UnitName.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(UnitName);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Type != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Type);
+      }
+      if (ClientConnectionGuid.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ClientConnectionGuid);
+      }
+      if (UnitName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UnitName);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(WebSocketClientRequestFetchUnitStatusNetworkCounter other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Type != 0) {
+        Type = other.Type;
+      }
+      if (other.ClientConnectionGuid.Length != 0) {
+        ClientConnectionGuid = other.ClientConnectionGuid;
+      }
+      if (other.UnitName.Length != 0) {
+        UnitName = other.UnitName;
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Type = input.ReadUInt32();
+            break;
+          }
+          case 18: {
+            ClientConnectionGuid = input.ReadString();
+            break;
+          }
+          case 26: {
+            UnitName = input.ReadString();
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
+  /// Type 2018
+  /// 服务端回复客户端指定单元网络状态
+  /// </summary>
+  public sealed partial class WebSocketServerResponseFetchUnitStatusNetworkCounter : pb::IMessage<WebSocketServerResponseFetchUnitStatusNetworkCounter> {
+    private static readonly pb::MessageParser<WebSocketServerResponseFetchUnitStatusNetworkCounter> _parser = new pb::MessageParser<WebSocketServerResponseFetchUnitStatusNetworkCounter>(() => new WebSocketServerResponseFetchUnitStatusNetworkCounter());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<WebSocketServerResponseFetchUnitStatusNetworkCounter> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::Protocol.ProtocolReflection.Descriptor.MessageTypes[36]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WebSocketServerResponseFetchUnitStatusNetworkCounter() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WebSocketServerResponseFetchUnitStatusNetworkCounter(WebSocketServerResponseFetchUnitStatusNetworkCounter other) : this() {
+      type_ = other.type_;
+      clientConnectionGuid_ = other.clientConnectionGuid_;
+      unitName_ = other.unitName_;
+      unitNetworkCounter_ = other.unitNetworkCounter_ != null ? other.unitNetworkCounter_.Clone() : null;
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public WebSocketServerResponseFetchUnitStatusNetworkCounter Clone() {
+      return new WebSocketServerResponseFetchUnitStatusNetworkCounter(this);
+    }
+
+    /// <summary>Field number for the "Type" field.</summary>
+    public const int TypeFieldNumber = 1;
+    private uint type_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public uint Type {
+      get { return type_; }
+      set {
+        type_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ClientConnectionGuid" field.</summary>
+    public const int ClientConnectionGuidFieldNumber = 2;
+    private string clientConnectionGuid_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string ClientConnectionGuid {
+      get { return clientConnectionGuid_; }
+      set {
+        clientConnectionGuid_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "UnitName" field.</summary>
+    public const int UnitNameFieldNumber = 3;
+    private string unitName_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string UnitName {
+      get { return unitName_; }
+      set {
+        unitName_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "UnitNetworkCounter" field.</summary>
+    public const int UnitNetworkCounterFieldNumber = 4;
+    private global::Protocol.UnitNetworkCounter unitNetworkCounter_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Protocol.UnitNetworkCounter UnitNetworkCounter {
+      get { return unitNetworkCounter_; }
+      set {
+        unitNetworkCounter_ = value;
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as WebSocketServerResponseFetchUnitStatusNetworkCounter);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(WebSocketServerResponseFetchUnitStatusNetworkCounter other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Type != other.Type) return false;
+      if (ClientConnectionGuid != other.ClientConnectionGuid) return false;
+      if (UnitName != other.UnitName) return false;
+      if (!object.Equals(UnitNetworkCounter, other.UnitNetworkCounter)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Type != 0) hash ^= Type.GetHashCode();
+      if (ClientConnectionGuid.Length != 0) hash ^= ClientConnectionGuid.GetHashCode();
+      if (UnitName.Length != 0) hash ^= UnitName.GetHashCode();
+      if (unitNetworkCounter_ != null) hash ^= UnitNetworkCounter.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Type != 0) {
+        output.WriteRawTag(8);
+        output.WriteUInt32(Type);
+      }
+      if (ClientConnectionGuid.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(ClientConnectionGuid);
+      }
+      if (UnitName.Length != 0) {
+        output.WriteRawTag(26);
+        output.WriteString(UnitName);
+      }
+      if (unitNetworkCounter_ != null) {
+        output.WriteRawTag(34);
+        output.WriteMessage(UnitNetworkCounter);
+      }
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Type != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Type);
+      }
+      if (ClientConnectionGuid.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(ClientConnectionGuid);
+      }
+      if (UnitName.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UnitName);
+      }
+      if (unitNetworkCounter_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(UnitNetworkCounter);
+      }
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(WebSocketServerResponseFetchUnitStatusNetworkCounter other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Type != 0) {
+        Type = other.Type;
+      }
+      if (other.ClientConnectionGuid.Length != 0) {
+        ClientConnectionGuid = other.ClientConnectionGuid;
+      }
+      if (other.UnitName.Length != 0) {
+        UnitName = other.UnitName;
+      }
+      if (other.unitNetworkCounter_ != null) {
+        if (unitNetworkCounter_ == null) {
+          UnitNetworkCounter = new global::Protocol.UnitNetworkCounter();
+        }
+        UnitNetworkCounter.MergeFrom(other.UnitNetworkCounter);
+      }
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Type = input.ReadUInt32();
+            break;
+          }
+          case 18: {
+            ClientConnectionGuid = input.ReadString();
+            break;
+          }
+          case 26: {
+            UnitName = input.ReadString();
+            break;
+          }
+          case 34: {
+            if (unitNetworkCounter_ == null) {
+              UnitNetworkCounter = new global::Protocol.UnitNetworkCounter();
+            }
+            input.ReadMessage(UnitNetworkCounter);
             break;
           }
         }

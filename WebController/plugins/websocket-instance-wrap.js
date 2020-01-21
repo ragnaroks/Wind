@@ -117,6 +117,8 @@ window.WebSocketInstanceWrap=function WebSocketInstanceWrap(){
                 case 2016:instanceReceiveWebSocketServerNotifyClientsThatUnitStartFailed(event.data);break;
                 //服务端通知所有客户端指定单元停止失败
                 case 2017:instanceReceiveWebSocketServerNotifyClientsThatUnitStopFailed(event.data);break;
+                //服务端通知所有客户端指定单元网络数据
+                case 2018:instanceReceiveWebSocketServerResponseFetchUnitStatusNetworkCounter(event.data);break;
                 //其它
                 default:console.log('unknown packetType',packetType);break;
             }
@@ -232,7 +234,9 @@ window.WebSocketInstanceWrap=function WebSocketInstanceWrap(){
             daemonProcessTimePercentage:packetDaemonStatus.getProcesstimepercentage(),
             daemonProcessWorkingSetSize:packetDaemonStatus.getProcessworkingsetsize(),
             daemonUnitSettingsCount:packetDaemonStatus.getUnitsettingscount(),
-            daemonUnitProcessCount:packetDaemonStatus.getUnitprocesscount()
+            daemonUnitProcessCount:packetDaemonStatus.getUnitprocesscount(),
+            daemonNetworkTotalSent:packetDaemonStatus.getNetworktotalsent(),
+            daemonNetworkTotalReceived:packetDaemonStatus.getNetworktotalreceived()
         };
         vuexInstance.commit('set_daemonStatusValues_In_DaemonItem',payload);
     };
@@ -269,13 +273,22 @@ window.WebSocketInstanceWrap=function WebSocketInstanceWrap(){
                 autoStart:unitStatusItemUnitSettings.getAutostart(),
                 autoStartDelay:unitStatusItemUnitSettings.getAutostartdelay(),
                 daemonProcess:unitStatusItemUnitSettings.getDaemonprocess(),
-                haveChildProcesses:unitStatusItemUnitSettings.getHavechildprocesses()
+                haveChildProcesses:unitStatusItemUnitSettings.getHavechildprocesses(),
+                fetchNetworkUsage:unitStatusItemUnitSettings.getFetchnetworkusage()
             };
             const unitStatusItemUnitProcess=unitsStatusArrayPacket[i1].getUnitprocess();
             unitStatusItem.unitProcess={
                 name:unitStatusItemUnitProcess.getName(),
                 state:unitStatusItemUnitProcess.getState(),
                 processId:unitStatusItemUnitProcess.getProcessid()
+            };
+            const unitStatusItemUnitNetworkCounter=unitsStatusArrayPacket[i1].getUnitnetworkcounter();
+            unitStatusItem.unitNetworkCounter={
+                unitName:unitStatusItemUnitNetworkCounter.getName(),
+                totalSent:unitStatusItemUnitNetworkCounter.getTotalsent(),
+                totalReceived:unitStatusItemUnitNetworkCounter.getTotalreceived(),
+                sendSpeed:unitStatusItemUnitNetworkCounter.getSendspeed(),
+                receiveSpeed:unitStatusItemUnitNetworkCounter.getReceivespeed()
             };
             unitsStatusArray[i1]=unitStatusItem;
         }
@@ -316,13 +329,22 @@ window.WebSocketInstanceWrap=function WebSocketInstanceWrap(){
             autoStart:unitStatusItemUnitSettings.getAutostart(),
             autoStartDelay:unitStatusItemUnitSettings.getAutostartdelay(),
             daemonProcess:unitStatusItemUnitSettings.getDaemonprocess(),
-            haveChildProcesses:unitStatusItemUnitSettings.getHavechildprocesses()
+            haveChildProcesses:unitStatusItemUnitSettings.getHavechildprocesses(),
+            fetchNetworkUsage:unitStatusItemUnitSettings.getFetchnetworkusage()
         };
         const unitStatusItemUnitProcess=unitStatusItemPacket.getUnitprocess();
         unitStatusItem.unitProcess={
             name:unitStatusItemUnitProcess.getName(),
             state:unitStatusItemUnitProcess.getState(),
             processId:unitStatusItemUnitProcess.getProcessid()
+        };
+        const unitStatusItemUnitNetworkCounter=unitStatusItemPacket.getUnitnetworkcounter();
+        unitStatusItem.unitNetworkCounter={
+            unitName:unitStatusItemUnitNetworkCounter.getName(),
+            totalSent:unitStatusItemUnitNetworkCounter.getTotalsent(),
+            totalReceived:unitStatusItemUnitNetworkCounter.getTotalreceived(),
+            sendSpeed:unitStatusItemUnitNetworkCounter.getSendspeed(),
+            receiveSpeed:unitStatusItemUnitNetworkCounter.getReceivespeed()
         };
         const payload={hostname:wrap.hostname,unitStatusItem:unitStatusItem};
         vuexInstance.commit('set_unitStatusItem_In_unitsStatusArray_In_DaemonItem',payload);
@@ -552,6 +574,38 @@ window.WebSocketInstanceWrap=function WebSocketInstanceWrap(){
         }
         vueInstance.$Notice.error({title:wrap.hostname,desc:'stop ['+packet.getUnitname()+'] unit failed'});
     };
+    //内部方法,实例发送消息 1018=>客户端向服务端请求指定单元网络数据
+    const instanceSendWebSocketClientRequestFetchUnitStatusNetworkCounter=function(methodArgsObject){
+        if(!wrap.connected || !wrap.connectionValid){return;}
+        if(!methodArgsObject || !methodArgsObject.unitName){return;}
+        const packet=new Protocol.WebSocketClientRequestFetchUnitStatusNetworkCounter();
+        packet.setType(1018);
+        packet.setClientconnectionguid(wrap.connectionId);
+        packet.setUnitname(methodArgsObject.unitName);
+        instanceSendMessage(packet.serializeBinary().buffer);
+    };
+    //内部方法,实例收到消息 2018=>服务端回复客户端指定单元网络数据
+    const instanceReceiveWebSocketServerResponseFetchUnitStatusNetworkCounter=function(data){
+        let packet=null;
+        try{
+            packet=Protocol.WebSocketServerResponseFetchUnitStatusNetworkCounter.deserializeBinary(data);
+        }catch(error){
+            console.error('instanceReceiveWebSocketServerResponseFetchUnitStatusNetworkCounter',error);
+            vueInstance.$Notice.error({title:wrap.hostname,desc:'connection has an error,see details in devtool(F12)'});
+            return;
+        }
+        const unitNetworkCounterPacket=packet.getUnitnetworkcounter();
+        if(!unitNetworkCounterPacket){return;}
+        const unitNetworkCounter={
+            name:unitNetworkCounterPacket.getName(),
+            totalSent:unitNetworkCounterPacket.getTotalsent(),
+            totalReceived:unitNetworkCounterPacket.getTotalreceived(),
+            sendSpeed:unitNetworkCounterPacket.getSendspeed(),
+            receiveSpeed:unitNetworkCounterPacket.getReceivespeed()
+        };
+        const payload={hostname:wrap.hostname,unitNetworkCounter:unitNetworkCounter};
+        vuexInstance.commit('set_unitNetworkCounter_In_unitStatusItem_In_unitsStatusArray_In_DaemonItem',payload);
+    };
     //公开方法
     this.Setup=function(hostname,url,controlKey,vuex){
         try{
@@ -586,6 +640,8 @@ window.WebSocketInstanceWrap=function WebSocketInstanceWrap(){
             case 'instanceSendWebSocketClientRequestStopUnits':instanceSendWebSocketClientRequestStopUnits();break;
             //客户端向服务端请求停止指定单元
             case 'instanceSendWebSocketClientRequestStopUnit':instanceSendWebSocketClientRequestStopUnit(methodArgsObject);break;
+            //客户端向服务器请求获取指定单元的网络数据
+            case 'instanceSendWebSocketClientRequestFetchUnitStatusNetworkCounter':instanceSendWebSocketClientRequestFetchUnitStatusNetworkCounter(methodArgsObject);break;
             //其它
             default:console.log('unknown Invoke method',methodName,methodArgsObject);break;
         }

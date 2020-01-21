@@ -284,7 +284,11 @@ namespace Daemon.Modules {
                     Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnBinaryAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\" WebSocketClientRequestStopUnit");
                     this.SocketOnBinaryWebSocketClientRequestStopUnitAsync(webSocketConnection,Protocol.WebSocketClientRequestStopUnit.Parser.ParseFrom(bytes));
                     break;
-
+                //客户端向服务端请求指定单元网络数据
+                case 1018:
+                    Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnBinaryAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\" WebSocketClientRequestStopUnit");
+                    this.SocketOnBinaryWebSocketClientRequestFetchUnitStatusNetworkCounterAsync(webSocketConnection,Protocol.WebSocketClientRequestFetchUnitStatusNetworkCounter.Parser.ParseFrom(bytes));
+                    break;
                 default:
                     Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnBinaryAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"发来无法识别消息字节数组消息");
                     await webSocketConnection.Send(bytes);
@@ -346,14 +350,12 @@ namespace Daemon.Modules {
                 webSocketConnection.Close();
                 return;
             }
-            Process process=Process.GetCurrentProcess();
             Protocol.DaemonMeta packetDaemonMeta=new Protocol.DaemonMeta{
                 Version=Assembly.GetExecutingAssembly().GetName().Version.ToString(),
                 HostCpuCores=(UInt32)Environment.ProcessorCount,
                 HostMemorySize=(UInt64)WindowsManagementHelper.GetPhysicalMemorySize(),
                 WorkDirectory=Program.AppEnvironment.BaseDirectory,
-                ProcessId=(UInt32)process.Id};
-            process.Dispose();
+                ProcessId=(UInt32)Program.AppProcess.Id};
             Protocol.WebSocketServerResponseFetchDaemonMeta packetResponse=new Protocol.WebSocketServerResponseFetchDaemonMeta{
                 Type=2003,ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString(),DaemonMeta=packetDaemonMeta};
             await webSocketConnection.Send(packetResponse.ToBytes());
@@ -379,7 +381,14 @@ namespace Daemon.Modules {
                 ProcessTimePercentage=Program.AppPerformanceCounterModule.GetProcessTimePercentage()/Environment.ProcessorCount,
                 ProcessWorkingSetSize=(UInt64)Program.AppPerformanceCounterModule.GetProcessWorkingSetSize(),
                 UnitSettingsCount=(UInt32)Program.UnitControlModule.GetUnitSettingsCount(),
-                UnitProcessCount=(UInt32)Program.UnitControlModule.GetUnitProcessCount()};
+                UnitProcessCount=(UInt32)Program.UnitControlModule.GetUnitProcessCount(),
+                NetworkTotalSent=0,
+                NetworkTotalReceived=0};
+            Entities.UnitNetworkCounter unitNetworkCounter=Program.UnitNetworkPerformanceTracerModule.GetCounter(Program.AppProcess.Id);
+            if(unitNetworkCounter!=null) {
+                packetDaemonStatus.NetworkTotalSent=(UInt64)unitNetworkCounter.TotalSent;
+                packetDaemonStatus.NetworkTotalReceived=(UInt64)unitNetworkCounter.TotalReceived;
+            }
             Protocol.WebSocketServerResponseFetchDaemonStatus packetResponse=new Protocol.WebSocketServerResponseFetchDaemonStatus{
                 Type=2004,ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString(),DaemonStatus=packetDaemonStatus};
             await webSocketConnection.Send(packetResponse.ToBytes());
@@ -407,6 +416,7 @@ namespace Daemon.Modules {
                 Type=2005,ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString()};
             foreach(Entities.UnitStatus item in unitStatusList) {
                 Protocol.UnitStatus unitStatus=new Protocol.UnitStatus{UnitName=item.UnitName};
+                //单元配置
                 unitStatus.UnitSettings=new Protocol.UnitSettings{
                     Name=item.UnitSettings.Name,
                     Description=item.UnitSettings.Description,
@@ -416,15 +426,28 @@ namespace Daemon.Modules {
                     AutoStart=item.UnitSettings.AutoStart,
                     AutoStartDelay=(UInt32)item.UnitSettings.AutoStartDelay,
                     DaemonProcess=item.UnitSettings.DaemonProcess,
-                    HaveChildProcesses=item.UnitSettings.HaveChildProcesses};
-                if(item.UnitProcess==null){
-                    unitStatus.UnitProcess=new Protocol.UnitProcess{Name=item.UnitSettings.Name,State=1,ProcessId=0};
-                } else {
-                    unitStatus.UnitProcess=new Protocol.UnitProcess{
-                        Name=item.UnitSettings.Name,
-                        State=(UInt32)item.UnitProcess.State,
-                        ProcessId=(UInt32)item.UnitProcess.ProcessId};
+                    HaveChildProcesses=item.UnitSettings.HaveChildProcesses,
+                    FetchNetworkUsage=item.UnitSettings.FetchNetworkUsage};
+                //单元进程
+                unitStatus.UnitProcess=new Protocol.UnitProcess{Name=item.UnitSettings.Name,State=1,ProcessId=0};
+                if(item.UnitProcess!=null) {
+                    unitStatus.UnitProcess.State=(UInt32)item.UnitProcess.State;
+                    unitStatus.UnitProcess.ProcessId=(UInt32)item.UnitProcess.ProcessId;
                 }
+                //单元网络
+                unitStatus.UnitNetworkCounter=new Protocol.UnitNetworkCounter{Name=item.UnitSettings.Name,TotalSent=0,TotalReceived=0,SendSpeed=0,ReceiveSpeed=0};
+                if(item.UnitProcess!=null && item.UnitSettings.FetchNetworkUsage) {
+                    item.UnitNetworkCounter=Program.UnitNetworkPerformanceTracerModule.GetCounter(item.UnitProcess.ProcessId);
+                    if(item.UnitNetworkCounter==null) {
+                        unitStatus.UnitNetworkCounter=new Protocol.UnitNetworkCounter{
+                        Name=item.UnitSettings.Name,
+                        TotalSent=(UInt64)item.UnitNetworkCounter.TotalSent+4096,
+                        TotalReceived=(UInt64)item.UnitNetworkCounter.TotalReceived+4096,
+                        SendSpeed=(UInt64)item.UnitNetworkCounter.SendSpeed+4096,
+                        ReceiveSpeed=(UInt64)item.UnitNetworkCounter.ReceiveSpeed+4096};
+                    }
+                }
+                //添加到列表
                 packetResponse.UnitStatus.Add(unitStatus);
             }
             await webSocketConnection.Send(packetResponse.ToBytes());
@@ -451,6 +474,7 @@ namespace Daemon.Modules {
             Protocol.WebSocketServerResponseFetchUnitStatus packetResponse=new Protocol.WebSocketServerResponseFetchUnitStatus {
                 Type=2006,ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString(),UnitName=packetRequest.UnitName};
             Protocol.UnitStatus unitStatus=new Protocol.UnitStatus{UnitName=item.UnitName};
+            //单元配置
             unitStatus.UnitSettings=new Protocol.UnitSettings{
                 Name=item.UnitSettings.Name,
                 Description=item.UnitSettings.Description,
@@ -460,15 +484,28 @@ namespace Daemon.Modules {
                 AutoStart=item.UnitSettings.AutoStart,
                 AutoStartDelay=(UInt32)item.UnitSettings.AutoStartDelay,
                 DaemonProcess=item.UnitSettings.DaemonProcess,
-                HaveChildProcesses=item.UnitSettings.HaveChildProcesses};
-            if(item.UnitProcess==null){
-                unitStatus.UnitProcess=new Protocol.UnitProcess{Name=item.UnitSettings.Name,State=1,ProcessId=0};
-            } else {
-                unitStatus.UnitProcess=new Protocol.UnitProcess{
-                    Name=item.UnitSettings.Name,
-                    State=(UInt32)item.UnitProcess.State,
-                    ProcessId=(UInt32)item.UnitProcess.ProcessId};
+                HaveChildProcesses=item.UnitSettings.HaveChildProcesses,
+                FetchNetworkUsage=item.UnitSettings.FetchNetworkUsage};
+            //单元进程
+            unitStatus.UnitProcess=new Protocol.UnitProcess{Name=item.UnitSettings.Name,State=1,ProcessId=0};
+            if(item.UnitProcess!=null) {
+                unitStatus.UnitProcess.State=(UInt32)item.UnitProcess.State;
+                unitStatus.UnitProcess.ProcessId=(UInt32)item.UnitProcess.ProcessId;
             }
+            //单元网络
+            unitStatus.UnitNetworkCounter=new Protocol.UnitNetworkCounter{Name=item.UnitSettings.Name,TotalSent=0,TotalReceived=0,SendSpeed=0,ReceiveSpeed=0};
+            if(item.UnitProcess!=null && item.UnitSettings.FetchNetworkUsage) {
+                item.UnitNetworkCounter=Program.UnitNetworkPerformanceTracerModule.GetCounter(item.UnitProcess.ProcessId);
+                if(item.UnitNetworkCounter!=null) {
+                    unitStatus.UnitNetworkCounter=new Protocol.UnitNetworkCounter{
+                        Name=item.UnitSettings.Name,
+                        TotalSent=(UInt64)item.UnitNetworkCounter.TotalSent,
+                        TotalReceived=(UInt64)item.UnitNetworkCounter.TotalReceived,
+                        SendSpeed=(UInt64)item.UnitNetworkCounter.SendSpeed,
+                        ReceiveSpeed=(UInt64)item.UnitNetworkCounter.ReceiveSpeed};
+                }
+            }
+            //
             packetResponse.UnitStatus=unitStatus;
             await webSocketConnection.Send(packetResponse.ToBytes());
         }
@@ -625,7 +662,8 @@ namespace Daemon.Modules {
                 AutoStart=unitSettings.AutoStart,
                 AutoStartDelay=(UInt32)unitSettings.AutoStartDelay,
                 DaemonProcess=unitSettings.DaemonProcess,
-                HaveChildProcesses=unitSettings.HaveChildProcesses};
+                HaveChildProcesses=unitSettings.HaveChildProcesses,
+                FetchNetworkUsage=unitSettings.FetchNetworkUsage};
             Protocol.WebSocketServerNotifyClientsThatUnitSettingsReload packetResponse=new Protocol.WebSocketServerNotifyClientsThatUnitSettingsReload{Type=2013,UnitName=unitName,UnitSettings=packetUnitSettings};
             foreach(KeyValuePair<Guid,Entities.WebSocketConnectionWrap> item in this.WebSocketConnectionWrapDictionary) {
                 if(!item.Value.Valid || !item.Value.WebSocketConnection.IsAvailable){continue;}
@@ -704,6 +742,36 @@ namespace Daemon.Modules {
                 return;
             }
             Protocol.WebSocketServerNotifyClientsThatUnitStopFailed packetResponse=new Protocol.WebSocketServerNotifyClientsThatUnitStopFailed{Type=2015,UnitName=unitName};
+            foreach(KeyValuePair<Guid,Entities.WebSocketConnectionWrap> item in this.WebSocketConnectionWrapDictionary) {
+                if(!item.Value.Valid || !item.Value.WebSocketConnection.IsAvailable){continue;}
+                packetResponse.ClientConnectionGuid=item.Value.WebSocketConnection.ConnectionInfo.Id.ToString();
+                await item.Value.WebSocketConnection.Send(packetResponse.ToBytes());
+            }
+        }
+
+        /// <summary>
+        /// 服务端通知所有客户端指定单元网络数据
+        /// </summary>
+        /// <param name="unitName"></param>
+        public async void SocketOnBinaryWebSocketClientRequestFetchUnitStatusNetworkCounterAsync(IWebSocketConnection webSocketConnection,
+            Protocol.WebSocketClientRequestFetchUnitStatusNetworkCounter packetRequest){
+            Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnBinaryWebSocketClientRequestFetchUnitStatusNetworkCounterAsync","服务端通知所有客户端指定单元网络数据");
+            if(this.WebSocketConnectionWrapDictionary.Count<1){
+                Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnBinaryWebSocketClientRequestFetchUnitStatusNetworkCounterAsync","没有需要通知的客户端");
+                return;
+            }
+            if(String.IsNullOrEmpty(packetRequest.UnitName)){return;}
+            Entities.UnitStatus unitStatus=Program.UnitControlModule.FetchUnitStatus(packetRequest.UnitName);
+            if(unitStatus==null || unitStatus.UnitProcess==null){return;}
+            Entities.UnitNetworkCounter unitNetworkCounter=Program.UnitNetworkPerformanceTracerModule.GetCounter(unitStatus.UnitProcess.ProcessId);
+            if(unitNetworkCounter==null){return;}
+            Protocol.WebSocketServerResponseFetchUnitStatusNetworkCounter packetResponse=new Protocol.WebSocketServerResponseFetchUnitStatusNetworkCounter{Type=2018,UnitName=packetRequest.UnitName};
+            packetResponse.UnitNetworkCounter=new Protocol.UnitNetworkCounter{
+                Name=packetRequest.UnitName,
+                TotalSent=(UInt64)unitNetworkCounter.TotalSent,
+                TotalReceived=(UInt64)unitNetworkCounter.TotalReceived,
+                SendSpeed=(UInt64)unitNetworkCounter.SendSpeed,
+                ReceiveSpeed=(UInt64)unitNetworkCounter.ReceiveSpeed};
             foreach(KeyValuePair<Guid,Entities.WebSocketConnectionWrap> item in this.WebSocketConnectionWrapDictionary) {
                 if(!item.Value.Valid || !item.Value.WebSocketConnection.IsAvailable){continue;}
                 packetResponse.ClientConnectionGuid=item.Value.WebSocketConnection.ConnectionInfo.Id.ToString();

@@ -1,36 +1,36 @@
 <template>
     <div class="components" data-component="daemon-connection-panel">
-        <p v-if="!currentDaemonItem" class="no-selected-notice">No selected any daemon</p>
+        <p v-if="!currentDaemonItem" class="no-selected-notice">{{ localLanguageText['10007'] }}</p>
         <CellGroup v-if="currentDaemonItem">
-            <Cell v-bind:extra="currentDaemonItem.hostname" title="Hostname">
+            <Cell v-bind:extra="currentDaemonItem.hostname" v-bind:title="localLanguageText['10010']">
                 <Icon slot="icon" type="logo-windows" />
             </Cell>
-            <Cell v-bind:extra="currentDaemonItem.websocketAddress" title="Address">
+            <Cell v-bind:extra="currentDaemonItem.websocketAddress" v-bind:title="localLanguageText['10011']">
                 <Icon slot="icon" type="md-at" />
             </Cell>
-            <Cell v-bind:extra="currentDaemonItem.websocketControlKey" title="ControlKey">
+            <Cell v-bind:extra="currentDaemonItem.websocketControlKey" v-bind:title="localLanguageText['10012']">
                 <Icon slot="icon" type="md-key" />
             </Cell>
-            <Cell title="IsConnect">
+            <Cell v-bind:title="localLanguageText['10013']">
                 <Icon slot="icon" type="ios-wifi" />
                 <i-switch slot="extra" v-bind:value="currentDaemonItem.websocketWrap.connected"
                 v-bind:before-change="beforeChangeCurrentDaemonConnected"
                 v-on:click.native="toggleChangeCurrentDaemonConnected" />
             </Cell>
-            <Cell title="ConnectionId">
+            <Cell v-bind:title="localLanguageText['10014']">
                 <Icon slot="icon" type="md-contact" />
-                <span slot="extra" v-text="currentDaemonItem.websocketWrap.connected?currentDaemonItem.websocketWrap.connectionId:'No Connection'" />
+                <span slot="extra" v-text="currentDaemonItem.websocketWrap.connected?currentDaemonItem.websocketWrap.connectionId:localLanguageText['10018']" />
             </Cell>
-            <Cell title="IsConnectionValidated">
+            <Cell v-bind:title="localLanguageText['10015']">
                 <Icon slot="icon" type="md-checkmark-circle" />
-                <span slot="extra" v-show="!currentDaemonItem.websocketWrap.connected">No Connection</span>
-                <span slot="extra" v-show="currentDaemonItem.websocketWrap.connected && !currentDaemonItem.websocketWrap.connectionValid" class="current-web-socket-item-connection-invalid">Invalid</span>
-                <span slot="extra" v-show="currentDaemonItem.websocketWrap.connected && currentDaemonItem.websocketWrap.connectionValid" class="current-web-socket-item-connection-valid">Valid</span>
+                <span slot="extra" v-show="!currentDaemonItem.websocketWrap.connected" v-text="localLanguageText['10018']" />
+                <span slot="extra" v-show="currentDaemonItem.websocketWrap.connected && !currentDaemonItem.websocketWrap.connectionValid" v-text="localLanguageText['10019']" />
+                <span slot="extra" v-show="currentDaemonItem.websocketWrap.connected && currentDaemonItem.websocketWrap.connectionValid" v-text="localLanguageText['10020']" />
             </Cell>
-            <Cell v-bind:extra="currentDaemonItem.websocketWrap.sentLength | fixedByteSizeFilter" title="Sent Byte">
+            <Cell v-bind:extra="currentDaemonItem.websocketWrap.sentLength | fixedByteSizeFilter" v-bind:title="localLanguageText['10016']">
                 <Icon slot="icon" type="md-arrow-round-up" />
             </Cell>
-            <Cell v-bind:extra="currentDaemonItem.websocketWrap.receivedLength | fixedByteSizeFilter" title="Received Byte">
+            <Cell v-bind:extra="currentDaemonItem.websocketWrap.receivedLength | fixedByteSizeFilter" v-bind:title="localLanguageText['10017']">
                 <Icon slot="icon" type="md-arrow-round-down" />
             </Cell>
         </CellGroup>
@@ -56,6 +56,7 @@ export default {
         }
     },
     computed:{
+        localLanguageText:function(){return this.$store.getters.get_localLanguageText;},
         currentDaemonHostname:function(){return this.$store.state.currentDaemonHostname;},
         currentDaemonItem:function(){return this.$store.state.currentDaemonItem;}
     },

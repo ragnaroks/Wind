@@ -21,6 +21,8 @@ namespace Daemon.Entities {
         public Boolean DaemonProcess{get;set;}=false;
         /// <summary>单元进程是否派生子进程</summary>
         public Boolean HaveChildProcesses{get;set;}=false;
+        /// <summary>是否获取网络使用数据</summary>
+        public Boolean FetchNetworkUsage{get;set;}=false;
 
         /// <summary>
         /// 内部设置单元名称

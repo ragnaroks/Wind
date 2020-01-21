@@ -1,6 +1,6 @@
 <template>
     <div class="components" data-component="daemon-information-panel">
-        <p v-if="!currentDaemonItem" class="no-selected-notice">No selected any daemon</p>
+        <p v-if="!currentDaemonItem" class="no-selected-notice">{{ localLanguageText['10007'] }}</p>
         <CellGroup v-if="currentDaemonItem">
             <Cell v-bind:extra="currentDaemonItem.daemonVersion | daemonVersionFilter" title="Version" />
             <Cell v-bind:extra="currentDaemonItem.daemonWorkDirectory | daemonWorkDirectoryFilter" title="WorkDirectory" />
@@ -8,13 +8,15 @@
             <Cell v-bind:extra="currentDaemonItem.daemonHostMemorySize | fixedByteSizeFilter" title="HostMemorySize" />
             <Cell v-bind:extra="currentDaemonItem.daemonProcessId | daemonProcessIdFilter" title="ProcessId" />
             <Divider size="small" class="divider1" />
-            <Cell title="AutoRefreshStatus">
-                <i-switch slot="extra" v-model="refreshTimerEnabled" v-bind:disabled="!currentDaemonItem.websocketWrap.connectionValid" />
+            <Cell title="AutoRefreshDaemonStatus">
+                <i-switch slot="extra" v-model="currentDaemonDaemonAutoRefresh" v-bind:disabled="!currentDaemonItem.websocketWrap.connectionValid" />
             </Cell>
             <Cell v-bind:extra="currentDaemonItem.daemonProcessTimePercentage | daemonProcessTimePercentageFilter" title="ProcessTimePercentage" />
             <Cell v-bind:extra="currentDaemonItem.daemonProcessWorkingSetSize | fixedByteSizeFilter" title="ProcessWorkingSetSize" />
             <Cell v-bind:extra="currentDaemonItem.daemonUnitSettingsCount | daemonUnitSettingsCountFilter" title="UnitSettingsCount" />
             <Cell v-bind:extra="currentDaemonItem.daemonUnitProcessCount | daemonUnitProcessCountFilter" title="UnitProcessCount" />
+            <Cell v-bind:extra="currentDaemonItem.daemonNetworkTotalSent | fixedByteSizeFilter" title="NetworkTotalSent" />
+            <Cell v-bind:extra="currentDaemonItem.daemonNetworkTotalReceived | fixedByteSizeFilter" title="NetworkTotalReceived" />
         </CellGroup>
     </div>
 </template>
@@ -28,7 +30,7 @@
 export default {
     filters:{
         fixedByteSizeFilter:function(value){
-            if(!value){return 'unknown';}
+            if(value===undefined || value===null){return 'unknown';}
             if(value>0 && value<1024){return value+' B';}
             if(value>=1024 && value<1048576){return (value/1024).toFixed(2).replace('.00','')+' KiB';}
             if(value>=1048576 && value<1073741824){return (value/1048576).toFixed(2).replace('.00','')+' MiB';}
@@ -40,20 +42,31 @@ export default {
         daemonHostCpuCoresFilter:function(value){return !value?'unknown':value+'(logic)';},
         daemonProcessIdFilter:function(value){return !value?'unknown':value.toString();},
         daemonProcessTimePercentageFilter:function(value){
-            return !value?'unknown':value.toFixed(2)+' %';
+            if(value===undefined || value===null){return 'unknown';}
+            return value.toFixed(2)+' %';
         },
         daemonUnitSettingsCountFilter:function(value){return (value===undefined||value===null)?'unknown':value.toString();},
         daemonUnitProcessCountFilter:function(value){return (value===undefined||value===null)?'unknown':value.toString();}
     },
     data:function(){
         return {
-            refreshTimerEnabled:false,
             refreshTimerInterval:1000,//有需要可以自改
             refreshTimerId:0
         };
     },
     computed:{
-        currentDaemonItem:function(){return this.$store.state.currentDaemonItem;}
+        localLanguageText:function(){return this.$store.getters.get_localLanguageText;},
+        currentDaemonItem:function(){return this.$store.state.currentDaemonItem;},
+        currentDaemonDaemonAutoRefresh:{
+            get:function(){
+                if(!this.$store.state.currentDaemonItem){return false;}
+                return this.$store.state.currentDaemonItem.daemonAutoRefresh;
+            },
+            set:function(value){
+                const payload={hostname:this.$store.state.currentDaemonItem.hostname,daemonAutoRefresh:value};
+                this.$store.commit('set_daemonAutoRefresh_In_DaemonItem',payload);
+            }
+        }
     },
     created:function(){
         this.refreshTimerStart();
@@ -65,7 +78,7 @@ export default {
         refreshTimerStart:function(){
             const _this=this;
             this.refreshTimerId=window.setInterval(function(){
-                if(!_this.refreshTimerEnabled){return;}
+                if(!_this.currentDaemonDaemonAutoRefresh){return;}
                 //这里用 currentDaemonItem.websocketWrap 来自动限定关联的daemon
                 if(!_this.currentDaemonItem || !_this.currentDaemonItem.websocketWrap){return;}
                 _this.currentDaemonItem.websocketWrap.Invoke('instanceSendWebSocketClientRequestFetchDaemonStatus',null);
@@ -73,14 +86,6 @@ export default {
         },
         refreshTimerStop:function(){
             window.clearInterval(this.refreshTimerId);
-        },
-        fixedByteSize:function(size){
-            if(!size){return '0 B';}
-            if(size>0 && size<1024){return size+' B';}
-            if(size>=1024 && size<1048576){return (size/1024).toFixed(2)+' KiB';}
-            if(size>=1048576 && size<1073741824){return (size/1048576).toFixed(2)+' MiB';}
-            if(size>=1073741824 && size<109951162776){return (size/1073741824).toFixed(2)+' GiB';}
-            return (size/1073741824).toFixed(2)+' GiB';
         }
     }
 };

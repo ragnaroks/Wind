@@ -1,4 +1,8 @@
+import languageText from '@/assets/language';
+
 export const state= () => ({
+    languageText:languageText,
+    languageTextType:'zh-cn',
     currentDaemonHostname:null,
     currentDaemonItem:null,//应该只读
     daemonArray:[
@@ -15,6 +19,7 @@ export const state= () => ({
             daemonHostMemorySize:null,
             daemonProcessId:null,
             //
+            daemonAutoRefresh:false,
             daemonProcessTimePercentage:null,
             daemonProcessWorkingSetSize:null,
             daemonUnitSettingsCount:null,
@@ -34,6 +39,7 @@ export const state= () => ({
             daemonHostMemorySize:null,
             daemonProcessId:null,
             //
+            daemonAutoRefresh:false,
             daemonProcessTimePercentage:null,
             daemonProcessWorkingSetSize:null,
             daemonUnitSettingsCount:null,
@@ -53,6 +59,7 @@ export const state= () => ({
             daemonHostMemorySize:null,
             daemonProcessId:null,
             //
+            daemonAutoRefresh:false,
             daemonProcessTimePercentage:null,
             daemonProcessWorkingSetSize:null,
             daemonUnitSettingsCount:null,
@@ -62,6 +69,15 @@ export const state= () => ({
         }
     ]
 });
+
+export const getters={
+    get_localLanguageText:function(state){
+        if(!state.languageTextType){return state.languageText['zh-cn'];}
+        const textArray=state.languageText[state.languageTextType];
+        if(textArray){return textArray;}
+        return state.languageText['zh-cn'];
+    }
+};
 
 export const mutations = {
     set_currentDaemonHostname:function(state,payload){
@@ -145,6 +161,17 @@ export const mutations = {
             state.daemonArray[i1].daemonProcessWorkingSetSize=payload.daemonProcessWorkingSetSize;
             state.daemonArray[i1].daemonUnitSettingsCount=payload.daemonUnitSettingsCount;
             state.daemonArray[i1].daemonUnitProcessCount=payload.daemonUnitProcessCount;
+            state.daemonArray[i1].daemonNetworkTotalSent=payload.daemonNetworkTotalSent;
+            state.daemonArray[i1].daemonNetworkTotalReceived=payload.daemonNetworkTotalReceived;
+            break;
+        }
+    },
+    set_daemonAutoRefresh_In_DaemonItem:function(state,payload){
+        if(!payload.hostname){return;}
+        if(state.daemonArray.length<1){return;}
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.hostname){continue;}
+            state.daemonArray[i1].daemonAutoRefresh=payload.daemonAutoRefresh;
             break;
         }
     },
@@ -179,6 +206,7 @@ export const mutations = {
         for(let i2=0;i2<unitsStatusArray.length;i2++){
             if(unitsStatusArray[i2].unitName!==payload.unitStatusItem.unitName){continue;}
             unitsStatusArray[i2]=payload.unitStatusItem;
+            //this._vm.$set(unitsStatusArray,i2,payload.unitStatusItem);
             break;
         }
     },
@@ -195,6 +223,7 @@ export const mutations = {
         for(let i2=0;i2<unitsStatusArray.length;i2++){
             if(unitsStatusArray[i2].unitName!==payload.unitSettings.name){continue;}
             unitsStatusArray[i2].unitSettings=payload.unitSettings;
+            //this._vm.$set(unitsStatusArray[i2],'unitSettings',payload.unitSettings);
             break;
         }
     },
@@ -211,6 +240,22 @@ export const mutations = {
         for(let i2=0;i2<unitsStatusArray.length;i2++){
             if(unitsStatusArray[i2].unitName!==payload.unitProcess.name){continue;}
             unitsStatusArray[i2].unitProcess=payload.unitProcess;
+            break;
+        }
+    },
+    set_unitNetworkCounter_In_unitStatusItem_In_unitsStatusArray_In_DaemonItem:function(state,payload){
+        if(!payload.hostname){return;}
+        if(state.daemonArray.length<1){return;}
+        let unitsStatusArray=null;
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.hostname){continue;}
+            unitsStatusArray=state.daemonArray[i1].unitsStatusArray;
+            break;
+        }
+        if(unitsStatusArray===null || unitsStatusArray.length<1){return;}
+        for(let i2=0;i2<unitsStatusArray.length;i2++){
+            if(unitsStatusArray[i2].unitName!==payload.unitNetworkCounter.name){continue;}
+            unitsStatusArray[i2].unitNetworkCounter=payload.unitNetworkCounter;
             break;
         }
     }
