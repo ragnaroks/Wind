@@ -19,6 +19,10 @@
   <ItemGroup>
     <PackageReference Include="Fleck" Version="1.1.0" />
     <PackageReference Include="Google.Protobuf" Version="3.11.2" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="2.9.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Microsoft.Diagnostics.Tracing.TraceEvent" Version="2.0.49" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="PeterKottas.DotNetCore.WindowsService" Version="2.0.11" />
@@ -34,9 +38,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Units\nginx.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Units\webd.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

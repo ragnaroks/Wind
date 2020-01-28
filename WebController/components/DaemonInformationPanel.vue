@@ -2,21 +2,21 @@
     <div class="components" data-component="daemon-information-panel">
         <p v-if="!currentDaemonItem" class="no-selected-notice">{{ localLanguageText['10007'] }}</p>
         <CellGroup v-if="currentDaemonItem">
-            <Cell v-bind:extra="currentDaemonItem.daemonVersion | daemonVersionFilter" title="Version" />
-            <Cell v-bind:extra="currentDaemonItem.daemonWorkDirectory | daemonWorkDirectoryFilter" title="WorkDirectory" />
-            <Cell v-bind:extra="currentDaemonItem.daemonHostCpuCores | daemonHostCpuCoresFilter" title="HostCpuCores" />
-            <Cell v-bind:extra="currentDaemonItem.daemonHostMemorySize | fixedByteSizeFilter" title="HostMemorySize" />
-            <Cell v-bind:extra="currentDaemonItem.daemonProcessId | daemonProcessIdFilter" title="ProcessId" />
+            <Cell v-bind:extra="currentDaemonItem.daemonVersion | daemonVersionFilter" v-bind:title="localLanguageText['10021']" />
+            <Cell v-bind:extra="currentDaemonItem.daemonWorkDirectory | daemonWorkDirectoryFilter" v-bind:title="localLanguageText['10022']" />
+            <Cell v-bind:extra="currentDaemonItem.daemonHostCpuCores | daemonHostCpuCoresFilter" v-bind:title="localLanguageText['10023']" />
+            <Cell v-bind:extra="currentDaemonItem.daemonHostMemorySize | fixedByteSizeFilter" v-bind:title="localLanguageText['10024']" />
+            <Cell v-bind:extra="currentDaemonItem.daemonProcessId | daemonProcessIdFilter" v-bind:title="localLanguageText['10025']" />
             <Divider size="small" class="divider1" />
-            <Cell title="AutoRefreshDaemonStatus">
+            <Cell v-bind:title="localLanguageText['10026']">
                 <i-switch slot="extra" v-model="currentDaemonDaemonAutoRefresh" v-bind:disabled="!currentDaemonItem.websocketWrap.connectionValid" />
             </Cell>
-            <Cell v-bind:extra="currentDaemonItem.daemonProcessTimePercentage | daemonProcessTimePercentageFilter" title="ProcessTimePercentage" />
-            <Cell v-bind:extra="currentDaemonItem.daemonProcessWorkingSetSize | fixedByteSizeFilter" title="ProcessWorkingSetSize" />
-            <Cell v-bind:extra="currentDaemonItem.daemonUnitSettingsCount | daemonUnitSettingsCountFilter" title="UnitSettingsCount" />
-            <Cell v-bind:extra="currentDaemonItem.daemonUnitProcessCount | daemonUnitProcessCountFilter" title="UnitProcessCount" />
-            <Cell v-bind:extra="currentDaemonItem.daemonNetworkTotalSent | fixedByteSizeFilter" title="NetworkTotalSent" />
-            <Cell v-bind:extra="currentDaemonItem.daemonNetworkTotalReceived | fixedByteSizeFilter" title="NetworkTotalReceived" />
+            <Cell v-bind:extra="currentDaemonItem.daemonProcessTimePercentage | daemonProcessTimePercentageFilter" v-bind:title="localLanguageText['10027']" />
+            <Cell v-bind:extra="currentDaemonItem.daemonProcessWorkingSetSize | fixedByteSizeFilter" v-bind:title="localLanguageText['10028']" />
+            <Cell v-bind:extra="currentDaemonItem.daemonUnitSettingsCount | daemonUnitSettingsCountFilter" v-bind:title="localLanguageText['10029']" />
+            <Cell v-bind:extra="currentDaemonItem.daemonUnitProcessCount | daemonUnitProcessCountFilter" v-bind:title="localLanguageText['10030']" />
+            <Cell v-bind:extra="currentDaemonItem.daemonNetworkTotalSent | fixedByteSizeFilter" v-bind:title="localLanguageText['10031']" />
+            <Cell v-bind:extra="currentDaemonItem.daemonNetworkTotalReceived | fixedByteSizeFilter" v-bind:title="localLanguageText['10032']" />
         </CellGroup>
     </div>
 </template>

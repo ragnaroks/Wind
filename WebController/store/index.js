@@ -94,6 +94,12 @@ export const mutations = {
             state.currentDaemonItem.websocketWrap.Setup(state.currentDaemonItem.hostname,state.currentDaemonItem.websocketAddress,state.currentDaemonItem.websocketControlKey,this);
         }
     },
+    set_languageTextType:function(state,payload){
+        if(!payload.languageTextType){return;}
+        if(!state.languageText[payload.languageTextType]){return;}
+        state.languageTextType=payload.languageTextType;
+        localStorage.setItem('languageTextType',payload.languageTextType);
+    },
     set_connected_In_WebsocketWrap_In_DaemonItem:function(state,payload){
         if(!payload.hostname || payload.connected===undefined){return;}
         if(state.daemonArray.length<1){return;}

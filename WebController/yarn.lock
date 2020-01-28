@@ -3880,7 +3880,7 @@ gonzales-pe@^4.2.3:
 
 google-protobuf@^3.11.2:
   version "3.11.2"
-  resolved "https://registry.npmjs.org/google-protobuf/-/google-protobuf-3.11.2.tgz#43272974521a5cec35a21f62730cf517a5a8e38c"
+  resolved "https://registry.yarnpkg.com/google-protobuf/-/google-protobuf-3.11.2.tgz#43272974521a5cec35a21f62730cf517a5a8e38c"
   integrity sha512-T4fin7lcYLUPj2ChUZ4DvfuuHtg3xi1621qeRZt2J7SvOQusOzq+sDT4vbotWTCjUXJoR36CA016LlhtPy80uQ==
 
 graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6, graceful-fs@^4.2.0, graceful-fs@^4.2.2:

@@ -2,9 +2,11 @@
     <div class="pages" data-layout="default" data-page="index">
         <Sider v-bind:collapsedWidth="0" v-model="sider.isCollapsed" class="page-sider" breakpoint="sm" collapsible hide-trigger>
             <Menu v-on:on-select="onMenuSelect" theme="dark" width="auto">
+                <MenuItem v-on:click.native="showChangeLanguageDialog" name="menu-change-language" disabled><Icon type="md-globe" />{{ localLanguageText['10049'] }}</MenuItem>
+                <MenuItem v-if="false" v-on:click.native="showAddDaemonDialog" name="menu-add-daemon" disabled><Icon type="md-add" />{{ localLanguageText['10003'] }}</MenuItem>
+                <Divider size="small" class="divider1" />
                 <MenuItem name="menu-title" disabled><Icon type="md-list" />{{ localLanguageText['10002'] }}</MenuItem>
                 <MenuItem v-for="daemonHostnameItem in daemonHostnameArray" v-bind:key="daemonHostnameItem" v-bind:name="daemonHostnameItem" v-text="daemonHostnameItem" />
-                <MenuItem v-on:click.native="showAddDaemonDialog" name="menu-add-daemon" disabled><Icon type="md-add" />{{ localLanguageText['10003'] }}</MenuItem>
             </Menu>
         </Sider>
         <Layout v-bind:class="['page-body',sider.isCollapsed?'page-sider-collapsed':'']">
@@ -28,7 +30,13 @@
                     </Panel>
                 </Collapse>
             </Content>
-            <Modal v-model="modalArray.showAddDaemonModal" v-bind:closable="false" v-bind:mask-closable="false" v-on:on-ok="AddDaemon" loading ok-text="Add" cancel-text="Cancel" title="Add Daemon">
+            <Modal v-model="modalArray.showChangeLanguageModal" v-bind:mask-closable="false" v-bind:title="localLanguageText['10049']" footer-hide>
+                <CellGroup v-on:on-click="changeLanguageTextType">
+                    <Cell v-bind:selected="currentLanguageTextType==='zh-cn'" title="简体中文" extra="zh-cn" name="zh-cn" />
+                    <Cell v-bind:selected="currentLanguageTextType==='en-us'" title="English" extra="en-us" name="en-us" />
+                </CellGroup>
+            </Modal>
+            <Modal v-model="modalArray.showAddDaemonModal" v-bind:closable="false" v-bind:mask-closable="false" v-on:on-ok="addDaemon" loading ok-text="Add" cancel-text="Cancel" title="Add Daemon">
                 <div>AddDaemonModal</div>
             </Modal>
         </Layout>
@@ -38,6 +46,7 @@
 <style scoped>
 .pages{font-size:16px;/*height:fill-available;*/}
 .page-sider{position:fixed;height:100vh;left:0;overflow:auto;}
+.divider1{margin:0;display:inline-block;background-color:#424752;}
 .page-header{background-color:white;box-shadow:0 2px 3px 2px rgba(0,0,0,.1);font-weight:bold;position:fixed;top:0;width:100%;z-index:1;padding-left:1rem;}
 .page-body{margin-left:200px;background-color:white;}
 .page-body.page-sider-collapsed{margin-left:0}
@@ -68,7 +77,8 @@ export default{
                 value:['panel-for-component-daemon-connection-panel','panel-for-component-daemon-information-panel','panel-for-daemon-unit-controller']
             },
             modalArray:{
-                showAddDaemonModal:false
+                showAddDaemonModal:false,
+                showChangeLanguageModal:false
             }
         };
     },
@@ -82,6 +92,14 @@ export default{
                 this.$store.commit('set_currentDaemonHostname',{hostname:value});
             }
         },
+        currentLanguageTextType:{
+            get:function(){
+                return this.$store.state.languageTextType;
+            },
+            set:function(value){
+                this.$store.commit('set_languageTextType',{languageTextType:value});
+            }
+        },
         daemonHostnameArray:function(){
             const array=this.$store.state.daemonArray;
             if(array.length<1){return null;}
@@ -92,15 +110,34 @@ export default{
             return hostnameArray;
         }
     },
+    created:function(){
+        const languageTextType=localStorage.getItem('languageTextType');
+        if(!languageTextType){
+            this.currentLanguageTextType='zh-cn';
+        }else{
+            this.currentLanguageTextType=languageTextType;
+        }
+    },
     methods:{
         onMenuSelect:function(name){
             this.currentDaemonHostname=name;
+        },
+        onLanguageTypeChange:function(name){
+            console.log(name);
+            this.currentLanguageTextType=name;
+        },
+        showChangeLanguageDialog:function(){
+            if(this.modalArray.showChangeLanguageModal){return;}
+            this.modalArray.showChangeLanguageModal=true;
         },
         showAddDaemonDialog:function(){
             if(this.modalArray.showAddDaemonModal){return;}
             this.modalArray.showAddDaemonModal=true;
         },
-        AddDaemon:function(){
+        changeLanguageTextType:function(type){
+            this.currentLanguageTextType=type;
+        },
+        addDaemon:function(){
             const _this=this;
             setTimeout(() => {
                 _this.modalArray.showAddDaemonModal=false;

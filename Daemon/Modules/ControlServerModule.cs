@@ -10,31 +10,41 @@ using System.Threading;
 
 namespace Daemon.Modules {
     public class ControlServerModule:IDisposable {
-        private readonly WebSocketServer WebSocketServer;
-        private readonly Byte[] PingPacket=new Byte[]{0x07,0x03,0x05,0x05,0x06,0x00,0x08};
-        private readonly Timer PingTimer;
-        private Boolean PingTimerEnable=true;
-        private readonly Timer CleanTimer;
-        private Boolean CleanTimerEnable=true;
-        private Dictionary<Guid,Entities.WebSocketConnectionWrap> WebSocketConnectionWrapDictionary=new Dictionary<Guid,Entities.WebSocketConnectionWrap>();
+        /// <summary>模块是否可用</summary>
+        public Boolean ModuleAvailable{get;}=false;
+        /// <summary>websocket地址</summary>
+        private String WebSocketServerUrl{get;}
+        /// <summary>websocket服务端</summary>
+        private WebSocketServer WebSocketServer{get;set;}
+        /// <summary>Ping包</summary>
+        private Byte[] PingPacket{get;}=new Byte[]{0x07,0x03,0x05,0x05,0x06,0x00,0x08};
+        /// <summary>Ping计时器</summary>
+        private Timer PingTimer{get;}
+        /// <summary>是否可Ping</summary>
+        private Boolean PingTimerEnable{get;set;}=false;
+        /// <summary>清理无效会话计时器</summary>
+        private Timer CleanTimer{get;}
+        /// <summary>是否可清理</summary>
+        private Boolean CleanTimerEnable{get;set;}=false;
+        /// <summary>会话列表</summary>
+        private Dictionary<Guid,Entities.WebSocketConnectionWrap> WebSocketConnectionWrapDictionary{get;set;}=new Dictionary<Guid,Entities.WebSocketConnectionWrap>();
 
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design","CA1031:不捕获常规异常类型",Justification = "<挂起>")]
         public ControlServerModule(Int16 port,String address){
             if(!this.CheckAddress(address)){
-                Program.LoggerModule.Log("Modules.ControlServerModule.DameonControlServerModule[Error]","取消创建WebSocketServer,参数错误");
+                Program.LoggerModule.Log("Modules.ControlServerModule.DameonControlServerModule[Error]","address 参数错误");
+                return;
+            }
+            if(port<1024 || port>(Int16.MaxValue-1)){
+                Program.LoggerModule.Log("Modules.ControlServerModule.DameonControlServerModule[Error]","port 参数错误");
                 return;
             }
             if(address=="localhost"){address="127.0.0.1";}
             if(address=="any"){address="0.0.0.0";}
-            Program.LoggerModule.Log("Modules.ControlServerModule.DameonControlServerModule","尝试创建WebSocketServer");
-            try {
-                this.WebSocketServer=new WebSocketServer($"ws://{address}:{port}",false);
-                //this.WebSocketServer.ListenerSocket.NoDelay=true;
-            }catch(Exception exception){
-                Console.WriteLine($"Modules.ControlServerModule.DameonControlServerModule[Error] => 创建WebSocketServer异常 | {exception.Message} | {exception.StackTrace}");
-                Program.LoggerModule.Log("Modules.ControlServerModule.DameonControlServerModule[Error]",$"创建WebSocketServer异常,{exception.Message},{exception.StackTrace}");
-            }
+            this.WebSocketServerUrl=$"ws://{address}:{port}";
             this.PingTimer=new Timer(OnPingTimerCallback,null,10_000,10_000);
             this.CleanTimer=new Timer(OnCleanTimerCallback,null,60_000,60_000);//timeout 60s
+            this.ModuleAvailable=true;
         }
 
         #region IDisposable Support
@@ -44,8 +54,11 @@ namespace Daemon.Modules {
             if(!disposedValue) {
                 if(disposing) {
                     // TODO: 释放托管状态(托管对象)。
-                    if(this.WebSocketServer!=null){this.WebSocketServer.Dispose();}
-                    if(this.PingTimer!=null){this.PingTimer.Dispose();}
+                    if(this.WebSocketServer!=null){
+                        this.WebSocketServer.Dispose();
+                    }
+                    this.PingTimer.Dispose();
+                    this.CleanTimer.Dispose();
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
@@ -124,8 +137,19 @@ namespace Daemon.Modules {
         /// <summary>
         /// 开始服务
         /// </summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design","CA1031:不捕获常规异常类型",Justification = "<挂起>")]
         public void StartServer(){
-            if(this.WebSocketServer==null){return;}
+            const String infoLogPrefix="Modules.ControlServerModule.StartServer";
+            const String errorLogPrefix="Modules.ControlServerModule.StartServer[Error]";
+            if(!this.ModuleAvailable){return;}
+            Program.LoggerModule.Log(infoLogPrefix,"尝试创建WebSocketServer");
+            try {
+                this.WebSocketServer=new WebSocketServer(this.WebSocketServerUrl,false);
+                //this.WebSocketServer.ListenerSocket.NoDelay=true;
+            }catch(Exception exception){
+                Console.WriteLine($"{errorLogPrefix} => 创建WebSocketServer异常 | {exception.Message} | {exception.StackTrace}");
+                Program.LoggerModule.Log(errorLogPrefix,$"创建WebSocketServer异常,{exception.Message},{exception.StackTrace}");
+            }
             this.WebSocketServer.Start((webSocketConnection)=>{
                 webSocketConnection.OnOpen=()=>this.SocketOnOpenAsync(webSocketConnection);
                 webSocketConnection.OnClose=()=>this.SocketOnCloseAsync(webSocketConnection);
@@ -135,8 +159,8 @@ namespace Daemon.Modules {
                 //webSocketConnection.OnMessage=(message)=>this.SocketOnMessageAsync(webSocketConnection,message);
                 webSocketConnection.OnMessage=(message) => {
                     webSocketConnection.Send(message);
-                    Console.WriteLine($"客户端\"{webSocketConnection.ConnectionInfo.Id}\"发来文本消息,已做Echo处理");
-                    Program.LoggerModule.Log("Modules.ControlServerModule.StartServer",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"发来文本消息,已做Echo处理");
+                    Console.WriteLine($"{infoLogPrefix} => 客户端\"{webSocketConnection.ConnectionInfo.Id}\"发来文本消息,已做Echo处理");
+                    Program.LoggerModule.Log(infoLogPrefix,$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"发来文本消息,已做Echo处理");
                 };
                 webSocketConnection.OnBinary=(bytes)=>this.SocketOnBinaryAsync(webSocketConnection,bytes);
             });
@@ -157,7 +181,7 @@ namespace Daemon.Modules {
                 Type=2001,
                 ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString(),
                 HelloMessage=$"{webSocketConnection.ConnectionInfo.ClientIpAddress}:{webSocketConnection.ConnectionInfo.ClientPort} websocket connected,please validate your control key"};
-            await webSocketConnection.Send(protobuf.ToBytes());
+            await webSocketConnection.Send(protobuf.ToBytes()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -185,7 +209,7 @@ namespace Daemon.Modules {
             if(!webSocketConnectionWrap.Valid) {
                 webSocketConnection.Close();
             } else {
-                await webSocketConnection.SendPing(this.PingPacket);
+                await webSocketConnection.SendPing(this.PingPacket).ConfigureAwait(false);
             }
             Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnErrorAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"链接异常已随便处理");
         }
@@ -195,9 +219,11 @@ namespace Daemon.Modules {
         /// </summary>
         /// <param name="webSocketConnection"></param>
         /// <param name="bytes"></param>
+#pragma warning disable CA1822 //不访问实例数据，可标记为 static
         private async void SocketOnPingAsync(IWebSocketConnection webSocketConnection,Byte[] bytes){
+#pragma warning restore CA1822 //不访问实例数据，可标记为 static
             Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnPingAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求Ping");
-            await webSocketConnection.SendPong(bytes);
+            await webSocketConnection.SendPong(bytes).ConfigureAwait(false);
             Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnPingAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"请求Ping已回应");
         }
 
@@ -209,6 +235,7 @@ namespace Daemon.Modules {
 #pragma warning disable CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
         private async void SocketOnPongAsync(IWebSocketConnection webSocketConnection,Byte[] bytes) {
 #pragma warning restore CS1998 // 异步方法缺少 "await" 运算符，将以同步方式运行
+            if(bytes==null){return;}
             Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnPongAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"回复Pong");
             if(this.WebSocketConnectionWrapDictionary.Count<1 || !this.WebSocketConnectionWrapDictionary.ContainsKey(webSocketConnection.ConnectionInfo.Id)){return;}
             this.WebSocketConnectionWrapDictionary[webSocketConnection.ConnectionInfo.Id].LastPongTime=DateTimeOffset.Now.ToUnixTimeSeconds();
@@ -225,7 +252,7 @@ namespace Daemon.Modules {
             Protocol.WebSocketPacketTest packetTest=Protocol.WebSocketPacketTest.Parser.ParseFrom(bytes);
             if(packetTest==null) {
                 Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnBinaryAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"发来无效消息字节数组消息");
-                await webSocketConnection.Send(bytes);
+                await webSocketConnection.Send(bytes).ConfigureAwait(false);
                 return;
             }
             switch(packetTest.Type){
@@ -287,11 +314,12 @@ namespace Daemon.Modules {
                 //客户端向服务端请求指定单元网络数据
                 case 1018:
                     Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnBinaryAsync",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\" WebSocketClientRequestStopUnit");
-                    this.SocketOnBinaryWebSocketClientRequestFetchUnitStatusNetworkCounterAsync(webSocketConnection,Protocol.WebSocketClientRequestFetchUnitStatusNetworkCounter.Parser.ParseFrom(bytes));
+                    this.SocketOnBinaryWebSocketClientRequestFetchUnitStatusNetworkCounterAsync(webSocketConnection,
+                        Protocol.WebSocketClientRequestFetchUnitStatusNetworkCounter.Parser.ParseFrom(bytes));
                     break;
                 default:
                     Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnBinaryAsync[Warning]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\"发来无法识别消息字节数组消息");
-                    await webSocketConnection.Send(bytes);
+                    await webSocketConnection.Send(bytes).ConfigureAwait(false);
                     break;
             }
         }
@@ -317,7 +345,7 @@ namespace Daemon.Modules {
                 webSocketConnection.Close();
                 return;
             }
-            if(packetRequest.ControlKey!=Program.AppSettings.ControlKey) {
+            if(packetRequest.ControlKey!=Program.AppSettingsModule.AppSettings.ControlKey) {
                 Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnBinaryWebSocketClientRequestValidateControlKey[Error]",$"客户端\"{webSocketConnection.ConnectionInfo.Id}\" 请求的<ControlKey>不匹配");
                 webSocketConnection.Close();
                 return;
@@ -331,7 +359,7 @@ namespace Daemon.Modules {
                 ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString(),
                 Validation=webSocketConnectionWrap.Valid,
                 ValidationMessage="your connection is validated"};
-            await webSocketConnection.Send(packetResponse.ToBytes<Protocol.WebSocketServerResponseValidateControlKey>());
+            await webSocketConnection.Send(packetResponse.ToBytes<Protocol.WebSocketServerResponseValidateControlKey>()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -358,7 +386,7 @@ namespace Daemon.Modules {
                 ProcessId=(UInt32)Program.AppProcess.Id};
             Protocol.WebSocketServerResponseFetchDaemonMeta packetResponse=new Protocol.WebSocketServerResponseFetchDaemonMeta{
                 Type=2003,ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString(),DaemonMeta=packetDaemonMeta};
-            await webSocketConnection.Send(packetResponse.ToBytes());
+            await webSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -391,7 +419,7 @@ namespace Daemon.Modules {
             }
             Protocol.WebSocketServerResponseFetchDaemonStatus packetResponse=new Protocol.WebSocketServerResponseFetchDaemonStatus{
                 Type=2004,ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString(),DaemonStatus=packetDaemonStatus};
-            await webSocketConnection.Send(packetResponse.ToBytes());
+            await webSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -450,7 +478,7 @@ namespace Daemon.Modules {
                 //添加到列表
                 packetResponse.UnitStatus.Add(unitStatus);
             }
-            await webSocketConnection.Send(packetResponse.ToBytes());
+            await webSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -507,7 +535,7 @@ namespace Daemon.Modules {
             }
             //
             packetResponse.UnitStatus=unitStatus;
-            await webSocketConnection.Send(packetResponse.ToBytes());
+            await webSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -529,7 +557,7 @@ namespace Daemon.Modules {
             Program.UnitControlModule.ReloadAllUnits(packetRequest.RestartIfUpdate);
             Protocol.WebSocketServerResponseReloadUnitsSettings packetResponse=new Protocol.WebSocketServerResponseReloadUnitsSettings{
                 Type=2007,ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString(),RestartIfUpdate=packetRequest.RestartIfUpdate,Executed=true};
-            await webSocketConnection.Send(packetResponse.ToBytes());
+            await webSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -551,7 +579,7 @@ namespace Daemon.Modules {
             Program.UnitControlModule.ReloadUnit(packetRequest.UnitName,packetRequest.RestartIfUpdate);
             Protocol.WebSocketServerResponseReloadUnitSettings packetResponse=new Protocol.WebSocketServerResponseReloadUnitSettings{
                 Type=2008,ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString(),RestartIfUpdate=packetRequest.RestartIfUpdate,Executed=true,UnitName=packetRequest.UnitName};
-            await webSocketConnection.Send(packetResponse.ToBytes());
+            await webSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -573,7 +601,7 @@ namespace Daemon.Modules {
             Program.UnitControlModule.StartAllUnits();
             Protocol.WebSocketServerResponseStartUnits packetResponse=new Protocol.WebSocketServerResponseStartUnits{
                 Type=2009,ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString(),Executed=true};
-            await webSocketConnection.Send(packetResponse.ToBytes());
+            await webSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -595,7 +623,7 @@ namespace Daemon.Modules {
             Program.UnitControlModule.StartUnit(packetRequest.UnitName);
             Protocol.WebSocketServerResponseStartUnit packetResponse=new Protocol.WebSocketServerResponseStartUnit{
                 Type=2010,ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString(),UnitName=packetRequest.UnitName,Executed=true};
-            await webSocketConnection.Send(packetResponse.ToBytes());
+            await webSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -617,7 +645,7 @@ namespace Daemon.Modules {
             Program.UnitControlModule.StopAllUnits(false);
             Protocol.WebSocketServerResponseStopUnits packetResponse=new Protocol.WebSocketServerResponseStopUnits{
                 Type=2011,ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString(),Executed=true};
-            await webSocketConnection.Send(packetResponse.ToBytes());
+            await webSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -639,7 +667,7 @@ namespace Daemon.Modules {
             Program.UnitControlModule.StopUnit(packetRequest.UnitName,false);
             Protocol.WebSocketServerResponseStopUnit packetResponse=new Protocol.WebSocketServerResponseStopUnit{
                 Type=2012,ClientConnectionGuid=webSocketConnection.ConnectionInfo.Id.ToString(),UnitName=packetRequest.UnitName,Executed=true};
-            await webSocketConnection.Send(packetResponse.ToBytes());
+            await webSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
         }
         
         /// <summary>
@@ -648,9 +676,14 @@ namespace Daemon.Modules {
         /// <param name="unitName"></param>
         /// <param name="unitSettings"></param>
         public async void SocketSendBinaryWebSocketServerNotifyClientsThatUnitSettingsReloadAsync(String unitName,Entities.UnitSettings unitSettings){
-            Program.LoggerModule.Log("Modules.ControlServerModule.SocketSendBinaryWebSocketServerNotifyClientsThatUnitSettingsReloadAsync","服务端通知所有客户端指定单元被重载");
+            const String infoLogPrefix="Modules.ControlServerModule.SocketSendBinaryWebSocketServerNotifyClientsThatUnitSettingsReloadAsync";
+            Program.LoggerModule.Log(infoLogPrefix,"服务端通知所有客户端指定单元被重载");
             if(this.WebSocketConnectionWrapDictionary.Count<1){
-                Program.LoggerModule.Log("Modules.ControlServerModule.SocketSendBinaryWebSocketServerNotifyClientsThatUnitSettingsReloadAsync","没有需要通知的客户端");
+                Program.LoggerModule.Log(infoLogPrefix,"没有需要通知的客户端");
+                return;
+            }
+            if(unitSettings==null){
+                Program.LoggerModule.Log(infoLogPrefix,"unitSettings 为空,跳过通知");
                 return;
             }
             Protocol.UnitSettings packetUnitSettings=new Protocol.UnitSettings{
@@ -668,7 +701,7 @@ namespace Daemon.Modules {
             foreach(KeyValuePair<Guid,Entities.WebSocketConnectionWrap> item in this.WebSocketConnectionWrapDictionary) {
                 if(!item.Value.Valid || !item.Value.WebSocketConnection.IsAvailable){continue;}
                 packetResponse.ClientConnectionGuid=item.Value.WebSocketConnection.ConnectionInfo.Id.ToString();
-                await item.Value.WebSocketConnection.Send(packetResponse.ToBytes());
+                await item.Value.WebSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
             }
         }
 
@@ -678,9 +711,14 @@ namespace Daemon.Modules {
         /// <param name="unitName"></param>
         /// <param name="unitProcess"></param>
         public async void SocketSendBinaryWebSocketServerNotifyClientsThatUnitStartedAsync(String unitName,Entities.UnitProcess unitProcess){
-            Program.LoggerModule.Log("Modules.ControlServerModule.SocketSendBinaryWebSocketServerNotifyClientsThatUnitStartedAsync","服务端通知所有客户端指定单元已启动");
+            const String infoLogPrefix="Modules.ControlServerModule.SocketSendBinaryWebSocketServerNotifyClientsThatUnitStartedAsync";
+            Program.LoggerModule.Log(infoLogPrefix,"服务端通知所有客户端指定单元已启动");
             if(this.WebSocketConnectionWrapDictionary.Count<1){
-                Program.LoggerModule.Log("Modules.ControlServerModule.SocketSendBinaryWebSocketServerNotifyClientsThatUnitStartedAsync","没有需要通知的客户端");
+                Program.LoggerModule.Log(infoLogPrefix,"没有需要通知的客户端");
+                return;
+            }
+            if(unitProcess==null) {
+                Program.LoggerModule.Log(infoLogPrefix,"unitProcess 为空,跳过通知");
                 return;
             }
             Protocol.UnitProcess packetUnitProcess=new Protocol.UnitProcess{
@@ -691,7 +729,7 @@ namespace Daemon.Modules {
             foreach(KeyValuePair<Guid,Entities.WebSocketConnectionWrap> item in this.WebSocketConnectionWrapDictionary) {
                 if(!item.Value.Valid || !item.Value.WebSocketConnection.IsAvailable){continue;}
                 packetResponse.ClientConnectionGuid=item.Value.WebSocketConnection.ConnectionInfo.Id.ToString();
-                await item.Value.WebSocketConnection.Send(packetResponse.ToBytes());
+                await item.Value.WebSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
             }
         }
 
@@ -709,7 +747,7 @@ namespace Daemon.Modules {
             foreach(KeyValuePair<Guid,Entities.WebSocketConnectionWrap> item in this.WebSocketConnectionWrapDictionary) {
                 if(!item.Value.Valid || !item.Value.WebSocketConnection.IsAvailable){continue;}
                 packetResponse.ClientConnectionGuid=item.Value.WebSocketConnection.ConnectionInfo.Id.ToString();
-                await item.Value.WebSocketConnection.Send(packetResponse.ToBytes());
+                await item.Value.WebSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
             }
         }
 
@@ -727,7 +765,7 @@ namespace Daemon.Modules {
             foreach(KeyValuePair<Guid,Entities.WebSocketConnectionWrap> item in this.WebSocketConnectionWrapDictionary) {
                 if(!item.Value.Valid || !item.Value.WebSocketConnection.IsAvailable){continue;}
                 packetResponse.ClientConnectionGuid=item.Value.WebSocketConnection.ConnectionInfo.Id.ToString();
-                await item.Value.WebSocketConnection.Send(packetResponse.ToBytes());
+                await item.Value.WebSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
             }
         }
 
@@ -745,22 +783,22 @@ namespace Daemon.Modules {
             foreach(KeyValuePair<Guid,Entities.WebSocketConnectionWrap> item in this.WebSocketConnectionWrapDictionary) {
                 if(!item.Value.Valid || !item.Value.WebSocketConnection.IsAvailable){continue;}
                 packetResponse.ClientConnectionGuid=item.Value.WebSocketConnection.ConnectionInfo.Id.ToString();
-                await item.Value.WebSocketConnection.Send(packetResponse.ToBytes());
+                await item.Value.WebSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
             }
         }
 
         /// <summary>
-        /// 服务端通知所有客户端指定单元网络数据
+        /// 服务端通知客户端指定单元网络数据
         /// </summary>
         /// <param name="unitName"></param>
-        public async void SocketOnBinaryWebSocketClientRequestFetchUnitStatusNetworkCounterAsync(IWebSocketConnection webSocketConnection,
+        private async void SocketOnBinaryWebSocketClientRequestFetchUnitStatusNetworkCounterAsync(IWebSocketConnection webSocketConnection,
             Protocol.WebSocketClientRequestFetchUnitStatusNetworkCounter packetRequest){
             Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnBinaryWebSocketClientRequestFetchUnitStatusNetworkCounterAsync","服务端通知所有客户端指定单元网络数据");
             if(this.WebSocketConnectionWrapDictionary.Count<1){
                 Program.LoggerModule.Log("Modules.ControlServerModule.SocketOnBinaryWebSocketClientRequestFetchUnitStatusNetworkCounterAsync","没有需要通知的客户端");
                 return;
             }
-            if(String.IsNullOrEmpty(packetRequest.UnitName)){return;}
+            if(packetRequest==null || String.IsNullOrEmpty(packetRequest.UnitName)){return;}
             Entities.UnitStatus unitStatus=Program.UnitControlModule.FetchUnitStatus(packetRequest.UnitName);
             if(unitStatus==null || unitStatus.UnitProcess==null){return;}
             Entities.UnitNetworkCounter unitNetworkCounter=Program.UnitNetworkPerformanceTracerModule.GetCounter(unitStatus.UnitProcess.ProcessId);
@@ -772,11 +810,14 @@ namespace Daemon.Modules {
                 TotalReceived=(UInt64)unitNetworkCounter.TotalReceived,
                 SendSpeed=(UInt64)unitNetworkCounter.SendSpeed,
                 ReceiveSpeed=(UInt64)unitNetworkCounter.ReceiveSpeed};
+            /*
             foreach(KeyValuePair<Guid,Entities.WebSocketConnectionWrap> item in this.WebSocketConnectionWrapDictionary) {
                 if(!item.Value.Valid || !item.Value.WebSocketConnection.IsAvailable){continue;}
                 packetResponse.ClientConnectionGuid=item.Value.WebSocketConnection.ConnectionInfo.Id.ToString();
-                await item.Value.WebSocketConnection.Send(packetResponse.ToBytes());
+                await item.Value.WebSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
             }
+            */
+            await webSocketConnection.Send(packetResponse.ToBytes()).ConfigureAwait(false);
         }
     }
 }

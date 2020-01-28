@@ -35,7 +35,7 @@ namespace Host.Helper {
             Byte[] result=null;
             try {
                 result=crypto.TransformFinalBlock(_bytes,0,_bytes.Length);
-            }catch(Exception _e) {
+            }catch{
                 crypto.Dispose();
                 aes.Dispose();
                 return null;

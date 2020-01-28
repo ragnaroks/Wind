@@ -10,25 +10,28 @@ namespace Daemon.Helpers {
         /// </summary>
         /// <param name="parentProcessId"></param>
         /// <returns></returns>
-        public static Int32[] GetChildProcessIdArrayByParentProcessId(Int32 parentProcessId){
+        public static List<Int32> GetChildProcessIdListByParentProcessId(Int32 parentProcessId){
             ManagementObjectSearcher managementObjectSearcher=new ManagementObjectSearcher($"SELECT * FROM Win32_Process WHERE ParentProcessID={parentProcessId}");
             ManagementObjectCollection managementObjectCollection=managementObjectSearcher.Get();
             managementObjectSearcher.Dispose();
             if(managementObjectCollection==null || managementObjectCollection.Count<1){return null;}
-            Int32[] idArray=new Int32[managementObjectCollection.Count];
-            Int32 index=0;
+            List<Int32> idList=new List<Int32>();
             foreach(ManagementBaseObject item in managementObjectCollection) {
-                Int32.TryParse(item.GetPropertyValue("ProcessID").ToString(),out idArray[index]);
+                if(!Int32.TryParse(item.GetPropertyValue("ProcessID").ToString(),out Int32 processId)){continue;}
+                idList.Add(processId);
             }
             managementObjectCollection.Dispose();
-            return idArray;
+            return idList;
         }
+
 
         /// <summary>
         /// 获取主机内存字节数
         /// </summary>
         /// <returns></returns>
-        public static UInt64 GetPhysicalMemorySize() {
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization","CA1303:请不要将文本作为本地化参数传递",Justification = "<挂起>")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design","CA1031:不捕获常规异常类型",Justification = "<挂起>")]
+        public static UInt64 GetPhysicalMemorySize(){
             ManagementClass managementClass=new ManagementClass("Win32_PhysicalMemory");
             if(managementClass==null){return 0;}
             ManagementObjectCollection managementObjectCollection=managementClass.GetInstances();
@@ -38,8 +41,8 @@ namespace Daemon.Helpers {
             foreach(ManagementObject item in managementObjectCollection) {
                 try {
                     size+=(UInt64)item.GetPropertyValue("Capacity");
-                }catch(Exception exception) {
-                    Console.WriteLine($"Helpers.WindowsManagementHelper.GetPhysicalMemorySize => Capacity属性不能转为UInt64,{exception.Message},{exception.StackTrace}");
+                }catch{
+                    Console.WriteLine("Helpers.WindowsManagementHelper.GetPhysicalMemorySize => Capacity属性不能转为UInt64");
                 }
             }
             managementObjectCollection.Dispose();

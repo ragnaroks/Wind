@@ -4,24 +4,31 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace Daemon.Modules {
+    /// <summary>应用程序性能计数器模块</summary>
+    [Obsolete("可拓展至所有单元,就像网络统计模块一样")]
     public class AppPerformanceCounterModule:IDisposable {
-        private readonly PerformanceCounter ProcessorTimePerformanceCounter=null;
-        private readonly Boolean ProcessorTimePerformanceCounterUseable=false;
-        private readonly PerformanceCounter WorkingSetPerformanceCounter=null;
-        private readonly Boolean WorkingSetPerformanceCounterUseable=false;
-        
+        /// <summary>模块是否可用</summary>
+        public Boolean ModuleAvailable{get;}=true;
+        /// <summary>CPU时间计数器</summary>
+        private PerformanceCounter ProcessorTimePerformanceCounter{get;}
+        /// <summary>内存占用计数器</summary>
+        private PerformanceCounter WorkingSetPerformanceCounter{get;}
+
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design","CA1031:不捕获常规异常类型",Justification = "<挂起>")]
         public AppPerformanceCounterModule(){
             try {
-                this.ProcessorTimePerformanceCounter=new PerformanceCounter{CategoryName="Process",CounterName="% Processor Time",InstanceName=Program.AppProcess.ProcessName,ReadOnly=true};
-                this.ProcessorTimePerformanceCounterUseable=true;
+                this.ProcessorTimePerformanceCounter=new PerformanceCounter{
+                    CategoryName="Process",CounterName="% Processor Time",InstanceName=Program.AppProcess.ProcessName,ReadOnly=true};
             }catch(Exception exception) {
-                Console.WriteLine($"Modules.AppPerformanceCounterModule.AppPerformanceCounterModule => 创建ProcessorTimePerformanceCounter性能计数器时异常,{exception.Message},{exception.StackTrace}");
+                Console.WriteLine(
+                    $"Modules.AppPerformanceCounterModule.AppPerformanceCounterModule[Error] => 创建ProcessorTimePerformanceCounter时异常,{exception.Message},{exception.StackTrace}");
             }
             try {
-                this.WorkingSetPerformanceCounter=new PerformanceCounter{CategoryName="Process",CounterName="Working Set",InstanceName=Program.AppProcess.ProcessName,ReadOnly=true};
-                this.WorkingSetPerformanceCounterUseable=true;
+                this.WorkingSetPerformanceCounter=new PerformanceCounter{
+                    CategoryName="Process",CounterName="Working Set",InstanceName=Program.AppProcess.ProcessName,ReadOnly=true};
             }catch(Exception exception) {
-                Console.WriteLine($"Modules.AppPerformanceCounterModule.AppPerformanceCounterModule => 创建ProcessorTimePerformanceCounter性能计数器时异常,{exception.Message},{exception.StackTrace}");
+                Console.WriteLine(
+                    $"Modules.AppPerformanceCounterModule.AppPerformanceCounterModule[Error] => 创建ProcessorTimePerformanceCounter时异常,{exception.Message},{exception.StackTrace}");
             }
         }
 
@@ -55,18 +62,11 @@ namespace Daemon.Modules {
             // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
             Dispose(true);
             // TODO: 如果在以上内容中替代了终结器，则取消注释以下行。
-            // GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
         #endregion
 
-        public Single GetProcessTimePercentage(){
-            if(!this.ProcessorTimePerformanceCounterUseable){return 0F;}
-            return this.ProcessorTimePerformanceCounter.NextValue();
-        }
-
-        public Single GetProcessWorkingSetSize() {
-            if(!this.WorkingSetPerformanceCounterUseable){return 0F;}
-            return this.WorkingSetPerformanceCounter.NextValue();
-        }
+        public Single GetProcessTimePercentage()=>this.ProcessorTimePerformanceCounter==null?0F:this.ProcessorTimePerformanceCounter.NextValue();
+        public Single GetProcessWorkingSetSize()=>this.WorkingSetPerformanceCounter==null?0F:this.WorkingSetPerformanceCounter.NextValue();
     }
 }

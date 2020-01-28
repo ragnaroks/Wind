@@ -2,30 +2,30 @@
     <Card class="components" data-component="daemon-unit-item">
         <p slot="title" v-text="unitStatusItem.unitName" />
         <span slot="extra">
-            <Button slot="extra" v-on:click="reloadUnitSettings" type="text" size="small">reload</Button>
+            <Button slot="extra" v-on:click="reloadUnitSettings" type="text" size="small">{{ localLanguageText['10033'] }}</Button>
         </span>
         <CellGroup class="daemon-unit-item-cellgroup">
-            <Cell v-bind:extra="unitStatusItem.unitProcess.processId | unitProcessProcessIdFilter" title="ProcessId" />
-            <Cell title="IsRunning">
+            <Cell v-bind:extra="unitStatusItem.unitProcess.processId | unitProcessProcessIdFilter" v-bind:title="localLanguageText['10034']" />
+            <Cell v-bind:title="localLanguageText['10035']">
                 <i-switch slot="extra" v-bind:value="unitStatusItem.unitProcess.state | unitProcessStateFilter"
                 v-bind:before-change="beforeChangeUnitStatusUnitProcessState"
                 v-on:click.native="toggleChangeUnitStatusUnitProcessState" />
             </Cell>
             <Divider size="small" class="divider1" />
-            <Cell v-bind:label="unitStatusItem.unitSettings.description" title="Description" />
-            <Cell v-bind:label="unitStatusItem.unitSettings.executeAbsolutePath" title="ExecuteAbsolutePath" />
-            <Cell v-bind:label="unitStatusItem.unitSettings.workAbsoluteDirectory" title="WorkAbsoluteDirectory" />
-            <Cell v-bind:label="unitStatusItem.unitSettings.executeParams | unitSettingsExecuteParamsFilter" title="ExecuteParams" />
-            <Cell v-bind:extra="unitStatusItem.unitSettings.autoStart | unitSettingsAutoStartFilter" title="AutoStart" />
-            <Cell v-bind:extra="unitStatusItem.unitSettings.autoStartDelay | unitSettingsAutoStartDelayFilter" title="AutoStartDelay" />
-            <Cell v-bind:extra="unitStatusItem.unitSettings.daemonProcess | unitSettingsDaemonProcessFilter" title="DaemonProcess" />
-            <Cell v-bind:extra="unitStatusItem.unitSettings.haveChildProcesses | unitSettingsHaveChildProcessesFilter" title="HaveChildProcesses" />
-            <Cell v-bind:extra="unitStatusItem.unitSettings.fetchNetworkUsage | unitSettingsFetchNetworkUsageFilter" title="FetchNetworkUsage" />
+            <Cell v-bind:label="unitStatusItem.unitSettings.description" v-bind:title="localLanguageText['10036']" />
+            <Cell v-bind:label="unitStatusItem.unitSettings.executeAbsolutePath" v-bind:title="localLanguageText['10037']" />
+            <Cell v-bind:label="unitStatusItem.unitSettings.workAbsoluteDirectory" v-bind:title="localLanguageText['10038']" />
+            <Cell v-bind:label="unitStatusItem.unitSettings.executeParams | unitSettingsExecuteParamsFilter" v-bind:title="localLanguageText['10039']" />
+            <Cell v-bind:extra="unitStatusItem.unitSettings.autoStart | unitSettingsAutoStartFilter" v-bind:title="localLanguageText['10040']" />
+            <Cell v-bind:extra="unitStatusItem.unitSettings.autoStartDelay | unitSettingsAutoStartDelayFilter" v-bind:title="localLanguageText['10041']" />
+            <Cell v-bind:extra="unitStatusItem.unitSettings.daemonProcess | unitSettingsDaemonProcessFilter" v-bind:title="localLanguageText['10042']" />
+            <Cell v-bind:extra="unitStatusItem.unitSettings.haveChildProcesses | unitSettingsHaveChildProcessesFilter" v-bind:title="localLanguageText['10043']" />
+            <Cell v-bind:extra="unitStatusItem.unitSettings.fetchNetworkUsage | unitSettingsFetchNetworkUsageFilter" v-bind:title="localLanguageText['10044']" />
             <Divider size="small" class="divider1" />
-            <Cell v-bind:extra="unitStatusItem.unitNetworkCounter.totalSent | fixedByteSizeFilter" title="TotalSent" />
-            <Cell v-bind:extra="unitStatusItem.unitNetworkCounter.totalReceived | fixedByteSizeFilter" title="TotalReceived" />
-            <Cell v-bind:extra="unitStatusItem.unitNetworkCounter.sendSpeed | fixedByteSpeedFilter" title="SendSpeed" />
-            <Cell v-bind:extra="unitStatusItem.unitNetworkCounter.receiveSpeed | fixedByteSpeedFilter" title="ReceiveSpeed" />
+            <Cell v-bind:extra="unitStatusItem.unitNetworkCounter.totalSent | fixedByteSizeFilter" v-bind:title="localLanguageText['10045']" />
+            <Cell v-bind:extra="unitStatusItem.unitNetworkCounter.totalReceived | fixedByteSizeFilter" v-bind:title="localLanguageText['10046']" />
+            <Cell v-bind:extra="unitStatusItem.unitNetworkCounter.sendSpeed | fixedByteSpeedFilter" v-bind:title="localLanguageText['10047']" />
+            <Cell v-bind:extra="unitStatusItem.unitNetworkCounter.receiveSpeed | fixedByteSpeedFilter" v-bind:title="localLanguageText['10048']" />
         </CellGroup>
     </Card>
 </template>
@@ -86,6 +86,7 @@ export default {
         };
     },
     computed:{
+        localLanguageText:function(){return this.$store.getters.get_localLanguageText;},
         currentDaemonItem:function(){return this.$store.state.currentDaemonItem;}
     },
     created:function(){

@@ -548,6 +548,15 @@ window.WebSocketInstanceWrap=function WebSocketInstanceWrap(){
         };
         const payload={hostname:wrap.hostname,unitProcess:unitProcess};
         vuexInstance.commit('set_unitProcess_In_unitStatusItem_In_unitsStatusArray_In_DaemonItem',payload);
+        const unitNetworkCounter={
+            name:packet.getUnitname(),
+            receiveSpeed:0,
+            sendSpeed:0,
+            totalReceived:0,
+            totalSent:0
+        };
+        const payload2={hostname:wrap.hostname,unitNetworkCounter:unitNetworkCounter};
+        vuexInstance.commit('set_unitNetworkCounter_In_unitStatusItem_In_unitsStatusArray_In_DaemonItem',payload2);
         vueInstance.$Notice.success({title:wrap.hostname,desc:'stop ['+packet.getUnitname()+'] unit success'});
     };
     //内部方法,实例收到消息 2016=>服务端通知所有客户端指定单元启动失败

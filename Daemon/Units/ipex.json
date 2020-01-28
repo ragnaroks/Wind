@@ -1,10 +1,10 @@
 {
     "Description": "iPEX 网络管理",
-    "ExecuteAbsolutePath": "C:\\Program Files\\Wind2Services\\iPEX\\ipex.exe",
-    "WorkAbsoluteDirectory": "C:\\Program Files\\Wind2Services\\iPEX\\",
+    "ExecuteAbsolutePath": "C:\\Wind2Services\\iPEX\\ipex.exe",
+    "WorkAbsoluteDirectory": "C:\\Wind2Services\\iPEX\\",
     "ExecuteParams": null,
     "AutoStart": true,
-    "AutoStartDelay": 0,
+    "AutoStartDelay": 3,
     "DaemonProcess": false,
     "HaveChildProcess": false,
     "FetchNetworkUsage": true

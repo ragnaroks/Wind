@@ -1,10 +1,10 @@
 {
     "Description": "nginx",
-    "ExecuteAbsolutePath": "C:\\nginx-1.15.12\\nginx.exe",
-    "WorkAbsoluteDirectory": "C:\\nginx-1.15.12\\",
+    "ExecuteAbsolutePath": "C:\\Wind2Services\\nginx-1.15.12\\nginx.exe",
+    "WorkAbsoluteDirectory": "C:\\Wind2Services\\nginx-1.15.12\\",
     "ExecuteParams": null,
     "AutoStart": false,
-    "AutoStartDelay": 0,
+    "AutoStartDelay": 10,
     "DaemonProcess": false,
     "HaveChildProcesses": true,
     "FetchNetworkUsage": false

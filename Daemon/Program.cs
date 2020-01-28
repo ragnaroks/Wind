@@ -1,32 +1,36 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using PeterKottas.DotNetCore.WindowsService;
 
 namespace Daemon {
     public static class Program {
+        /// <summary>互斥</summary>
+        public static Mutex AppMutex{get;private set;}
         /// <summary>应用程序进程</summary>
-        public static Process AppProcess;
+        public static Process AppProcess{get;}=Process.GetCurrentProcess();
         /// <summary>应用程序环境</summary>
-        public readonly static Entities.AppEnvironment AppEnvironment=new Entities.AppEnvironment();
-        /// <summary>应用程序配置</summary>
-        public static Entities.AppSettings AppSettings;
+        public static Entities.AppEnvironment AppEnvironment{get;}=new Entities.AppEnvironment();
         /// <summary>日志模块</summary>
-        public static Modules.LoggerModule LoggerModule=new Modules.LoggerModule(Program.AppEnvironment.LogsDirectory,1000);
+        public static Modules.LoggerModule LoggerModule{get;}=new Modules.LoggerModule(Program.AppEnvironment.LogsDirectory,1000);
         /// <summary>应用程序配置模块</summary>
-        public static Modules.AppSettingsModule AppSettingsModule=new Modules.AppSettingsModule(ref Program.AppSettings);
-        /// <summary>性能计数器模块</summary>
-        public static Modules.AppPerformanceCounterModule AppPerformanceCounterModule;
-        /// <summary>单元网络IO统计模块</summary>
-        public static Modules.UnitNetworkPerformanceTracerModule UnitNetworkPerformanceTracerModule;
-        /// <summary>WebSocket远程控制模块</summary>
-        //public static Modules.WebSocketServerModule WebSocketServerModule;
-        public static Modules.ControlServerModule ControlServerModule;
+        public static Modules.AppSettingsModule AppSettingsModule{get;}=new Modules.AppSettingsModule();
         /// <summary>单元控制模块</summary>
-        public static Modules.UnitControlModule UnitControlModule;
+        public static Modules.UnitControlModule UnitControlModule{get;}=new Modules.UnitControlModule();
+        /// <summary>性能计数器模块</summary>
+        public static Modules.AppPerformanceCounterModule AppPerformanceCounterModule{get;private set;}
+        /// <summary>单元网络IO统计模块</summary>
+        public static Modules.UnitNetworkPerformanceTracerModule UnitNetworkPerformanceTracerModule{get;private set;}
+        /// <summary>WebSocket远程控制模块</summary>
+        public static Modules.ControlServerModule ControlServerModule{get;}=new Modules.ControlServerModule(
+            Program.AppSettingsModule.AppSettings.ControlPort,
+            Program.AppSettingsModule.AppSettings.ControlAddress);
         
-        [STAThread]
-        public static void Main(String[] args) {
-            Program.AppProcess=Process.GetCurrentProcess();
+        public static void Main(String[] args){
+            Console.WriteLine($"args => {String.Join(',',args)}");
+            Program.AppMutex=new Mutex(true,"Wind2DaemonAppMutex",out Boolean mutex);
+            if(!mutex){Environment.Exit(0);}
+
             //如何得知服务主机被意外关闭?
             Program.AppProcess.EnableRaisingEvents=true;
             Program.AppProcess.Exited+=OnProgramExited;
@@ -92,8 +96,17 @@ namespace Daemon {
         private static void OnProgramExited(object sender,EventArgs e) {
             //停止所有运行单元
             if(Program.UnitControlModule!=null) {
+                Program.UnitControlModule.StopAllUnits();
                 Program.UnitControlModule.Dispose();
             }
+        }
+
+        public static void SetAppPerformanceCounterModule(Modules.AppPerformanceCounterModule module) {
+            Program.AppPerformanceCounterModule=module;
+        }
+
+        public static void SetUnitNetworkPerformanceTracerModule(Modules.UnitNetworkPerformanceTracerModule module) {
+            Program.UnitNetworkPerformanceTracerModule=module;
         }
     }
 }

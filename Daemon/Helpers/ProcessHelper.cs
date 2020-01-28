@@ -11,67 +11,73 @@ namespace Daemon.Helpers {
         /// </summary>
         /// <param name="parentProcessId"></param>
         /// <returns></returns>
-        public static Process[] GetChildProcessArrayByParentProcess(Int32 parentProcessId) {
-            Int32[] childProcessIdArray=WindowsManagementHelper.GetChildProcessIdArrayByParentProcessId(parentProcessId);
-            if(childProcessIdArray==null || childProcessIdArray.Length<1){return null;}
-            Process[] childProcessArray=new Process[childProcessIdArray.Length];
-            for(Int32 i1 = 0;i1<childProcessIdArray.Length;i1++) {
-                try {
-                    childProcessArray[i1]=Process.GetProcessById(childProcessIdArray[i1]);
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design","CA1031:不捕获常规异常类型",Justification = "<挂起>")]
+        public static List<Process> GetChildProcessListByParentProcess(Int32 parentProcessId) {
+            List<Int32> childProcessIdList=WindowsManagementHelper.GetChildProcessIdListByParentProcessId(parentProcessId);
+            if(childProcessIdList==null || childProcessIdList.Count<1){return null;}
+            List<Process> childProcessList=new List<Process>(childProcessIdList.Count);
+            foreach(Int32 item in childProcessIdList) {
+                try{
+                    childProcessList.Add(Process.GetProcessById(item));
                 } catch {
-                    childProcessArray[i1]=null;
+                    continue;
                 }
-                
             }
-            return childProcessArray;
+            return childProcessList;
         }
+
+
         /// <summary>
         /// 获取指定进程的所有子进程
         /// </summary>
         /// <param name="parentProcess"></param>
         /// <returns></returns>
-        public static Process[] GetChildProcessArrayByParentProcess(Process parentProcess) {
-            Int32[] childProcessIdArray=WindowsManagementHelper.GetChildProcessIdArrayByParentProcessId(parentProcess.Id);
-            if(childProcessIdArray==null || childProcessIdArray.Length<1){return null;}
-            Process[] childProcessArray=new Process[childProcessIdArray.Length];
-            for(Int32 i1 = 0;i1<childProcessIdArray.Length;i1++) {
-                try {
-                    childProcessArray[i1]=Process.GetProcessById(childProcessIdArray[i1]);
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design","CA1031:不捕获常规异常类型",Justification = "<挂起>")]
+        public static List<Process> GetChildProcessListByParentProcess(Process parentProcess) {
+            if(parentProcess==null){return null;}
+            List<Int32> childProcessIdList=WindowsManagementHelper.GetChildProcessIdListByParentProcessId(parentProcess.Id);
+            if(childProcessIdList==null || childProcessIdList.Count<1){return null;}
+            List<Process> childProcessList=new List<Process>(childProcessIdList.Count);
+            foreach(Int32 item in childProcessIdList) {
+                try{
+                    childProcessList.Add(Process.GetProcessById(item));
                 } catch {
-                    childProcessArray[i1]=null;
+                    continue;
                 }
-                
             }
-            return childProcessArray;
+            return childProcessList;
         }
+
 
         /// <summary>
         /// 结束指定进程的所有子进程
         /// </summary>
         /// <param name="parentProcess"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design","CA1031:不捕获常规异常类型",Justification = "<挂起>")]
         public static void KillChildProcessByParentProcess(Process parentProcess) {
-            Process[] childProcessArray=ProcessHelper.GetChildProcessArrayByParentProcess(parentProcess);
-            if(childProcessArray==null || childProcessArray.Length<1){return;}
-            for(Int32 i1 = 0;i1<childProcessArray.Length;i1++) {
-                if(childProcessArray[i1]==null){continue;}
+            List<Process> childProcessList=ProcessHelper.GetChildProcessListByParentProcess(parentProcess);
+            if(childProcessList==null || childProcessList.Count<1){return;}
+            foreach(Process item in childProcessList) {
                 try {
-                    childProcessArray[i1].Kill();
+                    item.Kill();
                 } catch {
+                    //忽略结束子进程时的异常
                     continue;
                 }
             }
         }
+
         /// <summary>
         /// 结束指定进程Id的所有子进程
         /// </summary>
         /// <param name="parentProcessId"></param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Design","CA1031:不捕获常规异常类型",Justification = "<挂起>")]
         public static void KillChildProcessByParentProcess(Int32 parentProcessId) {
-            Process[] childProcessArray=ProcessHelper.GetChildProcessArrayByParentProcess(parentProcessId);
-            if(childProcessArray==null || childProcessArray.Length<1){return;}
-            for(Int32 i1 = 0;i1<childProcessArray.Length;i1++) {
-                if(childProcessArray[i1]==null){continue;}
+            List<Process> childProcessList=ProcessHelper.GetChildProcessListByParentProcess(parentProcessId);
+            if(childProcessList==null || childProcessList.Count<1){return;}
+            foreach(Process item in childProcessList) {
                 try {
-                    childProcessArray[i1].Kill();
+                    item.Kill();
                 } catch {
                     //忽略结束子进程时的异常
                     continue;
