@@ -76,14 +76,30 @@ export const getters={
         const textArray=state.languageText[state.languageTextType];
         if(textArray){return textArray;}
         return state.languageText['zh-cn'];
+    },
+    get_daemonArraySaveableArray:function(state){
+        if(!state.daemonArray || state.daemonArray.length<1){return null;}
+        const daemonArraySaveableArray=[];
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            daemonArraySaveableArray.push({
+                hostname:state.daemonArray[i1].hostname,
+                websocketAddress:state.daemonArray[i1].websocketAddress,
+                websocketControlKey:state.daemonArray[i1].websocketControlKey
+            });
+        }
+        return daemonArraySaveableArray;
     }
 };
 
 export const mutations = {
     set_currentDaemonHostname:function(state,payload){
-        if(!payload.hostname){return;}
-        if(state.daemonArray.length<1){return;}
+        if(payload.hostname===undefined){return;}
+        if(payload.hostname && state.daemonArray.length<1){return;}
         state.currentDaemonHostname=payload.hostname;
+        if(!payload.hostname){
+            state.currentDaemonItem=null;
+            return;
+        }
         for(let i1=0;i1<state.daemonArray.length;i1++){
             if(state.daemonArray[i1].hostname!==payload.hostname){continue;}
             state.currentDaemonItem=state.daemonArray[i1];
@@ -99,6 +115,50 @@ export const mutations = {
         if(!state.languageText[payload.languageTextType]){return;}
         state.languageTextType=payload.languageTextType;
         localStorage.setItem('languageTextType',payload.languageTextType);
+    },
+    clear_daemonArray:function(state,payload){
+        state.daemonArray=[];
+    },
+    add_daemonItem_In_daemonArray:function(state,payload){
+        if(!payload.daemonItem){return;}
+        if(state.daemonArray.length<1){
+            state.daemonArray.push(payload.daemonItem);
+            localStorage.setItem('daemonArray',JSON.stringify(getters.get_daemonArraySaveableArray(state)));
+            return;
+        }
+        let duplicate=false;
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.daemonItem.hostname){continue;}
+            duplicate=true;
+        }
+        if(!duplicate){
+            state.daemonArray.push(payload.daemonItem);
+            localStorage.setItem('daemonArray',JSON.stringify(getters.get_daemonArraySaveableArray(state)));
+        }
+    },
+    remove_daemonItem_In_daemonArray:function(state,payload){
+        if(!payload.daemonItem || !payload.daemonItem.hostname){return;}
+        if(state.daemonArray.length<1){return;}
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.daemonItem.hostname){continue;}
+            if(payload.disconnect && state.daemonArray[i1].websocketWrap){state.daemonArray[i1].websocketWrap.Close();}
+            state.daemonArray.splice(i1,1);
+            break;
+        }
+        localStorage.setItem('daemonArray',JSON.stringify(getters.get_daemonArraySaveableArray(state)));
+        if(state.currentDaemonHostname===payload.daemonItem.hostname){mutations.set_currentDaemonHostname(state,{hostname:null});}
+    },
+    remove_daemonItem_In_daemonArray_By_hostname:function(state,payload){
+        if(!payload.hostname){return;}
+        if(state.daemonArray.length<1){return;}
+        for(let i1=0;i1<state.daemonArray.length;i1++){
+            if(state.daemonArray[i1].hostname!==payload.hostname){continue;}
+            if(payload.disconnect && state.daemonArray[i1].websocketWrap){state.daemonArray[i1].websocketWrap.Close();}
+            state.daemonArray.splice(i1,1);
+            break;
+        }
+        localStorage.setItem('daemonArray',JSON.stringify(getters.get_daemonArraySaveableArray(state)));
+        if(state.currentDaemonHostname===payload.hostname){mutations.set_currentDaemonHostname(state,{hostname:null});}
     },
     set_connected_In_WebsocketWrap_In_DaemonItem:function(state,payload){
         if(!payload.hostname || payload.connected===undefined){return;}

@@ -126,7 +126,7 @@ window.WebSocketInstanceWrap=function WebSocketInstanceWrap(){
     };
     //内部方法,实例断开
     const instanceClose=function(){
-        instance.close();
+        if(instance){instance.close();}
         instance=null;
     };
     //内部方法,实例发送二进制消息
