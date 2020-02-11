@@ -72,6 +72,7 @@
 - [nginx](https://github.com/nginx/nginx)
 - [iPEX](https://github.com/ragnaroks/ipex)
 - [kcptun](https://github.com/xtaci/kcptun)
+- [frp](https://github.com/fatedier/frp)
 
 ### 已知不兼容列表
 - 任意图形界面应用程序
