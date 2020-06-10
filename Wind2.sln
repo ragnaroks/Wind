@@ -3,17 +3,12 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29613.14
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Host", "Host\Host.csproj", "{23834F4F-5BBD-4B3C-8E13-DFD922433363}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6A559AEC-40CA-4CAF-BDD4-88E2D1DC700C}"
 	ProjectSection(SolutionItems) = preProject
 		Readme.md = Readme.md
-		UpdateHistory.md = UpdateHistory.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controller", "Controller\Controller.csproj", "{0685BC3C-ECC9-48E5-8A8F-576566DDB018}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Daemon", "Daemon\Daemon.csproj", "{61FFB07D-8EA0-4B1A-B9C5-D9FBBADB7A18}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OldDaemon", "OldDaemon\OldDaemon.csproj", "{61FFB07D-8EA0-4B1A-B9C5-D9FBBADB7A18}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,14 +16,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{23834F4F-5BBD-4B3C-8E13-DFD922433363}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{23834F4F-5BBD-4B3C-8E13-DFD922433363}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{23834F4F-5BBD-4B3C-8E13-DFD922433363}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{23834F4F-5BBD-4B3C-8E13-DFD922433363}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0685BC3C-ECC9-48E5-8A8F-576566DDB018}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0685BC3C-ECC9-48E5-8A8F-576566DDB018}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0685BC3C-ECC9-48E5-8A8F-576566DDB018}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0685BC3C-ECC9-48E5-8A8F-576566DDB018}.Release|Any CPU.Build.0 = Release|Any CPU
 		{61FFB07D-8EA0-4B1A-B9C5-D9FBBADB7A18}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{61FFB07D-8EA0-4B1A-B9C5-D9FBBADB7A18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{61FFB07D-8EA0-4B1A-B9C5-D9FBBADB7A18}.Release|Any CPU.ActiveCfg = Release|Any CPU

@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using PeterKottas.DotNetCore.WindowsService.Interfaces;
+using System.ComponentModel;
 
 namespace Daemon {
     /// <summary>
     /// 服务实例
     /// </summary>
+    [Localizable(false)]
     public class DaemonService:IMicroService{
         private IMicroServiceController ServiceController{get;}
 
@@ -17,7 +19,6 @@ namespace Daemon {
         /// <summary>
         /// 服务启动
         /// </summary>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Globalization","CA1303:请不要将文本作为本地化参数传递",Justification = "<挂起>")]
         public void Start() {
             Console.WriteLine("DaemonService.Start");
             Program.LoggerModule.Log("DaemonService.Start","DaemonService Start");

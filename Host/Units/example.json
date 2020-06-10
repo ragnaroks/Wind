@@ -1,8 +1,0 @@
-{
-    "AbsolutePath": "C:\\Windows\\System32\\ping.exe",
-    "WorkPath": "C:\\Windows\\System32\\",
-    "Params": "hello.wind2",
-    "AutoStart": true,
-    "AutoStartDelay": 3,
-    "EnableLogger": false
-}
