@@ -52,9 +52,7 @@ namespace Daemon.Modules {
         /// <param name="unitSettingsFileInfo"></param>
         /// <returns></returns>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Design","CA1031:不捕获常规异常类型",Justification = "<挂起>")]
-#pragma warning disable CA1822 //不访问实例数据，可标记为 static
         private Entities.UnitSettings ParseUnitFile(FileInfo unitSettingsFileInfo) {
-#pragma warning restore CA1822 //不访问实例数据，可标记为 static
             Byte[] bytes;
             FileStream fs=null;
             try {
