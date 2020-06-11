@@ -8,21 +8,11 @@ using System.Threading.Tasks;
 namespace Daemon.Helpers {
     public static class UnitManageModuleHelper {
         /// <summary>
-        /// 获取单元名
-        /// </summary>
-        /// <param name="unitSettingsFileInfo"></param>
-        /// <returns></returns>
-        public static String GetUnitKey(FileInfo unitSettingsFileInfo){
-            if(unitSettingsFileInfo==null){return null;}
-            return unitSettingsFileInfo.Name.Replace(unitSettingsFileInfo.Extension,"",StringComparison.OrdinalIgnoreCase);
-        }
-
-        /// <summary>
         /// 解析单元配置
         /// </summary>
         /// <param name="unitSettingsFilePath"></param>
         /// <param name="parsedUnitSettings"></param>
-        /// <returns>解析完的单元</returns>
+        /// <returns>是否解析成功</returns>
         public static Entities.Common.UnitSettings ParseUnitSettingsFile(FileInfo unitSettingsFileInfo) {
             FileStream fs;
             try {

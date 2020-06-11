@@ -13,8 +13,6 @@ namespace Daemon.Entities.Common {
         public String BaseDirectory{get;}=AppDomain.CurrentDomain.BaseDirectory;
         /// <summary>日志根路径,无路径分隔符</summary>
         public String LogsDirectory{get;}=AppDomain.CurrentDomain.BaseDirectory+"Logs";
-        /// <summary>单元存放根路径,无路径分隔符</summary>
-        public String UnitsDirectory{get;}=AppDomain.CurrentDomain.BaseDirectory+"Units";
         /// <summary>数据根路径,无路径分隔符</summary>
         public String DataDirectory{get;}=AppDomain.CurrentDomain.BaseDirectory+"Data";
         #if DEBUG

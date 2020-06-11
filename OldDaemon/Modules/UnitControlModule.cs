@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -71,7 +72,7 @@ namespace Daemon.Modules {
                 Program.LoggerModule.Log("Modules.UnitControlModule.ParseUnitFile[Error]",$"单元\"{unitSettingsFileInfo.FullName}\"解析失败,文件内容为空");
                 return null;
             }
-            Entities.UnitSettings unitSettings=Newtonsoft.Json.JsonConvert.DeserializeObject<Entities.UnitSettings>(json);
+            Entities.UnitSettings unitSettings=JsonSerializer.Deserialize<Entities.UnitSettings>(json);
             if(unitSettings==null) {
                 Program.LoggerModule.Log("Modules.UnitControlModule.ParseUnitFile[Error]",$"单元\"{unitSettingsFileInfo.FullName}\"解析失败,文件反序列化失败");
                 return null;
@@ -133,7 +134,7 @@ namespace Daemon.Modules {
                 }
             }
             //查找单元
-            FileInfo[] fileInfoArray=null;
+            FileInfo[] fileInfoArray;
             try{
                 fileInfoArray=directoryInfo.GetFiles("*.json",SearchOption.TopDirectoryOnly);
             }catch(Exception exception) {

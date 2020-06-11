@@ -25,9 +25,6 @@ namespace Daemon.Modules {
         private bool disposedValue = false; // 要检测冗余调用
 
         protected virtual void Dispose(bool disposing) {
-            //写完所有日志
-            this.TimerCallback(null);
-
             if (!disposedValue) {
                 if (disposing) {
                     // TODO: 释放托管状态(托管对象)。
