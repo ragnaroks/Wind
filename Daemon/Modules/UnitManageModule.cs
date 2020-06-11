@@ -75,11 +75,10 @@ namespace Daemon.Modules {
             //检查是新增或更新
             if(this.UnitDictionary.ContainsKey(unitKey)) {
                 this.UnitDictionary[unitKey].Settings=unitSettings;
-                //this.UnitDictionary[unitKey].ProcessStartInfo=processStartInfo;
                 this.UnitDictionary[unitKey].Process=process;
                 this.UnitDictionary[unitKey].SettingsUpdated=true;
             } else {
-                this.UnitDictionary.Add(unitKey,new Unit{Key=unitKey,Settings=unitSettings,Process=process/*,ProcessStartInfo=processStartInfo*/});
+                this.UnitDictionary.Add(unitKey,new Unit{Key=unitKey,Settings=unitSettings,Process=process});
             }
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.AddUnit",$"已增加\"{unitKey}\"单元");
         }

@@ -6,6 +6,11 @@
     <Version>2.3.27</Version>
     <Description>Wind2 Daemon Service CommandLine Controller</Description>
     <PackageProjectUrl>https://github.com/ragnaroks/Wind2</PackageProjectUrl>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="copy $(OutDir)$(TargetName).exe $(OutDir)wind.exe" />
+  </Target>
 
 </Project>

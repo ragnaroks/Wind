@@ -60,11 +60,17 @@ namespace Daemon.Modules {
             Task.Run(()=>{
                 try {
                     while(this.NamedPipeServerStreamEnable) {
-                        this.NamedPipeServerStream=new NamedPipeServerStream(this.PipelineName,PipeDirection.In,1,PipeTransmissionMode.Message,PipeOptions.Asynchronous|PipeOptions.WriteThrough);
+                        this.NamedPipeServerStream=new NamedPipeServerStream(this.PipelineName,PipeDirection.InOut,1,PipeTransmissionMode.Message,PipeOptions.Asynchronous|PipeOptions.WriteThrough);
+                        //等待链接
                         this.NamedPipeServerStream.WaitForConnection();
-                        Byte[] buffer=new Byte[100];//100字节应该够了,4字节头部,96字节字符串
-                        this.NamedPipeServerStream.Read(buffer,0,100);
-                        this.OnMessage(buffer);
+                        //收到消息,104字节应该够了,8字节头部,96(32*3)字节字符串
+                        Byte[] buffer=new Byte[104];
+                        this.NamedPipeServerStream.Read(buffer,0,104);
+                        Byte[] responseBytes=this.OnMessage(buffer);
+                        //回复消息
+                        this.NamedPipeServerStream.Write(responseBytes);
+                        this.NamedPipeServerStream.Flush();
+                        //释放
                         this.NamedPipeServerStream.Dispose();
                     }
                 }catch(Exception exception) {
@@ -81,9 +87,9 @@ namespace Daemon.Modules {
 
         public void StopServer()=>this.NamedPipeServerStreamEnable=false;
 
-        private void OnMessage(Byte[] bytes){
-            if(bytes.GetLength(0)!=100){return;}
+        private Byte[] OnMessage(Byte[] bytes){
             switch(bytes[0]) {
+                /*
                 case 0x00:
                     Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessage",$"命名管道收到 statusUnit 的处理请求");
                     break;
@@ -102,9 +108,17 @@ namespace Daemon.Modules {
                     String stoptUnitKey=Encoding.UTF8.GetString(bytes,4,96);
                     Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessage",$"命名管道收到 stopUnit=>{stoptUnitKey} 的处理请求");
                     break;
+                */
+                case 0xFF:
+                    Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessage",$"命名管道收到 shut-down 指令");
+                    Task.Run(()=>{
+                        Thread.SpinWait(1000);
+                        Environment.Exit(0);
+                    });
+                    return new Byte[8]{0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
                 default:
-                    Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessage",$"命名管道收到未知的处理请求");
-                    break;
+                    Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessage",$"命名管道收到未知指令");
+                    return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
             }
         }
     }
