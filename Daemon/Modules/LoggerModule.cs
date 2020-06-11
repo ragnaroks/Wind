@@ -8,7 +8,6 @@ using System.Threading;
 
 namespace Daemon.Modules {
     /// <summary>日志模块</summary>
-    [Localizable(false)]
     public class LoggerModule:IDisposable {
         public Boolean Useable{get;private set;}=false;
 
@@ -105,14 +104,14 @@ namespace Daemon.Modules {
                 if(!Directory.Exists(logFileDirectory)) {
                     try {
                         _=Directory.CreateDirectory(logFileDirectory);
-                    } catch {
+                    }catch{
                         //异常直接跳过
                         continue;
                     }
                 }
                 String logFilePath=$"{this.LogsDirectory}{Path.DirectorySeparatorChar}{keyToPath}{Path.DirectorySeparatorChar}{filename}.log";
                 try{
-                    FileStream fs=File.Open(logFilePath,FileMode.Append,FileAccess.ReadWrite,FileShare.Read);
+                    FileStream fs=File.Open(logFilePath,FileMode.Append,FileAccess.Write,FileShare.Read);
                     Byte[] bytes=Encoding.UTF8.GetBytes(log.Value.ToString());
                     fs.Write(bytes,0,bytes.GetLength(0));
                     fs.Dispose();

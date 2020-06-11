@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 
 namespace Daemon.Modules {
     /// <summary>日志模块</summary>
-    [Localizable(false)]
     public class LoggerModule:IDisposable {
         /// <summary>模块是否可用</summary>
         public Boolean ModuleAvailable{get;private set;}=false;

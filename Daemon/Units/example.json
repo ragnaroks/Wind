@@ -1,0 +1,12 @@
+{
+    "Name": "Example Unit",
+    "Description": "Example Unit Description",
+    "Type": 0,
+    "AbsoluteExecutePath": "D:\\Projects\\Wind2\\ExampleUnit\\bin\\Debug\\netcoreapp3.1\\ExampleUnit.exe",
+    "AbsoluteWorkDirectory": "D:\\Projects\\Wind2\\ExampleUnit\\bin\\Debug\\netcoreapp3.1",
+    "Arguments": null,
+    "AutoStart": true,
+    "AutoStartDelay": 3,
+    "RestartWhenException": false,
+    "MonitorNetworkUsage": 0
+}

@@ -3,13 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using PeterKottas.DotNetCore.WindowsService.Interfaces;
-using System.ComponentModel;
 
 namespace Daemon {
-    /// <summary>
-    /// 服务实例
-    /// </summary>
-    [Localizable(false)]
+    /// <summary>服务实例</summary>
     public class DaemonService:IMicroService{
         private IMicroServiceController ServiceController{get;}
 

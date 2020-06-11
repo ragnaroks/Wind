@@ -173,7 +173,7 @@ namespace Daemon.Modules {
                 if(!unitSettings.AutoStart){continue;}
                 Task.Run(()=>{
                     if(unitSettings.AutoStartDelay>0){
-                        Thread.Sleep(unitSettings.AutoStartDelay*1000);
+                        SpinWait.SpinUntil(()=>false,unitSettings.AutoStartDelay*1000);
                     }
                     this.StartUnit(item.Key);
                 });
@@ -274,7 +274,7 @@ namespace Daemon.Modules {
             if(restartIfUpdate){
                 this.StopUnit(unitName);
                 Task.Run(()=>{
-                    Thread.Sleep(1000);
+                    SpinWait.SpinUntil(()=>false,1000);
                     this.StartUnit(unitName);
                     Program.LoggerModule.Log("Modules.UnitControlModule.ReloadUnit",$"单元\"{unitName}\"已重启");
                 });

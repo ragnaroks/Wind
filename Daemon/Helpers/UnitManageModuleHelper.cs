@@ -22,6 +22,7 @@ namespace Daemon.Helpers {
         /// <param name="parsedUnitSettings"></param>
         /// <returns>解析完的单元</returns>
         public static Entities.Common.UnitSettings ParseUnitSettingsFile(FileInfo unitSettingsFileInfo) {
+            if(unitSettingsFileInfo==null){return null;}
             FileStream fs;
             try {
                 fs=unitSettingsFileInfo.Open(FileMode.Open,FileAccess.Read,FileShare.Read);

@@ -21,6 +21,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="PeterKottas.DotNetCore.WindowsService" Version="2.0.11" />
   </ItemGroup>
 
@@ -31,6 +39,9 @@
     <None Update="Data\_uninstall.bat">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Code</SubType>
+    </None>
+    <None Update="Units\example.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

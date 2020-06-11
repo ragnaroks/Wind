@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Text.Json;
 
 namespace Daemon.Entities.Common {
+    [Serializable]
     public class UnitSettings {
         /// <summary>单元名称</summary>
         public String Name{get;private set;}=null;
@@ -22,6 +22,6 @@ namespace Daemon.Entities.Common {
         /// <summary>单元进程类型,0:默认,1:fork子进程</summary>
         public Int32 Type{get;set;}=0;
         /// <summary>是否获取网络使用数据,0:关闭,1:仅下载,2:仅上传,3:全部</summary>
-        public Int32 AnalyseNetworkUsage{get;set;}=0;
+        public Int32 MonitorNetworkUsage{get;set;}=0;
     }
 }

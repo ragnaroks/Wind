@@ -5,11 +5,11 @@ using System.Reflection;
 using System.Text;
 
 namespace DaemonController {
-    public class Program {
+    public static class Program {
         public static Entities.Common.AppEnvironment AppEnvironment{get;}=new Entities.Common.AppEnvironment();
 
         public static void Main(String[] args){
-            if(args.GetLength(0)<1){
+            if(args==null || args.GetLength(0)<1){
                 PrintHelp();
                 return;
             }
@@ -31,7 +31,7 @@ namespace DaemonController {
                 //重启全部单元,0x14
                 case "restart-all":break;
                 //停止服务主机,0xFF
-                case "shut-down":ShutDownCommand();break;
+                case "shutdown":ShutDownCommand();break;
                 //版本
                 case "version":PrintVersion();break;
                 //默认
@@ -52,11 +52,11 @@ namespace DaemonController {
         /// </summary>
         private static void PrintHelp() {
             Console.WriteLine("\"unitKey\" is the unit's file name,for \"example.json\",it's \"example\"");
-            //Console.WriteLine("wind status <unitKey>     => get unit's status");
-            //Console.WriteLine("wind start <unitKey>      => start unit");
-            //Console.WriteLine("wind stop <unitKey>       => stop unit");
-            //Console.WriteLine("wind restart <unitKey>    => restart unit");
-            Console.WriteLine("wind shut-down            => shutdown daemon service");
+            Console.WriteLine("windctl status <unitKey>     => get unit's status");
+            //Console.WriteLine("windctl start <unitKey>      => start unit");
+            //Console.WriteLine("windctl stop <unitKey>       => stop unit");
+            //Console.WriteLine("windctl restart <unitKey>    => restart unit");
+            Console.WriteLine("windctl shutdown            => shutdown daemon service"); // 还是有问题
             Console.WriteLine();
         }
 
@@ -156,22 +156,27 @@ namespace DaemonController {
         /// </summary>
         /// <param name="bytes"></param>
         private static void OnMessage(Byte[] bytes) {
+            String responseText;
+            try {
+                responseText=Encoding.UTF8.GetString(bytes,8,bytes.GetLength(0)-8).TrimEnd().TrimEnd(new Char[]{'\0'});
+            }catch(Exception exception){
+                responseText="{"+exception.Message+"}";
+            }
             if(bytes[0]==0x00) {
                 ConsoleColor consoleColor=Console.ForegroundColor;
                 Console.ForegroundColor=ConsoleColor.Red;
-                Console.WriteLine("execute command failed");
+                Console.WriteLine($"execute command failed,{responseText}");
                 Console.ForegroundColor=consoleColor;
                 return;
             }
             if(bytes[0]==0xFF) {
                 ConsoleColor consoleColor=Console.ForegroundColor;
-                Console.ForegroundColor=ConsoleColor.Red;
+                Console.ForegroundColor=ConsoleColor.Yellow;
                 Console.WriteLine("daemon service shutting");
                 Console.ForegroundColor=consoleColor;
                 return;
             }
-            String responseText=Encoding.UTF8.GetString(bytes,8,bytes.GetLength(0)-8).Trim();
-            Console.WriteLine(responseText);
+            Console.WriteLine(responseText.Trim());
         }
     }
 }

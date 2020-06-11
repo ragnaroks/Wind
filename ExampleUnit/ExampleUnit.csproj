@@ -3,15 +3,7 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <Version>2.3.27</Version>
-    <Description>Wind2 Daemon Service CommandLine Controller</Description>
-    <PackageProjectUrl>https://github.com/ragnaroks/Wind2</PackageProjectUrl>
-    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
   </PropertyGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy $(OutDir)$(TargetName).exe $(OutDir)windctl.exe" />
-  </Target>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">

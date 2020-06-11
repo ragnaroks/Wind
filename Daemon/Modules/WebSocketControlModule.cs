@@ -37,6 +37,7 @@ namespace Daemon.Modules {
         #endregion
 
         public Boolean Setup(){
+            if(this.Useable){return true;}
             return false;
         }
     }

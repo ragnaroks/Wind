@@ -17,7 +17,5 @@ namespace Daemon.Entities.Common {
         public UnitSettings RunningSettings{get;set;}=null;
         /// <summary>单元进程</summary>
         public Process Process{get;set;}=null;
-        /// <summary>单元实际进程</summary>
-        public Process RunningProcess{get;set;}=null;
     }
 }

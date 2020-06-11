@@ -1,16 +1,14 @@
 ﻿using PeterKottas.DotNetCore.WindowsService;
 using System;
-using System.Text.Json;
-using System.Threading;
-using System.ComponentModel;
-using System.Security.Principal;
-using System.IO;
-using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.IO;
+using System.Security.Principal;
+using System.Text.Json;
+using System.Text.RegularExpressions;
+using System.Threading;
 
 namespace Daemon {
-    [Localizable(false)]
-    public class Program {
+    public static class Program {
         /// <summary>互斥</summary>
         public static Mutex AppMutex{get;private set;}=null;
         /// <summary>应用程序进程</summary>
@@ -28,16 +26,17 @@ namespace Daemon {
         /// <summary>远程管理模块</summary>
         public static Modules.WebSocketControlModule RemoteControlModule{get;}=new Modules.WebSocketControlModule();
 
+        public static DaemonService DaemonService{get;private set;}=null;
+
         /// <summary>
         /// Main
         /// </summary>
         /// <param name="args"></param>
         static void Main(String[] args) {
+            Helpers.LoggerModuleHelper.TryLog("Program.Main",$"应用程序参数: {JsonSerializer.Serialize(args)}");
             AppDomain.CurrentDomain.ProcessExit+=CurrentDomainProcessExit;
             AppDomain.CurrentDomain.UnhandledException+=CurrentDomainUnhandledException;
             AppProcess=Process.GetCurrentProcess();
-            //
-            Helpers.LoggerModuleHelper.TryLog("Program.Main",$"应用程序参数: {JsonSerializer.Serialize(args)}");
             Program.AppMutex=new Mutex(true,"Wind2DaemonAppMutex",out Boolean mutex);
             if(!mutex){
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","已存在实例");
@@ -93,8 +92,9 @@ namespace Daemon {
             if(!File.Exists(appSettingsFilePath)){return false;}
             Entities.Common.AppSettings appSettings;
             //读取文件并反序列化
+            FileStream fs=null;
             try {
-                FileStream fs=File.Open(appSettingsFilePath,FileMode.Open,FileAccess.Read,FileShare.ReadWrite);
+                fs=File.Open(appSettingsFilePath,FileMode.Open,FileAccess.Read,FileShare.ReadWrite);
                 if(fs.Length<1 || fs.Length>4096){return false;}
                 Span<Byte> bufferSpan=new Span<Byte>(new Byte[fs.Length]);
                 fs.Read(bufferSpan);
@@ -103,6 +103,8 @@ namespace Daemon {
             }catch(Exception exception){
                 Helpers.LoggerModuleHelper.TryLog("Program.InitializeAppSettings[Error]",$"读取应用程序配置文件异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
                 return false;
+            }finally{
+                fs?.Dispose();
             }
             //检查
             if(appSettings==null || String.IsNullOrWhiteSpace(appSettings.RemoteControlListenAddress) || String.IsNullOrWhiteSpace(appSettings.RemoteControlKey) || appSettings.RemoteControlListenPort<1024 || appSettings.RemoteControlListenPort>Int16.MaxValue){return false;}
@@ -125,17 +127,17 @@ namespace Daemon {
         private static Boolean InitializeUnitManageModule(){
             if(!Directory.Exists(AppEnvironment.UnitsDirectory)) {
                 try {
-                    _=Directory.CreateDirectory(AppEnvironment.LogsDirectory);
+                    _=Directory.CreateDirectory(AppEnvironment.UnitsDirectory);
                 } catch(Exception exception) {
                     Helpers.LoggerModuleHelper.TryLog("Program.InitializeUnitManageModule[Error]",$"创建单元存放目录异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
                     return false;
                 }
             }
-            return UnitManageModule.Setup(AppEnvironment.LogsDirectory);
+            return UnitManageModule.Setup(AppEnvironment.UnitsDirectory);
         }
 
         /// <summary>
-        /// 初始化单元管理模块
+        /// 初始化本地控制模块
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeLocalControlModule(){
@@ -162,6 +164,8 @@ namespace Daemon {
             RemoteControlModule.Dispose();
             //释放本地管理模块
             LocalControlModule.Dispose();
+            //停止服务
+            DaemonService.Stop();
             //释放单元管理模块,应确保已无单元正在运行
             UnitManageModule.Dispose();
             //释放自身进程引用
@@ -182,7 +186,10 @@ namespace Daemon {
                 config.SetName("wind");
                 config.SetDescription("Wind2 服务主机");
                 config.Service(serviceConfigurator=>{
-                    serviceConfigurator.ServiceFactory((extraArguments,microServiceController)=>new DaemonService(extraArguments,microServiceController));
+                    serviceConfigurator.ServiceFactory((extraArguments,microServiceController)=>{
+                        DaemonService=new DaemonService(extraArguments,microServiceController);
+                        return DaemonService;
+                    });
                     //安装
                     serviceConfigurator.OnInstall(server=>{
                         Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","已安装 Wind2 服务主机");
