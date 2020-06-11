@@ -23,6 +23,10 @@ namespace Daemon {
         public static Modules.LoggerModule LoggerModule{get;}=new Modules.LoggerModule();
         /// <summary>单元管理模块</summary>
         public static Modules.UnitManageModule UnitManageModule{get;}=new Modules.UnitManageModule();
+        /// <summary>本地管理模块</summary>
+        public static Modules.PipelineControlModule LocalControlModule{get;}=new Modules.PipelineControlModule();
+        /// <summary>远程管理模块</summary>
+        public static Modules.WebSocketControlModule RemoteControlModule{get;}=new Modules.WebSocketControlModule();
 
         /// <summary>
         /// Main
@@ -55,7 +59,12 @@ namespace Daemon {
                 Environment.Exit(0);
                 return;
             }
-            Helpers.LoggerModuleHelper.TryLog("Program.Main",$"服务启动结果: {ServiceRun()}");
+            if(!InitializeLocalControlModule()) {
+                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化本地管理模块失败");
+                Environment.Exit(0);
+                return;
+            }
+            Helpers.LoggerModuleHelper.TryLog("Program.Main",$"服务结果: {ServiceRun()}");
         }
 
         /// <summary>
@@ -126,6 +135,15 @@ namespace Daemon {
         }
 
         /// <summary>
+        /// 初始化单元管理模块
+        /// </summary>
+        /// <returns>是否成功</returns>
+        private static Boolean InitializeLocalControlModule(){
+            if(String.IsNullOrWhiteSpace(AppEnvironment.PipelineName)){return false;}
+            return LocalControlModule.Setup(AppEnvironment.PipelineName);
+        }
+
+        /// <summary>
         /// 应用程序未处理异常
         /// </summary>
         /// <param name="sender"></param>
@@ -141,7 +159,9 @@ namespace Daemon {
         /// <param name="e"></param>
         private static void CurrentDomainProcessExit(object sender,EventArgs e){
             //释放远程管理模块
-            
+            RemoteControlModule.Dispose();
+            //释放本地管理模块
+            LocalControlModule.Dispose();
             //释放单元管理模块,应确保已无单元正在运行
             UnitManageModule.Dispose();
             //释放自身进程引用

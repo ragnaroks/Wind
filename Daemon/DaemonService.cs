@@ -16,13 +16,17 @@ namespace Daemon {
         }
 
         public void Start() {
+            //启动本地管理模块
+            Program.LocalControlModule.StartServer();
             //启动所有单元
-            Program.UnitManageModule.StopAllUnits();
+            //Program.UnitManageModule.StartAllUnitsAsync(true).Wait();
         }
 
         public void Stop() {
+            //停止本地管理模块
+            Program.LocalControlModule.StopServer();
             //停止所有单元
-            Program.UnitManageModule.StopAllUnits();
+            //Program.UnitManageModule.StopAllUnitsAsync().Wait();
         }
     }
 }

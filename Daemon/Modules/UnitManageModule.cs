@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Daemon.Modules {
+    /// <summary>单元管理模块</summary>
     public class UnitManageModule:IDisposable{
         public Boolean Useable{get;private set;}=false;
 
@@ -90,8 +91,9 @@ namespace Daemon.Modules {
         public async Task StopUnitAsync(String unitKey){
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return;}
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnitAsync",$"正在停止\"{unitKey}\"单元");
             Unit unit=this.UnitDictionary[unitKey];
+            if(unit.State==0 || unit.State==3){return;}
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnitAsync",$"正在停止\"{unitKey}\"单元");
             unit.State=3;
             await Task.Run(()=>{
                 if(unit.RunningProcess!=null){
@@ -121,11 +123,10 @@ namespace Daemon.Modules {
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnitAsync",$"正在启动\"{unitKey}\"单元");
             Unit unit=this.UnitDictionary[unitKey];
             if(unit.State==1 || unit.State==2){return;}
-            if(unit.State==3){ await Task.Delay(3000); }
+            await Task.Delay(unit.State==3?3000:1000);
             unit.RunningSettings=unit.Settings.DeepClone();
             unit.RunningProcess=unit.RunningProcess.DeepClone();
             unit.SettingsUpdated=false;
-            await Task.Delay(1000);
             Boolean b1=false;
             try {
                 b1=unit.RunningProcess.Start();
@@ -170,8 +171,8 @@ namespace Daemon.Modules {
             for(Int32 i1=0;i1<fileInfoArray.Length;i1++){
                 //key
                 String unitKey=UnitManageModuleHelper.GetUnitKey(fileInfoArray[i1]);
-                if(String.IsNullOrWhiteSpace(unitKey)) {
-                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.ParseAllUnits[Warning]",$"单元\"{fileInfoArray[i1].FullName}\"读取失败,已跳过");
+                if(String.IsNullOrWhiteSpace(unitKey) || unitKey.Length>32){
+                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.ParseAllUnits[Warning]",$"单元\"{fileInfoArray[i1].FullName}\"标识错误,已跳过");
                     continue;
                 }
                 //setting
@@ -196,13 +197,45 @@ namespace Daemon.Modules {
             return this.UnitDictionary.Count;
         }
 
+        /// <summary>
+        /// 启动全部单元
+        /// </summary>
+        /// <param name="onlyAutoStart">仅自启单元</param>
         public async Task StartAllUnitsAsync(Boolean onlyAutoStart){
             if(!this.Useable){return;}
-            if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return;}
+            if(this.UnitDictionary.Count<1){return;}
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartAllUnitsAsync",onlyAutoStart?"正在启动自启单元":"正在启动全部单元");
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
+                if(onlyAutoStart && !item.Value.Settings.AutoStart){continue;}
+                await this.StartUnitAsync(item.Key);
+            }
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartAllUnitsAsync",onlyAutoStart?"启动自启单元完成":"启动全部单元完成");
         }
 
+        /// <summary>
+        /// 停止全部单元
+        /// </summary>
         public async Task StopAllUnitsAsync(){
-            //
+            if(!this.Useable){return;}
+            if(this.UnitDictionary.Count<1){return;}
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopAllUnitsAsync","正在停止全部单元");
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){
+                await this.StopUnitAsync(item.Key);
+            }
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopAllUnitsAsync","停止全部单元完成");
+        }
+
+        /// <summary>
+        /// 移除全部单元
+        /// </summary>
+        public async Task RemoveAllUnitsAsync() {
+            if(!this.Useable){return;}
+            if(this.UnitDictionary.Count<1){return;}
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.RemoveAllUnitsAsync","正在移除全部单元");
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){
+                await this.RemoveUnitAsync(item.Key);
+            }
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.RemoveAllUnitsAsync","移除全部单元完成");
         }
     }
 }

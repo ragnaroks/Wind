@@ -3,6 +3,10 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Version>2.3.27</Version>
+    <Description>Wind2 Daemon Service</Description>
+    <PackageProjectUrl>https://github.com/ragnaroks/Wind2</PackageProjectUrl>
+    <RepositoryUrl></RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

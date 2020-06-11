@@ -17,6 +17,8 @@ namespace Daemon.Entities.Common {
         public String UnitsDirectory{get;}=AppDomain.CurrentDomain.BaseDirectory+"Units";
         /// <summary>数据根路径,无路径分隔符</summary>
         public String DataDirectory{get;}=AppDomain.CurrentDomain.BaseDirectory+"Data";
+        /// <summary>命名管道</summary>
+        public String PipelineName{get;}="WIND2_DAEMON_PIPELINE";
         #if DEBUG
         /// <summary>是否开发模式</summary>
         public Boolean DevelopMode{get;}=true;
