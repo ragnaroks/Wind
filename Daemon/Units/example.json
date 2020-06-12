@@ -7,6 +7,6 @@
     "Arguments": null,
     "AutoStart": true,
     "AutoStartDelay": 3,
-    "RestartWhenException": false,
+    "RestartWhenException": true,
     "MonitorNetworkUsage": 0
 }
