@@ -1,1 +1,1 @@
-check Readme directory
+check ${ProjectName}/Readme directory
