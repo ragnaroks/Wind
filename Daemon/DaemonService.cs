@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 
 namespace Daemon {
     public class DaemonService:IMicroService {
@@ -32,6 +33,7 @@ namespace Daemon {
             //停止所有单元
             Program.UnitManageModule.StopAllUnits();
             Helpers.LoggerModuleHelper.TryLog("DaemonService.Stop[Warning]","已停止服务");
+            SpinWait.SpinUntil(()=>false,1000);
         }
     }
 }

@@ -52,9 +52,10 @@
     "AutoStartDelay": 3,
     // unit will restart when unit exit by exception
     "RestartWhenException": false,
+    // monitor unit performance
+    "MonitorPerformanceUsage": false,
     // monitor unit network usage
-    // 0 is not monitor,1 is only download,2 is only upload,3 is both
-    "MonitorNetworkUsage": 0
+    "MonitorNetworkUsage": false
 }
 ```
 

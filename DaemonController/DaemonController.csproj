@@ -7,11 +7,11 @@
     <Description>Wind2 Daemon Service CommandLine Controller</Description>
     <PackageProjectUrl>https://github.com/ragnaroks/Wind2</PackageProjectUrl>
     <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
+    <AssemblyName>windctl</AssemblyName>
+    <PackageId>DaemonController</PackageId>
+    <Authors>DaemonController</Authors>
+    <Product>DaemonController</Product>
   </PropertyGroup>
-
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="copy $(OutDir)$(TargetName).exe $(OutDir)windctl.exe" />
-  </Target>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">

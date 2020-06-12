@@ -8,12 +8,12 @@ namespace DaemonController.Entities.Common {
         public String BaseDirectory{get;}=AppDomain.CurrentDomain.BaseDirectory;
         #if DEBUG
         /// <summary>命名管道</summary>
-        public String PipelineName{get;}="WIND2_DAEMON_PIPELINE_DEBUG";
+        public String PipelineName{get;}="WIND_DAEMON_PIPELINE_DEBUG";
         /// <summary>是否开发模式</summary>
         public Boolean DevelopMode{get;}=true;
         #else
         /// <summary>命名管道</summary>
-        public String PipelineName{get;}="WIND2_DAEMON_PIPELINE";
+        public String PipelineName{get;}="WIND_DAEMON_PIPELINE";
         /// <summary>是否开发模式</summary>
         public Boolean DevelopMode{get;}=false;
         #endif

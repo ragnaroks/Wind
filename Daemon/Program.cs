@@ -1,4 +1,5 @@
-﻿using PeterKottas.DotNetCore.WindowsService;
+﻿using Daemon.Modules;
+using PeterKottas.DotNetCore.WindowsService;
 using PeterKottas.DotNetCore.WindowsService.Interfaces;
 using System;
 using System.Diagnostics;
@@ -24,6 +25,10 @@ namespace Daemon {
         public static Modules.LoggerModule LoggerModule{get;}=new Modules.LoggerModule();
         /// <summary>单元管理模块</summary>
         public static Modules.UnitManageModule UnitManageModule{get;}=new Modules.UnitManageModule();
+        /// <summary>单元CPU监控模块</summary>
+        public static Modules.CpuPerformanceCounterModule CpuPerformanceCounterModule{get;}=new Modules.CpuPerformanceCounterModule();
+        /// <summary>单元内存监控模块</summary>
+        public static Modules.RamPerformanceCounterModule RamPerformanceCounterModule{get;}=new Modules.RamPerformanceCounterModule();
         /// <summary>本地管理模块</summary>
         public static Modules.PipelineControlModule LocalControlModule{get;}=new Modules.PipelineControlModule();
         /// <summary>远程管理模块</summary>
@@ -59,6 +64,16 @@ namespace Daemon {
                 Environment.Exit(0);
                 return;
             }
+            if(!InitializeCpuPerformanceCounterModule()){
+                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元CPU监控模块失败");
+                Environment.Exit(0);
+                return;
+            }
+            if(!InitializeRamPerformanceCounterModule()){
+                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元内存监控模块失败");
+                Environment.Exit(0);
+                return;
+            }
             if(!InitializeLocalControlModule()) {
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化本地管理模块失败");
                 Environment.Exit(0);
@@ -68,7 +83,7 @@ namespace Daemon {
         }
 
         /// <summary>
-        /// 初始化日志模块
+        /// 初始化日志模块 01
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeLoggerModule(){
@@ -84,7 +99,7 @@ namespace Daemon {
         }
 
         /// <summary>
-        /// 读取应用程序配置
+        /// 读取应用程序配置 02
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeAppSettings(){
@@ -122,7 +137,7 @@ namespace Daemon {
         }
 
         /// <summary>
-        /// 初始化单元管理模块
+        /// 初始化单元管理模块 03
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeUnitManageModule(){
@@ -138,7 +153,23 @@ namespace Daemon {
         }
 
         /// <summary>
-        /// 初始化本地控制模块
+        /// 初始化单元CPU监控模块 04
+        /// </summary>
+        /// <returns>是否成功</returns>
+        private static Boolean InitializeCpuPerformanceCounterModule(){
+            return CpuPerformanceCounterModule.Setup();
+        }
+
+        /// <summary>
+        /// 初始化单元内存监控模块 05
+        /// </summary>
+        /// <returns>是否成功</returns>
+        private static Boolean InitializeRamPerformanceCounterModule(){
+            return RamPerformanceCounterModule.Setup();
+        }
+
+        /// <summary>
+        /// 初始化本地控制模块 06
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeLocalControlModule(){
@@ -165,15 +196,19 @@ namespace Daemon {
             RemoteControlModule.Dispose();
             //释放本地管理模块
             LocalControlModule.Dispose();
-            //停止服务
-            if(DaemonServiceController!=null){ DaemonServiceController.Stop(); }
             //释放单元管理模块,应确保已无单元正在运行
             UnitManageModule.Dispose();
+            //释放单元CPU监控模块
+            CpuPerformanceCounterModule.Dispose();
+            //释放单元内存监控模块
+            RamPerformanceCounterModule.Dispose();
+            //停止服务
+            if(DaemonServiceController!=null){ DaemonServiceController.Stop(); }
             //释放自身进程引用
             AppMutex.Dispose();
             AppProcess.Dispose();
             //释放日志模块
-            Helpers.LoggerModuleHelper.TryLog("Program.CurrentDomainProcessExit[Warning]",$"服务主机进程退出");
+            Helpers.LoggerModuleHelper.TryLog("Program.CurrentDomainProcessExit[Warning]","服务主机进程退出");
             LoggerModule.Dispose();
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace ExampleUnit {
@@ -9,8 +10,10 @@ namespace ExampleUnit {
             while(true){
                 if(LoopCount>60) {
                     //throw new ApplicationException("throw test");
-                    Environment.Exit(1);
+                    //Environment.Exit(1);
+                    LoopCount=0;
                 } else {
+                    Byte[] bytes=new Byte[LoopCount*1024*1024];
                     Console.Beep();
                     LoopCount++;
                 }

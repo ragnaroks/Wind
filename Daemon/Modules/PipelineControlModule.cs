@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Globalization;
 
 namespace Daemon.Modules {
     /// <summary>本地(命名管道)管理模块</summary>
@@ -18,6 +19,7 @@ namespace Daemon.Modules {
         private NamedPipeServerStream NamedPipeServerStream{get;set;}=null;
         /// <summary>命名管道是否启用</summary>
         private Boolean NamedPipeServerStreamEnable{get;set;}=false;
+        /// <summary>命名管道名称</summary>
         private String PipelineName{get;set;}=null;
 
         #region IDisposable
@@ -151,26 +153,17 @@ namespace Daemon.Modules {
             }
             //拼接返回数据
             StringBuilder unitStatusText=new StringBuilder();
+            UnitSettings unitSettings=unit.State==2?unit.RunningSettings:unit.Settings;
             //第一行
             switch(unit.State){
-                case 1:
-                    unitStatusText.Append("§b●§| ").Append(unitKey).Append(" - ").Append(unit.Settings.Description);
-                    break;
-                case 2:
-                    unitStatusText.Append("§2●§| ").Append(unitKey).Append(" - ").Append(unit.RunningSettings.Description);
-                    break;
-                default:
-                    unitStatusText.Append("● ").Append(unitKey).Append(" - ").Append(unit.Settings.Description);
-                    break;
+                case 1:unitStatusText.Append("§b●§| ");break;
+                case 2:unitStatusText.Append("§2●§| ");break;
+                default:unitStatusText.Append("● ");break;
             }
+            unitStatusText.Append(unitKey).Append(" - ").Append(unitSettings.Description);
             //第二行
             unitStatusText.Append("\n     Loaded:  ").Append(Program.AppEnvironment.UnitsDirectory).Append(Path.DirectorySeparatorChar).Append(unitKey).Append(".json; ");
-            if(unit.State==2){
-                unitStatusText.Append(unit.RunningSettings.AutoStart?"enabled":"disabled");
-            } else {
-                unitStatusText.Append(unit.Settings.AutoStart?"enabled":"disabled");
-            }
-            unitStatusText.Append(';');
+            unitStatusText.Append(unitSettings.AutoStart?"enabled":"disabled").Append(';');
             //第三行
             unitStatusText.Append("\n      State:  ");
             switch(unit.State) {
@@ -187,10 +180,14 @@ namespace Daemon.Modules {
                 unitStatusText.Append(" (since ").Append(datetime).Append(")");
             }
             //第四行
-            String absoluteExecutePath=unit.State==2?unit.RunningSettings.AbsoluteExecutePath:unit.Settings.AbsoluteExecutePath;
-            String arguments=unit.State==2?unit.RunningSettings.Arguments:unit.Settings.Arguments;
-            unitStatusText.Append("\nCommandLine:  ").Append(absoluteExecutePath);
-            if(!String.IsNullOrWhiteSpace(arguments)){ unitStatusText.Append('-').Append(arguments); }
+            unitStatusText.Append("\nCommandLine:  ").Append(unitSettings.AbsoluteExecutePath);
+            if(!String.IsNullOrWhiteSpace(unitSettings.Arguments)){ unitStatusText.Append(' ').Append(unitSettings.Arguments); }
+            //第五行
+            if(unit.State==2 && unitSettings.MonitorPerformanceUsage && Program.CpuPerformanceCounterModule.Useable) {
+                String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",Program.CpuPerformanceCounterModule.GetValue(unitKey));
+                String ramValue=Helpers.Extend.FixedByteSize(Program.RamPerformanceCounterModule.GetValue(unitKey));
+                unitStatusText.Append("\nPerformance:  ").Append(cpuValue).Append("; ").Append(ramValue).Append(';');
+            }
             Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStatus","已处理 status 指令");
             return new Byte[8]{0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes(unitStatusText.ToString())).ToArray();
         }

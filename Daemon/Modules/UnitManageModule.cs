@@ -19,10 +19,12 @@ namespace Daemon.Modules {
         
         #region IDisposable
         private bool disposedValue;
+
         protected virtual void Dispose(bool disposing) {
             if(!disposedValue) {
                 if(disposing) {
                     // TODO: 释放托管状态(托管对象)
+                    this.StopAllUnits();
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并替代终结器
@@ -79,6 +81,8 @@ namespace Daemon.Modules {
                 break;
             }
             //if(unit.Process!=null){ unit.Process.Dispose(); }
+            if(Program.CpuPerformanceCounterModule.Useable){ Program.CpuPerformanceCounterModule.Remove(unit.Key); }
+            if(Program.RamPerformanceCounterModule.Useable){ Program.RamPerformanceCounterModule.Remove(unit.Key); }
             //如果是单元停止,此时state==3,否则可能是1||2
             if(unit.State==3){return;}
             Program.LoggerModule.Log("Modules.UnitManageModule.OnUnitProcessExited",$"单元\"{unit.Key}\"异常退出");
@@ -123,6 +127,8 @@ namespace Daemon.Modules {
                 }
                 unit.RunningSettings=null;
                 unit.Process=null;
+                if(Program.CpuPerformanceCounterModule.Useable){ Program.CpuPerformanceCounterModule.Remove(unitKey); }
+                if(Program.RamPerformanceCounterModule.Useable){ Program.RamPerformanceCounterModule.Remove(unitKey); }
             }).ConfigureAwait(false);
             unit.ProcessId=0;
             unit.State=0;
@@ -160,6 +166,8 @@ namespace Daemon.Modules {
             if(b1) {
                 unit.ProcessId=unit.Process.Id;
                 unit.State=2;
+                if(Program.CpuPerformanceCounterModule.Useable){ Program.CpuPerformanceCounterModule.Add(unitKey,unit.Process.ProcessName); }
+                if(Program.RamPerformanceCounterModule.Useable){ Program.RamPerformanceCounterModule.Add(unitKey,unit.Process.ProcessName); }
                 LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnitAsync",$"已启动\"{unitKey}\"单元");
             } else {
                 unit.State=0;
