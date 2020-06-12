@@ -1,4 +1,5 @@
 ﻿using PeterKottas.DotNetCore.WindowsService;
+using PeterKottas.DotNetCore.WindowsService.Interfaces;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -13,6 +14,8 @@ namespace Daemon {
         public static Mutex AppMutex{get;private set;}=null;
         /// <summary>应用程序进程</summary>
         public static Process AppProcess{get;private set;}=null;
+        /// <summary>服务句柄</summary>
+        public static IMicroServiceController DaemonServiceController{get;private set;}=null;
         /// <summary>应用程序环境配置</summary>
         public static Entities.Common.AppEnvironment AppEnvironment{get;}=new Entities.Common.AppEnvironment();
         /// <summary>应用程序配置</summary>
@@ -25,9 +28,7 @@ namespace Daemon {
         public static Modules.PipelineControlModule LocalControlModule{get;}=new Modules.PipelineControlModule();
         /// <summary>远程管理模块</summary>
         public static Modules.WebSocketControlModule RemoteControlModule{get;}=new Modules.WebSocketControlModule();
-
-        public static DaemonService DaemonService{get;private set;}=null;
-
+        
         /// <summary>
         /// Main
         /// </summary>
@@ -165,7 +166,7 @@ namespace Daemon {
             //释放本地管理模块
             LocalControlModule.Dispose();
             //停止服务
-            DaemonService.Stop();
+            if(DaemonServiceController!=null){ DaemonServiceController.Stop(); }
             //释放单元管理模块,应确保已无单元正在运行
             UnitManageModule.Dispose();
             //释放自身进程引用
@@ -182,20 +183,20 @@ namespace Daemon {
         /// <returns>运行结果</returns>
         private static Int32 ServiceRun() {
             return ServiceRunner<DaemonService>.Run(config=>{
-                config.SetDisplayName("wind");
-                config.SetName("wind");
+                config.SetDisplayName("Wind");
+                config.SetName("Wind");
                 config.SetDescription("Wind2 服务主机");
                 config.Service(serviceConfigurator=>{
                     serviceConfigurator.ServiceFactory((extraArguments,microServiceController)=>{
-                        DaemonService=new DaemonService(extraArguments,microServiceController);
-                        return DaemonService;
+                        DaemonServiceController=microServiceController;
+                        return new DaemonService(extraArguments,microServiceController);
                     });
                     //安装
                     serviceConfigurator.OnInstall(server=>{
                         Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","已安装 Wind2 服务主机");
                     });
                     //卸载
-                    serviceConfigurator.OnUnInstall(server=>{
+                    serviceConfigurator.OnUnInstall(service=>{
                         Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","已卸载 Wind2 服务主机");
                     });
                     /*
@@ -209,8 +210,9 @@ namespace Daemon {
                     });
                     */
                     //退出
-                    serviceConfigurator.OnShutdown(server=>{
-                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","已退出 Wind2 服务主机");
+                    serviceConfigurator.OnShutdown(service=>{
+                        service.Stop();
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","Wind2 服务主机宿主正在关闭");
                     });
                     //错误
                     serviceConfigurator.OnError(exception=>{
@@ -220,7 +222,7 @@ namespace Daemon {
                     serviceConfigurator.OnStart((service,extraArguments)=>{
                         Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"正在初始化 Wind2 服务主机\n参数: {JsonSerializer.Serialize(extraArguments)}");
                         //运行权限
-                        WindowsIdentity identity = WindowsIdentity.GetCurrent();
+                        WindowsIdentity identity=WindowsIdentity.GetCurrent();
                         Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"运行权限: {identity.Name}");
                         //启动服务
                         Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"正在启动 Wind2 服务主机");

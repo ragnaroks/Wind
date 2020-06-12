@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DaemonController.Helper;
+using System;
 using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
@@ -22,16 +23,26 @@ namespace DaemonController {
                 case "stop":StopCommand(args);break;
                 //重启单元,0x04
                 case "restart":RestartCommand(args);break;
+                //加载单元,0x05,服务主机运行时添加新单元配置文件,需要此指令来加载(不会自动运行)
+                case "load":LoadCommand(args);break;
+                //移除单元,0x06,从服务主机移除单元配置文件并停止单元运行(不会物理删除文件)
+                case "remove":RemoveCommand(args);break;
                 //获取全部单元状态,0x11
-                case "status-all":break;
+                //case "status-all":break;
                 //启动全部单元,0x12
-                case "start-all":break;
+                case "start-all":StartAllCommand();break;
                 //停止全部单元,0x13
-                case "stop-all":break;
+                case "stop-all":StopAllCommand();break;
                 //重启全部单元,0x14
-                case "restart-all":break;
+                case "restart-all":RestartAllCommand();break;
+                //加载单元,0x015
+                case "load-all":LoadAllCommand();break;
+                //移除单元,0x016
+                case "remove-all":RemoveAllCommand();break;
+                //获取主机版本,0xF0
+                case "daemon-version":DaemonVersionCommand();break;
                 //停止服务主机,0xFF
-                case "shutdown":ShutDownCommand();break;
+                case "daemon-shutdown":DaemonShutdownCommand();break;
                 //版本
                 case "version":PrintVersion();break;
                 //默认
@@ -51,13 +62,20 @@ namespace DaemonController {
         /// 帮助信息
         /// </summary>
         private static void PrintHelp() {
-            Console.WriteLine("\"unitKey\" is the unit's file name,for \"example.json\",it's \"example\"");
-            Console.WriteLine("windctl status <unitKey>     => get unit's status");
-            //Console.WriteLine("windctl start <unitKey>      => start unit");
-            //Console.WriteLine("windctl stop <unitKey>       => stop unit");
-            //Console.WriteLine("windctl restart <unitKey>    => restart unit");
-            Console.WriteLine("windctl shutdown            => shutdown daemon service"); // 还是有问题
-            Console.WriteLine();
+            Console.WriteLine("windctl version              => print this tool's version");
+            ConsoleHelper.ColorWrite("windctl status §b<unitKey>§|     => get unit's status\n");
+            ConsoleHelper.ColorWrite("windctl start §b<unitKey>§|      => start unit\n");
+            ConsoleHelper.ColorWrite("windctl stop §b<unitKey>§|       => stop unit\n");
+            ConsoleHelper.ColorWrite("windctl restart §b<unitKey>§|    => restart unit\n");
+            ConsoleHelper.ColorWrite("windctl load §b<unitKey>§|       => try load/update unit's settings from file\n");
+            ConsoleHelper.ColorWrite("windctl remove §b<unitKey>§|     => stop unit and remove it,it can not be start again\n");
+            Console.WriteLine("windctl start-all            => start all unit");
+            Console.WriteLine("windctl stop-all             => stop all unit");
+            Console.WriteLine("windctl restart-all          => restart all unit");
+            Console.WriteLine("windctl load-all             => try load/update all units's settings from file");
+            Console.WriteLine("windctl remove-all           => stop all unit and remove them,they can not be start again");
+            Console.WriteLine("windctl daemon-version       => get daemon service's version");
+            ConsoleHelper.ColorWrite("windctl §cdaemon-shutdown§|      => shutdown daemon service\n");
         }
 
         /// <summary>
@@ -116,14 +134,64 @@ namespace DaemonController {
             Byte[] bytes=header.Concat(body).ToArray();
             Invoke(bytes);
         }
+        /// <summary>
+        /// 0x05
+        /// </summary>
+        /// <param name="args"></param>
+        private static void LoadCommand(String[] args){
+            if(args.GetLength(0)<2){
+                PrintHelp();
+                return;
+            }
+            Byte[] header=new Byte[8]{0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+            Byte[] body=Encoding.UTF8.GetBytes(args[1]);
+            Byte[] bytes=header.Concat(body).ToArray();
+            Invoke(bytes);
+        }
+        /// <summary>
+        /// 0x06
+        /// </summary>
+        /// <param name="args"></param>
+        private static void RemoveCommand(String[] args){
+            if(args.GetLength(0)<2){
+                PrintHelp();
+                return;
+            }
+            Byte[] header=new Byte[8]{0x06,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+            Byte[] body=Encoding.UTF8.GetBytes(args[1]);
+            Byte[] bytes=header.Concat(body).ToArray();
+            Invoke(bytes);
+        }
 
+        /// <summary>
+        /// 0x12
+        /// </summary>
+        private static void StartAllCommand()=>Invoke(new Byte[8]{0x12,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
+        /// <summary>
+        /// 0x13
+        /// </summary>
+        private static void StopAllCommand()=>Invoke(new Byte[8]{0x13,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
+        /// <summary>
+        /// 0x14
+        /// </summary>
+        private static void RestartAllCommand()=>Invoke(new Byte[8]{0x14,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
+        /// <summary>
+        /// 0x15
+        /// </summary>
+        private static void LoadAllCommand()=>Invoke(new Byte[8]{0x15,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
+        /// <summary>
+        /// 0x16
+        /// </summary>
+        private static void RemoveAllCommand()=>Invoke(new Byte[8]{0x16,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
+
+        /// <summary>
+        /// 0xF0
+        /// </summary>
+        private static void DaemonVersionCommand()=>Invoke(new Byte[8]{0xF0,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
         /// <summary>
         /// 0xFF
         /// </summary>
-        private static void ShutDownCommand() {
-            Byte[] header=new Byte[8]{0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-            Invoke(header);
-        }
+        private static void DaemonShutdownCommand()=>Invoke(new Byte[8]{0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
         
         /// <summary>
         /// 发送数据
@@ -144,10 +212,7 @@ namespace DaemonController {
                 //释放
                 namedPipeClientStream.Dispose();
             }catch(Exception exception){
-                ConsoleColor consoleColor=Console.ForegroundColor;
-                Console.ForegroundColor=ConsoleColor.Red;
-                Console.WriteLine($"execute command exception,{exception.Message}");
-                Console.ForegroundColor=consoleColor;
+                ConsoleHelper.ColorWrite($"§cexecute command exception,{exception.Message}§|\n");
             }
         }
 
@@ -163,20 +228,15 @@ namespace DaemonController {
                 responseText="{"+exception.Message+"}";
             }
             if(bytes[0]==0x00) {
-                ConsoleColor consoleColor=Console.ForegroundColor;
-                Console.ForegroundColor=ConsoleColor.Red;
-                Console.WriteLine($"execute command failed,{responseText}");
-                Console.ForegroundColor=consoleColor;
+                ConsoleHelper.ColorWrite($"§cexecute command failed,{responseText}§|\n");
                 return;
             }
             if(bytes[0]==0xFF) {
-                ConsoleColor consoleColor=Console.ForegroundColor;
-                Console.ForegroundColor=ConsoleColor.Yellow;
-                Console.WriteLine("daemon service shutting");
-                Console.ForegroundColor=consoleColor;
+                ConsoleHelper.ColorWrite($"§cdaemon service shutting§|\n");
                 return;
             }
-            Console.WriteLine(responseText.Trim());
+            ConsoleHelper.ColorWrite(responseText);
+            Console.WriteLine();
         }
     }
 }

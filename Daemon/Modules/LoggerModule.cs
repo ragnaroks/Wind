@@ -25,7 +25,7 @@ namespace Daemon.Modules {
 
         protected virtual void Dispose(bool disposing) {
             //写完所有日志
-            this.TimerCallback(null);
+            //this.TimerCallback(null);
 
             if (!disposedValue) {
                 if (disposing) {

@@ -12,7 +12,7 @@ namespace Daemon.Modules {
     public class UnitManageModule:IDisposable{
         public Boolean Useable{get;private set;}=false;
 
-        /// <summary>单元存放目录</summary>
+        /// <summary>单元存放目录,无路径分隔符</summary>
         private String UnitsDirectory{get;set;}=null;
         /// <summary>单元字典</summary>
         private Dictionary<String,Unit> UnitDictionary{get;set;}=new Dictionary<String,Unit>();
@@ -58,24 +58,6 @@ namespace Daemon.Modules {
             //完成
             this.Useable=true;
             return true;
-        }
-
-        /// <summary>
-        /// 加入单元
-        /// </summary>
-        /// <param name="unitKey"></param>
-        /// <param name="unitSettings"></param>
-        private void AddUnit(String unitKey,UnitSettings unitSettings){
-            if(!this.Useable){return;}
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.AddUnit",$"正在增加\"{unitKey}\"单元");
-            //检查是新增或更新
-            if(this.UnitDictionary.ContainsKey(unitKey)) {
-                this.UnitDictionary[unitKey].Settings=unitSettings;
-                this.UnitDictionary[unitKey].SettingsUpdated=true;
-            } else {
-                this.UnitDictionary.Add(unitKey,new Unit{Key=unitKey,Settings=unitSettings});
-            }
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.AddUnit",$"已增加\"{unitKey}\"单元");
         }
 
         /// <summary>
@@ -132,7 +114,7 @@ namespace Daemon.Modules {
             unit.State=1;
             await Task.Delay(unit.State==3?3000:1000).ConfigureAwait(false);
             unit.RunningSettings=unit.Settings.DeepClone();
-            unit.SettingsUpdated=false;
+            //unit.SettingsUpdated=false;
             ProcessStartInfo processStartInfo=new ProcessStartInfo{
                 UseShellExecute=false,FileName=unit.RunningSettings.AbsoluteExecutePath,WorkingDirectory=unit.RunningSettings.AbsoluteWorkDirectory,
                 CreateNoWindow=true,WindowStyle=ProcessWindowStyle.Hidden,Arguments=unit.RunningSettings.Arguments};
@@ -181,53 +163,87 @@ namespace Daemon.Modules {
         }
 
         /// <summary>
+        /// 加载单元
+        /// </summary>
+        /// <param name="unitKey"></param>
+        /// <returns></returns>
+        public Boolean LoadUnit(String unitKey){
+            if(!this.Useable){return false;}
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadUnit","开始加载单元配置文件");
+            //读取文件
+            String unitFilePath=String.Concat(this.UnitsDirectory,Path.DirectorySeparatorChar,unitKey,".json");
+            if(!File.Exists(unitFilePath)){
+                LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadUnit[Error]",$"单元配置文件 {unitFilePath} 不存在");
+                return false;
+            }
+            FileInfo fileInfo;
+            try {
+                fileInfo=new FileInfo(unitFilePath);
+            }catch(Exception exception) {
+                LoggerModuleHelper.TryLog(
+                    "Modules.UnitManageModule.LoadUnit[Error]",
+                    $"单元配置文件 {unitFilePath} 不存在\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                return false;
+            }
+            //setting
+            UnitSettings unitSettings=UnitManageModuleHelper.ParseUnitSettingsFile(fileInfo);
+            if(unitSettings==null){
+                LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadUnit[Warning]",$"单元文件\"{unitFilePath}\"读取失败");
+                return false;
+            }
+            //检查是新增或更新
+            if(this.UnitDictionary.ContainsKey(unitKey)) {
+                this.UnitDictionary[unitKey].Settings=unitSettings;
+            } else {
+                this.UnitDictionary.Add(unitKey,new Unit{Key=unitKey,Settings=unitSettings});
+            }
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadUnit",$"单元\"{unitKey}\"读取成功,已加入单元列表");
+            return true;
+        }
+
+        /// <summary>
         /// 解析所有单元配置文件
         /// </summary>
         /// <returns>解析成功数量</returns>
-        public Int32 ParseAllUnits(){
+        public Int32 LoadAllUnits(){
             if(!this.Useable){return 0;}
             //读取文件目录
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.ParseAllUnits","开始解析所有单元配置文件");
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadAllUnits","开始解析所有单元配置文件");
             FileInfo[] fileInfoArray;
             try {
                 DirectoryInfo directoryInfo=new DirectoryInfo(this.UnitsDirectory);
                 fileInfoArray=directoryInfo.GetFiles("*.json",SearchOption.TopDirectoryOnly);
             }catch(Exception exception) {
                 LoggerModuleHelper.TryLog(
-                    "Modules.UnitManageModule.ParseAllUnits[Error]",
+                    "Modules.UnitManageModule.LoadAllUnits[Error]",
                     $"读取单元存放目录异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
                 return 0;
             }
             if(fileInfoArray.Length<1){return 0;}
             //解析文件
-            List<String> unitKeyList=new List<String>();
             for(Int32 i1=0;i1<fileInfoArray.Length;i1++){
                 //key
                 String unitKey=UnitManageModuleHelper.GetUnitKey(fileInfoArray[i1]);
                 if(String.IsNullOrWhiteSpace(unitKey) || unitKey.Length>32){
-                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.ParseAllUnits[Warning]",$"单元文件\"{fileInfoArray[i1].FullName}\"标识错误,已跳过");
+                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadAllUnits[Warning]",$"单元文件\"{fileInfoArray[i1].FullName}\"标识错误,已跳过");
                     continue;
                 }
                 //setting
                 UnitSettings unitSettings=UnitManageModuleHelper.ParseUnitSettingsFile(fileInfoArray[i1]);
                 if(unitSettings==null) {
-                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.ParseAllUnits[Warning]",$"单元文件\"{fileInfoArray[i1].FullName}\"读取失败,已跳过");
+                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadAllUnits[Warning]",$"单元文件\"{fileInfoArray[i1].FullName}\"读取失败,已跳过");
                     continue;
                 }
-                //加入列表
-                this.AddUnit(unitKey,unitSettings);
-                LoggerModuleHelper.TryLog("Modules.UnitManageModule.ParseAllUnits",$"单元\"{unitKey}\"读取成功,已加入单元列表");
-                //加入变更列表
-                unitKeyList.Add(unitKey);
-            }
-            //停止已"消失"的单元
-            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
-                if(unitKeyList.Contains(item.Key)){continue;}
-                //remove必定调用stop
-                _=this.RemoveUnitAsync(item.Key);
+                //检查是新增或更新
+                if(this.UnitDictionary.ContainsKey(unitKey)) {
+                    this.UnitDictionary[unitKey].Settings=unitSettings;
+                } else {
+                    this.UnitDictionary.Add(unitKey,new Unit{Key=unitKey,Settings=unitSettings});
+                }
+                LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadAllUnits",$"单元\"{unitKey}\"读取成功,已加入单元列表");
             }
             //完成
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.ParseAllUnits",$"已解析{this.UnitDictionary.Count}个单元配置文件");
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadAllUnits",$"已解析{this.UnitDictionary.Count}个单元配置文件");
             return this.UnitDictionary.Count;
         }
 
@@ -240,9 +256,6 @@ namespace Daemon.Modules {
             if(this.UnitDictionary.Count<1){return;}
             foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
                 if(onlyAutoStart && !item.Value.Settings.AutoStart){continue;}
-                /*_=Task.Run(async ()=>{
-                    await this.StartUnitAsync(item.Key,onlyAutoStart).ConfigureAwait(false);
-                });*/
                 _=this.StartUnitAsync(item.Key,onlyAutoStart);
             }
         }
@@ -253,12 +266,7 @@ namespace Daemon.Modules {
         public void StopAllUnits(){
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1){return;}
-            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){
-                /*_=Task.Run(async ()=>{
-                    await this.StopUnitAsync(item.Key).ConfigureAwait(false);
-                });*/
-                _=this.StopUnitAsync(item.Key);
-            }
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){ _=this.StopUnitAsync(item.Key); }
         }
 
         /// <summary>
@@ -269,10 +277,6 @@ namespace Daemon.Modules {
             if(this.UnitDictionary.Count<1){return;}
             foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
                 if(item.Value.State==0 || item.Value.State==3){continue;}
-                /*_=Task.Run(async ()=>{
-                    await this.StopUnitAsync(item.Key).ConfigureAwait(false);
-                    await this.StartUnitAsync(item.Key,false).ConfigureAwait(false);
-                });*/
                 _=this.RestartUnitAsync(item.Key);
             }
         }
@@ -283,12 +287,7 @@ namespace Daemon.Modules {
         public void RemoveAllUnits() {
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1){return;}
-            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){
-                /*_=Task.Run(async ()=>{
-                    await this.RemoveUnitAsync(item.Key).ConfigureAwait(false);
-                });*/
-                _=this.RemoveUnitAsync(item.Key);
-            }
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){ _=this.RemoveUnitAsync(item.Key); }
         }
     }
 }

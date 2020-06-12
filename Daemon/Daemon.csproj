@@ -33,12 +33,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Data\_install.bat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    <None Update="_install.bat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Data\_uninstall.bat">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Code</SubType>
+    <None Update="_uninstall.bat">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Units\example.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
