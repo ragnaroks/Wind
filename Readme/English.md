@@ -31,7 +31,7 @@
 ****
 
 ### Unit settings file example
-```json
+```javascript
 {
     // unit display name,must set up
     "Name": "Example Unit",
@@ -60,7 +60,7 @@
 
 ### Wind2 settings
 > `.\Data\AppSettings.json`
-```json
+```javascript
 {
     // enable remote control
     "EnableRemoteControl": false,
