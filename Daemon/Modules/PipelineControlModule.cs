@@ -445,7 +445,7 @@ namespace Daemon.Modules {
             Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageDaemonVersion","开始处理 daemon-version 指令");
             Version version=Assembly.GetExecutingAssembly().GetName().Version;
             Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageDaemonVersion","已处理 daemon-version 指令");
-            return new Byte[8]{0xF0,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("Wind2 Daemon v"+version.ToString())).ToArray();
+            return new Byte[8]{0xF0,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("Wind Daemon v"+version.ToString())).ToArray();
         }
         /// <summary>
         /// 处理消息 0xFF

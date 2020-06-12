@@ -38,7 +38,7 @@ namespace Daemon {
             AppDomain.CurrentDomain.ProcessExit+=CurrentDomainProcessExit;
             AppDomain.CurrentDomain.UnhandledException+=CurrentDomainUnhandledException;
             AppProcess=Process.GetCurrentProcess();
-            Program.AppMutex=new Mutex(true,"Wind2DaemonAppMutex",out Boolean mutex);
+            Program.AppMutex=new Mutex(true,"WindDaemonAppMutex",out Boolean mutex);
             if(!mutex){
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","已存在实例");
                 Environment.Exit(0);
@@ -185,7 +185,7 @@ namespace Daemon {
             return ServiceRunner<DaemonService>.Run(config=>{
                 config.SetDisplayName("Wind");
                 config.SetName("Wind");
-                config.SetDescription("Wind2 服务主机");
+                config.SetDescription("Wind 服务主机");
                 config.Service(serviceConfigurator=>{
                     serviceConfigurator.ServiceFactory((extraArguments,microServiceController)=>{
                         DaemonServiceController=microServiceController;
@@ -193,48 +193,48 @@ namespace Daemon {
                     });
                     //安装
                     serviceConfigurator.OnInstall(server=>{
-                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","已安装 Wind2 服务主机");
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","已安装 Wind 服务主机");
                     });
                     //卸载
                     serviceConfigurator.OnUnInstall(service=>{
-                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","已卸载 Wind2 服务主机");
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","已卸载 Wind 服务主机");
                     });
                     /*
                     //继续
                     serviceConfigurator.OnContinue(server=>{
-                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","已恢复运行 Wind2 服务主机");
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","已恢复运行 Wind 服务主机");
                     });
                     //暂停
                     serviceConfigurator.OnPause(server=>{
-                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","已暂停运行 Wind2 服务主机");
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","已暂停运行 Wind 服务主机");
                     });
                     */
                     //退出
                     serviceConfigurator.OnShutdown(service=>{
                         service.Stop();
-                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","Wind2 服务主机宿主正在关闭");
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]","Wind 服务主机宿主正在关闭");
                     });
                     //错误
                     serviceConfigurator.OnError(exception=>{
-                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Error]",$"Wind2 服务主机异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Error]",$"Wind 服务主机异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
                     });
                     //启动
                     serviceConfigurator.OnStart((service,extraArguments)=>{
-                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"正在初始化 Wind2 服务主机\n参数: {JsonSerializer.Serialize(extraArguments)}");
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"正在初始化 Wind 服务主机\n参数: {JsonSerializer.Serialize(extraArguments)}");
                         //运行权限
                         WindowsIdentity identity=WindowsIdentity.GetCurrent();
                         Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"运行权限: {identity.Name}");
                         //启动服务
-                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"正在启动 Wind2 服务主机");
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"正在启动 Wind 服务主机");
                         service.Start();
-                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"已启动 Wind2 服务主机");
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"已启动 Wind 服务主机");
                     });
                     //停止
                     serviceConfigurator.OnStop(service=>{
                         //启动服务
-                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"正在停止 Wind2 服务主机");
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"正在停止 Wind 服务主机");
                         service.Stop();
-                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"已停止 Wind2 服务主机");
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"已停止 Wind 服务主机");
                     });
                 });
             });

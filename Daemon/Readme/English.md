@@ -1,20 +1,20 @@
-> Wind2 is a daemon service  
+> Wind is a daemon service  
 > this project designed to create a `systemd` for windows
 
 ### Projects
-- `Daemon` is Wind2's windows service
-- `DaemonController` is Wind2's local command-line controller based pipeline
+- `Daemon` is Wind's windows service
+- `DaemonController` is Wind's local command-line controller based pipeline
 - `ExampleUnit` is an example unit to test functionality
 
 ****
 
 ### Install
 0. require [dotnet core runtime 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
-1. download released package file and unzip to local disk,i suggest `C:\ProgramData\Wind2\`
+1. download released package file and unzip to local disk,i suggest `C:\ProgramData\Wind\`
 2. open an **Administrator** privilege command window
 3. execute `Daemon.exe action:install`
 4. create a unit file into `.\Units\` directory,example is down below
-5. execute `sc.exe start Wind2` to start Wind2 daemon service
+5. execute `sc.exe start Wind` to start Wind daemon service
 6. under normal circumstances,your unit has been started
 
 **if you be worry about high level privilege,you can use `services.msc` to change to low level privilege,but maybe some thing wrong**
@@ -23,10 +23,10 @@
 
 ### Uninstall
 1. open an **Administrator** privilege command window
-2. execute `sc.exe stop Wind2` to stop Wind2 daemon service and all units
-3. change directory into Wind2 directory
+2. execute `sc.exe stop Wind` to stop Wind daemon service and all units
+3. change directory into Wind directory
 4. execute `Daemon.exe action:uninstall`
-5. delete Wind2 directory
+5. delete Wind directory
 
 ****
 
@@ -41,12 +41,12 @@
     // 0 is simple,1 is fork
     "Type": 0,
     // unit executeable file path,must set up
-    "AbsoluteExecutePath": "D:\\Projects\\Wind2\\ExampleUnit\\bin\\Debug\\netcoreapp3.1\\ExampleUnit.exe",
+    "AbsoluteExecutePath": "D:\\Projects\\Wind\\ExampleUnit\\bin\\Debug\\netcoreapp3.1\\ExampleUnit.exe",
     // unit work directory,must set up
-    "AbsoluteWorkDirectory": "D:\\Projects\\Wind2\\ExampleUnit\\bin\\Debug\\netcoreapp3.1",
+    "AbsoluteWorkDirectory": "D:\\Projects\\Wind\\ExampleUnit\\bin\\Debug\\netcoreapp3.1",
     // unit execute arguments
     "Arguments": null,
-    // unit will start after Wind2 daemon service started
+    // unit will start after Wind daemon service started
     "AutoStart": true,
     // unit start delay seconds,only for auto start
     "AutoStartDelay": 3,
@@ -58,7 +58,7 @@
 }
 ```
 
-### Wind2 settings
+### Wind settings
 > `.\Data\AppSettings.json`
 ```javascript
 {
@@ -69,15 +69,15 @@
     // remote control listen port,1024 < PORT < 65535
     "RemoteControlListenPort": 3721,
     // remote control key,use by validate websocket connections
-    "RemoteControlKey": "https://github.com/ragnaroks/Wind2"
+    "RemoteControlKey": "https://github.com/ragnaroks/Wind"
 }
 ```
 
 ****
 
 ### Attention
-- unit will inherited Wind2 daemon service privilege,only host your trust application
-- if Wind2 exit by excetion,maybe not stop all units,you should stop them manual
+- unit will inherited Wind daemon service privilege,only host your trust application
+- if Wind exit by excetion,maybe not stop all units,you should stop them manual
 - if add an unit file,but not did what you want,check in `.\Logs\`
 - no plan to use `wss://`,you can use nginx proxy
 
