@@ -1,10 +1,11 @@
 ﻿using Daemon.Entities.Common;
 using Daemon.Helpers;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Daemon.Modules {
@@ -15,7 +16,7 @@ namespace Daemon.Modules {
         /// <summary>单元存放目录,无路径分隔符</summary>
         private String UnitsDirectory{get;set;}=null;
         /// <summary>单元字典</summary>
-        private Dictionary<String,Unit> UnitDictionary{get;set;}=new Dictionary<String,Unit>();
+        private ConcurrentDictionary<String,Unit> UnitDictionary{get;set;}=new ConcurrentDictionary<String,Unit>();
         
         #region IDisposable
         private bool disposedValue;
@@ -73,7 +74,7 @@ namespace Daemon.Modules {
             Int32 exitedProcessExitCode=exitedProcess.ExitCode;
             Int32 exitedProcessId=exitedProcess.Id;
             exitedProcess.Dispose();
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.OnUnitProcessExited",$"进程[{exitedProcessId}]主动退出,退出代码[{exitedProcessExitCode}]");
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.OnUnitProcessExited",$"进程[{exitedProcessId}]退出,退出代码[{exitedProcessExitCode}]");
             Unit unit=null;
             foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
                 if(item.Value.ProcessId!=exitedProcessId){continue;}
@@ -81,14 +82,14 @@ namespace Daemon.Modules {
                 break;
             }
             //if(unit.Process!=null){ unit.Process.Dispose(); }
-            if(Program.CpuPerformanceCounterModule.Useable){ Program.CpuPerformanceCounterModule.Remove(unit.Key); }
-            if(Program.RamPerformanceCounterModule.Useable){ Program.RamPerformanceCounterModule.Remove(unit.Key); }
+            if(Program.UnitPerformanceCounterModule.Useable){ Program.UnitPerformanceCounterModule.Remove(unit.Key); }
+            if(Program.UnitNetworkCounterModule.Useable){ _=Program.UnitNetworkCounterModule.Remove(exitedProcessId); }
             //如果是单元停止,此时state==3,否则可能是1||2
             if(unit.State==3){return;}
             Program.LoggerModule.Log("Modules.UnitManageModule.OnUnitProcessExited",$"单元\"{unit.Key}\"异常退出");
             if(!unit.RunningSettings.RestartWhenException){return;}
             unit.State=0;
-            _=this.StartUnitAsync(unit.Key,false);
+            this.StartUnit(unit.Key,false);
             Program.LoggerModule.Log("Modules.UnitManageModule.OnUnitProcessExited",$"单元\"{unit.Key}\"已重新启动");
         }
 
@@ -107,32 +108,35 @@ namespace Daemon.Modules {
         /// 停止单元
         /// </summary>
         /// <param name="unitKey"></param>
-        public async Task StopUnitAsync(String unitKey){
+        public void StopUnit(String unitKey){
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return;}
             Unit unit=this.UnitDictionary[unitKey];
             if(unit.State==0 || unit.State==3){return;}
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnitAsync",$"正在停止\"{unitKey}\"单元");
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnit",$"正在停止\"{unitKey}\"单元,Type={unit.RunningSettings.Type}");
             unit.State=3;
-            await Task.Run(()=>{
-                if(unit.Process!=null){
-                    try {
-                        unit.Process.Kill(unit.RunningSettings.Type==1);
-                        unit.Process.WaitForExit();
-                    } catch(Exception exception) {
-                        LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnitAsync[Error]",$"停止\"{unitKey}\"单元异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
-                    } finally {
-                        unit.Process.Dispose();
+            if(unit.Process!=null){
+                try {
+                    switch(unit.RunningSettings.Type) {
+                        case 1:
+                            unit.Process.Kill(true);
+                            ProcessHelper.KillChildProcessByParentProcess(unit.ProcessId);
+                            break;
+                        default:unit.Process.Kill(true);break;
                     }
+                } catch(Exception exception) {
+                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnit[Error]",$"停止\"{unitKey}\"单元异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                } finally {
+                    unit.Process.Dispose();
+                    unit.Process=null;
                 }
-                unit.RunningSettings=null;
-                unit.Process=null;
-                if(Program.CpuPerformanceCounterModule.Useable){ Program.CpuPerformanceCounterModule.Remove(unitKey); }
-                if(Program.RamPerformanceCounterModule.Useable){ Program.RamPerformanceCounterModule.Remove(unitKey); }
-            }).ConfigureAwait(false);
+            }
+            unit.RunningSettings=null;
+            if(Program.UnitPerformanceCounterModule.Useable){ _=Program.UnitPerformanceCounterModule.Remove(unitKey); }
+            if(Program.UnitNetworkCounterModule.Useable){ _=Program.UnitNetworkCounterModule.Remove(unit.ProcessId); }
             unit.ProcessId=0;
             unit.State=0;
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnitAsync",$"已停止\"{unitKey}\"单元");
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnit",$"已停止\"{unitKey}\"单元");
         }
 
         /// <summary>
@@ -140,38 +144,40 @@ namespace Daemon.Modules {
         /// </summary>
         /// <param name="unitKey"></param>
         /// <param name="forAutoStart"></param>
-        public async Task StartUnitAsync(String unitKey,Boolean forAutoStart){
+        public void StartUnit(String unitKey,Boolean forAutoStart){
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return;}
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnitAsync",$"正在启动\"{unitKey}\"单元");
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit",$"正在启动\"{unitKey}\"单元");
             Unit unit=this.UnitDictionary[unitKey];
             if(unit.State==1 || unit.State==2){return;}
+            if(unit.State==3){ SpinWait.SpinUntil(()=>false,1000); }
             unit.State=1;
-            await Task.Delay(unit.State==3?3000:1000).ConfigureAwait(false);
             unit.RunningSettings=unit.Settings.DeepClone();
             ProcessStartInfo processStartInfo=new ProcessStartInfo{
                 UseShellExecute=false,FileName=unit.RunningSettings.AbsoluteExecutePath,WorkingDirectory=unit.RunningSettings.AbsoluteWorkDirectory,
                 CreateNoWindow=true,WindowStyle=ProcessWindowStyle.Hidden,Arguments=unit.RunningSettings.Arguments};
             unit.Process=new Process{StartInfo=processStartInfo,EnableRaisingEvents=true};
             unit.Process.Exited+=this.OnUnitProcessExited;
-            if(forAutoStart && unit.RunningSettings.AutoStartDelay>0){ await Task.Delay(unit.RunningSettings.AutoStartDelay*1000).ConfigureAwait(false); }
+            if(forAutoStart && unit.RunningSettings.AutoStartDelay>0){ SpinWait.SpinUntil(()=>false,unit.RunningSettings.AutoStartDelay*1000); }
             Boolean b1=false;
             try {
                 b1=unit.Process.Start();
             }catch(Exception exception) {
-                LoggerModuleHelper.TryLog(
-                    "Modules.UnitManageModule.StartUnitAsync[Error]",
-                    $"启动\"{unitKey}\"单元异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit[Error]",$"启动\"{unitKey}\"单元异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
             }
             if(b1) {
                 unit.ProcessId=unit.Process.Id;
                 unit.State=2;
-                if(Program.CpuPerformanceCounterModule.Useable){ Program.CpuPerformanceCounterModule.Add(unitKey,unit.Process.ProcessName); }
-                if(Program.RamPerformanceCounterModule.Useable){ Program.RamPerformanceCounterModule.Add(unitKey,unit.Process.ProcessName); }
-                LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnitAsync",$"已启动\"{unitKey}\"单元");
+                if(unit.RunningSettings.MonitorPerformanceUsage && Program.UnitPerformanceCounterModule.Useable){
+                    Program.UnitPerformanceCounterModule.Add(unitKey,unit.Process.ProcessName);
+                }
+                if(unit.RunningSettings.MonitorNetworkUsage && Program.UnitNetworkCounterModule.Useable) {
+                    _=Program.UnitNetworkCounterModule.Add(unit.ProcessId);
+                }
+                LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit",$"已启动\"{unitKey}\"单元");
             } else {
                 unit.State=0;
-                LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnitAsync",$"启动\"{unitKey}\"单元失败");
+                LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit",$"启动\"{unitKey}\"单元失败");
             }
         }
 
@@ -180,24 +186,24 @@ namespace Daemon.Modules {
         /// </summary>
         /// <param name="unitKey"></param>
         /// <returns></returns>
-        public async Task RestartUnitAsync(String unitKey) {
+        public void RestartUnit(String unitKey) {
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return;}
-            await this.StopUnitAsync(unitKey).ConfigureAwait(false);
-            await this.StartUnitAsync(unitKey,false).ConfigureAwait(false);
+            this.StopUnit(unitKey);
+            this.StartUnit(unitKey,false);
         }
 
         /// <summary>
         /// 移除单元
         /// </summary>
         /// <param name="unitKey"></param>
-        public async Task RemoveUnitAsync(String unitKey) {
+        public void RemoveUnit(String unitKey) {
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return;}
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.RemoveUnitAsync",$"正在移除\"{unitKey}\"单元");
-            await this.StopUnitAsync(unitKey).ConfigureAwait(false);
-            this.UnitDictionary.Remove(unitKey);
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.RemoveUnitAsync",$"已移除\"{unitKey}\"单元");
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.RemoveUnit",$"正在移除\"{unitKey}\"单元");
+            this.StopUnit(unitKey);
+            _=this.UnitDictionary.TryRemove(unitKey,out _);
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.RemoveUnit",$"已移除\"{unitKey}\"单元");
         }
 
         /// <summary>
@@ -233,7 +239,7 @@ namespace Daemon.Modules {
             if(this.UnitDictionary.ContainsKey(unitKey)) {
                 this.UnitDictionary[unitKey].Settings=unitSettings;
             } else {
-                this.UnitDictionary.Add(unitKey,new Unit{Key=unitKey,Settings=unitSettings});
+                _=this.UnitDictionary.TryAdd(unitKey,new Unit{Key=unitKey,Settings=unitSettings});
             }
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadUnit",$"单元\"{unitKey}\"读取成功,已加入单元列表");
             return true;
@@ -276,7 +282,7 @@ namespace Daemon.Modules {
                 if(this.UnitDictionary.ContainsKey(unitKey)) {
                     this.UnitDictionary[unitKey].Settings=unitSettings;
                 } else {
-                    this.UnitDictionary.Add(unitKey,new Unit{Key=unitKey,Settings=unitSettings});
+                    _=this.UnitDictionary.TryAdd(unitKey,new Unit{Key=unitKey,Settings=unitSettings});
                 }
                 LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadAllUnits",$"单元\"{unitKey}\"读取成功,已加入单元列表");
             }
@@ -288,13 +294,38 @@ namespace Daemon.Modules {
         /// <summary>
         /// 启动全部单元
         /// </summary>
-        /// <param name="onlyAutoStart">仅自启单元</param>
-        public void StartAllUnits(Boolean onlyAutoStart){
+        /// <param name="asyncTask">异步处理</param>
+        public void StartAllAutoUnits(Boolean asyncTask){
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1){return;}
             foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
-                if(onlyAutoStart && !item.Value.Settings.AutoStart){continue;}
-                _=this.StartUnitAsync(item.Key,onlyAutoStart);
+                if(!item.Value.Settings.AutoStart){continue;}
+                if(!asyncTask) {
+                    this.StartUnit(item.Key,true);
+                    continue;
+                }
+                Task.Run(()=>{
+                    this.StartUnit(item.Key,true);
+                });
+                
+            }
+        }
+
+        /// <summary>
+        /// 启动全部单元
+        /// </summary>
+        /// <param name="asyncTask">异步处理</param>
+        public void StartAllUnits(Boolean asyncTask){
+            if(!this.Useable){return;}
+            if(this.UnitDictionary.Count<1){return;}
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
+                if(!asyncTask) {
+                    this.StartUnit(item.Key,false);
+                    continue;
+                }
+                Task.Run(()=>{
+                    this.StartUnit(item.Key,false);
+                });
             }
         }
 
@@ -304,7 +335,7 @@ namespace Daemon.Modules {
         public void StopAllUnits(){
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1){return;}
-            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){ _=this.StopUnitAsync(item.Key); }
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){ this.StopUnit(item.Key); }
         }
 
         /// <summary>
@@ -315,7 +346,7 @@ namespace Daemon.Modules {
             if(this.UnitDictionary.Count<1){return;}
             foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
                 if(item.Value.State==0 || item.Value.State==3){continue;}
-                _=this.RestartUnitAsync(item.Key);
+                this.RestartUnit(item.Key);
             }
         }
 
@@ -325,7 +356,7 @@ namespace Daemon.Modules {
         public void RemoveAllUnits() {
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1){return;}
-            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){ _=this.RemoveUnitAsync(item.Key); }
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){ this.RemoveUnit(item.Key); }
         }
     }
 }

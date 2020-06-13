@@ -24,6 +24,6 @@ namespace Daemon.Entities.Common {
         /// <summary>是否获取性能使用数据</summary>
         public Boolean MonitorPerformanceUsage{get;set;}=false;
         /// <summary>是否获取网络使用数据</summary>
-        //public Boolean MonitorNetworkUsage{get;set;}=false;
+        public Boolean MonitorNetworkUsage{get;set;}=false;
     }
 }

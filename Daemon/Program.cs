@@ -19,20 +19,20 @@ namespace Daemon {
         public static IMicroServiceController DaemonServiceController{get;private set;}=null;
         /// <summary>应用程序环境配置</summary>
         public static Entities.Common.AppEnvironment AppEnvironment{get;}=new Entities.Common.AppEnvironment();
-        /// <summary>应用程序配置</summary>
-        public static Entities.Common.AppSettings AppSettings{get;}=new Entities.Common.AppSettings();
-        /// <summary>日志模块</summary>
+        /// <summary>日志模块 01</summary>
         public static Modules.LoggerModule LoggerModule{get;}=new Modules.LoggerModule();
-        /// <summary>单元管理模块</summary>
-        public static Modules.UnitManageModule UnitManageModule{get;}=new Modules.UnitManageModule();
-        /// <summary>单元CPU监控模块</summary>
-        public static Modules.CpuPerformanceCounterModule CpuPerformanceCounterModule{get;}=new Modules.CpuPerformanceCounterModule();
-        /// <summary>单元内存监控模块</summary>
-        public static Modules.RamPerformanceCounterModule RamPerformanceCounterModule{get;}=new Modules.RamPerformanceCounterModule();
-        /// <summary>本地管理模块</summary>
+        /// <summary>应用程序配置 02</summary>
+        public static Entities.Common.AppSettings AppSettings{get;}=new Entities.Common.AppSettings();
+        /// <summary>单元性能监控模块 03</summary>
+        public static Modules.UnitPerformanceCounterModule UnitPerformanceCounterModule{get;}=new Modules.UnitPerformanceCounterModule();
+        /// <summary>单元网络数据监控模块 04</summary>
+        public static Modules.UnitNetworkCounterModule UnitNetworkCounterModule{get;}=new UnitNetworkCounterModule();
+        /// <summary>本地管理模块 05</summary>
         public static Modules.PipelineControlModule LocalControlModule{get;}=new Modules.PipelineControlModule();
-        /// <summary>远程管理模块</summary>
+        /// <summary>远程管理模块 06</summary>
         public static Modules.WebSocketControlModule RemoteControlModule{get;}=new Modules.WebSocketControlModule();
+        /// <summary>单元管理模块 07</summary>
+        public static Modules.UnitManageModule UnitManageModule{get;}=new Modules.UnitManageModule();
         
         /// <summary>
         /// Main
@@ -59,18 +59,13 @@ namespace Daemon {
                 Environment.Exit(0);
                 return;
             }
-            if(!InitializeUnitManageModule()) {
-                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元管理模块失败");
+            if(!InitializeUnitPerformanceCounterModule()){
+                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元性能监控模块失败");
                 Environment.Exit(0);
                 return;
             }
-            if(!InitializeCpuPerformanceCounterModule()){
-                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元CPU监控模块失败");
-                Environment.Exit(0);
-                return;
-            }
-            if(!InitializeRamPerformanceCounterModule()){
-                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元内存监控模块失败");
+            if(!InitializeUnitNetworkCounterModule()){
+                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元网络监控模块失败");
                 Environment.Exit(0);
                 return;
             }
@@ -79,11 +74,16 @@ namespace Daemon {
                 Environment.Exit(0);
                 return;
             }
+            if(!InitializeUnitManageModule()) {
+                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元管理模块失败");
+                Environment.Exit(0);
+                return;
+            }
             Helpers.LoggerModuleHelper.TryLog("Program.Main",$"服务结果: {ServiceRun()}");
         }
 
         /// <summary>
-        /// 初始化日志模块 01
+        /// 初始化日志模块
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeLoggerModule(){
@@ -99,7 +99,7 @@ namespace Daemon {
         }
 
         /// <summary>
-        /// 读取应用程序配置 02
+        /// 读取应用程序配置
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeAppSettings(){
@@ -137,7 +137,7 @@ namespace Daemon {
         }
 
         /// <summary>
-        /// 初始化单元管理模块 03
+        /// 初始化单元管理模块
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeUnitManageModule(){
@@ -153,23 +153,23 @@ namespace Daemon {
         }
 
         /// <summary>
-        /// 初始化单元CPU监控模块 04
+        /// 初始化单元性能监控模块
         /// </summary>
         /// <returns>是否成功</returns>
-        private static Boolean InitializeCpuPerformanceCounterModule(){
-            return CpuPerformanceCounterModule.Setup();
+        private static Boolean InitializeUnitPerformanceCounterModule(){
+            return UnitPerformanceCounterModule.Setup();
         }
 
         /// <summary>
-        /// 初始化单元内存监控模块 05
+        /// 初始化单元性能监控模块
         /// </summary>
         /// <returns>是否成功</returns>
-        private static Boolean InitializeRamPerformanceCounterModule(){
-            return RamPerformanceCounterModule.Setup();
+        private static Boolean InitializeUnitNetworkCounterModule(){
+            return UnitNetworkCounterModule.Setup();
         }
 
         /// <summary>
-        /// 初始化本地控制模块 06
+        /// 初始化本地控制模块
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeLocalControlModule(){
@@ -198,10 +198,10 @@ namespace Daemon {
             LocalControlModule.Dispose();
             //释放单元管理模块,应确保已无单元正在运行
             UnitManageModule.Dispose();
-            //释放单元CPU监控模块
-            CpuPerformanceCounterModule.Dispose();
-            //释放单元内存监控模块
-            RamPerformanceCounterModule.Dispose();
+            //释放单元性能监控模块
+            UnitPerformanceCounterModule.Dispose();
+            //是否单元网络监控模块
+            UnitNetworkCounterModule.Dispose();
             //停止服务
             if(DaemonServiceController!=null){ DaemonServiceController.Stop(); }
             //释放自身进程引用
@@ -221,6 +221,8 @@ namespace Daemon {
                 config.SetDisplayName("Wind");
                 config.SetName("Wind");
                 config.SetDescription("Wind 服务主机");
+                config.SetConsoleTimeout(1000);
+                config.SetServiceTimeout(6000);
                 config.Service(serviceConfigurator=>{
                     serviceConfigurator.ServiceFactory((extraArguments,microServiceController)=>{
                         DaemonServiceController=microServiceController;

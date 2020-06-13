@@ -228,7 +228,7 @@ namespace DaemonController {
                 responseText="{"+exception.Message+"}";
             }
             if(bytes[0]==0x00) {
-                ConsoleHelper.ColorWrite($"§cexecute command failed,{responseText}§|\n");
+                ConsoleHelper.ColorWrite($"§cexecute command failed{(String.IsNullOrWhiteSpace(responseText)?String.Empty:","+responseText)}§|\n");
                 return;
             }
             if(bytes[0]==0xFF) {

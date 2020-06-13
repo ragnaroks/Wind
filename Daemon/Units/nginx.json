@@ -1,0 +1,13 @@
+{
+    "Name": "nginx",
+    "Description": "Nginx 1.16.1",
+    "Type": 1,
+    "AbsoluteExecutePath": "C:\\Softwares\\Wind2Services\\nginx\\nginx-1.16.1\\nginx.exe",
+    "AbsoluteWorkDirectory": "C:\\Softwares\\Wind2Services\\nginx\\nginx-1.16.1",
+    "Arguments": null,
+    "AutoStart": true,
+    "AutoStartDelay": 3,
+    "RestartWhenException": false,
+    "MonitorPerformanceUsage": true,
+    "MonitorNetworkUsage": false
+}

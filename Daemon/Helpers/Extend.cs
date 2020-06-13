@@ -17,7 +17,7 @@ namespace Daemon.Helpers {
             return cloneObject;
         }
 
-        public static String FixedByteSize(this Int32 value){
+        public static String FixedByteSize(this Int64 value){
             if(value<1){return "0 B";}
             if(value>0 && value<1024){return value+" B";}
             if(value>=1024 && value<1048576){

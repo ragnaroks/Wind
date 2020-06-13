@@ -20,11 +20,15 @@ namespace Daemon.Entities.Common {
         #if DEBUG
         /// <summary>命名管道</summary>
         public String PipelineName{get;}="WIND_DAEMON_PIPELINE_DEBUG";
+        /// <summary>网络计数器ETW会话</summary>
+        public String UnitsNetworkTraceEventSession{get;}="WIND_UNITS_NETWORK_TRACEEVENT_SESSION_DEBUG";
         /// <summary>是否开发模式</summary>
         public Boolean DevelopMode{get;}=true;
         #else
         /// <summary>命名管道</summary>
         public String PipelineName{get;}="WIND_DAEMON_PIPELINE";
+        /// <summary>网络计数器ETW会话</summary>
+        public String UnitsNetworkTraceEventSession{get;}="WIND_UNITS_NETWORK_TRACEEVENT_SESSION";
         /// <summary>是否开发模式</summary>
         public Boolean DevelopMode{get;}=false;
         #endif

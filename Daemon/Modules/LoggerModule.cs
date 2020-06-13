@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
@@ -18,7 +19,7 @@ namespace Daemon.Modules {
         /// <summary>是否启用定时器</summary>
         private Boolean TimerEnable{get;set;}=false;
         /// <summary>日志</summary>
-        private Dictionary<String,StringBuilder> Logs{get;set;}=new Dictionary<String, StringBuilder>();
+        private ConcurrentDictionary<String,StringBuilder> Logs{get;set;}=new ConcurrentDictionary<String, StringBuilder>();
         
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用

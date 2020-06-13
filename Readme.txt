@@ -1,1 +1,0 @@
-check ${ProjectName}/Readme directory

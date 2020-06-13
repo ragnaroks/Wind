@@ -17,7 +17,7 @@
 5. execute `sc.exe start Wind` to start Wind daemon service
 6. under normal circumstances,your unit has been started
 
-**if you be worry about high level privilege,you can use `services.msc` to change to low level privilege,but maybe some thing wrong**
+**if you be worry about high level privilege,you can use `services.msc` to change to low level privilege,but maybe some thing wrong,like network monitor must need privilege**
 
 ****
 
@@ -37,8 +37,7 @@
     "Name": "Example Unit",
     // unit display description,must set up
     "Description": "Example Unit Description",
-    // unit type,must set up
-    // 0 is simple,1 is fork
+    // unit type,must set up,0:simple,1:fork
     "Type": 0,
     // unit executeable file path,must set up
     "AbsoluteExecutePath": "D:\\Projects\\Wind\\ExampleUnit\\bin\\Debug\\netcoreapp3.1\\ExampleUnit.exe",
