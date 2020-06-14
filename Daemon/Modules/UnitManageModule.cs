@@ -87,23 +87,25 @@ namespace Daemon.Modules {
             }
             if(unit==null){return;}
             //if(unit.Process!=null){ unit.Process.Dispose(); }
-            if(Program.UnitPerformanceCounterModule.Useable){ Program.UnitPerformanceCounterModule.Remove(unit.Key); }
+            if(Program.UnitPerformanceCounterModule.Useable){ Program.UnitPerformanceCounterModule.Remove(exitedProcessId); }
             if(Program.UnitNetworkCounterModule.Useable){ _=Program.UnitNetworkCounterModule.Remove(exitedProcessId); }
             //如果是单元停止,此时state==3,否则可能是1||2
             if(unit.State==3){return;}
+            unit.State=0;
             Program.LoggerModule.Log("Modules.UnitManageModule.OnUnitProcessExited",$"单元\"{unit.Key}\"异常退出");
             if(!unit.RunningSettings.RestartWhenException){return;}
-            unit.State=0;
             this.StartUnit(unit.Key,false);
             Program.LoggerModule.Log("Modules.UnitManageModule.OnUnitProcessExited",$"单元\"{unit.Key}\"已重新启动");
         }
         private void OnProcessOutputDataReceived(object sender,DataReceivedEventArgs dataReceivedEventArgs) {
-            Process theProcess=sender as Process;
-            Console.WriteLine($"#{theProcess.Id}[stdout] => {dataReceivedEventArgs.Data}");
+            /*Process theProcess=sender as Process;
+            Console.WriteLine($"#{theProcess.Id}[stdout] => {dataReceivedEventArgs.Data}");*/
+            //仅通知到websocket控制端
         }
         private void OnProcessErrorDataReceived(object sender,DataReceivedEventArgs dataReceivedEventArgs) {
-            Process theProcess=sender as Process;
-            Console.WriteLine($"#{theProcess.Id}[error] => {dataReceivedEventArgs.Data}");
+            /*Process theProcess=sender as Process;
+            Console.WriteLine($"#{theProcess.Id}[error] => {dataReceivedEventArgs.Data}");*/
+            //仅通知到websocket控制端
         }
 
         /// <summary>
@@ -156,7 +158,7 @@ namespace Daemon.Modules {
                 }
             }
             unit.RunningSettings=null;
-            if(Program.UnitPerformanceCounterModule.Useable){ _=Program.UnitPerformanceCounterModule.Remove(unitKey); }
+            if(Program.UnitPerformanceCounterModule.Useable){ _=Program.UnitPerformanceCounterModule.Remove(unit.ProcessId); }
             if(Program.UnitNetworkCounterModule.Useable){ _=Program.UnitNetworkCounterModule.Remove(unit.ProcessId); }
             unit.ProcessId=0;
             unit.State=0;
@@ -198,7 +200,7 @@ namespace Daemon.Modules {
                 unit.ProcessId=unit.Process.Id;
                 unit.State=2;
                 if(unit.RunningSettings.MonitorPerformanceUsage && Program.UnitPerformanceCounterModule.Useable){
-                    Program.UnitPerformanceCounterModule.Add(unitKey,unit.Process.ProcessName);
+                    Program.UnitPerformanceCounterModule.Add(unit.ProcessId);
                 }
                 if(unit.RunningSettings.MonitorNetworkUsage && Program.UnitNetworkCounterModule.Useable) {
                     _=Program.UnitNetworkCounterModule.Add(unit.ProcessId);

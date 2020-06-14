@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Daemon.Helpers;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,8 +9,8 @@ namespace Daemon.Modules {
         public Boolean Useable{get;private set;}=false;
 
         /// <summary>性能计数器字典</summary>
-        private ConcurrentDictionary<String,PerformanceCounter> CpuPerformanceCounterDictionary{get;set;}=new ConcurrentDictionary<String,PerformanceCounter>();
-        private ConcurrentDictionary<String,PerformanceCounter> RamPerformanceCounterDictionary{get;set;}=new ConcurrentDictionary<String,PerformanceCounter>();
+        private ConcurrentDictionary<Int32,PerformanceCounter> CpuPerformanceCounterDictionary{get;set;}=new ConcurrentDictionary<Int32,PerformanceCounter>();
+        private ConcurrentDictionary<Int32,PerformanceCounter> RamPerformanceCounterDictionary{get;set;}=new ConcurrentDictionary<Int32,PerformanceCounter>();
 
         #region IDisposable
         private bool disposedValue;
@@ -55,55 +56,61 @@ namespace Daemon.Modules {
             this.RamPerformanceCounterDictionary.Clear();
         }
 
-        public void Add(String unitKey,String processName){
+        public void Add(Int32 processId){
             if(!this.Useable){return;}
-            if(this.CpuPerformanceCounterDictionary.ContainsKey(unitKey)){ this.Remove(unitKey); }
+            if(this.CpuPerformanceCounterDictionary.ContainsKey(processId) || this.RamPerformanceCounterDictionary.ContainsKey(processId)){ this.Remove(processId); }
+            String instanceName=UnitPerformanceCounterModuleHelper.GetActuallyInstanceNameByProcessId(processId);
+            if(String.IsNullOrWhiteSpace(instanceName)){return;}
             try {
-                PerformanceCounter performanceCounter=new PerformanceCounter{CategoryName="Process",CounterName="% Processor Time",InstanceName=processName,ReadOnly=true};
+                PerformanceCounter performanceCounter=new PerformanceCounter{CategoryName="Process",CounterName="% Processor Time",InstanceName=instanceName,ReadOnly=true};
                 _=performanceCounter.NextValue();//预热
-                if(!this.CpuPerformanceCounterDictionary.TryAdd(unitKey,performanceCounter)) {
+                if(!this.CpuPerformanceCounterDictionary.TryAdd(processId,performanceCounter)) {
                     Helpers.LoggerModuleHelper.TryLog("Modules.UnitPerformanceCounterModule.Add[Error]",$"创建CPU性能计数器成功但加入列表失败");
                 }
-            }catch(Exception exception) {
-                Helpers.LoggerModuleHelper.TryLog("Modules.UnitPerformanceCounterModule.Add[Error]",$"创建CPU性能计数器异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+            }catch(Exception exception){
+                Helpers.LoggerModuleHelper.TryLog(
+                    "Modules.UnitPerformanceCounterModule.Add[Error]",
+                    $"创建CPU性能计数器异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
             }
             
             try {
-                PerformanceCounter performanceCounter=new PerformanceCounter{CategoryName="Process",CounterName="Working Set",InstanceName=processName,ReadOnly=true};
+                PerformanceCounter performanceCounter=new PerformanceCounter{CategoryName="Process",CounterName="Working Set",InstanceName=instanceName,ReadOnly=true};
                 _=performanceCounter.NextValue();//预热
-                if(!this.RamPerformanceCounterDictionary.TryAdd(unitKey,performanceCounter)) {
+                if(!this.RamPerformanceCounterDictionary.TryAdd(processId,performanceCounter)) {
                     Helpers.LoggerModuleHelper.TryLog("Modules.UnitPerformanceCounterModule.Add[Error]",$"创建RAM性能计数器成功但加入列表失败");
                 }
             }catch(Exception exception) {
-                Helpers.LoggerModuleHelper.TryLog("Modules.UnitPerformanceCounterModule.Add[Error]",$"创建RAM性能计数器异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                Helpers.LoggerModuleHelper.TryLog(
+                    "Modules.UnitPerformanceCounterModule.Add[Error]",
+                    $"创建RAM性能计数器异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
             }
         }
 
-        public Boolean Remove(String unitKey) {
+        public Boolean Remove(Int32 processId) {
             if(!this.Useable){return false;}
             Boolean b1=false;
-            if(this.CpuPerformanceCounterDictionary.Count>0 && this.CpuPerformanceCounterDictionary.ContainsKey(unitKey)){
-                this.CpuPerformanceCounterDictionary[unitKey].Dispose();
-                b1=this.CpuPerformanceCounterDictionary.TryRemove(unitKey,out _);
+            if(this.CpuPerformanceCounterDictionary.Count>0 && this.CpuPerformanceCounterDictionary.ContainsKey(processId)){
+                this.CpuPerformanceCounterDictionary[processId].Dispose();
+                b1=this.CpuPerformanceCounterDictionary.TryRemove(processId,out _);
             }
             Boolean b2=false;
-            if(this.RamPerformanceCounterDictionary.Count>0 && this.RamPerformanceCounterDictionary.ContainsKey(unitKey)){
-                this.RamPerformanceCounterDictionary[unitKey].Dispose();
-                b2=this.RamPerformanceCounterDictionary.TryRemove(unitKey,out _);
+            if(this.RamPerformanceCounterDictionary.Count>0 && this.RamPerformanceCounterDictionary.ContainsKey(processId)){
+                this.RamPerformanceCounterDictionary[processId].Dispose();
+                b2=this.RamPerformanceCounterDictionary.TryRemove(processId,out _);
             }
             return b1 && b2;
         }
 
-        public Single GetCpuValue(String unitKey){
+        public Single GetCpuValue(Int32 processId){
             if(!this.Useable){return 0F;}
-            if(this.CpuPerformanceCounterDictionary.Count<1 || !this.CpuPerformanceCounterDictionary.ContainsKey(unitKey)){return 0F;}
-            return this.CpuPerformanceCounterDictionary[unitKey].NextValue();
+            if(this.CpuPerformanceCounterDictionary.Count<1 || !this.CpuPerformanceCounterDictionary.ContainsKey(processId)){return 0F;}
+            return this.CpuPerformanceCounterDictionary[processId].NextValue();
         }
 
-        public Single GetRamValue(String unitKey){
+        public Single GetRamValue(Int32 processId){
             if(!this.Useable){return 0F;}
-            if(this.RamPerformanceCounterDictionary.Count<1 || !this.RamPerformanceCounterDictionary.ContainsKey(unitKey)){return 0F;}
-            return this.RamPerformanceCounterDictionary[unitKey].NextValue();
+            if(this.RamPerformanceCounterDictionary.Count<1 || !this.RamPerformanceCounterDictionary.ContainsKey(processId)){return 0F;}
+            return this.RamPerformanceCounterDictionary[processId].NextValue();
         }
     }
 }

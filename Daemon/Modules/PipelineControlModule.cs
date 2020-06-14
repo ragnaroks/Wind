@@ -71,11 +71,10 @@ namespace Daemon.Modules {
         public void StartServer(){
             Task.Run(()=>{
                 while(!this.CancellationTokenSource.IsCancellationRequested) {
+                    NamedPipeServerStream namedPipeServerStream=null;
                     try {
                         //创建命名管道
-                        NamedPipeServerStream namedPipeServerStream=new NamedPipeServerStream(
-                            this.PipelineName,PipeDirection.InOut,1,PipeTransmissionMode.Message,PipeOptions.Asynchronous|PipeOptions.WriteThrough);
-                        //等待链接
+                        namedPipeServerStream=new NamedPipeServerStream(this.PipelineName,PipeDirection.InOut,1,PipeTransmissionMode.Message,PipeOptions.Asynchronous|PipeOptions.WriteThrough);
                         namedPipeServerStream.WaitForConnection();
                         //收到消息,104字节应该够了,8字节头部,96(32*3)字节字符串
                         Byte[] buffer=new Byte[104];
@@ -84,12 +83,12 @@ namespace Daemon.Modules {
                         //回复消息
                         namedPipeServerStream.Write(responseBytes);
                         namedPipeServerStream.Flush();
-                        //释放
-                        namedPipeServerStream.Dispose();
                     }catch(Exception exception) {
                         Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.StartServer[Error]",$"命名管道异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    } finally {
+                        namedPipeServerStream?.Dispose();
                     }
-                    SpinWait.SpinUntil(()=>false,1000);
+                    //SpinWait.SpinUntil(()=>false,1000);
                 }
             },this.CancellationTokenSource.Token);
         }
@@ -187,8 +186,8 @@ namespace Daemon.Modules {
             if(!String.IsNullOrWhiteSpace(unitSettings.Arguments)){ unitStatusText.Append(' ').Append(unitSettings.Arguments); }
             //第五行
             if(unit.State==2 && unitSettings.MonitorPerformanceUsage && Program.UnitPerformanceCounterModule.Useable) {
-                String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",Program.UnitPerformanceCounterModule.GetCpuValue(unitKey));
-                String ramValue=Program.UnitPerformanceCounterModule.GetRamValue(unitKey).FixedByteSize();
+                String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",Program.UnitPerformanceCounterModule.GetCpuValue(unit.ProcessId));
+                String ramValue=Program.UnitPerformanceCounterModule.GetRamValue(unit.ProcessId).FixedByteSize();
                 unitStatusText.Append("\nPerformance:  ").Append(cpuValue).Append(";    ").Append(ramValue);
             }
             //第六行
