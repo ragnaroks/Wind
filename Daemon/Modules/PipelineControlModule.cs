@@ -30,7 +30,7 @@ namespace Daemon.Modules {
             if(!disposedValue) {
                 if(disposing) {
                     // TODO: 释放托管状态(托管对象)
-                    this.NamedPipeServerStream.Dispose();
+                    if(this.NamedPipeServerStream!=null){ this.NamedPipeServerStream.Dispose(); }
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并替代终结器
@@ -167,7 +167,7 @@ namespace Daemon.Modules {
             }
             unitStatusText.Append(unitKey).Append(" - ").Append(unitSettings.Description);
             //第二行
-            unitStatusText.Append("\n     Loaded:  ").Append(Program.AppEnvironment.UnitsDirectory).Append(Path.DirectorySeparatorChar).Append(unitKey).Append(".json;    ");
+            unitStatusText.Append("\n     Loaded:  ").Append(Program.AppEnvironment.UnitsDirectory).Append(Path.DirectorySeparatorChar).Append(unitKey).Append(".json;");
             unitStatusText.Append(unitSettings.AutoStart?"enabled":"disabled");
             //第三行
             unitStatusText.Append("\n      State:  ");
@@ -198,8 +198,8 @@ namespace Daemon.Modules {
                 UnitNetworkCounter unitNetworkCounter=Program.UnitNetworkCounterModule.GetValue(unit.ProcessId);
                 if(unitNetworkCounter!=null) {
                     unitStatusText.Append("\n    Network:  ")
-                    .Append('↑').Append(unitNetworkCounter.TotalSent.FixedByteSize()).Append(" @ ").Append(unitNetworkCounter.SendSpeed.FixedByteSize()).Append("/s;    ")
-                    .Append("↓").Append(unitNetworkCounter.TotalReceived.FixedByteSize()).Append(" @ ").Append(unitNetworkCounter.ReceiveSpeed.FixedByteSize()).Append("/s");
+                    .Append("↑  ").Append(unitNetworkCounter.TotalSent.FixedByteSize()).Append(" @ ").Append(unitNetworkCounter.SendSpeed.FixedByteSize()).Append("/s;    ")
+                    .Append("↓  ").Append(unitNetworkCounter.TotalReceived.FixedByteSize()).Append(" @ ").Append(unitNetworkCounter.ReceiveSpeed.FixedByteSize()).Append("/s");
                 }
             }
             Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStatus","已处理 status 指令");
