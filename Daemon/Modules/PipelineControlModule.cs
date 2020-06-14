@@ -16,8 +16,6 @@ namespace Daemon.Modules {
     public class PipelineControlModule:IDisposable {
         public Boolean Useable{get;private set;}=false;
 
-        /// <summary>命名管道</summary>
-        private NamedPipeServerStream NamedPipeServerStream{get;set;}=null;
         /// <summary>命名管道名称</summary>
         private String PipelineName{get;set;}=null;
         /// <summary>取消句柄</summary>
@@ -30,7 +28,6 @@ namespace Daemon.Modules {
             if(!disposedValue) {
                 if(disposing) {
                     // TODO: 释放托管状态(托管对象)
-                    if(this.NamedPipeServerStream!=null){ this.NamedPipeServerStream.Dispose(); }
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并替代终结器
@@ -76,18 +73,19 @@ namespace Daemon.Modules {
                 while(!this.CancellationTokenSource.IsCancellationRequested) {
                     try {
                         //创建命名管道
-                        this.NamedPipeServerStream=new NamedPipeServerStream(this.PipelineName,PipeDirection.InOut,1,PipeTransmissionMode.Message,PipeOptions.Asynchronous|PipeOptions.WriteThrough);
+                        NamedPipeServerStream namedPipeServerStream=new NamedPipeServerStream(
+                            this.PipelineName,PipeDirection.InOut,1,PipeTransmissionMode.Message,PipeOptions.Asynchronous|PipeOptions.WriteThrough);
                         //等待链接
-                        this.NamedPipeServerStream.WaitForConnection();
+                        namedPipeServerStream.WaitForConnection();
                         //收到消息,104字节应该够了,8字节头部,96(32*3)字节字符串
                         Byte[] buffer=new Byte[104];
-                        this.NamedPipeServerStream.Read(buffer,0,104);
+                        namedPipeServerStream.Read(buffer,0,104);
                         Byte[] responseBytes=this.OnMessage(buffer);
                         //回复消息
-                        this.NamedPipeServerStream.Write(responseBytes);
-                        this.NamedPipeServerStream.Flush();
+                        namedPipeServerStream.Write(responseBytes);
+                        namedPipeServerStream.Flush();
                         //释放
-                        this.NamedPipeServerStream.Dispose();
+                        namedPipeServerStream.Dispose();
                     }catch(Exception exception) {
                         Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.StartServer[Error]",$"命名管道异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
                     }

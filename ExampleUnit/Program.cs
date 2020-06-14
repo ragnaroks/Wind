@@ -14,6 +14,7 @@ namespace ExampleUnit {
                     LoopCount=0;
                 } else {
                     Byte[] bytes=new Byte[LoopCount*1024*1024];
+                    Console.WriteLine(LoopCount*1024*1024);
                     Console.Beep();
                     LoopCount++;
                 }

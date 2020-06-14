@@ -68,19 +68,24 @@ namespace Daemon.Modules {
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void OnUnitProcessExited(object sender,EventArgs e) {
-            if(this.UnitDictionary.Count<1){return;}
+        private void OnUnitProcessExited(object sender,EventArgs eventArgs) {
             Process exitedProcess=sender as Process;
             Int32 exitedProcessExitCode=exitedProcess.ExitCode;
             Int32 exitedProcessId=exitedProcess.Id;
+            exitedProcess.CancelOutputRead();
+            exitedProcess.CancelErrorRead();
+            exitedProcess.OutputDataReceived-=this.OnProcessOutputDataReceived;
+            exitedProcess.ErrorDataReceived-=this.OnProcessErrorDataReceived;
+            exitedProcess.Exited-=this.OnUnitProcessExited;
             exitedProcess.Dispose();
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.OnUnitProcessExited",$"进程[{exitedProcessId}]退出,退出代码[{exitedProcessExitCode}]");
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.OnUnitProcessExited",$"进程[#{exitedProcessId}]退出,退出代码[{exitedProcessExitCode}]");
             Unit unit=null;
             foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
                 if(item.Value.ProcessId!=exitedProcessId){continue;}
                 unit=item.Value;
                 break;
             }
+            if(unit==null){return;}
             //if(unit.Process!=null){ unit.Process.Dispose(); }
             if(Program.UnitPerformanceCounterModule.Useable){ Program.UnitPerformanceCounterModule.Remove(unit.Key); }
             if(Program.UnitNetworkCounterModule.Useable){ _=Program.UnitNetworkCounterModule.Remove(exitedProcessId); }
@@ -91,6 +96,14 @@ namespace Daemon.Modules {
             unit.State=0;
             this.StartUnit(unit.Key,false);
             Program.LoggerModule.Log("Modules.UnitManageModule.OnUnitProcessExited",$"单元\"{unit.Key}\"已重新启动");
+        }
+        private void OnProcessOutputDataReceived(object sender,DataReceivedEventArgs dataReceivedEventArgs) {
+            Process theProcess=sender as Process;
+            Console.WriteLine($"#{theProcess.Id}[stdout] => {dataReceivedEventArgs.Data}");
+        }
+        private void OnProcessErrorDataReceived(object sender,DataReceivedEventArgs dataReceivedEventArgs) {
+            Process theProcess=sender as Process;
+            Console.WriteLine($"#{theProcess.Id}[error] => {dataReceivedEventArgs.Data}");
         }
 
         /// <summary>
@@ -116,6 +129,17 @@ namespace Daemon.Modules {
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnit",$"正在停止\"{unitKey}\"单元,Type={unit.RunningSettings.Type}");
             unit.State=3;
             if(unit.Process!=null){
+                //正常停止单元避免触发退出事件
+                try {
+                    unit.Process.CancelOutputRead();
+                    unit.Process.CancelErrorRead();
+                    unit.Process.OutputDataReceived-=this.OnProcessOutputDataReceived;
+                    unit.Process.ErrorDataReceived-=this.OnProcessErrorDataReceived;
+                    unit.Process.Exited-=this.OnUnitProcessExited;
+                } catch {
+                    //忽略异常
+                }
+                //强制杀死单元
                 try {
                     switch(unit.RunningSettings.Type) {
                         case 1:
@@ -155,9 +179,12 @@ namespace Daemon.Modules {
             unit.RunningSettings=unit.Settings.DeepClone();
             ProcessStartInfo processStartInfo=new ProcessStartInfo{
                 UseShellExecute=false,FileName=unit.RunningSettings.AbsoluteExecutePath,WorkingDirectory=unit.RunningSettings.AbsoluteWorkDirectory,
-                CreateNoWindow=true,WindowStyle=ProcessWindowStyle.Hidden,Arguments=unit.RunningSettings.Arguments};
+                CreateNoWindow=true,WindowStyle=ProcessWindowStyle.Hidden,Arguments=unit.RunningSettings.Arguments,
+                RedirectStandardOutput=true,RedirectStandardError=true/*,RedirectStandardInput=true*/};
             unit.Process=new Process{StartInfo=processStartInfo,EnableRaisingEvents=true};
             unit.Process.Exited+=this.OnUnitProcessExited;
+            unit.Process.OutputDataReceived+=this.OnProcessOutputDataReceived;
+            unit.Process.ErrorDataReceived+=this.OnProcessErrorDataReceived;
             if(forAutoStart && unit.RunningSettings.AutoStartDelay>0){ SpinWait.SpinUntil(()=>false,unit.RunningSettings.AutoStartDelay*1000); }
             Boolean b1=false;
             try {
@@ -166,6 +193,8 @@ namespace Daemon.Modules {
                 LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit[Error]",$"启动\"{unitKey}\"单元异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
             }
             if(b1) {
+                unit.Process.BeginOutputReadLine();
+                unit.Process.BeginErrorReadLine();
                 unit.ProcessId=unit.Process.Id;
                 unit.State=2;
                 if(unit.RunningSettings.MonitorPerformanceUsage && Program.UnitPerformanceCounterModule.Useable){

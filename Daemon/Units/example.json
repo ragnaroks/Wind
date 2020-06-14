@@ -5,9 +5,9 @@
     "AbsoluteExecutePath": "D:\\Projects\\Wind2\\ExampleUnit\\bin\\Debug\\netcoreapp3.1\\ExampleUnit.exe",
     "AbsoluteWorkDirectory": "D:\\Projects\\Wind2\\ExampleUnit\\bin\\Debug\\netcoreapp3.1",
     "Arguments": null,
-    "AutoStart": true,
+    "AutoStart": false,
     "AutoStartDelay": 3,
     "RestartWhenException": true,
-    "MonitorPerformanceUsage": true,
+    "MonitorPerformanceUsage": false,
     "MonitorNetworkUsage": false
 }

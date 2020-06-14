@@ -5,7 +5,7 @@
     "AbsoluteExecutePath": "C:\\Softwares\\Wind2Services\\aria2\\aria2-1.34.0-win-64bit-build1\\aria2c.exe",
     "AbsoluteWorkDirectory": "C:\\Softwares\\Wind2Services\\aria2\\aria2-1.34.0-win-64bit-build1",
     "Arguments": "--conf-path=\"C:\\Softwares\\Wind2Services\\aria2\\config.conf\"",
-    "AutoStart": true,
+    "AutoStart": false,
     "AutoStartDelay": 5,
     "RestartWhenException": false,
     "MonitorPerformanceUsage": true,

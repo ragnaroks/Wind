@@ -5,7 +5,7 @@
     "AbsoluteExecutePath": "C:\\Softwares\\Wind2Services\\nginx\\nginx-1.16.1\\nginx.exe",
     "AbsoluteWorkDirectory": "C:\\Softwares\\Wind2Services\\nginx\\nginx-1.16.1",
     "Arguments": null,
-    "AutoStart": true,
+    "AutoStart": false,
     "AutoStartDelay": 3,
     "RestartWhenException": false,
     "MonitorPerformanceUsage": true,
