@@ -244,6 +244,7 @@ namespace Daemon.Modules {
         /// <returns></returns>
         public Boolean LoadUnit(String unitKey){
             if(!this.Useable){return false;}
+            /*特殊处理*/if(unitKey=="self" || unitKey=="wind" || unitKey=="daemon"){return false;}/*特殊处理*/
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadUnit","开始加载单元配置文件");
             //读取文件
             String unitFilePath=String.Concat(this.UnitsDirectory,Path.DirectorySeparatorChar,unitKey,".json");
@@ -299,6 +300,7 @@ namespace Daemon.Modules {
             for(Int32 i1=0;i1<fileInfoArray.Length;i1++){
                 //key
                 String unitKey=UnitManageModuleHelper.GetUnitKey(fileInfoArray[i1]);
+                /*特殊处理*/if(unitKey=="self" || unitKey=="wind" || unitKey=="daemon"){continue;}/*特殊处理*/
                 if(String.IsNullOrWhiteSpace(unitKey) || unitKey.Length>32){
                     LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadAllUnits[Warning]",$"单元文件\"{fileInfoArray[i1].FullName}\"标识错误,已跳过");
                     continue;

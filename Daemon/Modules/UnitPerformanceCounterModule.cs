@@ -7,11 +7,12 @@ using System.Diagnostics;
 namespace Daemon.Modules {
     public class UnitPerformanceCounterModule:IDisposable {
         public Boolean Useable{get;private set;}=false;
-
-        /// <summary>性能计数器字典</summary>
+        
+        /// <summary>CPU性能计数器字典</summary>
         private ConcurrentDictionary<Int32,PerformanceCounter> CpuPerformanceCounterDictionary{get;set;}=new ConcurrentDictionary<Int32,PerformanceCounter>();
+        /// <summary>RAM性能计数器字典</summary>
         private ConcurrentDictionary<Int32,PerformanceCounter> RamPerformanceCounterDictionary{get;set;}=new ConcurrentDictionary<Int32,PerformanceCounter>();
-
+        
         #region IDisposable
         private bool disposedValue;
 
@@ -45,6 +46,7 @@ namespace Daemon.Modules {
         #endregion
 
         public Boolean Setup(){
+            if(this.Useable){return true;}
             this.Useable=true;
             return true;
         }

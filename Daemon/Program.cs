@@ -157,7 +157,9 @@ namespace Daemon {
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeUnitPerformanceCounterModule(){
-            return UnitPerformanceCounterModule.Setup();
+            if(!UnitPerformanceCounterModule.Setup()){return false;}
+            UnitPerformanceCounterModule.Add(AppProcess.Id);
+            return true;
         }
 
         /// <summary>
@@ -165,7 +167,9 @@ namespace Daemon {
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeUnitNetworkCounterModule(){
-            return UnitNetworkCounterModule.Setup();
+            if(!UnitNetworkCounterModule.Setup()){return false;}
+            UnitNetworkCounterModule.Add(AppProcess.Id);
+            return true;
         }
 
         /// <summary>

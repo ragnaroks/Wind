@@ -117,6 +117,7 @@ namespace Daemon.Modules {
                 case 0x15:return OnMessageLoadAll();
                 case 0x16:return OnMessageRemoveAll();
                 case 0xF0:return OnMessageDaemonVersion();
+                case 0xF1:return OnMessageDaemonStatus();
                 case 0xFF:return OnMessageDaemonShutdown();
                 default:
                     Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessage","命名管道收到未知指令");
@@ -470,6 +471,40 @@ namespace Daemon.Modules {
             Version version=Assembly.GetExecutingAssembly().GetName().Version;
             Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageDaemonVersion","已处理 daemon-version 指令");
             return new Byte[8]{0xF0,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("Wind Daemon v"+version.ToString())).ToArray();
+        }
+        /// <summary>
+        /// 处理消息 0xF1
+        /// </summary>
+        /// <returns></returns>
+        private static Byte[] OnMessageDaemonStatus(){
+            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageDaemonStatus","开始处理 daemon-status 指令");
+            //拼接返回数据
+            StringBuilder daemonStatusText=new StringBuilder();
+            //第一行
+            daemonStatusText.Append("§2●§| Wind - A systemd for windows");
+            //第二行
+            daemonStatusText.Append("\n     Loaded:  ").Append(Program.AppEnvironment.DataDirectory).Append(Path.DirectorySeparatorChar).Append("AppSettings.json");
+            //第三行
+            daemonStatusText.Append("\n      State:  §2running§| §b#").Append(Program.AppProcess.Id).Append("§|");
+            String datetime=Program.AppProcess.StartTime.ToString("yyyy-MM-dd HH:mm:ss",System.Globalization.CultureInfo.InvariantCulture);
+            daemonStatusText.Append(" (since ").Append(datetime).Append(")");
+            //第四行
+            if(Program.UnitPerformanceCounterModule.Useable) {
+                String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",Program.UnitPerformanceCounterModule.GetCpuValue(Program.AppProcess.Id));
+                String ramValue=Program.UnitPerformanceCounterModule.GetRamValue(Program.AppProcess.Id).FixedByteSize();
+                daemonStatusText.Append("\nPerformance:  ").Append(cpuValue).Append(";    ").Append(ramValue);
+            }
+            //第五行
+            if(Program.UnitNetworkCounterModule.Useable) {
+                UnitNetworkCounter unitNetworkCounter=Program.UnitNetworkCounterModule.GetValue(Program.AppProcess.Id);
+                if(unitNetworkCounter!=null) {
+                    daemonStatusText.Append("\n    Network:  ")
+                    .Append("↑  ").Append(unitNetworkCounter.TotalSent.FixedByteSize()).Append(" @ ").Append(unitNetworkCounter.SendSpeed.FixedByteSize()).Append("/s;    ")
+                    .Append("↓  ").Append(unitNetworkCounter.TotalReceived.FixedByteSize()).Append(" @ ").Append(unitNetworkCounter.ReceiveSpeed.FixedByteSize()).Append("/s");
+                }
+            }
+            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageDaemonStatus","已处理 daemon-status 指令");
+            return new Byte[8]{0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes(daemonStatusText.ToString())).ToArray();
         }
         /// <summary>
         /// 处理消息 0xFF

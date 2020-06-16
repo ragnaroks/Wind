@@ -41,6 +41,8 @@ namespace DaemonController {
                 case "remove-all":RemoveAllCommand();break;
                 //获取主机版本,0xF0
                 case "daemon-version":DaemonVersionCommand();break;
+                //获取主机版本,0xF1
+                case "daemon-status":DaemonStatusCommand();break;
                 //停止服务主机,0xFF
                 case "daemon-shutdown":DaemonShutdownCommand();break;
                 //版本
@@ -75,6 +77,7 @@ namespace DaemonController {
             Console.WriteLine("windctl load-all             => try load/update all units's settings from file");
             Console.WriteLine("windctl remove-all           => stop all unit and remove them,they can not be start again");
             Console.WriteLine("windctl daemon-version       => get daemon service's version");
+            Console.WriteLine("windctl daemon-status        => get daemon service's status");
             ConsoleHelper.ColorWrite("windctl §cdaemon-shutdown§|      => shutdown daemon service\n");
         }
 
@@ -189,6 +192,10 @@ namespace DaemonController {
         /// </summary>
         private static void DaemonVersionCommand()=>Invoke(new Byte[8]{0xF0,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
         /// <summary>
+        /// 0xF1
+        /// </summary>
+        private static void DaemonStatusCommand()=>Invoke(new Byte[8]{0xF1,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
+        /// <summary>
         /// 0xFF
         /// </summary>
         private static void DaemonShutdownCommand()=>Invoke(new Byte[8]{0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00});
@@ -234,6 +241,10 @@ namespace DaemonController {
             if(bytes[0]==0xFF) {
                 ConsoleHelper.ColorWrite($"§cdaemon service shutting§|\n");
                 return;
+            }
+            if(bytes[0]==0xF0){
+                String windVersion=String.Concat("Wind Daemon v",Assembly.GetExecutingAssembly().GetName().Version.ToString());
+                if(responseText==windVersion){ responseText+=",§2same version§|"; }
             }
             ConsoleHelper.ColorWrite(responseText);
             Console.WriteLine();
