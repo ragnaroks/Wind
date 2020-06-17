@@ -1,0 +1,96 @@
+syntax = "proto3";
+package wind.Entities.Protobuf;
+option csharp_namespace = "wind.Entities.Protobuf";
+option optimize_for = LITE_RUNTIME;//SPEED;
+
+// 预定义
+message UnitSettings{
+  string Name=1;
+  string Description=2;
+  int32 Type=3;
+  string AbsoluteExecutePath=4;
+  string AbsoluteWorkDirectory=5;
+  string Arguments=6;
+  bool AutoStart=7;
+  int32 AutoStartDelay=8;
+  bool RestartWhenException=9;
+  bool MonitorPerformanceUsage=10;
+  bool MonitorNetworkUsage=11;
+}
+message UnitProcess{
+  int32 Id=1;
+  int64 StartTime=2;
+}
+message UnitPerformanceCounter{
+  float CPU=1;
+  float RAM=2;
+}
+message UnitNetworkCounter{
+  int64 TotalSent=1;
+  int64 TotalReceived=2;
+  int64 SendSpeed=3;
+  int64 ReceiveSpeed=4;
+}
+message Unit{
+  string Key=1;
+  int32 State=2;
+  UnitSettings Settings=3;
+  UnitSettings RunningSettings=4;
+  UnitProcess Process=5;
+  UnitPerformanceCounter PerformanceCounter=6;
+  UnitNetworkCounter UnitNetworkCounter=7;
+}
+message Daemon{
+  string Key=1;
+  string Version=2;
+  UnitProcess Process=3;
+  UnitPerformanceCounter PerformanceCounter=4;
+  UnitNetworkCounter UnitNetworkCounter=5;
+}
+
+// https://developers.google.com/protocol-buffers/docs/proto3?hl=zh-cn#simple
+// https://www.npmjs.com/package/google-protobuf
+
+// 此项用于探测数据包类型,再进行针对性的反序列化
+message Message0{
+  int32 Type=1;
+}
+// 服务端响应客户端链接事件,并回复给客户端
+message Message1{
+  int32 Type=1;
+  int32 ConnectionId=2;
+}
+// 客户端向服务端请求验证ControlKey
+message Message2{
+  int32 Type=1;
+  string ConnectionId=2;
+  string Key=3;
+}
+// 服务端回复客户端ControlKey验证结果
+// 服务端一分钟检查一次客户端列表,并踢出未验证的会话
+// 未验证的客户端发送的任意请求,均直接原样回复
+message Message3{
+  int32 Type=1;
+  string ConnectionId=2;
+  bool Valid=3;
+}
+
+// 客户端向服务端请求单元状态
+// windctl status unitKey
+message StatusUnit{
+  int32 Type=1;
+  string ConnectionId=2;
+  Unit Unit=3;
+}
+
+
+
+
+
+message Message1011{
+  repeated Unit UnitArray=1;
+}
+
+message Message1021{
+  Daemon Daemon=1;
+}

@@ -1,0 +1,11 @@
+{
+    "protoc": {
+        "path": "C:\\Users\\localhost\\Desktop\\protobuf\\protoc.exe",
+        "compile_on_save": false,
+        "options": [
+            //"--proto_path=protos/v3",
+            //"--proto_path=./",
+            "--csharp_out=."
+        ]
+    }
+}

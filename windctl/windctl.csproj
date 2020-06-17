@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <Authors>ragnaroks</Authors>
+    <Company>skydust</Company>
+    <Description>Wind Daemon Service Command-Line Controller</Description>
+    <Version>2.3.29</Version>
+    <PackageProjectUrl>https://github.com/ragnaroks/Wind</PackageProjectUrl>
+    <RepositoryUrl></RepositoryUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Fleck" Version="1.1.0" />
+  </ItemGroup>
+
+</Project>
