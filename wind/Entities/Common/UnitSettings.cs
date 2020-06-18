@@ -4,7 +4,7 @@ namespace wind.Entities.Common {
     [Serializable]
     public class UnitSettings {
         /// <summary>单元名称</summary>
-        public String Name{get;private set;}=null;
+        public String Name{get;set;}=null;
         /// <summary>单元描述</summary>
         public String Description{get;set;}=null;
         /// <summary>单元进程类型,0:默认,1:fork子进程</summary>

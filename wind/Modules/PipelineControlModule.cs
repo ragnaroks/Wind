@@ -1,14 +1,13 @@
-﻿using wind.Entities.Common;
+﻿using Google.Protobuf;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Globalization;
+using wind.Entities.Common;
+using wind.Entities.Protobuf;
 using wind.Helpers;
 
 namespace wind.Modules {
@@ -20,7 +19,7 @@ namespace wind.Modules {
         private String PipelineName{get;set;}=null;
         /// <summary>取消句柄</summary>
         private CancellationTokenSource CancellationTokenSource{get;set;}=null;
-
+        
         #region IDisposable
         private bool disposedValue;
 
@@ -59,467 +58,197 @@ namespace wind.Modules {
             if(String.IsNullOrWhiteSpace(pipelineName)){return false;}
             this.PipelineName=pipelineName;
             this.CancellationTokenSource=new CancellationTokenSource();
-            Task.Run(()=>{
-                //10秒后才接收指令
-                SpinWait.SpinUntil(()=>false,10000);
-                this.Useable=true;
-            });
             //完成
+            this.Useable=true;
             return true;
         }
 
+        /// <summary>
+        /// 启动
+        /// </summary>
         public void StartServer(){
             Task.Run(()=>{
+                //10秒后才接收指令
+                #if !DEBUG
+                SpinWait.SpinUntil(()=>false,10000);
+                #endif
+                //
                 while(!this.CancellationTokenSource.IsCancellationRequested) {
                     NamedPipeServerStream namedPipeServerStream=null;
                     try {
                         //创建命名管道
-                        namedPipeServerStream=new NamedPipeServerStream(this.PipelineName,PipeDirection.InOut,1,PipeTransmissionMode.Message,PipeOptions.Asynchronous|PipeOptions.WriteThrough);
+                        namedPipeServerStream=new NamedPipeServerStream(
+                            this.PipelineName,PipeDirection.InOut,1,PipeTransmissionMode.Byte,PipeOptions.Asynchronous|PipeOptions.WriteThrough);
                         namedPipeServerStream.WaitForConnection();
-                        //收到消息,104字节应该够了,8字节头部,96(32*3)字节字符串
-                        Byte[] buffer=new Byte[104];
-                        namedPipeServerStream.Read(buffer,0,104);
-                        Byte[] responseBytes=this.OnMessage(buffer);
+                        //收到消息
+                        Byte[] buffer=new Byte[100];//4字节指令,最多96字节(32个utf8字符)的参数
+                        Int32 bufferSize=namedPipeServerStream.Read(buffer,0,100);
+                        Byte[] response=OnMessage(buffer,bufferSize);
                         //回复消息
-                        namedPipeServerStream.Write(responseBytes);
+                        namedPipeServerStream.Write(response);
                         namedPipeServerStream.Flush();
                     }catch(Exception exception) {
-                        Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.StartServer[Error]",$"命名管道异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
-                    } finally {
+                        Helpers.LoggerModuleHelper.TryLog(
+                            "Modules.PipelineControlModule.StartServer[Error]",$"命名管道异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    }finally{
+                        #if !DEBUG
+                        SpinWait.SpinUntil(()=>false,1000);
+                        #endif
                         namedPipeServerStream?.Dispose();
                     }
-                    //SpinWait.SpinUntil(()=>false,1000);
                 }
             },this.CancellationTokenSource.Token);
         }
 
-        public void StopServer(){
-            this.CancellationTokenSource.Cancel();
-        }
+        /// <summary>
+        /// 停止
+        /// </summary>
+        public void StopServer()=>this.CancellationTokenSource.Cancel();
 
         /// <summary>
-        /// 收到消息
+        /// 消息分发处理
         /// </summary>
-        /// <param name="bytes"></param>
+        /// <param name="buffer"></param>
+        /// <param name="bufferSize"></param>
         /// <returns></returns>
-        private Byte[] OnMessage(Byte[] bytes){
-            if(!this.Useable){return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};}
-            switch(bytes[0]) {
-                case 0x01:return OnMessageStatus(bytes);
-                case 0x02:return OnMessageStart(bytes);
-                case 0x03:return OnMessageStop(bytes);
-                case 0x04:return OnMessageRestart(bytes);
-                case 0x05:return OnMessageLoad(bytes);
-                case 0x06:return OnMessageRemove(bytes);
-                case 0x12:return OnMessageStartAll();
-                case 0x13:return OnMessageStopAll();
-                case 0x14:return OnMessageRestartAll();
-                case 0x15:return OnMessageLoadAll();
-                case 0x16:return OnMessageRemoveAll();
-                case 0xF0:return OnMessageDaemonVersion();
-                case 0xF1:return OnMessageDaemonStatus();
-                case 0xFF:return OnMessageDaemonShutdown();
-                default:
-                    Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessage","命名管道收到未知指令");
-                    return new Byte[23]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x75,0x6E,0x6B,0x6E,0x6F,0x77,0x6E,0x20,0x63,0x6F,0x6D,0x6D,0x61,0x6E,0x64};
+        private static Byte[] OnMessage(Byte[] buffer,Int32 bufferSize){
+            if(bufferSize<1){return buffer;}
+            Byte[] request=buffer.AsSpan(0,bufferSize).ToArray();
+            PacketTestProtobuf packetTestProtobuf=PacketTestProtobuf.Parser.ParseFrom(request);
+            switch(packetTestProtobuf.Type){
+                case 1001:return OnStatus(request);
+                case 1200:return OnDaemonVersion();
+                case 1201:return OnDaemonStatus();
+                case 1299:return OnDaemonShutdown();
+                default:return buffer;
             }
         }
 
         /// <summary>
-        /// 处理消息 0x01
+        /// windctl status unitKey
         /// </summary>
-        /// <param name="bytes"></param>
+        /// <param name="message"></param>
         /// <returns></returns>
-        private static Byte[] OnMessageStatus(Byte[] bytes){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStatus","开始处理 status 指令");
-            //解析 unitKey
-            String unitKey;
-            try {
-                unitKey=Encoding.UTF8.GetString(bytes,8,104-8).TrimEnd().TrimEnd(new Char[]{'\0'});
-            }catch(Exception exception){
-                Helpers.LoggerModuleHelper.TryLog(
-                    "Modules.PipelineControlModule.OnMessageStatus[Error]",
-                    $"解析 unitKey 异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("invalid unitKey")).ToArray();
+        private static Byte[] OnStatus(Byte[] request){
+            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnStatus","开始处理 status 指令");
+            StatusRequestProtobuf statusRequestProtobuf=StatusRequestProtobuf.Parser.ParseFrom(request);
+            StatusResponseProtobuf statusResponseProtobuf=new StatusResponseProtobuf{Type=2001,UnitKey=statusRequestProtobuf.UnitKey};
+            //无效unit
+            if(String.IsNullOrWhiteSpace(statusRequestProtobuf.UnitKey)){
+                statusResponseProtobuf.NoExecuteMessage="unitKey invalid";
+                return statusResponseProtobuf.ToByteArray();
             }
-            if(String.IsNullOrWhiteSpace(unitKey)){
-                Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStatus[Error]","解析 unitKey 失败");
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("invalid unitKey")).ToArray();
-            }
-            //检查模块
             if(!Program.UnitManageModule.Useable){
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unable process command")).ToArray();
+                statusResponseProtobuf.NoExecuteMessage="unit manager not available";
+                return statusResponseProtobuf.ToByteArray();
             }
-            Unit unit=Program.UnitManageModule.GetUnit(unitKey);
+            Entities.Common.Unit unit=Program.UnitManageModule.GetUnit(statusRequestProtobuf.UnitKey);
             if(unit==null) {
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unit is not found")).ToArray();
+                statusResponseProtobuf.NoExecuteMessage="unit not found";
+                return statusResponseProtobuf.ToByteArray();
             }
-            //拼接返回数据
-            StringBuilder unitStatusText=new StringBuilder();
-            UnitSettings unitSettings=unit.State==2?unit.RunningSettings:unit.Settings;
-            //第一行
-            switch(unit.State){
-                case 1:unitStatusText.Append("§b●§| ");break;
-                case 2:unitStatusText.Append("§2●§| ");break;
-                default:unitStatusText.Append("● ");break;
+            //
+            ProcessProtobuf processProtobuf=new ProcessProtobuf();
+            if(unit.State==2) {
+                processProtobuf.Id=unit.ProcessId;
+                processProtobuf.StartTime=unit.Process.StartTime.ToLocalTimestamp();//这里的starttime是localtime
             }
-            unitStatusText.Append(unitKey).Append(" - ").Append(unitSettings.Description);
-            //第二行
-            unitStatusText.Append("\n     Loaded:  ").Append(Program.AppEnvironment.UnitsDirectory).Append(Path.DirectorySeparatorChar).Append(unitKey).Append(".json;");
-            unitStatusText.Append(unitSettings.AutoStart?"enabled":"disabled");
-            //第三行
-            unitStatusText.Append("\n      State:  ");
-            switch(unit.State) {
-                case 0:unitStatusText.Append("stopped");break;
-                case 1:unitStatusText.Append("§bstarting§|");break;
-                case 2:
-                    unitStatusText.Append("§2started§| §b#").Append(unit.Process.Id).Append("§|");
-                    break;
-                case 3:unitStatusText.Append("stopping");break;
-                default:unitStatusText.Append("unknown");break;
+            UnitSettingsProtobuf unitSettingsProtobuf=new UnitSettingsProtobuf{
+                Name=unit.Settings.Name,Description=unit.Settings.Description,Type=unit.Settings.Type,AbsoluteExecutePath=unit.Settings.AbsoluteExecutePath,
+                AbsoluteWorkDirectory=unit.Settings.AbsoluteWorkDirectory,Arguments=String.IsNullOrWhiteSpace(unit.Settings.Arguments)?String.Empty:unit.Settings.Arguments,
+                AutoStart=unit.Settings.AutoStart,AutoStartDelay=unit.Settings.AutoStartDelay,RestartWhenException=unit.Settings.RestartWhenException,
+                MonitorPerformanceUsage=unit.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.Settings.MonitorNetworkUsage};
+            UnitSettingsProtobuf unitRunningSettingsProtobuf=new UnitSettingsProtobuf();
+            if(unit.State==2){
+                unitRunningSettingsProtobuf=new UnitSettingsProtobuf{
+                    Name=unit.RunningSettings.Name,Description=unit.RunningSettings.Description,Type=unit.RunningSettings.Type,
+                    AbsoluteExecutePath=unit.RunningSettings.AbsoluteExecutePath,AbsoluteWorkDirectory=unit.RunningSettings.AbsoluteWorkDirectory,
+                    Arguments=String.IsNullOrWhiteSpace(unit.RunningSettings.Arguments)?String.Empty:unit.RunningSettings.Arguments,
+                    AutoStart=unit.RunningSettings.AutoStart,AutoStartDelay=unit.RunningSettings.AutoStartDelay,
+                    RestartWhenException=unit.RunningSettings.RestartWhenException,MonitorPerformanceUsage=unit.RunningSettings.MonitorPerformanceUsage,
+                    MonitorNetworkUsage=unit.RunningSettings.MonitorNetworkUsage};
+            }            
+            UnitPerformanceCounterProtobuf unitPerformanceCounterProtobuf=new UnitPerformanceCounterProtobuf();
+            if(Program.UnitPerformanceCounterModule.Useable && unit.State==2 && unitRunningSettingsProtobuf.MonitorPerformanceUsage){
+                unitPerformanceCounterProtobuf.CPU=Program.UnitPerformanceCounterModule.GetCpuValue(unit.ProcessId);
+                unitPerformanceCounterProtobuf.RAM=Program.UnitPerformanceCounterModule.GetRamValue(unit.ProcessId);
             }
-            if(unit.State==2 && unit.Process!=null) {
-                String datetime=unit.Process.StartTime.ToString("yyyy-MM-dd HH:mm:ss",System.Globalization.CultureInfo.InvariantCulture);
-                unitStatusText.Append(" (since ").Append(datetime).Append(")");
-            }
-            //第四行
-            unitStatusText.Append("\nCommandLine:  ").Append(unitSettings.AbsoluteExecutePath);
-            if(!String.IsNullOrWhiteSpace(unitSettings.Arguments)){ unitStatusText.Append(' ').Append(unitSettings.Arguments); }
-            //第五行
-            if(unit.State==2 && unitSettings.MonitorPerformanceUsage && Program.UnitPerformanceCounterModule.Useable) {
-                String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",Program.UnitPerformanceCounterModule.GetCpuValue(unit.ProcessId));
-                String ramValue=Program.UnitPerformanceCounterModule.GetRamValue(unit.ProcessId).FixedByteSize();
-                unitStatusText.Append("\nPerformance:  ").Append(cpuValue).Append(";    ").Append(ramValue);
-            }
-            //第六行
-            if(unit.State==2 && unitSettings.MonitorNetworkUsage && Program.UnitNetworkCounterModule.Useable) {
+            UnitNetworkCounterProtobuf unitNetworkCounterProtobuf=new UnitNetworkCounterProtobuf();
+            if(Program.UnitNetworkCounterModule.Useable && unit.State==2 && unitRunningSettingsProtobuf.MonitorNetworkUsage){
                 UnitNetworkCounter unitNetworkCounter=Program.UnitNetworkCounterModule.GetValue(unit.ProcessId);
-                if(unitNetworkCounter!=null) {
-                    unitStatusText.Append("\n    Network:  ")
-                    .Append("↑  ").Append(unitNetworkCounter.TotalSent.FixedByteSize()).Append(" @ ").Append(unitNetworkCounter.SendSpeed.FixedByteSize()).Append("/s;    ")
-                    .Append("↓  ").Append(unitNetworkCounter.TotalReceived.FixedByteSize()).Append(" @ ").Append(unitNetworkCounter.ReceiveSpeed.FixedByteSize()).Append("/s");
+                if(unitNetworkCounter!=null){
+                    unitNetworkCounterProtobuf.SendSpeed=unitNetworkCounter.SendSpeed;
+                    unitNetworkCounterProtobuf.ReceiveSpeed=unitNetworkCounter.ReceiveSpeed;
+                    unitNetworkCounterProtobuf.TotalSent=unitNetworkCounter.TotalSent;
+                    unitNetworkCounterProtobuf.TotalReceived=unitNetworkCounter.TotalReceived;
                 }
             }
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStatus","已处理 status 指令");
-            return new Byte[8]{0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes(unitStatusText.ToString())).ToArray();
-        }
-        /// <summary>
-        /// 处理消息 0x02
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <returns></returns>
-        private static Byte[] OnMessageStart(Byte[] bytes){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStart","开始处理 start 指令");
-            //解析 unitKey
-            String unitKey;
-            try {
-                unitKey=Encoding.UTF8.GetString(bytes,8,104-8).TrimEnd().TrimEnd(new Char[]{'\0'});
-            }catch(Exception exception){
-                Helpers.LoggerModuleHelper.TryLog(
-                    "Modules.PipelineControlModule.OnMessageStart[Error]",
-                    $"解析 unitKey 异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("invalid unitKey")).ToArray();
-            }
-            if(String.IsNullOrWhiteSpace(unitKey)){
-                Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStart[Error]","解析 unitKey 失败");
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("invalid unitKey")).ToArray();
-            }
-            //检查模块
-            if(!Program.UnitManageModule.Useable){
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unable respond command")).ToArray();
-            }
-            Unit unit=Program.UnitManageModule.GetUnit(unitKey);
-            if(unit==null) {
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unit is not found")).ToArray();
-            }
-            Task.Run(()=>{
-                Program.UnitManageModule.StartUnit(unitKey,false);
-            });
-            //拼接返回数据
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStart","已处理 start 指令");
-            return new Byte[8]{0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("command executed in background")).ToArray();
-        }
-        /// <summary>
-        /// 处理消息 0x03
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <returns></returns>
-        private static Byte[] OnMessageStop(Byte[] bytes){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStop","开始处理 stop 指令");
-            //解析 unitKey
-            String unitKey;
-            try {
-                unitKey=Encoding.UTF8.GetString(bytes,8,104-8).TrimEnd().TrimEnd(new Char[]{'\0'});
-            }catch(Exception exception){
-                Helpers.LoggerModuleHelper.TryLog(
-                    "Modules.PipelineControlModule.OnMessageStop[Error]",
-                    $"解析 unitKey 异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("invalid unitKey")).ToArray();
-            }
-            if(String.IsNullOrWhiteSpace(unitKey)){
-                Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStop[Error]","解析 unitKey 失败");
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("invalid unitKey")).ToArray();
-            }
-            //检查模块
-            if(!Program.UnitManageModule.Useable){
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unable respond command")).ToArray();
-            }
-            Unit unit=Program.UnitManageModule.GetUnit(unitKey);
-            if(unit==null) {
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unit is not found")).ToArray();
-            }
-            Task.Run(()=>{
-                Program.UnitManageModule.StopUnit(unitKey);
-            });
-            //拼接返回数据
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStop","已处理 stop 指令");
-            return new Byte[8]{0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("command executed in background")).ToArray();
-        }
-        /// <summary>
-        /// 处理消息 0x04
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <returns></returns>
-        private static Byte[] OnMessageRestart(Byte[] bytes){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageRestart","开始处理 restart 指令");
-            //解析 unitKey
-            String unitKey;
-            try {
-                unitKey=Encoding.UTF8.GetString(bytes,8,104-8).TrimEnd().TrimEnd(new Char[]{'\0'});
-            }catch(Exception exception){
-                Helpers.LoggerModuleHelper.TryLog(
-                    "Modules.PipelineControlModule.OnMessageRestart[Error]",
-                    $"解析 unitKey 异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("invalid unitKey")).ToArray();
-            }
-            if(String.IsNullOrWhiteSpace(unitKey)){
-                Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageRestart[Error]","解析 unitKey 失败");
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("invalid unitKey")).ToArray();
-            }
-            //检查模块
-            if(!Program.UnitManageModule.Useable){
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unable respond command")).ToArray();
-            }
-            Unit unit=Program.UnitManageModule.GetUnit(unitKey);
-            if(unit==null) {
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unit is not found")).ToArray();
-            }
-            Task.Run(()=>{
-                Program.UnitManageModule.RestartUnit(unitKey);
-            });
-            //拼接返回数据
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageRestart","已处理 restart 指令");
-            return new Byte[8]{0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("command executed in background")).ToArray();
-        }
-        /// <summary>
-        /// 处理消息 0x05
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <returns></returns>
-        private static Byte[] OnMessageLoad(Byte[] bytes){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageLoad","开始处理 load 指令");
-            //解析 unitKey
-            String unitKey;
-            try {
-                unitKey=Encoding.UTF8.GetString(bytes,8,104-8).TrimEnd().TrimEnd(new Char[]{'\0'});
-            }catch(Exception exception){
-                Helpers.LoggerModuleHelper.TryLog(
-                    "Modules.PipelineControlModule.OnMessageLoad[Error]",
-                    $"解析 unitKey 异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("invalid unitKey")).ToArray();
-            }
-            if(String.IsNullOrWhiteSpace(unitKey)){
-                Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageLoad[Error]","解析 unitKey 失败");
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("invalid unitKey")).ToArray();
-            }
-            //检查模块
-            if(!Program.UnitManageModule.Useable){
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unable respond command")).ToArray();
-            }
-            Boolean b1=Program.UnitManageModule.LoadUnit(unitKey);
-            //拼接返回数据
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageLoad","已处理 load 指令");
-            return new Byte[8]{0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes($"unit load {(b1?"success":"fail")}")).ToArray();
-        }
-        /// <summary>
-        /// 处理消息 0x06
-        /// </summary>
-        /// <param name="bytes"></param>
-        /// <returns></returns>
-        private static Byte[] OnMessageRemove(Byte[] bytes){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageRemove","开始处理 remove 指令");
-            //解析 unitKey
-            String unitKey;
-            try {
-                unitKey=Encoding.UTF8.GetString(bytes,8,104-8).TrimEnd().TrimEnd(new Char[]{'\0'});
-            }catch(Exception exception){
-                Helpers.LoggerModuleHelper.TryLog(
-                    "Modules.PipelineControlModule.OnMessageRemove[Error]",
-                    $"解析 unitKey 异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("invalid unitKey")).ToArray();
-            }
-            if(String.IsNullOrWhiteSpace(unitKey)){
-                Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageRemove[Error]","解析 unitKey 失败");
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("invalid unitKey")).ToArray();
-            }
-            //检查模块
-            if(!Program.UnitManageModule.Useable){
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unable respond command")).ToArray();
-            }
-            if(Program.UnitManageModule.GetUnit(unitKey)==null) {
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unit is not found")).ToArray();
-            }
-            Task.Run(()=>{
-                Program.UnitManageModule.RemoveUnit(unitKey);
-            });
-            //拼接返回数据
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageRemove","已处理 remove 指令");
-            return new Byte[8]{0x06,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("command executed in background")).ToArray();
+            UnitProtobuf unitProtobuf=new UnitProtobuf{
+                Key=unit.Key,State=unit.State,
+                SettingsFilePath=String.Concat(Program.AppEnvironment.UnitsDirectory,Path.DirectorySeparatorChar,unit.Key,".json"),
+                ProcessProtobuf=processProtobuf,SettingsProtobuf=unitSettingsProtobuf,RunningSettingsProtobuf=unitRunningSettingsProtobuf,
+                PerformanceCounterProtobuf=unitPerformanceCounterProtobuf,NetworkCounterProtobuf=unitNetworkCounterProtobuf};
+            statusResponseProtobuf.Executed=true;
+            statusResponseProtobuf.UnitProtobuf=unitProtobuf;
+            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnStatus","已处理 status 指令");
+            return statusResponseProtobuf.ToByteArray();
         }
 
         /// <summary>
-        /// 处理消息 0x12
+        /// windctl daemon-version
         /// </summary>
         /// <returns></returns>
-        private static Byte[] OnMessageStartAll(){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStartAll","开始处理 start-all 指令");
-            //检查模块
-            if(!Program.UnitManageModule.Useable){
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unable respond command")).ToArray();
-            }
-            Task.Run(()=>{
-                Program.UnitManageModule.StartAllUnits(false);
-            });
-            //拼接返回数据
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStartAll","已处理 start-all 指令");
-            return new Byte[8]{0x02,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("command executed in background")).ToArray();
-        }
-        /// <summary>
-        /// 处理消息 0x13
-        /// </summary>
-        /// <returns></returns>
-        private static Byte[] OnMessageStopAll(){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStopAll","开始处理 stop-all 指令");
-            //检查模块
-            if(!Program.UnitManageModule.Useable){
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unable respond command")).ToArray();
-            }
-            Task.Run(()=>{
-                Program.UnitManageModule.StopAllUnits();
-            });
-            //拼接返回数据
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageStopAll","已处理 stop 指令");
-            return new Byte[8]{0x03,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("command executed in background")).ToArray();
-        }
-        /// <summary>
-        /// 处理消息 0x14
-        /// </summary>
-        /// <returns></returns>
-        private static Byte[] OnMessageRestartAll(){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageRestartAll","开始处理 restart-all 指令");
-            //检查模块
-            if(!Program.UnitManageModule.Useable){
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unable respond command")).ToArray();
-            }
-            Task.Run(()=>{
-                Program.UnitManageModule.RestartAllUnits();
-            });
-            //拼接返回数据
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageRestartAll","已处理 restart-all 指令");
-            return new Byte[8]{0x04,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("command executed in background")).ToArray();
-        }
-        /// <summary>
-        /// 处理消息 0x15
-        /// </summary>
-        /// <returns></returns>
-        private static Byte[] OnMessageLoadAll(){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageLoadAll","开始处理 load-all 指令");
-            //检查模块
-            if(!Program.UnitManageModule.Useable){
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unable respond command")).ToArray();
-            }
-            Int32 count=Program.UnitManageModule.LoadAllUnits();
-            //拼接返回数据
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageLoadAll","已处理 load-all 指令");
-            return new Byte[8]{0x05,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes($"loaded {count} unit")).ToArray();
-        }
-        /// <summary>
-        /// 处理消息 0x16
-        /// </summary>
-        /// <returns></returns>
-        private static Byte[] OnMessageRemoveAll(){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageRemoveAll","开始处理 remove-all 指令");
-            //检查模块
-            if(!Program.UnitManageModule.Useable){
-                return new Byte[8]{0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("unable respond command")).ToArray();
-            }
-            Task.Run(()=>{
-                Program.UnitManageModule.RemoveAllUnits();
-            });
-            //拼接返回数据
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageRemoveAll","已处理 remove-all 指令");
-            return new Byte[8]{0x06,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("command executed in background")).ToArray();
-        }
-
-
-        /// <summary>
-        /// 处理消息 0xF0
-        /// </summary>
-        /// <returns></returns>
-        private static Byte[] OnMessageDaemonVersion(){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageDaemonVersion","开始处理 daemon-version 指令");
+        private static Byte[] OnDaemonVersion(){
+            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnDaemonVersion","开始处理 daemon-version 指令");
             Version version=Assembly.GetExecutingAssembly().GetName().Version;
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageDaemonVersion","已处理 daemon-version 指令");
-            return new Byte[8]{0xF0,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes("Wind Daemon v"+version.ToString())).ToArray();
+            DaemonVersionResponseProtobuf daemonVersionResponseProtobuf=new DaemonVersionResponseProtobuf{
+                Type=2200,MajorVersion=version.Major,MinorVersion=version.Minor,BuildVersion=version.Build,RevisionVersion=version.Revision};
+            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnDaemonVersion","已处理 daemon-version 指令");
+            return daemonVersionResponseProtobuf.ToByteArray();
         }
         /// <summary>
-        /// 处理消息 0xF1
+        /// windctl daemon-status
         /// </summary>
         /// <returns></returns>
-        private static Byte[] OnMessageDaemonStatus(){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageDaemonStatus","开始处理 daemon-status 指令");
-            //拼接返回数据
-            StringBuilder daemonStatusText=new StringBuilder();
-            //第一行
-            daemonStatusText.Append("§2●§| Wind - A systemd for windows");
-            //第二行
-            daemonStatusText.Append("\n     Loaded:  ").Append(Program.AppEnvironment.DataDirectory).Append(Path.DirectorySeparatorChar).Append("AppSettings.json");
-            //第三行
-            daemonStatusText.Append("\n      State:  §2running§| §b#").Append(Program.AppProcess.Id).Append("§|");
-            String datetime=Program.AppProcess.StartTime.ToString("yyyy-MM-dd HH:mm:ss",System.Globalization.CultureInfo.InvariantCulture);
-            daemonStatusText.Append(" (since ").Append(datetime).Append(")");
-            //第四行
+        private static Byte[] OnDaemonStatus(){
+            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnDaemonStatus","开始处理 daemon-status 指令");
+            ProcessProtobuf processProtobuf=new ProcessProtobuf{Id=Program.AppProcess.Id,StartTime=Program.AppProcess.StartTime.ToLocalTimestamp()};
+            UnitPerformanceCounterProtobuf unitPerformanceCounter=new UnitPerformanceCounterProtobuf{RAM=0F,CPU=0F};
+            UnitNetworkCounterProtobuf unitNetworkCounter =new UnitNetworkCounterProtobuf { SendSpeed=0,ReceiveSpeed=0,TotalSent=0,TotalReceived=0};
             if(Program.UnitPerformanceCounterModule.Useable) {
-                String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",Program.UnitPerformanceCounterModule.GetCpuValue(Program.AppProcess.Id));
-                String ramValue=Program.UnitPerformanceCounterModule.GetRamValue(Program.AppProcess.Id).FixedByteSize();
-                daemonStatusText.Append("\nPerformance:  ").Append(cpuValue).Append(";    ").Append(ramValue);
+                unitPerformanceCounter.CPU=Program.UnitPerformanceCounterModule.GetCpuValue(Program.AppProcess.Id);
+                unitPerformanceCounter.RAM=Program.UnitPerformanceCounterModule.GetRamValue(Program.AppProcess.Id);
             }
-            //第五行
             if(Program.UnitNetworkCounterModule.Useable) {
-                UnitNetworkCounter unitNetworkCounter=Program.UnitNetworkCounterModule.GetValue(Program.AppProcess.Id);
-                if(unitNetworkCounter!=null) {
-                    daemonStatusText.Append("\n    Network:  ")
-                    .Append("↑  ").Append(unitNetworkCounter.TotalSent.FixedByteSize()).Append(" @ ").Append(unitNetworkCounter.SendSpeed.FixedByteSize()).Append("/s;    ")
-                    .Append("↓  ").Append(unitNetworkCounter.TotalReceived.FixedByteSize()).Append(" @ ").Append(unitNetworkCounter.ReceiveSpeed.FixedByteSize()).Append("/s");
-                }
+                UnitNetworkCounter counter =Program.UnitNetworkCounterModule.GetValue(Program.AppProcess.Id);
+                unitNetworkCounter.SendSpeed=counter.SendSpeed;
+                unitNetworkCounter.ReceiveSpeed=counter.ReceiveSpeed;
+                unitNetworkCounter.TotalSent=counter.TotalSent;
+                unitNetworkCounter.TotalReceived=counter.TotalReceived;
             }
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageDaemonStatus","已处理 daemon-status 指令");
-            return new Byte[8]{0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00}.Concat(Encoding.UTF8.GetBytes(daemonStatusText.ToString())).ToArray();
+            DaemonProtobuf daemonProtobuf=new DaemonProtobuf{
+                Name="wind",Description="a systemd for windows",
+                ProcessProtobuf=processProtobuf,PerformanceCounterProtobuf=unitPerformanceCounter,NetworkCounterProtobuf=unitNetworkCounter,
+                AbsoluteExecutePath=Program.AppEnvironment.BaseDirectory+"wind.exe",AbsoluteWorkDirectory=Program.AppEnvironment.BaseDirectory};
+            DaemonStatusResponseProtobuf daemonStatusResponseProtobuf=new DaemonStatusResponseProtobuf{Type=2201,DaemonProtobuf=daemonProtobuf};
+            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnDaemonStatus","已处理 daemon-status 指令");
+            return daemonStatusResponseProtobuf.ToByteArray();
         }
         /// <summary>
-        /// 处理消息 0xFF
+        /// windctl daemon-shutdown
         /// </summary>
         /// <returns></returns>
-        private static Byte[] OnMessageDaemonShutdown(){
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageDaemonShutdown","开始处理 daemon-shutdown 指令");
+        private static Byte[] OnDaemonShutdown(){
+            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnDaemonShutdown","开始处理 daemon-shutdown 指令");
+            DaemonShutdownResponseProtobuf daemonShutdownResponseProtobuf=new DaemonShutdownResponseProtobuf{Type=2299};
             Task.Run(()=>{
                 SpinWait.SpinUntil(()=>false,1000);
                 Program.DaemonServiceController.Stop();
-                SpinWait.SpinUntil(()=>false,2000);
+                SpinWait.SpinUntil(()=>false,3000);
                 Environment.Exit(0);
             });
-            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnMessageDaemonShutdown","已处理 daemon-shutdown 指令");
-            return new Byte[8]{0xFF,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+            Helpers.LoggerModuleHelper.TryLog("Modules.PipelineControlModule.OnDaemonShutdown","已处理 daemon-shutdown 指令");
+            return daemonShutdownResponseProtobuf.ToByteArray();
         }
     }
 }

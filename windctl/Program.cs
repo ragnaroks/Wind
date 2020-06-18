@@ -14,7 +14,7 @@ namespace windctl {
 
         static void Main(String[] args) {
             //初始化
-            if(Initialize()){
+            if(!Initialize()){
                 Environment.Exit(0);
                 return;
             }
@@ -55,27 +55,27 @@ namespace windctl {
             String argumentValue1=args.GetLength(0)>1?args[1]:null;
             //String argumentValue2=args.GetLength(0)>2?args[2]:null;
             switch(command){
-                //case "status": [1001]
+                case "status":CommandHelper.Status(argumentValue1);break;
                 //case "start": [1002]
                 //case "stop": [1003]
-                //case "restart": [1004]//只对已启动的有效
+                //case "restart": [1004]
                 //case "load": [1005]
                 //case "remove": [1006]
                 //case "attach": [1007]
                 //
-                //case "status-all": [1011]
-                //case "start-all": [1012]
-                //case "stop-all": [1013]
-                //case "restart-all": [1014]//只对已启动的有效
-                //case "load-all": [1015]
-                //case "remove-all": [1016]
+                //case "status-all": [1101]
+                //case "start-all": [1102]
+                //case "stop-all": [1103]
+                //case "restart-all": [1104]//只对已启动的有效
+                //case "load-all": [1105]
+                //case "remove-all": [1106]
                 //
-                //case "daemon-status": [1021]
-                //case "daemon-version": [1027]
-                //case "daemon-shutdown": [1028]
+                case "daemon-version":CommandHelper.DaemonVersion();break;
+                case "daemon-status":CommandHelper.DaemonStatus();break;
+                case "daemon-shutdown":CommandHelper.DaemonShutdown();break;
                 //
-                case "version":CommandHelper.Version();return;
-                default:CommandHelper.Help();return;
+                case "version":CommandHelper.Version();break;
+                default:CommandHelper.Help();break;
             }
         }
     }

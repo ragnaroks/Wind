@@ -17,40 +17,9 @@ namespace wind.Helpers {
             return cloneObject;
         }
 
-        public static String FixedByteSize(this Int64 value){
-            if(value<1){return "0 B";}
-            if(value>0 && value<1024){return value+" B";}
-            if(value>=1024 && value<1048576){
-                return String.Concat(String.Format(CultureInfo.InvariantCulture,"{0:N2}",value/1024).Replace(".00","",StringComparison.OrdinalIgnoreCase)," KiB");
-            }
-            if(value>=1048576 && value<1073741824){
-                return String.Concat(String.Format(CultureInfo.InvariantCulture,"{0:N2}",value/1048576).Replace(".00","",StringComparison.OrdinalIgnoreCase)," MiB");
-            }
-            return String.Concat(String.Format(CultureInfo.InvariantCulture,"{0:N2}",value/1073741824).Replace(".00","",StringComparison.OrdinalIgnoreCase)," GiB");
-        }
-
-        public static String FixedByteSize(this Single value){
-            if(value<1){return "0 B";}
-            if(value>0 && value<1024){return value+" B";}
-            if(value>=1024 && value<1048576){
-                return String.Concat(String.Format(CultureInfo.InvariantCulture,"{0:N2}",value/1024).Replace(".00","",StringComparison.OrdinalIgnoreCase)," KiB");
-            }
-            if(value>=1048576 && value<1073741824){
-                return String.Concat(String.Format(CultureInfo.InvariantCulture,"{0:N2}",value/1048576).Replace(".00","",StringComparison.OrdinalIgnoreCase)," MiB");
-            }
-            return String.Concat(String.Format(CultureInfo.InvariantCulture,"{0:N2}",value/1073741824).Replace(".00","",StringComparison.OrdinalIgnoreCase)," GiB");
-        }
-
-        public static String FixedByteSize(this Double value){
-            if(value<1){return "0 B";}
-            if(value>0 && value<1024){return value+" B";}
-            if(value>=1024 && value<1048576){
-                return String.Concat(String.Format(CultureInfo.InvariantCulture,"{0:N2}",value/1024).Replace(".00","",StringComparison.OrdinalIgnoreCase)," KiB");
-            }
-            if(value>=1048576 && value<1073741824){
-                return String.Concat(String.Format(CultureInfo.InvariantCulture,"{0:N2}",value/1048576).Replace(".00","",StringComparison.OrdinalIgnoreCase)," MiB");
-            }
-            return String.Concat(String.Format(CultureInfo.InvariantCulture,"{0:N2}",value/1073741824).Replace(".00","",StringComparison.OrdinalIgnoreCase)," GiB");
+        public static Int64 ToLocalTimestamp(this DateTime value){
+            DateTime origin=new DateTime(1970,1,1,0,0,0,DateTimeKind.Local);
+            return (Int64)(value-origin).TotalSeconds;
         }
     }
 }

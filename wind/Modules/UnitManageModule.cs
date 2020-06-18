@@ -9,7 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace wind.Modules {
-    /// <summary>单元管理模块</summary>
+    /// <summary>单元管理模块,逻辑上应只提供同步方法,避免此模块出现线程同步问题</summary>
     public class UnitManageModule:IDisposable{
         public Boolean Useable{get;private set;}=false;
 
@@ -87,7 +87,7 @@ namespace wind.Modules {
             }
             if(unit==null){return;}
             //if(unit.Process!=null){ unit.Process.Dispose(); }
-            if(Program.UnitPerformanceCounterModule.Useable){ Program.UnitPerformanceCounterModule.Remove(exitedProcessId); }
+            if(Program.UnitPerformanceCounterModule.Useable){ _=Program.UnitPerformanceCounterModule.Remove(exitedProcessId); }
             if(Program.UnitNetworkCounterModule.Useable){ _=Program.UnitNetworkCounterModule.Remove(exitedProcessId); }
             //如果是单元停止,此时state==3,否则可能是1||2
             if(unit.State==3){return;}
@@ -220,9 +220,11 @@ namespace wind.Modules {
         public void RestartUnit(String unitKey) {
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return;}
-            if(this.UnitDictionary[unitKey].State!=2){return;}
-            this.StopUnit(unitKey);
-            this.StartUnit(unitKey,false);
+            switch(this.UnitDictionary[unitKey].State) {
+                case 0:this.StartUnit(unitKey,false);return;
+                case 2:this.StopUnit(unitKey);this.StartUnit(unitKey,false);return;
+                default:break;
+            }
         }
 
         /// <summary>
@@ -334,14 +336,13 @@ namespace wind.Modules {
             if(this.UnitDictionary.Count<1){return;}
             foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
                 if(!item.Value.Settings.AutoStart){continue;}
-                if(!asyncTask) {
+                if(asyncTask) {
+                    Task.Run(()=>{
+                        this.StartUnit(item.Key,true);
+                    });
+                } else {
                     this.StartUnit(item.Key,true);
-                    continue;
                 }
-                Task.Run(()=>{
-                    this.StartUnit(item.Key,true);
-                });
-                
             }
         }
 
@@ -352,14 +353,14 @@ namespace wind.Modules {
         public void StartAllUnits(Boolean asyncTask){
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1){return;}
-            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
-                if(!asyncTask) {
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){
+                if(asyncTask) {
+                    Task.Run(()=>{
+                        this.StartUnit(item.Key,false);
+                    });
+                }else{
                     this.StartUnit(item.Key,false);
-                    continue;
                 }
-                Task.Run(()=>{
-                    this.StartUnit(item.Key,false);
-                });
             }
         }
 
@@ -375,7 +376,7 @@ namespace wind.Modules {
         /// <summary>
         /// 重启全部(正在运行的)单元
         /// </summary>
-        public void RestartAllUnits() {
+        public void RestartAllUnits(){
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1){return;}
             foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
