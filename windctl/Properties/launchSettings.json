@@ -1,7 +1,8 @@
 {
   "profiles": {
     "windctl": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "status example"
     }
   }
 }

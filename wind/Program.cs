@@ -27,11 +27,9 @@ namespace wind {
         public static Modules.UnitPerformanceCounterModule UnitPerformanceCounterModule{get;}=new Modules.UnitPerformanceCounterModule();
         /// <summary>单元网络数据监控模块 04</summary>
         public static Modules.UnitNetworkCounterModule UnitNetworkCounterModule{get;}=new UnitNetworkCounterModule();
-        /// <summary>本地管理模块 05</summary>
-        public static Modules.PipelineControlModule LocalControlModule{get;}=new Modules.PipelineControlModule();
-        /// <summary>远程管理模块 06</summary>
+        /// <summary>远程管理模块 05</summary>
         public static Modules.WebSocketControlModule RemoteControlModule{get;}=new Modules.WebSocketControlModule();
-        /// <summary>单元管理模块 07</summary>
+        /// <summary>单元管理模块 06</summary>
         public static Modules.UnitManageModule UnitManageModule{get;}=new Modules.UnitManageModule();
         
         /// <summary>
@@ -68,8 +66,8 @@ namespace wind {
                 Environment.Exit(0);
                 return;
             }
-            if(!InitializeLocalControlModule()) {
-                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化本地管理模块失败");
+            if(!InitializeRemoveControlModule()) {
+                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化远程管理模块失败");
                 Environment.Exit(0);
                 return;
             }
@@ -125,7 +123,7 @@ namespace wind {
             if(appSettings==null || String.IsNullOrWhiteSpace(appSettings.RemoteControlListenAddress) || String.IsNullOrWhiteSpace(appSettings.RemoteControlKey) || appSettings.RemoteControlListenPort<1024 || appSettings.RemoteControlListenPort>Int16.MaxValue){return false;}
             Regex regex=new Regex(@"^[0-9\.]{7,15}$",RegexOptions.Compiled);
             if(appSettings.RemoteControlListenAddress!="localhost" &&  !regex.IsMatch(appSettings.RemoteControlListenAddress)){return false;}
-            Regex regex2=new Regex(@"^\S{8,128}$",RegexOptions.Compiled);
+            Regex regex2=new Regex(@"^\S{32,4096}$",RegexOptions.Compiled);
             if(!regex2.IsMatch(appSettings.RemoteControlKey)){return false;}
             //完成
             AppSettings.EnableRemoteControl=appSettings.EnableRemoteControl;
@@ -162,7 +160,7 @@ namespace wind {
         }
 
         /// <summary>
-        /// 初始化单元性能监控模块
+        /// 初始化单元网络监控模块
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeUnitNetworkCounterModule(){
@@ -172,12 +170,12 @@ namespace wind {
         }
 
         /// <summary>
-        /// 初始化本地控制模块
+        /// 初始化远程控制模块
         /// </summary>
         /// <returns>是否成功</returns>
-        private static Boolean InitializeLocalControlModule(){
+        private static Boolean InitializeRemoveControlModule(){
             if(String.IsNullOrWhiteSpace(AppEnvironment.PipelineName)){return false;}
-            return LocalControlModule.Setup(AppEnvironment.PipelineName);
+            return RemoteControlModule.Setup(AppSettings.RemoteControlListenAddress,AppSettings.RemoteControlListenPort,AppSettings.RemoteControlKey);
         }
 
         /// <summary>
@@ -197,8 +195,6 @@ namespace wind {
         private static void CurrentDomainProcessExit(object sender,EventArgs e){
             //释放远程管理模块
             RemoteControlModule.Dispose();
-            //释放本地管理模块
-            LocalControlModule.Dispose();
             //释放单元管理模块,应确保已无单元正在运行
             UnitManageModule.Dispose();
             //释放单元性能监控模块

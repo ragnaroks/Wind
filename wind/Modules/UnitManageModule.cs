@@ -123,11 +123,11 @@ namespace wind.Modules {
         /// 停止单元
         /// </summary>
         /// <param name="unitKey"></param>
-        public void StopUnit(String unitKey){
-            if(!this.Useable){return;}
-            if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return;}
+        public Boolean StopUnit(String unitKey){
+            if(!this.Useable){return false;}
+            if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return false;}
             Unit unit=this.UnitDictionary[unitKey];
-            if(unit.State==0 || unit.State==3){return;}
+            if(unit.State==0 || unit.State==3){return true;}
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnit",$"正在停止\"{unitKey}\"单元,Type={unit.RunningSettings.Type}");
             unit.State=3;
             if(unit.Process!=null){
@@ -163,6 +163,7 @@ namespace wind.Modules {
             unit.ProcessId=0;
             unit.State=0;
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnit",$"已停止\"{unitKey}\"单元");
+            return true;
         }
 
         /// <summary>
@@ -170,12 +171,12 @@ namespace wind.Modules {
         /// </summary>
         /// <param name="unitKey"></param>
         /// <param name="forAutoStart"></param>
-        public void StartUnit(String unitKey,Boolean forAutoStart){
-            if(!this.Useable){return;}
-            if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return;}
+        public Boolean StartUnit(String unitKey,Boolean forAutoStart){
+            if(!this.Useable){return false;}
+            if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return false;}
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit",$"正在启动\"{unitKey}\"单元");
             Unit unit=this.UnitDictionary[unitKey];
-            if(unit.State==1 || unit.State==2){return;}
+            if(unit.State==1 || unit.State==2){return true;}
             if(unit.State==3){ SpinWait.SpinUntil(()=>false,1000); }
             unit.State=1;
             unit.RunningSettings=unit.Settings.DeepClone();
@@ -210,6 +211,7 @@ namespace wind.Modules {
                 unit.State=0;
                 LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit",$"启动\"{unitKey}\"单元失败");
             }
+            return b1;
         }
 
         /// <summary>
@@ -217,13 +219,13 @@ namespace wind.Modules {
         /// </summary>
         /// <param name="unitKey"></param>
         /// <returns></returns>
-        public void RestartUnit(String unitKey) {
-            if(!this.Useable){return;}
-            if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return;}
+        public Boolean RestartUnit(String unitKey) {
+            if(!this.Useable){return false;}
+            if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return false;}
             switch(this.UnitDictionary[unitKey].State) {
-                case 0:this.StartUnit(unitKey,false);return;
-                case 2:this.StopUnit(unitKey);this.StartUnit(unitKey,false);return;
-                default:break;
+                case 0:return this.StartUnit(unitKey,false);
+                case 2:return this.StopUnit(unitKey) && this.StartUnit(unitKey,false);
+                default:return false;
             }
         }
 

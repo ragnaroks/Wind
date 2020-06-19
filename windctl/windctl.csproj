@@ -12,12 +12,23 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Data\AppSettings.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Data\AppSettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Fleck" Version="1.1.0" />
     <PackageReference Include="Google.Protobuf" Version="3.12.3" />
+    <PackageReference Include="WatsonWebsocket" Version="2.1.7.2" />
   </ItemGroup>
 
   <ItemGroup>

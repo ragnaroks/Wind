@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 namespace wind {
     public class DaemonService:IMicroService {
-        private List<String> ExtraArguments{get;set;}=null;
-        private IMicroServiceController MicroServiceController{get;set;}=null;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality","IDE0052:删除未读的私有成员",Justification = "<挂起>")]
+        private List<String> ExtraArguments{get;}=null;
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("CodeQuality","IDE0052:删除未读的私有成员",Justification = "<挂起>")]
+        private IMicroServiceController MicroServiceController{get;}=null;
 
         public DaemonService(){}
         public DaemonService(List<String> extraArguments,IMicroServiceController microServiceController){
@@ -16,9 +18,9 @@ namespace wind {
         public void Start() {
             Helpers.LoggerModuleHelper.TryLog("DaemonService.Start[Warning]","正在启动服务");
             //启动网络监控模块
-            Program.UnitNetworkCounterModule.StartTraceEventSession();
-            //启动本地管理模块
-            Program.LocalControlModule.StartServer();
+            _=Program.UnitNetworkCounterModule.StartTraceEventSession();
+            //启动远程管理模块,停不下来
+            _=Program.RemoteControlModule.Start();
             //启动所有单元
             Program.UnitManageModule.LoadAllUnits();
             Program.UnitManageModule.StartAllAutoUnits(true);
@@ -28,11 +30,10 @@ namespace wind {
         public void Stop() {
             Helpers.LoggerModuleHelper.TryLog("DaemonService.Stop[Warning]","正在停止服务");
             //停止网络监控模块
-            //Program.UnitNetworkCounterModule.Dispose();
-            //停止本地管理模块
-            Program.LocalControlModule.StopServer();
+            _=Program.UnitNetworkCounterModule.StopTraceEventSession();
             //停止所有单元
             Program.UnitManageModule.StopAllUnits();
+            Program.UnitManageModule.RemoveAllUnits();
             Helpers.LoggerModuleHelper.TryLog("DaemonService.Stop[Warning]","已停止服务");
         }
     }

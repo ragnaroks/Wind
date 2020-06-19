@@ -18,9 +18,7 @@ namespace wind.Modules {
         private TraceEventSession TraceEventSession{get;set;}=null;
         /// <summary>异步控制句柄</summary>
         private CancellationTokenSource CancellationTokenSource{get;set;}=null;
-        /// <summary>定时器</summary>
-        private Timer Timer{get;set;}=null;
-
+        
         #region IDisposable
         private bool disposedValue;
 
@@ -116,13 +114,14 @@ namespace wind.Modules {
             return true;
         }
 
-        public void StopTraceEventSession() {
-            if(!this.Useable){return;}
+        public Boolean StopTraceEventSession() {
+            if(!this.Useable){return true;}
             if(this.TraceEventSession.Source!=null) {
                 this.TraceEventSession.Source.Kernel.TcpIpSend-=this.KernelTcpIpSend;
                 this.TraceEventSession.Source.Kernel.TcpIpRecv-=this.KernelTcpIpRecv;
             }
             this.CancellationTokenSource.Cancel();
+            return true;
         }
 
         public Boolean Add(Int32 unitProcessId) {

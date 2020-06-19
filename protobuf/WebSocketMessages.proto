@@ -1,10 +1,9 @@
 syntax = "proto3";
 package wind.Entities.Protobuf;
 option csharp_namespace = "wind.Entities.Protobuf";
-option optimize_for = LITE_RUNTIME;//SPEED;
+option optimize_for = LITE_RUNTIME;
 
-// 预定义
-message UnitSettings{
+message UnitSettingsProtobuf{
   string Name=1;
   string Description=2;
   int32 Type=3;
@@ -16,61 +15,160 @@ message UnitSettings{
   bool RestartWhenException=9;
   bool MonitorPerformanceUsage=10;
   bool MonitorNetworkUsage=11;
+  bool HasArguments=12;
 }
-message UnitProcess{
+message UnitProcessProtobuf{
   int32 Id=1;
   int64 StartTime=2;
 }
-message UnitPerformanceCounter{
+message UnitPerformanceCounterProtobuf{
   float CPU=1;
   float RAM=2;
 }
-message UnitNetworkCounter{
+message UnitNetworkCounterProtobuf{
   int64 TotalSent=1;
   int64 TotalReceived=2;
   int64 SendSpeed=3;
   int64 ReceiveSpeed=4;
 }
-message Unit{
+message UnitProtobuf{
   string Key=1;
   int32 State=2;
-  UnitSettings Settings=3;
-  UnitSettings RunningSettings=4;
-  UnitProcess Process=5;
-  UnitPerformanceCounter PerformanceCounter=6;
-  UnitNetworkCounter UnitNetworkCounter=7;
+  string SettingsFilePath=3;
+  UnitSettingsProtobuf SettingsProtobuf=4;
+  UnitSettingsProtobuf RunningSettingsProtobuf=5;
+  UnitProcessProtobuf ProcessProtobuf=6;
+  UnitPerformanceCounterProtobuf PerformanceCounterProtobuf=7;
+  UnitNetworkCounterProtobuf NetworkCounterProtobuf=8;
 }
-message Daemon{
-  string Key=1;
-  string Version=2;
-  UnitProcess Process=3;
-  UnitPerformanceCounter PerformanceCounter=4;
-  UnitNetworkCounter UnitNetworkCounter=5;
+message DaemonProtobuf{
+  string Name=1;
+  string Description=2;
+  string AbsoluteExecutePath=3;
+  string AbsoluteWorkDirectory=4;
+  UnitProcessProtobuf ProcessProtobuf=5;
+  UnitPerformanceCounterProtobuf PerformanceCounterProtobuf=6;
+  UnitNetworkCounterProtobuf NetworkCounterProtobuf=7;
 }
 
-// https://developers.google.com/protocol-buffers/docs/proto3?hl=zh-cn#simple
-// https://www.npmjs.com/package/google-protobuf
+////////////////////////////////////////////////////////////////
 
-// 此项用于探测数据包类型,再进行针对性的反序列化
-message Message0{
-  int32 Type=1;
+// 1x = 客户端向服务端请求
+// 2x = 服务端向客户端回复
+// 3x = 服务端向客户端通知
+
+////////////////////////////////////////////////////////////////
+
+// 测试包
+message PacketTestProtobuf{
+  int32 Type=1;//0
+}
+//心跳
+message ClientKeepAliveProtobuf{
+  int32 Type=1;//1
 }
 // 服务端响应客户端链接事件,并回复给客户端
-message Message1{
-  int32 Type=1;//1
-  int32 ConnectionId=2;
+message ServerAcceptConnectionProtobuf{
+  int32 Type=1;//21
+  string ConnectionId=2;
 }
 // 客户端向服务端请求验证ControlKey
-message Message2{
-  int32 Type=1;//2
+message ClientOfferControlKeyProtobuf{
+  int32 Type=1;//12
   string ConnectionId=2;
-  string Key=3;
+  string ControlKey=3;
 }
 // 服务端回复客户端ControlKey验证结果
-// 服务端一分钟检查一次客户端列表,并踢出未验证的会话
-// 未验证的客户端发送的任意请求,均直接原样回复
-message Message3{
-  int32 Type=1;//3
+message ServerValidateConnectionProtobuf{
+  int32 Type=1;//22
   string ConnectionId=2;
   bool Valid=3;
+}
+
+////////////////////////////////////////////////////////////////
+
+// windctl status unitKey
+message StatusRequestProtobuf{
+  int32 Type=1;//1001
+  string UnitKey=2;
+}
+message StatusResponseProtobuf{
+  int32 Type=1;//2001
+  string UnitKey=2;
+  bool Executed=3;
+  string NoExecuteMessage=4;
+  UnitProtobuf UnitProtobuf=5;
+}
+// windctl start unitKey
+message StartRequestProtobuf{
+  int32 Type=1;//1002
+  string UnitKey=2;
+}
+message StartResponseProtobuf{
+  int32 Type=1;//2002
+  string UnitKey=2;
+  bool Executed=3;
+  string NoExecuteMessage=4;
+}
+message StartNotifyProtobuf{
+  int32 Type=1;//3002
+  string UnitKey=2;
+}
+// windctl stop unitKey
+message StopRequestProtobuf{
+  int32 Type=1;//1003
+  string UnitKey=2;
+}
+message StopResponseProtobuf{
+  int32 Type=1;//2003
+  string UnitKey=2;
+  bool Executed=3;
+  string NoExecuteMessage=4;
+}
+message StopNotifyProtobuf{
+  int32 Type=1;//3003
+  string UnitKey=2;
+}
+// windctl restart unitKey
+message RestartRequestProtobuf{
+  int32 Type=1;//1004
+  string UnitKey=2;
+}
+message RestartResponseProtobuf{
+  int32 Type=1;//2004
+  string UnitKey=2;
+  bool Executed=3;
+  string NoExecuteMessage=4;
+}
+// windctl load unitKey
+message LoadRequestProtobuf{
+  int32 Type=1;//1005
+  string UnitKey=2;
+}
+message LoadResponseProtobuf{
+  int32 Type=1;//2005
+  string UnitKey=2;
+  bool Executed=3;
+  string NoExecuteMessage=4;
+  UnitSettingsProtobuf UnitSettingsProtobuf=5;
+}
+message LoadNotifyProtobuf{
+  int32 Type=1;//3005
+  string UnitKey=2;
+  UnitSettingsProtobuf UnitSettingsProtobuf=3;
+}
+// windctl remove unitKey
+message RemoveRequestProtobuf{
+  int32 Type=1;//1006
+  string UnitKey=2;
+}
+message RemoveResponseProtobuf{
+  int32 Type=1;//2006
+  string UnitKey=2;
+  bool Executed=3;
+  string NoExecuteMessage=4;
+}
+message RemoveNotifyProtobuf{
+  int32 Type=1;//3006
+  string UnitKey=2;
 }
