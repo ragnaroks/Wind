@@ -250,7 +250,6 @@ namespace windctl.Modules {
         #region 客户端请求
         /// <summary>
         /// windctl status unitKey
-        /// 1001
         /// </summary>
         /// <param name="unitKey"></param>
         public void StatusRequest(String unitKey) {
@@ -261,7 +260,6 @@ namespace windctl.Modules {
         }
         /// <summary>
         /// windctl start unitKey
-        /// 1002
         /// </summary>
         /// <param name="unitKey"></param>
         public void StartRequest(String unitKey) {
@@ -272,7 +270,6 @@ namespace windctl.Modules {
         }
         /// <summary>
         /// windctl stop unitKey
-        /// 1003
         /// </summary>
         /// <param name="unitKey"></param>
         public void StopRequest(String unitKey) {
@@ -283,7 +280,6 @@ namespace windctl.Modules {
         }
         /// <summary>
         /// windctl restart unitKey
-        /// 1004
         /// </summary>
         /// <param name="unitKey"></param>
         public void RestartRequest(String unitKey) {
@@ -294,7 +290,6 @@ namespace windctl.Modules {
         }
         /// <summary>
         /// windctl load unitKey
-        /// 1005
         /// </summary>
         /// <param name="unitKey"></param>
         public void LoadRequest(String unitKey) {
@@ -305,7 +300,6 @@ namespace windctl.Modules {
         }
         /// <summary>
         /// windctl remove unitKey
-        /// 1006
         /// </summary>
         /// <param name="unitKey"></param>
         public void RemoveRequest(String unitKey) {
@@ -314,12 +308,71 @@ namespace windctl.Modules {
             _=this.Client.SendAsync(removeRequestProtobuf.ToByteArray());
             Program.InAction=true;
         }
+        /// <summary>
+        /// windctl status-all
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void StatusAllRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            StatusAllRequestProtobuf statusAllRequestProtobuf=new StatusAllRequestProtobuf{Type=1101};
+            _=this.Client.SendAsync(statusAllRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        /// <summary>
+        /// windctl start-all
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void StartAllRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            StartAllRequestProtobuf startAllRequestProtobuf=new StartAllRequestProtobuf{Type=1102};
+            _=this.Client.SendAsync(startAllRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        /// <summary>
+        /// windctl stop-all
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void StopAllRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            StopAllRequestProtobuf stopAllRequestProtobuf=new StopAllRequestProtobuf{Type=1103};
+            _=this.Client.SendAsync(stopAllRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        /// <summary>
+        /// windctl restart-all
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void RestartAllRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            RestartAllRequestProtobuf restartAllRequestProtobuf=new RestartAllRequestProtobuf{Type=1104};
+            _=this.Client.SendAsync(restartAllRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        /// <summary>
+        /// windctl load-all
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void LoadAllRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            LoadAllRequestProtobuf loadAllRequestProtobuf=new LoadAllRequestProtobuf{Type=1105};
+            _=this.Client.SendAsync(loadAllRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        /// <summary>
+        /// windctl remove-all
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void RemoveAllRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            RemoveAllRequestProtobuf removeAllRequestProtobuf=new RemoveAllRequestProtobuf{Type=1106};
+            _=this.Client.SendAsync(removeAllRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
         #endregion
 
         #region 服务端响应
         /// <summary>
         /// windctl status unitKey
-        /// 2001
         /// </summary>
         /// <param name="bytes"></param>
         private void StatusResponse(Byte[] bytes) {
@@ -339,7 +392,6 @@ namespace windctl.Modules {
         }
         /// <summary>
         /// windctl start unitKey
-        /// 2002
         /// </summary>
         /// <param name="bytes"></param>
         private void StartResponse(Byte[] bytes) {
@@ -359,7 +411,6 @@ namespace windctl.Modules {
         }
         /// <summary>
         /// windctl start unitKey
-        /// 2003
         /// </summary>
         /// <param name="bytes"></param>
         private void StopResponse(Byte[] bytes) {
@@ -379,7 +430,6 @@ namespace windctl.Modules {
         }
         /// <summary>
         /// windctl restart unitKey
-        /// 2004
         /// </summary>
         /// <param name="bytes"></param>
         private void RestartResponse(Byte[] bytes) {
@@ -399,7 +449,6 @@ namespace windctl.Modules {
         }
         /// <summary>
         /// windctl load unitKey
-        /// 2005
         /// </summary>
         /// <param name="bytes"></param>
         private void LoadResponse(Byte[] bytes) {
@@ -419,7 +468,6 @@ namespace windctl.Modules {
         }
         /// <summary>
         /// windctl remove unitKey
-        /// 2006
         /// </summary>
         /// <param name="bytes"></param>
         private void RemoveResponse(Byte[] bytes) {
@@ -435,6 +483,120 @@ namespace windctl.Modules {
             }
             //调用
             CommandHelper.Remove(removeResponseProtobuf);
+            Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl status-all
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void StatusAllResponse(Byte[] bytes) {
+            //解析数据
+            StatusAllResponseProtobuf statusAllResponseProtobuf;
+            try {
+                statusAllResponseProtobuf=StatusAllResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.StatusAllResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.StatusAll(statusAllResponseProtobuf);
+            Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl start-all
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void StartAllResponse(Byte[] bytes) {
+            //解析数据
+            StartAllResponseProtobuf startAllResponseProtobuf;
+            try {
+                startAllResponseProtobuf=StartAllResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.StartAllResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.StartAll(startAllResponseProtobuf);
+            Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl stop-all
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void StopAllResponse(Byte[] bytes) {
+            //解析数据
+            StopAllResponseProtobuf stopAllResponseProtobuf;
+            try {
+                stopAllResponseProtobuf=StopAllResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.StopAllResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.StopAll(stopAllResponseProtobuf);
+            Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl restart-all
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void RestartAllResponse(Byte[] bytes) {
+            //解析数据
+            RestartAllResponseProtobuf restartAllResponseProtobuf;
+            try {
+                restartAllResponseProtobuf=RestartAllResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.RestartAllResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.RestartAll(restartAllResponseProtobuf);
+            Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl load-all
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void LoadAllResponse(Byte[] bytes) {
+            //解析数据
+            LoadAllResponseProtobuf loadAllResponseProtobuf;
+            try {
+                loadAllResponseProtobuf=LoadAllResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.LoadAllResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.LoadAll(loadAllResponseProtobuf);
+            Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl remove-all
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void RemoveAllResponse(Byte[] bytes) {
+            //解析数据
+            RemoveAllResponseProtobuf removeAllResponseProtobuf;
+            try {
+                removeAllResponseProtobuf=RemoveAllResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.RemoveAllResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.RemoveAll(removeAllResponseProtobuf);
             Program.InAction=false;
         }
         #endregion

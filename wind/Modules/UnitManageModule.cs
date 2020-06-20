@@ -255,15 +255,15 @@ namespace wind.Modules {
         /// </summary>
         /// <param name="unitKey"></param>
         /// <returns></returns>
-        public Boolean LoadUnit(String unitKey){
-            if(!this.Useable){return false;}
-            /*特殊处理*/if(unitKey=="self" || unitKey=="wind" || unitKey=="daemon"){return false;}/*特殊处理*/
+        public UnitSettings LoadUnit(String unitKey){
+            if(!this.Useable){return null;}
+            /*特殊处理*/if(unitKey=="self" || unitKey=="wind" || unitKey=="daemon"){return null;}/*特殊处理*/
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadUnit","开始加载单元配置文件");
             //读取文件
             String unitFilePath=String.Concat(this.UnitsDirectory,Path.DirectorySeparatorChar,unitKey,".json");
             if(!File.Exists(unitFilePath)){
                 LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadUnit[Error]",$"单元配置文件 {unitFilePath} 不存在");
-                return false;
+                return null;
             }
             FileInfo fileInfo;
             try {
@@ -272,13 +272,13 @@ namespace wind.Modules {
                 LoggerModuleHelper.TryLog(
                     "Modules.UnitManageModule.LoadUnit[Error]",
                     $"单元配置文件 {unitFilePath} 不存在\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
-                return false;
+                return null;
             }
             //setting
             UnitSettings unitSettings=UnitManageModuleHelper.ParseUnitSettingsFile(fileInfo);
             if(unitSettings==null){
                 LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadUnit[Warning]",$"单元文件\"{unitFilePath}\"读取失败");
-                return false;
+                return null;
             }
             //检查是新增或更新
             if(this.UnitDictionary.ContainsKey(unitKey)) {
@@ -287,15 +287,15 @@ namespace wind.Modules {
                 _=this.UnitDictionary.TryAdd(unitKey,new Unit{Key=unitKey,Settings=unitSettings});
             }
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadUnit",$"单元\"{unitKey}\"读取成功,已加入单元列表");
-            return true;
+            return unitSettings;
         }
 
         /// <summary>
         /// 解析所有单元配置文件
         /// </summary>
-        /// <returns>解析成功数量</returns>
-        public Int32 LoadAllUnits(){
-            if(!this.Useable){return 0;}
+        /// <returns>解析成功单元列表</returns>
+        public List<UnitSettings> LoadAllUnits(){
+            if(!this.Useable){return null;}
             //读取文件目录
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadAllUnits","开始解析所有单元配置文件");
             FileInfo[] fileInfoArray;
@@ -306,10 +306,11 @@ namespace wind.Modules {
                 LoggerModuleHelper.TryLog(
                     "Modules.UnitManageModule.LoadAllUnits[Error]",
                     $"读取单元存放目录异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
-                return 0;
+                return null;
             }
-            if(fileInfoArray.Length<1){return 0;}
+            if(fileInfoArray.Length<1){return null;}
             //解析文件
+            List<UnitSettings> unitSettingsList=new List<UnitSettings>();
             for(Int32 i1=0;i1<fileInfoArray.Length;i1++){
                 //key
                 String unitKey=UnitManageModuleHelper.GetUnitKey(fileInfoArray[i1]);
@@ -330,11 +331,12 @@ namespace wind.Modules {
                 } else {
                     _=this.UnitDictionary.TryAdd(unitKey,new Unit{Key=unitKey,Settings=unitSettings});
                 }
+                unitSettingsList.Add(unitSettings);
                 LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadAllUnits",$"单元\"{unitKey}\"读取成功,已加入单元列表");
             }
             //完成
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadAllUnits",$"已解析{this.UnitDictionary.Count}个单元配置文件");
-            return this.UnitDictionary.Count;
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.LoadAllUnits",$"已解析 {this.UnitDictionary.Count} 个单元配置文件");
+            return this.UnitDictionary.Count>0?unitSettingsList:null;
         }
 
         /// <summary>
@@ -347,9 +349,7 @@ namespace wind.Modules {
             foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
                 if(!item.Value.Settings.AutoStart){continue;}
                 if(asyncTask) {
-                    Task.Run(()=>{
-                        this.StartUnit(item.Key,true);
-                    });
+                    Task.Run(()=>{ this.StartUnit(item.Key,true); });
                 } else {
                     this.StartUnit(item.Key,true);
                 }
@@ -365,9 +365,7 @@ namespace wind.Modules {
             if(this.UnitDictionary.Count<1){return;}
             foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){
                 if(asyncTask) {
-                    Task.Run(()=>{
-                        this.StartUnit(item.Key,false);
-                    });
+                    Task.Run(()=>{ this.StartUnit(item.Key,false); });
                 }else{
                     this.StartUnit(item.Key,false);
                 }
@@ -377,31 +375,50 @@ namespace wind.Modules {
         /// <summary>
         /// 停止全部单元
         /// </summary>
-        public void StopAllUnits(){
+        /// <param name="asyncTask">异步处理</param>
+        public void StopAllUnits(Boolean asyncTask){
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1){return;}
-            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){ this.StopUnit(item.Key); }
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){
+                if(asyncTask) {
+                    Task.Run(()=>{ this.StopUnit(item.Key); });
+                } else {
+                    this.StopUnit(item.Key);
+                }
+            }
         }
 
         /// <summary>
         /// 重启全部(正在运行的)单元
         /// </summary>
-        public void RestartAllUnits(){
+        /// <param name="asyncTask">异步处理</param>
+        public void RestartAllUnits(Boolean asyncTask){
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1){return;}
             foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
                 if(item.Value.State!=2){continue;}
-                this.RestartUnit(item.Key);
+                if(asyncTask) {
+                    Task.Run(()=>{ this.RestartUnit(item.Key); });
+                } else {
+                    this.RestartUnit(item.Key);
+                }
             }
         }
 
         /// <summary>
         /// 移除全部单元
         /// </summary>
-        public void RemoveAllUnits() {
+        /// <param name="asyncTask">异步处理</param>
+        public void RemoveAllUnits(Boolean asyncTask) {
             if(!this.Useable){return;}
             if(this.UnitDictionary.Count<1){return;}
-            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){ this.RemoveUnit(item.Key); }
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){
+                if(asyncTask) {
+                    Task.Run(()=>{ this.RemoveUnit(item.Key); });
+                } else {
+                    this.RemoveUnit(item.Key);
+                }
+            }
         }
     }
 }

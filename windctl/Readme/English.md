@@ -14,9 +14,7 @@ just delete files
 - windctl version  
 print this tool's version
 - windctl status **\<unitKey\>**  
-get unit's status
-
-### Commands(not available)
+print unit's status
 - windctl start **\<unitKey\>**  
 start unit
 - windctl stop **\<unitKey\>**  
@@ -27,6 +25,8 @@ restart unit
 try load/update unit's settings from file
 - windctl remove **\<unitKey\>**  
 stop unit and remove it,it can not be start again
+
+### Commands(not available)
 - windctl start-all  
 start all unit
 - windctl stop-all  
@@ -38,9 +38,9 @@ try load/update all units's settings from file
 - windctl remove-all  
 stop all unit and remove them,they can not be start again
 - windctl daemon-version  
-get daemon service's version
+print daemon service's version
 - windctl daemon-status  
-get daemon service's status
+print daemon service's status
 - windctl daemon-shutdown  
 shutdown daemon service
 

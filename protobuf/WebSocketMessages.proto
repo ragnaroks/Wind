@@ -92,6 +92,60 @@ message StatusRequestProtobuf{
   int32 Type=1;//1001
   string UnitKey=2;
 }
+// windctl start unitKey
+message StartRequestProtobuf{
+  int32 Type=1;//1002
+  string UnitKey=2;
+}
+// windctl stop unitKey
+message StopRequestProtobuf{
+  int32 Type=1;//1003
+  string UnitKey=2;
+}
+// windctl restart unitKey
+message RestartRequestProtobuf{
+  int32 Type=1;//1004
+  string UnitKey=2;
+}
+// windctl load unitKey
+message LoadRequestProtobuf{
+  int32 Type=1;//1005
+  string UnitKey=2;
+}
+// windctl remove unitKey
+message RemoveRequestProtobuf{
+  int32 Type=1;//1006
+  string UnitKey=2;
+}
+
+// windctl status-all
+message StatusAllRequestProtobuf{
+  int32 Type=1;//1101
+}
+// windctl start-all
+message StartAllRequestProtobuf{
+  int32 Type=1;//1102
+}
+// windctl stop-all
+message StopAllRequestProtobuf{
+  int32 Type=1;//1103
+}
+// windctl restart-all
+message RestartAllRequestProtobuf{
+  int32 Type=1;//1104
+}
+// windctl load-all
+message LoadAllRequestProtobuf{
+  int32 Type=1;//1105
+}
+// windctl remove-all
+message RemoveAllRequestProtobuf{
+  int32 Type=1;//1106
+}
+
+////////////////////////////////////////////////////////////////
+
+// windctl status unitKey
 message StatusResponseProtobuf{
   int32 Type=1;//2001
   string UnitKey=2;
@@ -100,40 +154,20 @@ message StatusResponseProtobuf{
   UnitProtobuf UnitProtobuf=5;
 }
 // windctl start unitKey
-message StartRequestProtobuf{
-  int32 Type=1;//1002
-  string UnitKey=2;
-}
 message StartResponseProtobuf{
   int32 Type=1;//2002
   string UnitKey=2;
   bool Executed=3;
   string NoExecuteMessage=4;
 }
-message StartNotifyProtobuf{
-  int32 Type=1;//3002
-  string UnitKey=2;
-}
 // windctl stop unitKey
-message StopRequestProtobuf{
-  int32 Type=1;//1003
-  string UnitKey=2;
-}
 message StopResponseProtobuf{
   int32 Type=1;//2003
   string UnitKey=2;
   bool Executed=3;
   string NoExecuteMessage=4;
 }
-message StopNotifyProtobuf{
-  int32 Type=1;//3003
-  string UnitKey=2;
-}
 // windctl restart unitKey
-message RestartRequestProtobuf{
-  int32 Type=1;//1004
-  string UnitKey=2;
-}
 message RestartResponseProtobuf{
   int32 Type=1;//2004
   string UnitKey=2;
@@ -141,10 +175,6 @@ message RestartResponseProtobuf{
   string NoExecuteMessage=4;
 }
 // windctl load unitKey
-message LoadRequestProtobuf{
-  int32 Type=1;//1005
-  string UnitKey=2;
-}
 message LoadResponseProtobuf{
   int32 Type=1;//2005
   string UnitKey=2;
@@ -152,23 +182,71 @@ message LoadResponseProtobuf{
   string NoExecuteMessage=4;
   UnitSettingsProtobuf UnitSettingsProtobuf=5;
 }
-message LoadNotifyProtobuf{
-  int32 Type=1;//3005
-  string UnitKey=2;
-  UnitSettingsProtobuf UnitSettingsProtobuf=3;
-}
 // windctl remove unitKey
-message RemoveRequestProtobuf{
-  int32 Type=1;//1006
-  string UnitKey=2;
-}
 message RemoveResponseProtobuf{
   int32 Type=1;//2006
   string UnitKey=2;
   bool Executed=3;
   string NoExecuteMessage=4;
 }
-message RemoveNotifyProtobuf{
-  int32 Type=1;//3006
-  string UnitKey=2;
+
+// windctl status-all
+message StatusAllResponseProtobuf{
+  int32 Type=1;//2101
+  bool Executed=2;
+  string NoExecuteMessage=3;
+  int32 UnitProtobufArraySize=4;
+  repeated UnitProtobuf UnitProtobufArray=5;
 }
+// windctl start-all
+message StartAllResponseProtobuf{
+  int32 Type=1;//2102
+  bool Executed=2;
+  string NoExecuteMessage=3;
+}
+// windctl stop-all
+message StopAllResponseProtobuf{
+  int32 Type=1;//2103
+  bool Executed=2;
+  string NoExecuteMessage=3;
+}
+// windctl restart-all
+message RestartAllResponseProtobuf{
+  int32 Type=1;//2104
+  bool Executed=2;
+  string NoExecuteMessage=3;
+}
+// windctl load-all
+message LoadAllResponseProtobuf{
+  int32 Type=1;//2105
+  bool Executed=2;
+  string NoExecuteMessage=3;
+  int32 UnitSettingsProtobufArraySize=4;
+  repeated UnitSettingsProtobuf UnitSettingsProtobufArray=5;
+}
+// windctl remove-all
+message RemoveAllResponseProtobuf{
+  int32 Type=1;//2106
+  bool Executed=2;
+  string NoExecuteMessage=3;
+}
+
+////////////////////////////////////////////////////////////////
+
+//message StartNotifyProtobuf{
+//  int32 Type=1;//3002
+//  string UnitKey=2;
+//}
+//message StopNotifyProtobuf{
+//  int32 Type=1;//3003
+//  string UnitKey=2;
+//}
+//message LoadNotifyProtobuf{
+//  int32 Type=1;//3005
+//  string UnitKey=2;
+//  UnitSettingsProtobuf UnitSettingsProtobuf=3;
+//}
+//message RemoveNotifyProtobuf{
+//  int32 Type=1;//3006
+//  string UnitKey=2;
+//}

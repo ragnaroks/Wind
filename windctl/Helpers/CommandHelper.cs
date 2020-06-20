@@ -120,7 +120,7 @@ namespace windctl.Helpers {
             Console.Write($"{unitSettingsProtobuf.Name} - {unitSettingsProtobuf.Description}");
             //第二行
             Console.Write($"\n     Loaded:  {statusResponseProtobuf.UnitProtobuf.SettingsFilePath}");
-            if(unitSettingsProtobuf.AutoStart){ Console.Write("; auto;"); }
+            if(unitSettingsProtobuf.AutoStart){ Console.Write(" (auto)"); }
             //第三行
             Console.Write($"\n      State:  ");
             switch(statusResponseProtobuf.UnitProtobuf.State) {
