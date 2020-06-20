@@ -233,13 +233,21 @@ namespace wind.Modules {
         /// 移除单元
         /// </summary>
         /// <param name="unitKey"></param>
-        public void RemoveUnit(String unitKey) {
-            if(!this.Useable){return;}
-            if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return;}
+        public Boolean RemoveUnit(String unitKey) {
+            if(!this.Useable){return false;}
+            if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return false;}
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.RemoveUnit",$"正在移除\"{unitKey}\"单元");
-            this.StopUnit(unitKey);
-            _=this.UnitDictionary.TryRemove(unitKey,out _);
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.RemoveUnit",$"已移除\"{unitKey}\"单元");
+            if(!this.StopUnit(unitKey)) {
+                LoggerModuleHelper.TryLog("Modules.UnitManageModule.RemoveUnit",$"停止\"{unitKey}\"单元失败");
+                return false;
+            }
+            Boolean b1=this.UnitDictionary.TryRemove(unitKey,out _);
+            if(b1) {
+                LoggerModuleHelper.TryLog("Modules.UnitManageModule.RemoveUnit",$"已移除\"{unitKey}\"单元");
+            } else {
+                LoggerModuleHelper.TryLog("Modules.UnitManageModule.RemoveUnit",$"移除\"{unitKey}\"单元失败");
+            }
+            return b1;
         }
 
         /// <summary>

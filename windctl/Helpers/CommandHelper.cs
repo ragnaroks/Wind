@@ -157,44 +157,11 @@ namespace windctl.Helpers {
             Console.WriteLine();
         }
 
-        /*
-
         /// <summary>
         /// windctl start unitKey
         /// </summary>
-        public static void Start(String unitKey){
-            if(String.IsNullOrWhiteSpace(unitKey)) {
-                Console.WriteLine(ERROR_INVALID);
-                return;
-            }
-            StartRequestProtobuf startRequestProtobuf=new StartRequestProtobuf{Type=1002,UnitKey=unitKey};
-            Byte[] request=startRequestProtobuf.ToByteArray();
-            if(request.GetLength(0)>100){return;}
-            Byte[] buffer;
-            Int32 bufferSize;
-            try {
-                NamedPipeClientStream namedPipeClientStream=new NamedPipeClientStream(".",Program.AppEnvironment.PipelineName,PipeDirection.InOut,PipeOptions.WriteThrough);
-                namedPipeClientStream.Connect(1000);
-                //发送
-                namedPipeClientStream.Write(request);
-                namedPipeClientStream.Flush();
-                //回复
-                buffer=new Byte[1048576];
-                bufferSize=namedPipeClientStream.Read(buffer);
-                //释放
-                namedPipeClientStream.Dispose();
-            }catch(Exception exception){
-                LoggerModuleHelper.TryLog("Helpers.CommandHelper.Start[Error]",$"管道通信异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
-                Console.WriteLine($"command execute error,{exception.Message}");
-                return;
-            }
-            if(bufferSize<1){
-                Console.WriteLine(NO_RESPONSE);
-                return;
-            }
-            Byte[] response=buffer.AsSpan(0,bufferSize).ToArray();
-            StartResponseProtobuf startResponseProtobuf=StartResponseProtobuf.Parser.ParseFrom(response);
-            if(startResponseProtobuf==null || startResponseProtobuf.Type!=2002){
+        public static void Start(StartResponseProtobuf startResponseProtobuf){
+            if(startResponseProtobuf==null){
                 Console.WriteLine(ERROR_RESPONSE);
                 return;
             }
@@ -202,44 +169,14 @@ namespace windctl.Helpers {
                 Console.WriteLine(String.Concat("command execute failed,",startResponseProtobuf.NoExecuteMessage));
                 return;
             }
-            Console.WriteLine($"command executed,unit {unitKey} starting");
+            Console.WriteLine($"command executed,unit {startResponseProtobuf.UnitKey} starting");
         }
+
         /// <summary>
         /// windctl stop unitKey
         /// </summary>
-        public static void Stop(String unitKey){
-            if(String.IsNullOrWhiteSpace(unitKey)) {
-                Console.WriteLine(ERROR_INVALID);
-                return;
-            }
-            StopRequestProtobuf stopRequestProtobuf=new StopRequestProtobuf{Type=1003,UnitKey=unitKey};
-            Byte[] request=stopRequestProtobuf.ToByteArray();
-            if(request.GetLength(0)>100){return;}
-            Byte[] buffer;
-            Int32 bufferSize;
-            try {
-                NamedPipeClientStream namedPipeClientStream=new NamedPipeClientStream(".",Program.AppEnvironment.PipelineName,PipeDirection.InOut,PipeOptions.WriteThrough);
-                namedPipeClientStream.Connect(1000);
-                //发送
-                namedPipeClientStream.Write(request);
-                namedPipeClientStream.Flush();
-                //回复
-                buffer=new Byte[1048576];
-                bufferSize=namedPipeClientStream.Read(buffer);
-                //释放
-                namedPipeClientStream.Dispose();
-            }catch(Exception exception){
-                LoggerModuleHelper.TryLog("Helpers.CommandHelper.Stop[Error]",$"管道通信异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
-                Console.WriteLine($"command execute error,{exception.Message}");
-                return;
-            }
-            if(bufferSize<1){
-                Console.WriteLine(NO_RESPONSE);
-                return;
-            }
-            Byte[] response=buffer.AsSpan(0,bufferSize).ToArray();
-            StopResponseProtobuf stopResponseProtobuf=StopResponseProtobuf.Parser.ParseFrom(response);
-            if(stopResponseProtobuf==null || stopResponseProtobuf.Type!=2003){
+        public static void Stop(StopResponseProtobuf stopResponseProtobuf){
+            if(stopResponseProtobuf==null){
                 Console.WriteLine(ERROR_RESPONSE);
                 return;
             }
@@ -247,44 +184,14 @@ namespace windctl.Helpers {
                 Console.WriteLine(String.Concat("command execute failed,",stopResponseProtobuf.NoExecuteMessage));
                 return;
             }
-            Console.WriteLine($"command executed,unit {unitKey} stopping");
+            Console.WriteLine($"command executed,unit {stopResponseProtobuf.UnitKey} Stopping");
         }
+
         /// <summary>
         /// windctl restart unitKey
         /// </summary>
-        public static void Restart(String unitKey){
-            if(String.IsNullOrWhiteSpace(unitKey)) {
-                Console.WriteLine(ERROR_INVALID);
-                return;
-            }
-            RestartRequestProtobuf restartRequestProtobuf=new RestartRequestProtobuf{Type=1004,UnitKey=unitKey};
-            Byte[] request=restartRequestProtobuf.ToByteArray();
-            if(request.GetLength(0)>100){return;}
-            Byte[] buffer;
-            Int32 bufferSize;
-            try {
-                NamedPipeClientStream namedPipeClientStream=new NamedPipeClientStream(".",Program.AppEnvironment.PipelineName,PipeDirection.InOut,PipeOptions.WriteThrough);
-                namedPipeClientStream.Connect(1000);
-                //发送
-                namedPipeClientStream.Write(request);
-                namedPipeClientStream.Flush();
-                //回复
-                buffer=new Byte[1048576];
-                bufferSize=namedPipeClientStream.Read(buffer);
-                //释放
-                namedPipeClientStream.Dispose();
-            }catch(Exception exception){
-                LoggerModuleHelper.TryLog("Helpers.CommandHelper.Restart[Error]",$"管道通信异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
-                Console.WriteLine($"command execute error,{exception.Message}");
-                return;
-            }
-            if(bufferSize<1){
-                Console.WriteLine(NO_RESPONSE);
-                return;
-            }
-            Byte[] response=buffer.AsSpan(0,bufferSize).ToArray();
-            RestartResponseProtobuf restartResponseProtobuf=RestartResponseProtobuf.Parser.ParseFrom(response);
-            if(restartResponseProtobuf==null || restartResponseProtobuf.Type!=2004){
+        public static void Restart(RestartResponseProtobuf restartResponseProtobuf){
+            if(restartResponseProtobuf==null){
                 Console.WriteLine(ERROR_RESPONSE);
                 return;
             }
@@ -292,9 +199,40 @@ namespace windctl.Helpers {
                 Console.WriteLine(String.Concat("command execute failed,",restartResponseProtobuf.NoExecuteMessage));
                 return;
             }
-            Console.WriteLine($"command executed,unit {unitKey} restarting");
+            Console.WriteLine($"command executed,unit {restartResponseProtobuf.UnitKey} restarting");
         }
 
+        /// <summary>
+        /// windctl load unitKey
+        /// </summary>
+        public static void Load(LoadResponseProtobuf loadResponseProtobuf){
+            if(loadResponseProtobuf==null){
+                Console.WriteLine(ERROR_RESPONSE);
+                return;
+            }
+            if(!loadResponseProtobuf.Executed) {
+                Console.WriteLine(String.Concat("command execute failed,",loadResponseProtobuf.NoExecuteMessage));
+                return;
+            }
+            Console.WriteLine($"command executed,unit {loadResponseProtobuf.UnitKey} loading");
+        }
+
+        /// <summary>
+        /// windctl remove unitKey
+        /// </summary>
+        public static void Remove(RemoveResponseProtobuf removeResponseProtobuf){
+            if(removeResponseProtobuf==null){
+                Console.WriteLine(ERROR_RESPONSE);
+                return;
+            }
+            if(!removeResponseProtobuf.Executed) {
+                Console.WriteLine(String.Concat("command execute failed,",removeResponseProtobuf.NoExecuteMessage));
+                return;
+            }
+            Console.WriteLine($"command executed,unit {removeResponseProtobuf.UnitKey} stopping and removing");
+        }
+
+        /*        
         /// <summary>
         /// windctl daemon-version
         /// </summary>

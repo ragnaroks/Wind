@@ -13,6 +13,7 @@ using wind.Helpers;
 
 namespace wind.Modules {
     /// <summary>远程(WebSocket)管理模块</summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance","CA1822:将成员标记为 static",Justification = "<挂起>")]
     public class WebSocketControlModule:IDisposable {
         public Boolean Useable{get;private set;}=false;
 
@@ -34,11 +35,6 @@ namespace wind.Modules {
         private WebSocketServer Server{get;set;}=null;
         /// <summary>客户端列表</summary>
         private Dictionary<String,ClientConnection> ClientConnectionDictionary{get;set;}=new Dictionary<String,ClientConnection>();
-
-        /**
-         * 此模块中均使用 this.ClientConnectionDictionary[clientConnectionId]?.Method() 来操作
-         * 因为具体的 Item 可能已经因为断线或其他原因被移除了
-         */
 
         #region IDisposable
         private bool disposedValue;
@@ -256,7 +252,6 @@ namespace wind.Modules {
         /// </summary>
         /// <param name="clientConnection"></param>
         /// <param name="exception"></param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance","CA1822:将成员标记为 static",Justification = "<挂起>")]
         private void OnClientConnectionError(ClientConnection clientConnection,Exception exception){
             LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.OnClientConnectionError",
@@ -272,7 +267,6 @@ namespace wind.Modules {
         /// </summary>
         /// <param name="clientConnection"></param>
         /// <param name="bytes"></param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance","CA1822:将成员标记为 static",Justification = "<挂起>")]
         private void OnClientConnectionPing(ClientConnection clientConnection,Byte[] bytes){
             LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.OnClientConnectionPing",$"客户端 {clientConnection.Id} Ping");
             clientConnection.LastOnlineTime=DateTimeOffset.Now.ToUnixTimeSeconds();
@@ -297,7 +291,6 @@ namespace wind.Modules {
         /// </summary>
         /// <param name="clientConnection"></param>
         /// <param name="message"></param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance","CA1822:将成员标记为 static",Justification = "<挂起>")]
         private void OnClientConnectionMessage(ClientConnection clientConnection,String message){
             LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.OnClientConnectionMessage",$"客户端 {clientConnection.Id} 发来字符串消息 {message}");
             clientConnection.LastOnlineTime=DateTimeOffset.Now.ToUnixTimeSeconds();
@@ -328,11 +321,18 @@ namespace wind.Modules {
                 case 1:break;//心跳包,忽略
                 case 12:this.ClientOfferControlKey(clientConnection,binary);break;
                 case 1001:this.StatusRequest(clientConnection,binary);break;
+                case 1002:this.StartRequest(clientConnection,binary);break;
+                case 1003:this.StopRequest(clientConnection,binary);break;
+                case 1004:this.RestartRequest(clientConnection,binary);break;
+                case 1005:this.LoadRequest(clientConnection,binary);break;
+                case 1006:this.RemoveRequest(clientConnection,binary);break;
                 default:_=clientConnection.WebSocketConnection.Send(binary);break;//无法识别则原样回复
             }
-            LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.OnClientConnectionBinary",$"已处理客户端 {clientConnection.Id} 二进制消息");
+            LoggerModuleHelper.TryLog(
+                "Modules.WebSocketControlModule.OnClientConnectionBinary",$"已处理客户端 {clientConnection.Id} 的 {packetTestProtobuf.Type} 消息");
         }
 
+        #region 客户端请求
         /// <summary>
         /// 客户端向服务端请求验证ControlKey
         /// </summary>
@@ -361,7 +361,6 @@ namespace wind.Modules {
         /// </summary>
         /// <param name="clientConnection"></param>
         /// <param name="binary"></param>
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance","CA1822:将成员标记为 static",Justification = "<挂起>")]
         private void StatusRequest(ClientConnection clientConnection,Byte[] binary){
             //解析数据包
             StatusRequestProtobuf statusRequestProtobuf;
@@ -439,5 +438,243 @@ namespace wind.Modules {
             //回复
             _=clientConnection.WebSocketConnection.Send(statusResponseProtobuf.ToByteArray());
         }
+        /// <summary>
+        /// windctl start unitKey
+        /// </summary>
+        /// <param name="clientConnection"></param>
+        /// <param name="binary"></param>
+        private void StartRequest(ClientConnection clientConnection,Byte[] binary){
+            //解析数据包
+            StartRequestProtobuf startRequestProtobuf;
+            try {
+                startRequestProtobuf=StartRequestProtobuf.Parser.ParseFrom(binary);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.StartRequest[Error]",
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                _=clientConnection.WebSocketConnection.Send(binary);
+                return;
+            }
+            //初始化响应体
+            StartResponseProtobuf startResponseProtobuf=new StartResponseProtobuf{Type=2002,UnitKey=startRequestProtobuf.UnitKey};
+            //无效unit
+            if(String.IsNullOrWhiteSpace(startRequestProtobuf.UnitKey)){
+                startResponseProtobuf.NoExecuteMessage="unitKey invalid";
+                _=clientConnection.WebSocketConnection.Send(startResponseProtobuf.ToByteArray());
+                return;
+            }
+            if(!Program.UnitManageModule.Useable){
+                startResponseProtobuf.NoExecuteMessage="unit manager not available";
+                _=clientConnection.WebSocketConnection.Send(startResponseProtobuf.ToByteArray());
+                return;
+            }
+            Entities.Common.Unit unit=Program.UnitManageModule.GetUnit(startRequestProtobuf.UnitKey);
+            if(unit==null) {
+                startResponseProtobuf.NoExecuteMessage="unit not found";
+                _=clientConnection.WebSocketConnection.Send(startResponseProtobuf.ToByteArray());
+                return;
+            }
+            //unit已启动
+            if(unit.State==1 || unit.State==2) {
+                startResponseProtobuf.NoExecuteMessage="unit has been started";
+                _=clientConnection.WebSocketConnection.Send(startResponseProtobuf.ToByteArray());
+                return;
+            }
+            //启动unit
+            if(Program.UnitManageModule.StartUnit(startRequestProtobuf.UnitKey,false)) {
+                startResponseProtobuf.Executed=true;
+            } else {
+                startResponseProtobuf.NoExecuteMessage="start unit failed";
+            }
+            //回复
+            _=clientConnection.WebSocketConnection.Send(startResponseProtobuf.ToByteArray());
+        }
+        /// <summary>
+        /// windctl stop unitKey
+        /// </summary>
+        /// <param name="clientConnection"></param>
+        /// <param name="binary"></param>
+        private void StopRequest(ClientConnection clientConnection,Byte[] binary){
+            //解析数据包
+            StopRequestProtobuf stopRequestProtobuf;
+            try {
+                stopRequestProtobuf=StopRequestProtobuf.Parser.ParseFrom(binary);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.StopRequest[Error]",
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                _=clientConnection.WebSocketConnection.Send(binary);
+                return;
+            }
+            //初始化响应体
+            StopResponseProtobuf stopResponseProtobuf=new StopResponseProtobuf{Type=2003,UnitKey=stopRequestProtobuf.UnitKey};
+            //无效unit
+            if(String.IsNullOrWhiteSpace(stopRequestProtobuf.UnitKey)){
+                stopResponseProtobuf.NoExecuteMessage="unitKey invalid";
+                _=clientConnection.WebSocketConnection.Send(stopResponseProtobuf.ToByteArray());
+                return;
+            }
+            if(!Program.UnitManageModule.Useable){
+                stopResponseProtobuf.NoExecuteMessage="unit manager not available";
+                _=clientConnection.WebSocketConnection.Send(stopResponseProtobuf.ToByteArray());
+                return;
+            }
+            Entities.Common.Unit unit=Program.UnitManageModule.GetUnit(stopRequestProtobuf.UnitKey);
+            if(unit==null) {
+                stopResponseProtobuf.NoExecuteMessage="unit not found";
+                _=clientConnection.WebSocketConnection.Send(stopResponseProtobuf.ToByteArray());
+                return;
+            }
+            //unit未启动
+            if(unit.State==3 || unit.State==0) {
+                stopResponseProtobuf.NoExecuteMessage="unit has been stopped";
+                _=clientConnection.WebSocketConnection.Send(stopResponseProtobuf.ToByteArray());
+                return;
+            }
+            //停止unit
+            if(Program.UnitManageModule.StopUnit(stopRequestProtobuf.UnitKey)) {
+                stopResponseProtobuf.Executed=true;
+            } else {
+                stopResponseProtobuf.NoExecuteMessage="stop unit failed";
+            }
+            //回复
+            _=clientConnection.WebSocketConnection.Send(stopResponseProtobuf.ToByteArray());
+        }
+        /// <summary>
+        /// windctl restart unitKey
+        /// </summary>
+        /// <param name="clientConnection"></param>
+        /// <param name="binary"></param>
+        private void RestartRequest(ClientConnection clientConnection,Byte[] binary){
+            //解析数据包
+            RestartRequestProtobuf restartRequestProtobuf;
+            try {
+                restartRequestProtobuf=RestartRequestProtobuf.Parser.ParseFrom(binary);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.RestartRequest[Error]",
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                _=clientConnection.WebSocketConnection.Send(binary);
+                return;
+            }
+            //初始化响应体
+            RestartResponseProtobuf restartResponseProtobuf=new RestartResponseProtobuf{Type=2004,UnitKey=restartRequestProtobuf.UnitKey};
+            //无效unit
+            if(String.IsNullOrWhiteSpace(restartRequestProtobuf.UnitKey)){
+                restartResponseProtobuf.NoExecuteMessage="unitKey invalid";
+                _=clientConnection.WebSocketConnection.Send(restartResponseProtobuf.ToByteArray());
+                return;
+            }
+            if(!Program.UnitManageModule.Useable){
+                restartResponseProtobuf.NoExecuteMessage="unit manager not available";
+                _=clientConnection.WebSocketConnection.Send(restartResponseProtobuf.ToByteArray());
+                return;
+            }
+            Entities.Common.Unit unit=Program.UnitManageModule.GetUnit(restartRequestProtobuf.UnitKey);
+            if(unit==null) {
+                restartResponseProtobuf.NoExecuteMessage="unit not found";
+                _=clientConnection.WebSocketConnection.Send(restartResponseProtobuf.ToByteArray());
+                return;
+            }
+            //unit未启动
+            if(unit.State==1 || unit.State==3) {
+                restartResponseProtobuf.NoExecuteMessage="unit is starting or stopping";
+                _=clientConnection.WebSocketConnection.Send(restartResponseProtobuf.ToByteArray());
+                return;
+            }
+            //重启unit
+            if(Program.UnitManageModule.RestartUnit(restartRequestProtobuf.UnitKey)) {
+                restartResponseProtobuf.Executed=true;
+            } else {
+                restartResponseProtobuf.NoExecuteMessage="restart unit failed";
+            }
+            //回复
+            _=clientConnection.WebSocketConnection.Send(restartResponseProtobuf.ToByteArray());
+        }
+        /// <summary>
+        /// windctl load unitKey
+        /// </summary>
+        /// <param name="clientConnection"></param>
+        /// <param name="binary"></param>
+        private void LoadRequest(ClientConnection clientConnection,Byte[] binary){
+            //解析数据包
+            LoadRequestProtobuf loadRequestProtobuf;
+            try {
+                loadRequestProtobuf=LoadRequestProtobuf.Parser.ParseFrom(binary);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.LoadRequest[Error]",
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                _=clientConnection.WebSocketConnection.Send(binary);
+                return;
+            }
+            //初始化响应体
+            LoadResponseProtobuf loadResponseProtobuf=new LoadResponseProtobuf{Type=2005,UnitKey=loadRequestProtobuf.UnitKey};
+            //无效unit
+            if(String.IsNullOrWhiteSpace(loadRequestProtobuf.UnitKey)){
+                loadResponseProtobuf.NoExecuteMessage="unitKey invalid";
+                _=clientConnection.WebSocketConnection.Send(loadResponseProtobuf.ToByteArray());
+                return;
+            }
+            if(!Program.UnitManageModule.Useable){
+                loadResponseProtobuf.NoExecuteMessage="unit manager not available";
+                _=clientConnection.WebSocketConnection.Send(loadResponseProtobuf.ToByteArray());
+                return;
+            }
+            //加载unit配置
+            if(Program.UnitManageModule.LoadUnit(loadRequestProtobuf.UnitKey)) {
+                loadResponseProtobuf.Executed=true;
+            } else {
+                loadResponseProtobuf.NoExecuteMessage="load unit failed";
+            }
+            //回复
+            _=clientConnection.WebSocketConnection.Send(loadResponseProtobuf.ToByteArray());
+        }
+        /// <summary>
+        /// windctl remove unitKey
+        /// </summary>
+        /// <param name="clientConnection"></param>
+        /// <param name="binary"></param>
+        private void RemoveRequest(ClientConnection clientConnection,Byte[] binary){
+            //解析数据包
+            RemoveRequestProtobuf removeRequestProtobuf;
+            try {
+                removeRequestProtobuf=RemoveRequestProtobuf.Parser.ParseFrom(binary);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.RemoveRequest[Error]",
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                _=clientConnection.WebSocketConnection.Send(binary);
+                return;
+            }
+            //初始化响应体
+            RemoveResponseProtobuf removeResponseProtobuf=new RemoveResponseProtobuf{Type=2006,UnitKey=removeRequestProtobuf.UnitKey};
+            //无效unit
+            if(String.IsNullOrWhiteSpace(removeRequestProtobuf.UnitKey)){
+                removeResponseProtobuf.NoExecuteMessage="unitKey invalid";
+                _=clientConnection.WebSocketConnection.Send(removeResponseProtobuf.ToByteArray());
+                return;
+            }
+            if(!Program.UnitManageModule.Useable){
+                removeResponseProtobuf.NoExecuteMessage="unit manager not available";
+                _=clientConnection.WebSocketConnection.Send(removeResponseProtobuf.ToByteArray());
+                return;
+            }
+            Entities.Common.Unit unit=Program.UnitManageModule.GetUnit(removeRequestProtobuf.UnitKey);
+            if(unit==null) {
+                removeResponseProtobuf.NoExecuteMessage="unit not found";
+                _=clientConnection.WebSocketConnection.Send(removeResponseProtobuf.ToByteArray());
+                return;
+            }
+            //停止unit并移除unit配置
+            if(Program.UnitManageModule.RemoveUnit(removeRequestProtobuf.UnitKey)) {
+                removeResponseProtobuf.Executed=true;
+            } else {
+                removeResponseProtobuf.NoExecuteMessage="stop and remove unit failed";
+            }
+            //回复
+            _=clientConnection.WebSocketConnection.Send(removeResponseProtobuf.ToByteArray());
+        }
+        #endregion
     }
 }

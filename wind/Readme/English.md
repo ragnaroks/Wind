@@ -2,15 +2,15 @@
 > this project designed to create a `systemd` for windows
 
 ### Projects
-- `Daemon` is Wind's windows service
-- `DaemonController` is Wind's local command-line controller based pipeline
+- `wind` is Wind's windows service
+- `windctl` is Wind's local command-line controller based pipeline
 - `ExampleUnit` is an example unit to test functionality
 
 ****
 
 ### Install
 0. require [dotnet core runtime 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
-1. download released package file and unzip to local disk,i suggest `C:\ProgramData\Wind\`
+1. download released package file and unzip to local disk,i suggest `C:\ProgramData\wind\`
 2. open an **Administrator** privilege command window
 3. execute `Daemon.exe action:install`
 4. create a unit file into `.\Units\` directory,example is down below
@@ -40,9 +40,9 @@
     // unit type,must set up,0:simple,1:fork
     "Type": 0,
     // unit executeable file path,must set up
-    "AbsoluteExecutePath": "D:\\Projects\\Wind\\ExampleUnit\\bin\\Debug\\netcoreapp3.1\\ExampleUnit.exe",
+    "AbsoluteExecutePath": "D:\\Projects\\wind\\ExampleUnit\\bin\\Debug\\netcoreapp3.1\\ExampleUnit.exe",
     // unit work directory,must set up
-    "AbsoluteWorkDirectory": "D:\\Projects\\Wind\\ExampleUnit\\bin\\Debug\\netcoreapp3.1",
+    "AbsoluteWorkDirectory": "D:\\Projects\\wind\\ExampleUnit\\bin\\Debug\\netcoreapp3.1",
     // unit execute arguments
     "Arguments": null,
     // unit will start after Wind daemon service started
@@ -63,7 +63,8 @@
 ```javascript
 {
     // enable remote control
-    "EnableRemoteControl": false,
+    // if it's false, windctl will unavailable
+    "EnableRemoteControl": true,
     // remote control listen address,only IPv4
     "RemoteControlListenAddress": "localhost",
     // remote control listen port,1024 < PORT < 65535

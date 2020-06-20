@@ -1,3 +1,3 @@
-[Daemon Readme](./Daemon/Readme)
+[wind Readme](./wind/Readme)
 
-[DaemonController Readme](./DaemonController/Readme)
+[windctl Readme](./windctl/Readme)

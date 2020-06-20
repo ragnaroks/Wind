@@ -123,11 +123,11 @@ namespace windctl {
             //执行远程控制指令
             switch(command){
                 case "status":Program.RemoteControlModule.StatusRequest(argumentValue1);break;
-                //case "start":CommandHelper.Start(argumentValue1);break;
-                //case "stop":CommandHelper.Stop(argumentValue1);break;
-                //case "restart":CommandHelper.Restart(argumentValue1);break;
-                //case "load": [1005]
-                //case "remove": [1006]
+                case "start":Program.RemoteControlModule.StartRequest(argumentValue1);break;
+                case "stop":Program.RemoteControlModule.StopRequest(argumentValue1);break;
+                case "restart":Program.RemoteControlModule.RestartRequest(argumentValue1);break;
+                case "load":Program.RemoteControlModule.LoadRequest(argumentValue1);break;
+                case "remove":Program.RemoteControlModule.RemoveRequest(argumentValue1);break;
                 //case "attach": [1007]
                 //
                 //case "status-all": [1101]

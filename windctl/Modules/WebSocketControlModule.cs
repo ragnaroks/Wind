@@ -175,6 +175,11 @@ namespace windctl.Modules {
                 case 21:this.ServerAcceptConnection(messageReceivedEventArgs.Data);break;
                 case 22:this.ServerValidateConnection(messageReceivedEventArgs.Data);break;
                 case 2001:this.StatusResponse(messageReceivedEventArgs.Data);break;
+                case 2002:this.StartResponse(messageReceivedEventArgs.Data);break;
+                case 2003:this.StopResponse(messageReceivedEventArgs.Data);break;
+                case 2004:this.RestartResponse(messageReceivedEventArgs.Data);break;
+                case 2005:this.LoadResponse(messageReceivedEventArgs.Data);break;
+                case 2006:this.RemoveResponse(messageReceivedEventArgs.Data);break;
                 default:break;
             }
         }
@@ -242,6 +247,7 @@ namespace windctl.Modules {
         }
         #endregion
 
+        #region 客户端请求
         /// <summary>
         /// windctl status unitKey
         /// 1001
@@ -253,6 +259,64 @@ namespace windctl.Modules {
             _=this.Client.SendAsync(statusRequestProtobuf.ToByteArray());
             Program.InAction=true;
         }
+        /// <summary>
+        /// windctl start unitKey
+        /// 1002
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void StartRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            StartRequestProtobuf startRequestProtobuf=new StartRequestProtobuf{Type=1002,UnitKey=unitKey};
+            _=this.Client.SendAsync(startRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        /// <summary>
+        /// windctl stop unitKey
+        /// 1003
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void StopRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            StopRequestProtobuf stopRequestProtobuf=new StopRequestProtobuf{Type=1003,UnitKey=unitKey};
+            _=this.Client.SendAsync(stopRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        /// <summary>
+        /// windctl restart unitKey
+        /// 1004
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void RestartRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            RestartRequestProtobuf restartRequestProtobuf=new RestartRequestProtobuf{Type=1004,UnitKey=unitKey};
+            _=this.Client.SendAsync(restartRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        /// <summary>
+        /// windctl load unitKey
+        /// 1005
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void LoadRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            LoadRequestProtobuf loadRequestProtobuf=new LoadRequestProtobuf{Type=1005,UnitKey=unitKey};
+            _=this.Client.SendAsync(loadRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        /// <summary>
+        /// windctl remove unitKey
+        /// 1006
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void RemoveRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            RemoveRequestProtobuf removeRequestProtobuf=new RemoveRequestProtobuf{Type=1006,UnitKey=unitKey};
+            _=this.Client.SendAsync(removeRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        #endregion
+
+        #region 服务端响应
         /// <summary>
         /// windctl status unitKey
         /// 2001
@@ -273,5 +337,106 @@ namespace windctl.Modules {
             CommandHelper.Status(statusResponseProtobuf);
             Program.InAction=false;
         }
+        /// <summary>
+        /// windctl start unitKey
+        /// 2002
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void StartResponse(Byte[] bytes) {
+            //解析数据
+            StartResponseProtobuf startResponseProtobuf;
+            try {
+                startResponseProtobuf=StartResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.StartResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.Start(startResponseProtobuf);
+            Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl start unitKey
+        /// 2003
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void StopResponse(Byte[] bytes) {
+            //解析数据
+            StopResponseProtobuf stopResponseProtobuf;
+            try {
+                stopResponseProtobuf=StopResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.StopResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.Stop(stopResponseProtobuf);
+            Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl restart unitKey
+        /// 2004
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void RestartResponse(Byte[] bytes) {
+            //解析数据
+            RestartResponseProtobuf restartResponseProtobuf;
+            try {
+                restartResponseProtobuf=RestartResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.RestartResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.Restart(restartResponseProtobuf);
+            Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl load unitKey
+        /// 2005
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void LoadResponse(Byte[] bytes) {
+            //解析数据
+            LoadResponseProtobuf loadResponseProtobuf;
+            try {
+                loadResponseProtobuf=LoadResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.LoadResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.Load(loadResponseProtobuf);
+            Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl remove unitKey
+        /// 2006
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void RemoveResponse(Byte[] bytes) {
+            //解析数据
+            RemoveResponseProtobuf removeResponseProtobuf;
+            try {
+                removeResponseProtobuf=RemoveResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.RemoveResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.Remove(removeResponseProtobuf);
+            Program.InAction=false;
+        }
+        #endregion
     }
 }
