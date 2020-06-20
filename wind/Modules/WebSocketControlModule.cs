@@ -437,7 +437,7 @@ namespace wind.Modules {
             statusResponseProtobuf.UnitProtobuf=unitProtobuf;
             statusResponseProtobuf.Executed=true;
             //回复
-            _=clientConnection.WebSocketConnection.Send(statusRequestProtobuf.ToByteArray());
+            _=clientConnection.WebSocketConnection.Send(statusResponseProtobuf.ToByteArray());
         }
     }
 }

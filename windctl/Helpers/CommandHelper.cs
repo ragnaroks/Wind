@@ -6,19 +6,16 @@ using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml;
 using wind.Entities.Protobuf;
 
 namespace windctl.Helpers {
     public static class CommandHelper {
-        private const String ERROR_CAN_NOT_CONNECT="command execute failed,can not connect to daemon service";
-        private const String NO_RESPONSE="command execute failed,no response";
-        private const String ERROR_RESPONSE="command execute failed,error response";
-        private const String ERROR_INVALID="command execute failed,unitKey invalid";
         private const String HELP
             ="windctl [Any]                =>  print this help\n"
             +"windctl version              =>  print windctl's version\n"
-            //+"windctl status <unitKey>     =>  get unit's status\n"
+            +"windctl status <unitKey>     =>  get unit's status\n"
             //+"windctl start <unitKey>      =>  start unit\n"
             //+"windctl stop <unitKey>       =>  stop unit\n"
             //+"windctl restart <unitKey>    =>  restart unit\n"
@@ -34,6 +31,7 @@ namespace windctl.Helpers {
             //+"windctl daemon-status        =>  get daemon service's status\n"
             //+"windctl daemon-shutdown      =>  shutdown daemon service\n";
             ;
+        private const String ERROR_RESPONSE="command execute failed,response is empty or incorrect";
 
         /// <summary>
         /// 是否远程控制指令
@@ -65,6 +63,30 @@ namespace windctl.Helpers {
         }
 
         /// <summary>
+        /// 是否远程控制指令
+        /// </summary>
+        /// <param name="command"></param>
+        /// <param name="unitKey"></param>
+        /// <returns></returns>
+        public static Boolean ValidUnitKey(String command,String unitKey){
+            switch(command){
+                case "status":
+                case "start":
+                case "stop":
+                case "restart":
+                case "load":
+                case "remove":
+                case "attach":
+                    break;
+                default:return true;
+            }
+            if(String.IsNullOrWhiteSpace(unitKey) || unitKey.Length>32){return false;}
+            Regex regex=new Regex(@"^\S+$",RegexOptions.Compiled);
+            if(!regex.IsMatch(unitKey)){return false;}
+            return true;
+        }
+
+        /// <summary>
         /// windctl help
         /// </summary>
         public static void Help()=>Console.Write(HELP);
@@ -79,40 +101,8 @@ namespace windctl.Helpers {
         /// <summary>
         /// windctl status unitKey
         /// </summary>
-        public static void Status(String unitKey){
-            //无效
-            if(String.IsNullOrWhiteSpace(unitKey)) {
-                Console.WriteLine(ERROR_INVALID);
-                return;
-            }
-            StatusRequestProtobuf statusRequestProtobuf=new StatusRequestProtobuf{Type=1001,UnitKey=unitKey};
-            Byte[] request=statusRequestProtobuf.ToByteArray();
-            if(request.GetLength(0)>100){return;}
-            Byte[] buffer;
-            Int32 bufferSize;
-            try {
-                NamedPipeClientStream namedPipeClientStream=new NamedPipeClientStream(".",Program.AppEnvironment.PipelineName,PipeDirection.InOut,PipeOptions.WriteThrough);
-                namedPipeClientStream.Connect(1000);
-                //发送
-                namedPipeClientStream.Write(request);
-                namedPipeClientStream.Flush();
-                //回复
-                buffer=new Byte[1048576];
-                bufferSize=namedPipeClientStream.Read(buffer);
-                //释放
-                namedPipeClientStream.Dispose();
-            }catch(Exception exception){
-                LoggerModuleHelper.TryLog("Helpers.CommandHelper.Status[Error]",$"管道通信异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
-                Console.WriteLine($"command execute error,{exception.Message}");
-                return;
-            }
-            if(bufferSize<1){
-                Console.WriteLine(NO_RESPONSE);
-                return;
-            }
-            Byte[] response=buffer.AsSpan(0,bufferSize).ToArray();
-            StatusResponseProtobuf statusResponseProtobuf=StatusResponseProtobuf.Parser.ParseFrom(response);
-            if(statusResponseProtobuf==null || statusResponseProtobuf.Type!=2001){
+        public static void Status(StatusResponseProtobuf statusResponseProtobuf){
+            if(statusResponseProtobuf==null){
                 Console.WriteLine(ERROR_RESPONSE);
                 return;
             }
@@ -130,7 +120,7 @@ namespace windctl.Helpers {
             Console.Write($"{unitSettingsProtobuf.Name} - {unitSettingsProtobuf.Description}");
             //第二行
             Console.Write($"\n     Loaded:  {statusResponseProtobuf.UnitProtobuf.SettingsFilePath}");
-            if(unitSettingsProtobuf.AutoStart){ Console.Write("; enabled;"); }
+            if(unitSettingsProtobuf.AutoStart){ Console.Write("; auto;"); }
             //第三行
             Console.Write($"\n      State:  ");
             switch(statusResponseProtobuf.UnitProtobuf.State) {

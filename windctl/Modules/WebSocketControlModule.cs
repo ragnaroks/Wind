@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -39,8 +40,8 @@ namespace windctl.Modules {
                 if(disposing) {
                     // TODO: 释放托管状态(托管对象)
                     if(this.Client!=null) {
-                        this.Client.ServerConnected-=this.ServerConnected;
-                        this.Client.ServerDisconnected-=this.ServerDisconnected;
+                        //this.Client.ServerConnected-=this.ServerConnected;
+                        //this.Client.ServerDisconnected-=this.ServerDisconnected;
                         this.Client.MessageReceived-=this.ClientMessageReceived;
                         this.Client.Dispose();
                     }
@@ -108,8 +109,8 @@ namespace windctl.Modules {
                 LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup[Error]",$"初始化客户端异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return false;
             }
-            this.Client.ServerConnected+=this.ServerConnected;
-            this.Client.ServerDisconnected+=this.ServerDisconnected;
+            //this.Client.ServerConnected+=this.ServerConnected;
+            //this.Client.ServerDisconnected+=this.ServerDisconnected;
             this.Client.MessageReceived+=this.ClientMessageReceived;
             //完成
             this.Useable=true;
@@ -127,13 +128,18 @@ namespace windctl.Modules {
                 LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup[Error]",$"链接服务器异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return false;
             }
-            SpinWait.SpinUntil(()=>this.Client.Connected,8000);
-            return this.Client.Connected;//true;
+            SpinWait.SpinUntil(()=>this.Client.Connected,4000);
+            return this.Client.Connected;//true or false(timeout)
         }
 
-        //public async Task SendAsync(Byte[] bytes)=>await this.Client.SendAsync(bytes);
-
-        //public Boolean IsConnected()=>this.Client.Connected;
+        /// <summary>
+        /// 等待验证
+        /// </summary>
+        /// <returns></returns>
+        public Boolean Valid() {
+            SpinWait.SpinUntil(()=>this.ClientConnectionValid,4000);
+            return this.ClientConnectionValid;
+        }
 
         /// <summary>
         /// 定时器任务
@@ -146,22 +152,6 @@ namespace windctl.Modules {
             this.TimerEnable=true;
         }
 
-        /// <summary>
-        /// 与服务端断开链接
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        private void ServerDisconnected(object sender,EventArgs eventArgs) {
-            Console.WriteLine("disconnected from daemon service");
-        }
-        /// <summary>
-        /// 链接到服务端
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventArgs"></param>
-        private void ServerConnected(object sender,EventArgs eventArgs) {
-            Console.WriteLine("connected to daemon service");
-        }
         /// <summary>
         /// 收到服务端数据
         /// </summary>
@@ -180,18 +170,16 @@ namespace windctl.Modules {
                 return;
             }
             //分拣处理
+            LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.ClientMessageReceived",$"分拣处理 {packetTestProtobuf.Type}");
             switch(packetTestProtobuf.Type) {
-                case 21:
-                    this.ServerAcceptConnection(messageReceivedEventArgs.Data);
-                    break;
-                case 22:
-                    this.ServerValidateConnection(messageReceivedEventArgs.Data);
-                    break;
-                default:
-                    break;
+                case 21:this.ServerAcceptConnection(messageReceivedEventArgs.Data);break;
+                case 22:this.ServerValidateConnection(messageReceivedEventArgs.Data);break;
+                case 2001:this.StatusResponse(messageReceivedEventArgs.Data);break;
+                default:break;
             }
         }
 
+        #region 流程
         /// <summary>
         /// 定时发送心跳包
         /// </summary>
@@ -208,7 +196,7 @@ namespace windctl.Modules {
             LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.ClientOfferControlKey","向服务端请求验证");
             ClientOfferControlKeyProtobuf clientOfferControlKeyProtobuf=new ClientOfferControlKeyProtobuf{
                 Type=12,ConnectionId=this.ClientConnectionId,ControlKey=this.ControlKey};
-            this.Client.SendAsync(clientOfferControlKeyProtobuf.ToByteArray()).Wait();
+            _=this.Client.SendAsync(clientOfferControlKeyProtobuf.ToByteArray());
         }
         /// <summary>
         /// 服务端响应客户端链接事件,并回复给客户端
@@ -226,7 +214,8 @@ namespace windctl.Modules {
                 return;
             }
             //设置客户端链接Id
-            LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.ServerAcceptConnection","已收到客户端链接Id");
+            LoggerModuleHelper.TryLog(
+                "Modules.WebSocketControlModule.ServerAcceptConnection",$"已收到客户端链接Id {serverAcceptConnectionProtobuf.ConnectionId}");
             this.ClientConnectionId=serverAcceptConnectionProtobuf.ConnectionId;
             //请求验证客户端
             this.ClientOfferControlKey();
@@ -247,10 +236,42 @@ namespace windctl.Modules {
                 return;
             }
             //验证结果
-            LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.ServerValidateConnection","已收到客户端验证结果");
-            LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.ServerValidateConnection","验证:"+serverValidateConnectionProtobuf.Valid);
-            this.ClientConnectionValid=serverValidateConnectionProtobuf.Valid;
-            Program.RemoteControlModuleValid=serverValidateConnectionProtobuf.Valid;//用于解除自旋锁
+            LoggerModuleHelper.TryLog(
+                "Modules.WebSocketControlModule.ServerValidateConnection",$"已收到客户端验证结果 {serverValidateConnectionProtobuf.Valid}");
+            this.ClientConnectionValid=serverValidateConnectionProtobuf.Valid;//用于解除自旋锁
+        }
+        #endregion
+
+        /// <summary>
+        /// windctl status unitKey
+        /// 1001
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void StatusRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            StatusRequestProtobuf statusRequestProtobuf=new StatusRequestProtobuf{Type=1001,UnitKey=unitKey};
+            _=this.Client.SendAsync(statusRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        /// <summary>
+        /// windctl status unitKey
+        /// 2001
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void StatusResponse(Byte[] bytes) {
+            //解析数据
+            StatusResponseProtobuf statusResponseProtobuf;
+            try {
+                statusResponseProtobuf=StatusResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.StatusResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.Status(statusResponseProtobuf);
+            Program.InAction=false;
         }
     }
 }

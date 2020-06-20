@@ -17,8 +17,8 @@ namespace windctl {
         public static Modules.LoggerModule LoggerModule{get;}=new Modules.LoggerModule();
         /// <summary>远程控制模块</summary>
         public static Modules.WebSocketControlModule RemoteControlModule{get;}=new Modules.WebSocketControlModule();
-        /// <summary>远程控制模块是否已验证</summary>
-        public static Boolean RemoteControlModuleValid{get;set;}=false;
+        /// <summary>是否在处理中</summary>
+        public static Boolean InAction{get;set;}=false;
 
         static void Main(String[] args) {
             //初始化
@@ -95,15 +95,16 @@ namespace windctl {
             String argumentValue1=args.GetLength(0)>1?args[1]:null;
             //String argumentValue2=args.GetLength(0)>2?args[2]:null;
             //非远程控制指令
-            if(!CommandHelper.IsRemoteCommand(command)) {
+            if(!CommandHelper.IsRemoteCommand(command)){
                 switch(command){
-                    case "version":
-                        CommandHelper.Version();
-                        break;
-                    default:
-                        CommandHelper.Help();
-                        break;
+                    case "version":CommandHelper.Version();break;
+                    default:CommandHelper.Help();break;
                 }
+                return;
+            }
+            //需要验证unitKey
+            if(!CommandHelper.ValidUnitKey(command,argumentValue1)){
+                Console.WriteLine("command execute failed,invalid unitKey");
                 return;
             }
             //链接服务端
@@ -115,18 +116,13 @@ namespace windctl {
                 Console.WriteLine("command execute failed,can not connect to daemon service");
                 return;
             }
-            SpinWait.SpinUntil(()=>RemoteControlModuleValid,8000);
-            if(!RemoteControlModuleValid) {
+            if(!Program.RemoteControlModule.Valid()) {
                 Console.WriteLine("command execute failed,connection invalid");
                 return;
             }
-            Console.WriteLine("executed "+command);
-            return;
             //执行远程控制指令
             switch(command){
-                case "status":
-                    CommandHelper.Status(argumentValue1);
-                    break;
+                case "status":Program.RemoteControlModule.StatusRequest(argumentValue1);break;
                 //case "start":CommandHelper.Start(argumentValue1);break;
                 //case "stop":CommandHelper.Stop(argumentValue1);break;
                 //case "restart":CommandHelper.Restart(argumentValue1);break;
@@ -144,10 +140,12 @@ namespace windctl {
                 //case "daemon-version":CommandHelper.DaemonVersion();break;
                 //case "daemon-status":CommandHelper.DaemonStatus();break;
                 //case "daemon-shutdown":CommandHelper.DaemonShutdown();break;
-                default:
-                    CommandHelper.Help();
-                    break;
+                default:CommandHelper.Help();break;
             }
+            //故意等待1秒
+            //SpinWait.SpinUntil(()=>false,1000);
+            //等待查询完成
+            SpinWait.SpinUntil(()=>!InAction,8000);
         }
     }
 }
