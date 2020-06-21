@@ -77,6 +77,8 @@ message ClientOfferControlKeyProtobuf{
   int32 Type=1;//12
   string ConnectionId=2;
   string ControlKey=3;
+  bool SupportNotify=4;
+  bool SupportAttach=5;
 }
 // 服务端回复客户端ControlKey验证结果
 message ServerValidateConnectionProtobuf{
@@ -126,6 +128,8 @@ message LogsRequestProtobuf{
 message AttachRequestProtobuf{
   int32 Type=1;//1008
   string UnitKey=2;
+  int32 CommandType=3;//0:attach,1:text,2:^c,9:dettch
+  string CommandLine=4;
 }
 
 // windctl status-all
@@ -219,7 +223,15 @@ message LogsResponseProtobuf{
   bool Executed=3;
   string NoExecuteMessage=4;
   string LogFilePath=5;
-  repeated string LogLines=6;
+  repeated string LogLineArray=6;
+}
+// windctl attach unitKey
+message AttachResponseProtobuf{
+  int32 Type=1;//2008
+  string UnitKey=2;
+  bool Executed=3;
+  string NoExecuteMessage=4;
+  repeated string OutputLineArray=5;
 }
 
 // windctl status-all
@@ -285,20 +297,26 @@ message DaemonShutdownResponseProtobuf{
 
 ////////////////////////////////////////////////////////////////
 
-//message StartNotifyProtobuf{
-//  int32 Type=1;//3002
-//  string UnitKey=2;
-//}
-//message StopNotifyProtobuf{
-//  int32 Type=1;//3003
-//  string UnitKey=2;
-//}
-//message LoadNotifyProtobuf{
-//  int32 Type=1;//3005
-//  string UnitKey=2;
-//  UnitSettingsProtobuf UnitSettingsProtobuf=3;
-//}
-//message RemoveNotifyProtobuf{
-//  int32 Type=1;//3006
-//  string UnitKey=2;
-//}
+message StartNotifyProtobuf{
+  int32 Type=1;//3002
+  string UnitKey=2;
+}
+message StopNotifyProtobuf{
+  int32 Type=1;//3003
+  string UnitKey=2;
+}
+message LoadNotifyProtobuf{
+  int32 Type=1;//3005
+  string UnitKey=2;
+  UnitSettingsProtobuf UnitSettingsProtobuf=3;
+}
+message RemoveNotifyProtobuf{
+  int32 Type=1;//3006
+  string UnitKey=2;
+}
+message LogsNotifyProtobuf{
+  int32 Type=1;//3007
+  string UnitKey=2;
+  int32 LogType=3;//0:stdout,1:stderr,2:stdin
+  repeated string LogLineArray=4;
+}

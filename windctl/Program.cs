@@ -19,6 +19,8 @@ namespace windctl {
         public static Modules.WebSocketControlModule RemoteControlModule{get;}=new Modules.WebSocketControlModule();
         /// <summary>是否在处理中</summary>
         public static Boolean InAction{get;set;}=false;
+        /// <summary>已附加到的单元</summary>
+        public static String AttachedUnitKey{get;set;}=null;
 
         static void Main(String[] args) {
             //初始化
@@ -83,7 +85,18 @@ namespace windctl {
                 LoggerModuleHelper.TryLog("Program.Initialize[Error]","初始化远程控制模块失败");
                 return false;
             }
+            //
+            Console.CancelKeyPress+=ConsoleCancelKeyPress;
             return true;
+        }
+
+        private static void ConsoleCancelKeyPress(object sender,ConsoleCancelEventArgs consoleCancelEventArgs) {
+            //取消此控制台的^c指令
+            consoleCancelEventArgs.Cancel=true;
+            //并转发到已附加的单元
+            if(String.IsNullOrWhiteSpace(AttachedUnitKey)){return;}
+            //RemoteControlModule.AttachRequest(AttachedUnitKey,2,String.Empty);
+            RemoteControlModule.AttachRequest(AttachedUnitKey,9,String.Empty);
         }
 
         /// <summary>
@@ -108,41 +121,51 @@ namespace windctl {
                 return;
             }
             //链接服务端
-            if(!Program.RemoteControlModule.Useable){
+            if(!RemoteControlModule.Useable){
                 Console.WriteLine("command execute failed,remote control module not initialized");
                 return;
             }
-            if(!Program.RemoteControlModule.Start()) {
+            if(!RemoteControlModule.Start()) {
                 Console.WriteLine("command execute failed,can not connect to daemon service");
                 return;
             }
-            if(!Program.RemoteControlModule.Valid()) {
+            if(!RemoteControlModule.Valid()) {
                 Console.WriteLine("command execute failed,connection invalid");
                 return;
             }
             //执行远程控制指令
             switch(command){
-                case "status":Program.RemoteControlModule.StatusRequest(argumentValue1);break;
-                case "start":Program.RemoteControlModule.StartRequest(argumentValue1);break;
-                case "stop":Program.RemoteControlModule.StopRequest(argumentValue1);break;
-                case "restart":Program.RemoteControlModule.RestartRequest(argumentValue1);break;
-                case "load":Program.RemoteControlModule.LoadRequest(argumentValue1);break;
-                case "remove":Program.RemoteControlModule.RemoveRequest(argumentValue1);break;
-                case "logs":Program.RemoteControlModule.LogsRequest(argumentValue1);break;
-                //case "attach": [1008]
-                case "status-all":Program.RemoteControlModule.StatusAllRequest(argumentValue1);break;
-                case "start-all":Program.RemoteControlModule.StartAllRequest(argumentValue1);break;
-                case "stop-all":Program.RemoteControlModule.StopAllRequest(argumentValue1);break;
-                case "restart-all":Program.RemoteControlModule.RestartAllRequest(argumentValue1);break;
-                case "load-all":Program.RemoteControlModule.LoadAllRequest(argumentValue1);break;
-                case "remove-all":Program.RemoteControlModule.RemoveAllRequest(argumentValue1);break;
-                case "daemon-version":Program.RemoteControlModule.DaemonVersionRequest(argumentValue1);break;
-                case "daemon-status":Program.RemoteControlModule.DaemonStatusRequest(argumentValue1);break;
-                case "daemon-shutdown":Program.RemoteControlModule.DaemonShutdownRequest(argumentValue1);break;
+                case "status":RemoteControlModule.StatusRequest(argumentValue1);break;
+                case "start":RemoteControlModule.StartRequest(argumentValue1);break;
+                case "stop":RemoteControlModule.StopRequest(argumentValue1);break;
+                case "restart":RemoteControlModule.RestartRequest(argumentValue1);break;
+                case "load":RemoteControlModule.LoadRequest(argumentValue1);break;
+                case "remove":RemoteControlModule.RemoveRequest(argumentValue1);break;
+                case "logs":RemoteControlModule.LogsRequest(argumentValue1);break;
+                case "attach":RemoteControlModule.AttachRequest(argumentValue1);break;
+                case "status-all":RemoteControlModule.StatusAllRequest();break;
+                case "start-all":RemoteControlModule.StartAllRequest();break;
+                case "stop-all":RemoteControlModule.StopAllRequest();break;
+                case "restart-all":RemoteControlModule.RestartAllRequest();break;
+                case "load-all":RemoteControlModule.LoadAllRequest();break;
+                case "remove-all":RemoteControlModule.RemoveAllRequest();break;
+                case "daemon-version":RemoteControlModule.DaemonVersionRequest();break;
+                case "daemon-status":RemoteControlModule.DaemonStatusRequest();break;
+                case "daemon-shutdown":RemoteControlModule.DaemonShutdownRequest();break;
                 default:CommandHelper.Help();break;
             }
             //等待查询完成
-            SpinWait.SpinUntil(()=>!InAction,8000);
+            if(command=="attach"){
+                SpinWait.SpinUntil(()=>false,1000);
+                while(!String.IsNullOrWhiteSpace(AttachedUnitKey)){
+                    String attachedCommandLine=Console.ReadLine();
+                    if(String.IsNullOrWhiteSpace(attachedCommandLine)){continue;}
+                    RemoteControlModule.AttachRequest(AttachedUnitKey,1,attachedCommandLine);
+                }
+                //SpinWait.SpinUntil(()=>!InAction);
+            } else {
+                SpinWait.SpinUntil(()=>!InAction,8000);
+            }
         }
     }
 }

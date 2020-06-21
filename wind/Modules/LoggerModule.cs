@@ -19,7 +19,7 @@ namespace wind.Modules {
         /// <summary>是否启用定时器</summary>
         private Boolean TimerEnable{get;set;}=false;
         /// <summary>日志</summary>
-        private ConcurrentDictionary<String,StringBuilder> Logs{get;set;}=new ConcurrentDictionary<String, StringBuilder>();
+        private Dictionary<String,StringBuilder> Logs{get;set;}=new Dictionary<String, StringBuilder>();
         
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用

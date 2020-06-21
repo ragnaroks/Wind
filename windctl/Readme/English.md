@@ -26,7 +26,9 @@ try load/update unit's settings from file
 - windctl remove **\<unitKey\>**  
 stop unit and remove it,it can not be start again
 - windctl logs **\<unitKey\>**  
-print unit's last lines logs
+print unit's latest logs
+- windctl attach **\<unitKey\>**  
+attach to unit's console,can execute command if unit supprot,use `ctrl+c` to dettach
 - windctl status-all  
 print all unit's status(lite)
 - windctl start-all  

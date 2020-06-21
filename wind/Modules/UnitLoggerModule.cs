@@ -21,7 +21,9 @@ namespace wind.Modules {
         /// <summary>是否启用定时器</summary>
         private Boolean TimerEnable{get;set;}=false;
         /// <summary>日志</summary>
-        private ConcurrentDictionary<String,StringBuilder> UnitLogs{get;set;}=new ConcurrentDictionary<String, StringBuilder>();
+        private Dictionary<String,StringBuilder> UnitLogs{get;set;}=new Dictionary<String, StringBuilder>();
+        /// <summary>单元输出</summary>
+        private Dictionary<String,Queue<String>> UnitOutputs{get;set;}=new Dictionary<String,Queue<String>>();
         
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用
@@ -39,6 +41,7 @@ namespace wind.Modules {
                 // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
                 // TODO: 将大型字段设置为 null。
                 this.UnitLogs=null;
+                this.UnitOutputs=null;
 
                 disposedValue=true;
             }
@@ -132,11 +135,49 @@ namespace wind.Modules {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style","IDE0056:使用索引运算符",Justification = "<挂起>")]
         public void Log(String unitKey,String text){
             if(!this.Useable){return;}
-            if(String.IsNullOrWhiteSpace(unitKey) || String.IsNullOrWhiteSpace(unitKey)){return;}
+            if(String.IsNullOrWhiteSpace(unitKey) || String.IsNullOrWhiteSpace(text)){return;}
             if(!this.UnitLogs.ContainsKey(unitKey) || this.UnitLogs[unitKey]==null){ this.UnitLogs[unitKey]=new StringBuilder(); }
             this.UnitLogs[unitKey].Append(text).AppendLine();//收到的消息会丢失换行
         }
 
+        /// <summary>
+        /// 记录输出
+        /// </summary>
+        /// <param name="unitKey"></param>
+        /// <param name="text"></param>
+        public void LogOutput(String unitKey,String text) {
+            if(!this.Useable){return;}
+            if(String.IsNullOrWhiteSpace(unitKey) || String.IsNullOrWhiteSpace(text)){return;}
+            if(!this.UnitOutputs.ContainsKey(unitKey) || this.UnitOutputs[unitKey]==null){ this.UnitOutputs[unitKey]=new Queue<String>(); }
+            if(this.UnitOutputs[unitKey].Count>63){ _=this.UnitOutputs[unitKey].Dequeue(); }
+            this.UnitOutputs[unitKey].Enqueue(text);
+        }
+
+        /// <summary>
+        /// 获取单元的日志文件路径
+        /// </summary>
+        /// <param name="unitKey"></param>
+        /// <returns></returns>
+        public String GetLogFilePath(String unitKey) {
+            if(!this.Useable || String.IsNullOrWhiteSpace(unitKey)){return null;}
+            String logDirectory=String.Concat(this.UnitLogsDirectory,Path.DirectorySeparatorChar,unitKey);
+            if(!Directory.Exists(logDirectory)){return null;}
+            String filename=String.Concat(DateTime.Now.ToString("yyyy-MM-dd",DateTimeFormatInfo.InvariantInfo),".log");
+            return String.Concat(logDirectory,Path.DirectorySeparatorChar,filename);
+        }
+
+        /// <summary>
+        /// 获取输出
+        /// </summary>
+        /// <param name="unitKey"></param>
+        /// <returns></returns>
+        public String[] GetOutputs(String unitKey) {
+            if(!this.Useable || String.IsNullOrWhiteSpace(unitKey)){return null;}
+            if(!this.UnitOutputs.ContainsKey(unitKey) || this.UnitOutputs[unitKey]==null){return null;}
+            return this.UnitOutputs[unitKey].ToArray();
+        }
+
+        /*
         /// <summary>
         /// 读取日志的最后 N 行
         /// </summary>
@@ -168,6 +209,6 @@ namespace wind.Modules {
                 logLines=lines.AsSpan(lines.GetLength(0)-lineSize).ToArray();
             }
             return true;
-        }
+        }*/
     }
 }

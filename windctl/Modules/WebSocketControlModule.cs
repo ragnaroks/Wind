@@ -11,6 +11,7 @@ using wind.Entities.Protobuf;
 using windctl.Helpers;
 
 namespace windctl.Modules {
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Performance","CA1822:将成员标记为 static",Justification = "<挂起>")]
     public class WebSocketControlModule:IDisposable{
         public Boolean Useable{get;private set;}=false;
 
@@ -41,7 +42,7 @@ namespace windctl.Modules {
                     // TODO: 释放托管状态(托管对象)
                     if(this.Client!=null) {
                         //this.Client.ServerConnected-=this.ServerConnected;
-                        //this.Client.ServerDisconnected-=this.ServerDisconnected;
+                        this.Client.ServerDisconnected-=this.ServerDisconnected;
                         this.Client.MessageReceived-=this.ClientMessageReceived;
                         this.Client.Dispose();
                     }
@@ -110,7 +111,7 @@ namespace windctl.Modules {
                 return false;
             }
             //this.Client.ServerConnected+=this.ServerConnected;
-            //this.Client.ServerDisconnected+=this.ServerDisconnected;
+            this.Client.ServerDisconnected+=this.ServerDisconnected;
             this.Client.MessageReceived+=this.ClientMessageReceived;
             //完成
             this.Useable=true;
@@ -153,6 +154,23 @@ namespace windctl.Modules {
         }
 
         /// <summary>
+        /// 断开链接
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ServerDisconnected(object sender,EventArgs e) {
+            if(!String.IsNullOrWhiteSpace(Program.AttachedUnitKey)){
+                Program.AttachedUnitKey=null;
+                Program.InAction=false;
+                Console.ForegroundColor=ConsoleColor.Red;
+                Console.WriteLine("dettached from unit,because connection was broken");
+                Console.ResetColor();
+                Environment.Exit(0);
+                return;
+            }
+            if(Program.InAction){ Program.InAction=false; }
+        }
+        /// <summary>
         /// 收到服务端数据
         /// </summary>
         /// <param name="sender"></param>
@@ -176,6 +194,7 @@ namespace windctl.Modules {
             switch(packetTestProtobuf.Type) {
                 case 21:this.ServerAcceptConnection(messageReceivedEventArgs.Data);break;
                 case 22:this.ServerValidateConnection(messageReceivedEventArgs.Data);break;
+                //
                 case 2001:this.StatusResponse(messageReceivedEventArgs.Data);break;
                 case 2002:this.StartResponse(messageReceivedEventArgs.Data);break;
                 case 2003:this.StopResponse(messageReceivedEventArgs.Data);break;
@@ -183,16 +202,21 @@ namespace windctl.Modules {
                 case 2005:this.LoadResponse(messageReceivedEventArgs.Data);break;
                 case 2006:this.RemoveResponse(messageReceivedEventArgs.Data);break;
                 case 2007:this.LogsResponse(messageReceivedEventArgs.Data);break;
-                //case 2008:this.AttachResponse(messageReceivedEventArgs.Data);break;
+                case 2008:this.AttachResponse(messageReceivedEventArgs.Data);break;
+                //
                 case 2101:this.StatusAllResponse(messageReceivedEventArgs.Data);break;
                 case 2102:this.StartAllResponse(messageReceivedEventArgs.Data);break;
                 case 2103:this.StopAllResponse(messageReceivedEventArgs.Data);break;
                 case 2104:this.RestartAllResponse(messageReceivedEventArgs.Data);break;
                 case 2105:this.LoadAllResponse(messageReceivedEventArgs.Data);break;
                 case 2106:this.RemoveAllResponse(messageReceivedEventArgs.Data);break;
+                //
                 case 2200:this.DaemonVersionResponse(messageReceivedEventArgs.Data);break;
                 case 2201:this.DaemonStatusResponse(messageReceivedEventArgs.Data);break;
                 case 2299:this.DaemonShutdownResponse(messageReceivedEventArgs.Data);break;
+                //
+                case 3003:this.StopNotify(messageReceivedEventArgs.Data);break;
+                case 3007:this.LogsNotify(messageReceivedEventArgs.Data);break;
                 default:break;
             }
         }
@@ -213,7 +237,7 @@ namespace windctl.Modules {
             if(!this.Client.Connected){return;}
             LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.ClientOfferControlKey","向服务端请求验证");
             ClientOfferControlKeyProtobuf clientOfferControlKeyProtobuf=new ClientOfferControlKeyProtobuf{
-                Type=12,ConnectionId=this.ClientConnectionId,ControlKey=this.ControlKey};
+                Type=12,ConnectionId=this.ClientConnectionId,ControlKey=this.ControlKey,SupportNotify=false,SupportAttach=true};
             _=this.Client.SendAsync(clientOfferControlKeyProtobuf.ToByteArray());
         }
         /// <summary>
@@ -341,12 +365,25 @@ namespace windctl.Modules {
             _=this.Client.SendAsync(attachRequestProtobuf.ToByteArray());
             Program.InAction=true;
         }
+        /// <summary>
+        /// windctl attach unitKey,连上之后发送数据使用
+        /// </summary>
+        /// <param name="unitKey"></param>
+        /// <param name="commandType"></param>
+        /// <param name="commandLine"></param>
+        public void AttachRequest(String unitKey,Int32 commandType,String commandLine) {
+            //注意这里的判断条件与上面相反
+            if(!this.Client.Connected || !this.ClientConnectionValid || !Program.InAction){return;}
+            AttachRequestProtobuf attachRequestProtobuf=new AttachRequestProtobuf{Type=1008,UnitKey=unitKey,CommandType=commandType};
+            if(commandType==1){ attachRequestProtobuf.CommandLine=commandLine; }
+            _=this.Client.SendAsync(attachRequestProtobuf.ToByteArray());
+            //Program.InAction=true;//不变更锁的状态
+        }
         ////////////////////////////////////////////////////////////////
         /// <summary>
         /// windctl status-all
         /// </summary>
-        /// <param name="unitKey"></param>
-        public void StatusAllRequest(String unitKey) {
+        public void StatusAllRequest() {
             if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
             StatusAllRequestProtobuf statusAllRequestProtobuf=new StatusAllRequestProtobuf{Type=1101};
             _=this.Client.SendAsync(statusAllRequestProtobuf.ToByteArray());
@@ -355,8 +392,7 @@ namespace windctl.Modules {
         /// <summary>
         /// windctl start-all
         /// </summary>
-        /// <param name="unitKey"></param>
-        public void StartAllRequest(String unitKey) {
+        public void StartAllRequest() {
             if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
             StartAllRequestProtobuf startAllRequestProtobuf=new StartAllRequestProtobuf{Type=1102};
             _=this.Client.SendAsync(startAllRequestProtobuf.ToByteArray());
@@ -365,8 +401,7 @@ namespace windctl.Modules {
         /// <summary>
         /// windctl stop-all
         /// </summary>
-        /// <param name="unitKey"></param>
-        public void StopAllRequest(String unitKey) {
+        public void StopAllRequest() {
             if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
             StopAllRequestProtobuf stopAllRequestProtobuf=new StopAllRequestProtobuf{Type=1103};
             _=this.Client.SendAsync(stopAllRequestProtobuf.ToByteArray());
@@ -375,8 +410,7 @@ namespace windctl.Modules {
         /// <summary>
         /// windctl restart-all
         /// </summary>
-        /// <param name="unitKey"></param>
-        public void RestartAllRequest(String unitKey) {
+        public void RestartAllRequest() {
             if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
             RestartAllRequestProtobuf restartAllRequestProtobuf=new RestartAllRequestProtobuf{Type=1104};
             _=this.Client.SendAsync(restartAllRequestProtobuf.ToByteArray());
@@ -385,8 +419,7 @@ namespace windctl.Modules {
         /// <summary>
         /// windctl load-all
         /// </summary>
-        /// <param name="unitKey"></param>
-        public void LoadAllRequest(String unitKey) {
+        public void LoadAllRequest() {
             if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
             LoadAllRequestProtobuf loadAllRequestProtobuf=new LoadAllRequestProtobuf{Type=1105};
             _=this.Client.SendAsync(loadAllRequestProtobuf.ToByteArray());
@@ -395,8 +428,7 @@ namespace windctl.Modules {
         /// <summary>
         /// windctl remove-all
         /// </summary>
-        /// <param name="unitKey"></param>
-        public void RemoveAllRequest(String unitKey) {
+        public void RemoveAllRequest() {
             if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
             RemoveAllRequestProtobuf removeAllRequestProtobuf=new RemoveAllRequestProtobuf{Type=1106};
             _=this.Client.SendAsync(removeAllRequestProtobuf.ToByteArray());
@@ -406,8 +438,7 @@ namespace windctl.Modules {
         /// <summary>
         /// windctl daemon-version
         /// </summary>
-        /// <param name="unitKey"></param>
-        public void DaemonVersionRequest(String unitKey) {
+        public void DaemonVersionRequest() {
             if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
             DaemonVersionRequestProtobuf daemonVersionRequestProtobuf=new DaemonVersionRequestProtobuf{Type=1200};
             _=this.Client.SendAsync(daemonVersionRequestProtobuf.ToByteArray());
@@ -416,8 +447,7 @@ namespace windctl.Modules {
         /// <summary>
         /// windctl daemon-status
         /// </summary>
-        /// <param name="unitKey"></param>
-        public void DaemonStatusRequest(String unitKey) {
+        public void DaemonStatusRequest() {
             if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
             DaemonStatusRequestProtobuf daemonStatusRequestProtobuf=new DaemonStatusRequestProtobuf{Type=1201};
             _=this.Client.SendAsync(daemonStatusRequestProtobuf.ToByteArray());
@@ -426,8 +456,7 @@ namespace windctl.Modules {
         /// <summary>
         /// windctl daemon-shutdown
         /// </summary>
-        /// <param name="unitKey"></param>
-        public void DaemonShutdownRequest(String unitKey) {
+        public void DaemonShutdownRequest() {
             if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
             DaemonShutdownRequestProtobuf daemonShutdownRequestProtobuf=new DaemonShutdownRequestProtobuf{Type=1299};
             _=this.Client.SendAsync(daemonShutdownRequestProtobuf.ToByteArray());
@@ -568,6 +597,30 @@ namespace windctl.Modules {
             //调用
             CommandHelper.Logs(logsResponseProtobuf);
             Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl attach unitKey
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void AttachResponse(Byte[] bytes) {
+            //解析数据
+            AttachResponseProtobuf attachResponseProtobuf;
+            try {
+                attachResponseProtobuf=AttachResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.AttachResponse[Error]",
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.Attach(attachResponseProtobuf);
+            if(attachResponseProtobuf.Executed) {
+                Program.AttachedUnitKey=attachResponseProtobuf.UnitKey;
+                Program.InAction=true;//附加成功,不解锁
+            } else {
+                Program.InAction=false;//附加失败,解锁
+            }
         }
         ////////////////////////////////////////////////////////////////
         /// <summary>
@@ -741,6 +794,45 @@ namespace windctl.Modules {
             //调用
             CommandHelper.DaemonShutdown(daemonShutdownResponseProtobuf);
             Program.InAction=false;
+        }
+        #endregion
+
+        #region 服务端通知
+        /// <summary>
+        /// StopNotify
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void StopNotify(Byte[] bytes) {
+            //解析数据
+            StopNotifyProtobuf stopNotifyProtobuf;
+            try {
+                stopNotifyProtobuf=StopNotifyProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.StopNotify[Error]",
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            NotifyHelper.Stop(stopNotifyProtobuf);
+        }
+        /// <summary>
+        /// LogsNotify
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void LogsNotify(Byte[] bytes) {
+            //解析数据
+            LogsNotifyProtobuf logsNotifyProtobuf;
+            try {
+                logsNotifyProtobuf=LogsNotifyProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.LogsNotify[Error]",
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            NotifyHelper.Logs(logsNotifyProtobuf);
         }
         #endregion
     }

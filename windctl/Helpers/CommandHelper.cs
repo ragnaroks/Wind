@@ -15,9 +15,9 @@ namespace windctl.Helpers {
             +"windctl restart <unitKey>    =>  restart unit\n"
             +"windctl load <unitKey>       =>  try load/update unit's settings from file,need restart to apply\n"
             +"windctl remove <unitKey>     =>  stop unit and remove it,it can not be start again\n"
-            +"windctl logs <unitKey>       =>  print unit's last 16 line logs\n"
-            //+"windctl attach <unitKey>     =>  get all unit's lite status\n"
-            //+"windctl status-all           =>  get all unit's lite status\n"
+            +"windctl logs <unitKey>       =>  print unit's latest logs\n"
+            +"windctl attach <unitKey>     =>  attach to unit console host\n"
+            +"windctl status-all           =>  print all unit's status(lite)\n"
             +"windctl start-all            =>  start all unit\n"
             +"windctl stop-all             =>  stop all unit\n"
             +"windctl restart-all          =>  restart all unit\n"
@@ -42,7 +42,7 @@ namespace windctl.Helpers {
                 case "load":
                 case "remove":
                 case "logs":
-                //case "attach":
+                case "attach":
                 case "status-all":
                 case "start-all":
                 case "stop-all":
@@ -73,7 +73,7 @@ namespace windctl.Helpers {
                 case "load":
                 case "remove":
                 case "logs":
-                //case "attach":
+                case "attach":
                     break;
                 default:return true;
             }
@@ -241,10 +241,25 @@ namespace windctl.Helpers {
                 Console.WriteLine(String.Concat("command execute failed,",logsResponseProtobuf.NoExecuteMessage));
                 return;
             }
-            Console.WriteLine($"↓↓↓↓ {logsResponseProtobuf.LogFilePath} ↓↓↓↓");
-            for(Int32 i1 = 0;i1<logsResponseProtobuf.LogLines.Count;i1++){
-                Console.WriteLine(logsResponseProtobuf.LogLines[i1]);
+            Console.ForegroundColor=ConsoleColor.Yellow;
+            Console.WriteLine($"see more details in {logsResponseProtobuf.LogFilePath}");
+            Console.ResetColor();
+            for(Int32 i1=0;i1<logsResponseProtobuf.LogLineArray.Count;i1++){ Console.WriteLine(logsResponseProtobuf.LogLineArray[i1]); }
+        }
+
+        /// <summary>
+        /// windctl logs unitKey
+        /// </summary>
+        public static void Attach(AttachResponseProtobuf attachResponseProtobuf){
+            if(attachResponseProtobuf==null){
+                Console.WriteLine(ERROR_RESPONSE);
+                return;
             }
+            if(!attachResponseProtobuf.Executed) {
+                Console.WriteLine(String.Concat("command execute failed,",attachResponseProtobuf.NoExecuteMessage));
+                return;
+            }
+            for(Int32 i1=0;i1<attachResponseProtobuf.OutputLineArray.Count;i1++){ Console.WriteLine(attachResponseProtobuf.OutputLineArray[i1]); }
         }
 
         /// <summary>

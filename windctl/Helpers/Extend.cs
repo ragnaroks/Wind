@@ -36,7 +36,7 @@ namespace windctl.Helpers {
         public static String ToLocalTimestampString(this Int64 value){
             if(value<1){return "-";}
             DateTime origin=new DateTime(1970,1,1,0,0,0,DateTimeKind.Local);
-            return origin.AddSeconds(value).ToString("yyyy-MM-dd HH:mm:ss");
+            return origin.AddSeconds(value).ToString("yyyy-MM-dd HH:mm:ss",DateTimeFormatInfo.InvariantInfo);
         }
     }
 }

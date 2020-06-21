@@ -246,6 +246,9 @@ namespace wind.Modules {
         /// <param name="clientConnection"></param>
         private void OnClientConnectionClose(ClientConnection clientConnection){
             LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.OnClientConnectionClose",$"客户端 {clientConnection.Id} 已断开链接");
+            clientConnection.AttachedUnitKey=null;
+            clientConnection.SupportAttach=false;
+            clientConnection.SupportNotify=false;
             this.ClientConnectionDictionary.Remove(clientConnection.Id);
         }
         /// <summary>
@@ -321,6 +324,7 @@ namespace wind.Modules {
             switch(packetTestProtobuf.Type){
                 case 1:break;//心跳包,忽略
                 case 12:this.ClientOfferControlKey(clientConnection,binary);break;
+                //
                 case 1001:this.StatusRequest(clientConnection,binary);break;
                 case 1002:this.StartRequest(clientConnection,binary);break;
                 case 1003:this.StopRequest(clientConnection,binary);break;
@@ -328,13 +332,15 @@ namespace wind.Modules {
                 case 1005:this.LoadRequest(clientConnection,binary);break;
                 case 1006:this.RemoveRequest(clientConnection,binary);break;
                 case 1007:this.LogsRequest(clientConnection,binary);break;
-                //case 1008:this.AttachRequest(clientConnection,binary);break;
+                case 1008:this.AttachRequest(clientConnection,binary);break;
+                //
                 case 1101:this.StatusAllRequest(clientConnection,binary);break;
                 case 1102:this.StartAllRequest(clientConnection,binary);break;
                 case 1103:this.StopAllRequest(clientConnection,binary);break;
                 case 1104:this.RestartAllRequest(clientConnection,binary);break;
                 case 1105:this.LoadAllRequest(clientConnection,binary);break;
                 case 1106:this.RemoveAllRequest(clientConnection,binary);break;
+                //
                 case 1200:this.DaemonVersionRequest(clientConnection,binary);break;
                 case 1201:this.DaemonStatusRequest(clientConnection,binary);break;
                 case 1299:this.DaemonShutdownRequest(clientConnection,binary);break;
@@ -363,8 +369,13 @@ namespace wind.Modules {
                 return;
             }
             //服务端回复客户端ControlKey验证结果
-            Boolean valid=clientOfferControlKeyProtobuf.ConnectionId==clientConnection.Id && clientOfferControlKeyProtobuf.ControlKey==this.ControlKey;
-            ServerValidateConnectionProtobuf serverValidateConnectionProtobuf=new ServerValidateConnectionProtobuf{Type=22,ConnectionId=clientConnection.Id,Valid=valid};
+            clientConnection.Valid=clientOfferControlKeyProtobuf.ConnectionId==clientConnection.Id && clientOfferControlKeyProtobuf.ControlKey==this.ControlKey;
+            ServerValidateConnectionProtobuf serverValidateConnectionProtobuf=new ServerValidateConnectionProtobuf{
+                Type=22,ConnectionId=clientConnection.Id,Valid=clientConnection.Valid};
+            if(clientConnection.Valid) {
+                clientConnection.SupportNotify=clientOfferControlKeyProtobuf.SupportNotify;
+                clientConnection.SupportAttach=clientOfferControlKeyProtobuf.SupportAttach;
+            }
             //回复
             _=clientConnection.WebSocketConnection.Send(serverValidateConnectionProtobuf.ToByteArray());
         }
@@ -740,13 +751,22 @@ namespace wind.Modules {
                 return;
             }
             //读取日志
-            if(!Program.UnitLoggerModule.GetLogLastLines(logsRequestProtobuf.UnitKey,16,out String logFilePath,out String[] logLines)) {
+            /*if(!Program.UnitLoggerModule.GetLogLastLines(logsRequestProtobuf.UnitKey,16,out String logFilePath,out String[] logLines)) {
                 logsResponseProtobuf.NoExecuteMessage="unit not have logs";
             } else {
                 logsResponseProtobuf.LogLines.Add(logLines);
                 logsResponseProtobuf.LogFilePath=logFilePath;
                 logsResponseProtobuf.Executed=true;
+            }*/
+            String[] outputs=Program.UnitLoggerModule.GetOutputs(logsRequestProtobuf.UnitKey);
+            if(outputs==null || outputs.GetLength(0)<1){
+                logsResponseProtobuf.NoExecuteMessage="unit not have logs";
+                _=clientConnection.WebSocketConnection.Send(logsResponseProtobuf.ToByteArray());
+                return;
             }
+            logsResponseProtobuf.LogLineArray.Add(outputs);
+            logsResponseProtobuf.LogFilePath=Program.UnitLoggerModule.GetLogFilePath(logsRequestProtobuf.UnitKey);
+            logsResponseProtobuf.Executed=true;
             //回复
             _=clientConnection.WebSocketConnection.Send(logsResponseProtobuf.ToByteArray());
         }
@@ -755,8 +775,76 @@ namespace wind.Modules {
         /// </summary>
         /// <param name="clientConnection"></param>
         /// <param name="binary"></param>
-        [Obsolete]
-        private void AttachRequest(ClientConnection clientConnection,Byte[] binary)=>throw new NotImplementedException();
+        private void AttachRequest(ClientConnection clientConnection,Byte[] binary){
+            //解析数据包
+            AttachRequestProtobuf attachRequestProtobuf;
+            try {
+                attachRequestProtobuf=AttachRequestProtobuf.Parser.ParseFrom(binary);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.AttachRequest[Error]",
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                _=clientConnection.WebSocketConnection.Send(binary);
+                return;
+            }
+            //初始化响应体
+            AttachResponseProtobuf attachResponseProtobuf=new AttachResponseProtobuf{Type=2008,UnitKey=attachRequestProtobuf.UnitKey};
+            //申请附加
+            if(attachRequestProtobuf.CommandType==0) {
+                //无效unit
+                if(String.IsNullOrWhiteSpace(attachRequestProtobuf.UnitKey)){
+                    attachResponseProtobuf.NoExecuteMessage="unitKey invalid";
+                    _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
+                    return;
+                }
+                if(!Program.UnitManageModule.Useable){
+                    attachResponseProtobuf.NoExecuteMessage="unit manager not available";
+                    _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
+                    return;
+                }
+                if(!Program.UnitLoggerModule.Useable) {
+                    attachResponseProtobuf.NoExecuteMessage="unit logger not available";
+                    _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
+                    return;
+                }
+                Unit unit=Program.UnitManageModule.GetUnit(attachRequestProtobuf.UnitKey);
+                if(unit==null) {
+                    attachResponseProtobuf.NoExecuteMessage="unit not found";
+                    _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
+                    return;
+                }
+                if(unit.State!=2) {
+                    attachResponseProtobuf.NoExecuteMessage="unit not running";
+                    _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
+                    return;
+                }
+                if(!clientConnection.SupportNotify && !clientConnection.SupportAttach) {
+                    attachResponseProtobuf.NoExecuteMessage="controller not support attach command";
+                    _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
+                    return;
+                }
+                //附加
+                clientConnection.AttachedUnitKey=null;
+                String[] outputs=Program.UnitLoggerModule.GetOutputs(attachRequestProtobuf.UnitKey);
+                if(outputs!=null && outputs.GetLength(0)>0){ attachResponseProtobuf.OutputLineArray.Add(outputs); }
+                clientConnection.AttachedUnitKey=attachRequestProtobuf.UnitKey;
+                attachResponseProtobuf.Executed=true;
+                //回复
+                _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
+            }else if(attachRequestProtobuf.CommandType==1) {
+                //命令行指令
+                Program.UnitManageModule.ExecuteCommand(attachRequestProtobuf.UnitKey,attachRequestProtobuf.CommandLine);
+            }else if(attachRequestProtobuf.CommandType==2) {
+                //^c,but not work
+                Program.UnitManageModule.ExecuteExitCommand(attachRequestProtobuf.UnitKey);
+            }else if(attachRequestProtobuf.CommandType==9) {
+                //dettch
+                clientConnection.WebSocketConnection.Close();
+            }else{
+                attachResponseProtobuf.NoExecuteMessage="command type error";
+                _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
+            }
+        }
         /// <summary>
         /// windctl status-all
         /// </summary>
@@ -1061,7 +1149,7 @@ namespace wind.Modules {
             UnitPerformanceCounterProtobuf unitPerformanceCounter=new UnitPerformanceCounterProtobuf{RAM=0F,CPU=0F};
             UnitNetworkCounterProtobuf unitNetworkCounter =new UnitNetworkCounterProtobuf { SendSpeed=0,ReceiveSpeed=0,TotalSent=0,TotalReceived=0};
             if(Program.UnitPerformanceCounterModule.Useable) {
-                unitPerformanceCounter.CPU=Program.UnitPerformanceCounterModule.GetCpuValue(Program.AppProcess.Id);
+                unitPerformanceCounter.CPU=Program.UnitPerformanceCounterModule.GetCpuValue(Program.AppProcess.Id)/Environment.ProcessorCount;
                 unitPerformanceCounter.RAM=Program.UnitPerformanceCounterModule.GetRamValue(Program.AppProcess.Id);
             }
             if(Program.UnitNetworkCounterModule.Useable) {
@@ -1107,6 +1195,44 @@ namespace wind.Modules {
             });
             //回复
             _=clientConnection.WebSocketConnection.Send(daemonShutdownResponseProtobuf.ToByteArray());
+        }
+        #endregion
+
+        #region 服务端通知
+        /// <summary>
+        /// 单元产生新的日志,通知符合条件的客户端
+        /// </summary>
+        /// <param name="unitKey"></param>
+        /// <param name="log"></param>
+        public void LogsNotify(String unitKey,String[] logArray){
+            if(!this.Useable || this.ClientConnectionDictionary.Count<1 || String.IsNullOrWhiteSpace(unitKey)){return;}
+            if(logArray==null || logArray.GetLength(0)<1){return;}
+            LogsNotifyProtobuf logsNotifyProtobuf=new LogsNotifyProtobuf{Type=3007,UnitKey=unitKey};
+            foreach(String item in logArray){
+                if(String.IsNullOrWhiteSpace(item)){continue;}
+                logsNotifyProtobuf.LogLineArray.Add(item);
+            }
+            if(logsNotifyProtobuf.LogLineArray.Count<1){return;}
+            Byte[] bytes=logsNotifyProtobuf.ToByteArray();
+            foreach(KeyValuePair<String,ClientConnection> item in this.ClientConnectionDictionary) {
+                if(!item.Value.Valid){continue;}
+                if(!item.Value.SupportNotify && !item.Value.SupportAttach){continue;}
+                item.Value.WebSocketConnection.Send(bytes);
+            }
+        }
+        /// <summary>
+        /// 单元停止,通知符合条件的客户端
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void StopNotify(String unitKey){
+            if(!this.Useable || this.ClientConnectionDictionary.Count<1 || String.IsNullOrWhiteSpace(unitKey)){return;}
+            StopNotifyProtobuf stopNotifyProtobuf=new StopNotifyProtobuf{Type=3003,UnitKey=unitKey};
+            Byte[] bytes=stopNotifyProtobuf.ToByteArray();
+            foreach(KeyValuePair<String,ClientConnection> item in this.ClientConnectionDictionary) {
+                if(!item.Value.Valid){continue;}
+                if(!item.Value.SupportNotify && !item.Value.SupportAttach){continue;}
+                item.Value.WebSocketConnection.Send(bytes);
+            }
         }
         #endregion
     }

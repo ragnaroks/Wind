@@ -8,6 +8,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Text;
 
 namespace wind.Modules {
     /// <summary>单元管理模块,逻辑上应只提供同步方法,避免此模块出现线程同步问题</summary>
@@ -94,6 +95,7 @@ namespace wind.Modules {
             //如果是单元停止,此时state==3,否则可能是1||2
             if(unit.State==3){return;}
             unit.State=0;
+            if(Program.RemoteControlModule.Useable){ Program.RemoteControlModule.StopNotify(unit.Key); }
             Program.LoggerModule.Log("Modules.UnitManageModule.OnUnitProcessExited",$"单元\"{unit.Key}\"异常退出");
             if(!unit.RunningSettings.RestartWhenException){return;}
             this.StartUnit(unit.Key,false);
@@ -115,7 +117,12 @@ namespace wind.Modules {
                 break;
             }
             if(unit==null){return;}
+            //记录日志
             Program.UnitLoggerModule.Log(unit.Key,dataReceivedEventArgs.Data);
+            //记录输出
+            Program.UnitLoggerModule.LogOutput(unit.Key,dataReceivedEventArgs.Data);
+            //记录通知
+            Program.RemoteControlModule.LogsNotify(unit.Key,new String[]{dataReceivedEventArgs.Data});
         }
         /// <summary>
         /// 收到单元进程stderr
@@ -133,7 +140,12 @@ namespace wind.Modules {
                 break;
             }
             if(unit==null){return;}
+            //记录日志
             Program.UnitLoggerModule.Log(unit.Key,dataReceivedEventArgs.Data);
+            //记录输出
+            Program.UnitLoggerModule.LogOutput(unit.Key,dataReceivedEventArgs.Data);
+            //记录通知
+            Program.RemoteControlModule.LogsNotify(unit.Key,new String[]{dataReceivedEventArgs.Data});
         }
 
         /// <summary>
@@ -201,6 +213,7 @@ namespace wind.Modules {
             unit.RunningSettings=null;
             if(Program.UnitPerformanceCounterModule.Useable){ _=Program.UnitPerformanceCounterModule.Remove(unit.ProcessId); }
             if(Program.UnitNetworkCounterModule.Useable){ _=Program.UnitNetworkCounterModule.Remove(unit.ProcessId); }
+            if(Program.RemoteControlModule.Useable){ Program.RemoteControlModule.StopNotify(unit.Key); }
             unit.ProcessId=0;
             unit.State=0;
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnit",$"已停止\"{unitKey}\"单元");
@@ -224,7 +237,8 @@ namespace wind.Modules {
             ProcessStartInfo processStartInfo=new ProcessStartInfo{
                 UseShellExecute=false,FileName=unit.RunningSettings.AbsoluteExecutePath,WorkingDirectory=unit.RunningSettings.AbsoluteWorkDirectory,
                 CreateNoWindow=true,WindowStyle=ProcessWindowStyle.Hidden,Arguments=unit.RunningSettings.Arguments,
-                RedirectStandardOutput=true,RedirectStandardError=true/*,RedirectStandardInput=true*/};
+                RedirectStandardOutput=true,RedirectStandardError=true,RedirectStandardInput=true,
+                StandardOutputEncoding=Encoding.UTF8,StandardErrorEncoding=Encoding.UTF8,StandardInputEncoding=Encoding.UTF8};
             unit.Process=new Process{StartInfo=processStartInfo,EnableRaisingEvents=true};
             unit.Process.Exited+=this.OnUnitProcessExited;
             unit.Process.OutputDataReceived+=this.OnProcessOutputDataReceived;
@@ -241,6 +255,7 @@ namespace wind.Modules {
             if(b1) {
                 unit.Process.BeginOutputReadLine();
                 unit.Process.BeginErrorReadLine();
+                unit.Process.StandardInput.AutoFlush=true;
                 unit.ProcessId=unit.Process.Id;
                 unit.State=2;
                 if(unit.RunningSettings.MonitorPerformanceUsage && Program.UnitPerformanceCounterModule.Useable){
@@ -462,6 +477,37 @@ namespace wind.Modules {
                     this.RemoveUnit(item.Key);
                 }
             }
+        }
+
+        public Boolean ExecuteCommand(String unitKey,String commandLine){
+            if(!this.Useable){return false;}
+            if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return false;}
+            if(this.UnitDictionary[unitKey].State!=2){return false;}
+            try {
+                this.UnitDictionary[unitKey].Process.StandardInput.WriteLine(commandLine);
+                this.UnitDictionary[unitKey].Process.StandardInput.Flush();
+            }catch(Exception exception) {
+                LoggerModuleHelper.TryLog(
+                    "Modules.UnitManageModule.ExecuteCommand[Error]",$"单元输入指令异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return false;
+            }
+            return true;
+        }
+
+        public Boolean ExecuteExitCommand(String unitKey){
+            if(!this.Useable){return false;}
+            if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return false;}
+            if(this.UnitDictionary[unitKey].State!=2){return false;}
+            try {
+                this.UnitDictionary[unitKey].Process.StandardInput.WriteLine("\x3");
+                this.UnitDictionary[unitKey].Process.StandardInput.Flush();
+                //this.UnitDictionary[unitKey].Process.StandardInput.Close();
+            }catch(Exception exception) {
+                LoggerModuleHelper.TryLog(
+                    "Modules.UnitManageModule.ExecuteExitCommand[Error]",$"单元输入指令异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return false;
+            }
+            return true;
         }
     }
 }
