@@ -212,6 +212,15 @@ message RemoveResponseProtobuf{
   bool Executed=3;
   string NoExecuteMessage=4;
 }
+// windctl logs unitKey
+message LogsResponseProtobuf{
+  int32 Type=1;//2007
+  string UnitKey=2;
+  bool Executed=3;
+  string NoExecuteMessage=4;
+  string LogFilePath=5;
+  repeated string LogLines=6;
+}
 
 // windctl status-all
 message StatusAllResponseProtobuf{

@@ -27,9 +27,11 @@ namespace wind {
         public static Modules.UnitPerformanceCounterModule UnitPerformanceCounterModule{get;}=new Modules.UnitPerformanceCounterModule();
         /// <summary>单元网络数据监控模块 04</summary>
         public static Modules.UnitNetworkCounterModule UnitNetworkCounterModule{get;}=new UnitNetworkCounterModule();
-        /// <summary>远程管理模块 05</summary>
+        /// <summary>日志模块 05</summary>
+        public static Modules.UnitLoggerModule UnitLoggerModule{get;}=new Modules.UnitLoggerModule();
+        /// <summary>远程管理模块 06</summary>
         public static Modules.WebSocketControlModule RemoteControlModule{get;}=new Modules.WebSocketControlModule();
-        /// <summary>单元管理模块 06</summary>
+        /// <summary>单元管理模块 07</summary>
         public static Modules.UnitManageModule UnitManageModule{get;}=new Modules.UnitManageModule();
         
         /// <summary>
@@ -66,7 +68,12 @@ namespace wind {
                 Environment.Exit(0);
                 return;
             }
-            if(AppSettings.EnableRemoteControl && !InitializeRemoveControlModule()) {
+            if(!InitializeUnitLoggerModule()) {
+                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元日志模块失败");
+                Environment.Exit(0);
+                return;
+            }
+            if(!InitializeRemoveControlModule()) {
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化远程管理模块失败");
                 Environment.Exit(0);
                 return;
@@ -88,7 +95,8 @@ namespace wind {
                 try {
                     _=Directory.CreateDirectory(AppEnvironment.LogsDirectory);
                 } catch(Exception exception) {
-                    Helpers.LoggerModuleHelper.TryLog("Program.InitializeLoggerModule[Error]",$"创建日志目录异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    Helpers.LoggerModuleHelper.TryLog(
+                        "Program.InitializeLoggerModule[Error]",$"创建日志目录异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
                     return false;
                 }
             }
@@ -114,7 +122,8 @@ namespace wind {
                 fs.Dispose();
                 appSettings=JsonSerializer.Deserialize<Entities.Common.AppSettings>(bufferSpan);
             }catch(Exception exception){
-                Helpers.LoggerModuleHelper.TryLog("Program.InitializeAppSettings[Error]",$"读取应用程序配置文件异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                Helpers.LoggerModuleHelper.TryLog(
+                    "Program.InitializeAppSettings[Error]",$"读取应用程序配置文件异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
                 return false;
             }finally{
                 fs?.Dispose();
@@ -142,7 +151,8 @@ namespace wind {
                 try {
                     _=Directory.CreateDirectory(AppEnvironment.UnitsDirectory);
                 } catch(Exception exception) {
-                    Helpers.LoggerModuleHelper.TryLog("Program.InitializeUnitManageModule[Error]",$"创建单元存放目录异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    Helpers.LoggerModuleHelper.TryLog(
+                        "Program.InitializeUnitManageModule[Error]",$"创建单元存放目录异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
                     return false;
                 }
             }
@@ -170,11 +180,28 @@ namespace wind {
         }
 
         /// <summary>
+        /// 初始化单元日志模块
+        /// </summary>
+        /// <returns>是否成功</returns>
+        private static Boolean InitializeUnitLoggerModule(){
+            if(!Directory.Exists(AppEnvironment.UnitLogsDirectory)) {
+                try {
+                    _=Directory.CreateDirectory(AppEnvironment.UnitLogsDirectory);
+                } catch(Exception exception) {
+                    Helpers.LoggerModuleHelper.TryLog(
+                        "Program.InitializeUnitLoggerModule[Error]",$"创建单元日志目录异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    return false;
+                }
+            }
+            return UnitLoggerModule.Setup(AppEnvironment.UnitLogsDirectory,1000);
+        }
+
+        /// <summary>
         /// 初始化远程控制模块
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeRemoveControlModule(){
-            if(String.IsNullOrWhiteSpace(AppEnvironment.PipelineName)){return false;}
+            if(!AppSettings.EnableRemoteControl){return true;}
             return RemoteControlModule.Setup(AppSettings.RemoteControlListenAddress,AppSettings.RemoteControlListenPort,AppSettings.RemoteControlKey);
         }
 
@@ -197,6 +224,8 @@ namespace wind {
             RemoteControlModule.Dispose();
             //释放单元管理模块,应确保已无单元正在运行
             UnitManageModule.Dispose();
+            //释放单元日志模块
+            UnitLoggerModule.Dispose();
             //释放单元性能监控模块
             UnitPerformanceCounterModule.Dispose();
             //是否单元网络监控模块
@@ -242,7 +271,7 @@ namespace wind {
                     });
                     //错误
                     serviceConfigurator.OnError(exception=>{
-                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Error]",$"Wind 服务主机异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Error]",$"Wind 服务主机异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
                     });
                     //启动
                     serviceConfigurator.OnStart((service,extraArguments)=>{

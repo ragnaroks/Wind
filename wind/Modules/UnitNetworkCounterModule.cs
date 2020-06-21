@@ -56,14 +56,18 @@ namespace wind.Modules {
             try {
                 this.TraceEventSession=new TraceEventSession(Program.AppEnvironment.UnitsNetworkTraceEventSession,TraceEventSessionOptions.Create){StopOnDispose=true};
             }catch(Exception exception) {
-                Helpers.LoggerModuleHelper.TryLog("Modules.UnitNetworkCounterModule.Setup[Error]",$"创建ETW会话异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                Helpers.LoggerModuleHelper.TryLog(
+                    "Modules.UnitNetworkCounterModule.Setup[Error]",
+                    $"创建ETW会话异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
                 return false;
             }
             Boolean b1=false;
             try {
                 b1=this.TraceEventSession.EnableKernelProvider(KernelTraceEventParser.Keywords.NetworkTCPIP);
             }catch(Exception exception) {
-                Helpers.LoggerModuleHelper.TryLog("Modules.UnitNetworkCounterModule.Setup[Error]",$"ETW会话EnableKernelProvider异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                Helpers.LoggerModuleHelper.TryLog(
+                    "Modules.UnitNetworkCounterModule.Setup[Error]",
+                    $"ETW会话EnableKernelProvider异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
                 return false;
             }
             if(!b1) {

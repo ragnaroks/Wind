@@ -98,7 +98,7 @@ namespace windctl.Modules {
             try {
                 this.Timer=new Timer(this.TimerCallback,null,0,8000);
             }catch(Exception exception) {
-                LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup[Error]",$"初始化定时器异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup[Error]",$"初始化定时器异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return false;
             }
             this.TimerEnable=true;
@@ -106,7 +106,7 @@ namespace windctl.Modules {
             try {
                 this.Client=new WatsonWsClient(address,port,false);
             }catch(Exception exception) {
-                LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup[Error]",$"初始化客户端异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup[Error]",$"初始化客户端异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return false;
             }
             //this.Client.ServerConnected+=this.ServerConnected;
@@ -125,7 +125,7 @@ namespace windctl.Modules {
             try {
                 this.Client.Start();
             }catch(Exception exception) {
-                LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup[Error]",$"链接服务器异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup[Error]",$"链接服务器异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return false;
             }
             SpinWait.SpinUntil(()=>this.Client.Connected,4000);
@@ -166,7 +166,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.ClientMessageReceived[Error]",
-                    $"探测数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"探测数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //分拣处理
@@ -180,7 +180,7 @@ namespace windctl.Modules {
                 case 2004:this.RestartResponse(messageReceivedEventArgs.Data);break;
                 case 2005:this.LoadResponse(messageReceivedEventArgs.Data);break;
                 case 2006:this.RemoveResponse(messageReceivedEventArgs.Data);break;
-                //case 2007:this.LogsResponse(messageReceivedEventArgs.Data);break;
+                case 2007:this.LogsResponse(messageReceivedEventArgs.Data);break;
                 //case 2008:this.AttachResponse(messageReceivedEventArgs.Data);break;
                 //case 2101:this.StatusAllResponse(messageReceivedEventArgs.Data);break;
                 case 2102:this.StartAllResponse(messageReceivedEventArgs.Data);break;
@@ -226,7 +226,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.ServerAcceptConnection[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //设置客户端链接Id
@@ -248,7 +248,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.ServerValidateConnection[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //验证结果
@@ -446,7 +446,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.StatusResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
@@ -465,7 +465,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.StartResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
@@ -484,7 +484,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.StopResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
@@ -503,7 +503,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.RestartResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
@@ -522,7 +522,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.LoadResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
@@ -541,11 +541,30 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.RemoveResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
             CommandHelper.Remove(removeResponseProtobuf);
+            Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl logs unitKey
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void LogsResponse(Byte[] bytes) {
+            //解析数据
+            LogsResponseProtobuf logsResponseProtobuf;
+            try {
+                logsResponseProtobuf=LogsResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.LogsResponse[Error]",
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.Logs(logsResponseProtobuf);
             Program.InAction=false;
         }
         ////////////////////////////////////////////////////////////////
@@ -562,7 +581,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.StatusAllResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
@@ -581,7 +600,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.StartAllResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
@@ -600,7 +619,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.StopAllResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
@@ -619,7 +638,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.RestartAllResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
@@ -638,7 +657,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.LoadAllResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
@@ -657,7 +676,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.RemoveAllResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
@@ -677,7 +696,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.DaemonVersionResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
@@ -696,7 +715,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.DaemonStatusResponse[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用
@@ -715,7 +734,7 @@ namespace windctl.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.DaemonShutdown[Error]",
-                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return;
             }
             //调用

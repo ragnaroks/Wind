@@ -97,31 +97,34 @@ namespace wind.Entities.Protobuf {
             "dWYYBSABKAsyLC53aW5kLkVudGl0aWVzLlByb3RvYnVmLlVuaXRTZXR0aW5n",
             "c1Byb3RvYnVmImMKFlJlbW92ZVJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgB",
             "IAEoBRIPCgdVbml0S2V5GAIgASgJEhAKCEV4ZWN1dGVkGAMgASgIEhgKEE5v",
-            "RXhlY3V0ZU1lc3NhZ2UYBCABKAkitQEKGVN0YXR1c0FsbFJlc3BvbnNlUHJv",
-            "dG9idWYSDAoEVHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIYChBOb0V4",
-            "ZWN1dGVNZXNzYWdlGAMgASgJEh0KFVVuaXRQcm90b2J1ZkFycmF5U2l6ZRgE",
-            "IAEoBRI/ChFVbml0UHJvdG9idWZBcnJheRgFIAMoCzIkLndpbmQuRW50aXRp",
-            "ZXMuUHJvdG9idWYuVW5pdFByb3RvYnVmIlQKGFN0YXJ0QWxsUmVzcG9uc2VQ",
-            "cm90b2J1ZhIMCgRUeXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIgASgIEhgKEE5v",
-            "RXhlY3V0ZU1lc3NhZ2UYAyABKAkiUwoXU3RvcEFsbFJlc3BvbnNlUHJvdG9i",
-            "dWYSDAoEVHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIYChBOb0V4ZWN1",
-            "dGVNZXNzYWdlGAMgASgJIlYKGlJlc3RhcnRBbGxSZXNwb25zZVByb3RvYnVm",
+            "RXhlY3V0ZU1lc3NhZ2UYBCABKAkiiAEKFExvZ3NSZXNwb25zZVByb3RvYnVm",
+            "EgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEoCRIQCghFeGVjdXRlZBgD",
+            "IAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAQgASgJEhMKC0xvZ0ZpbGVQYXRo",
+            "GAUgASgJEhAKCExvZ0xpbmVzGAYgAygJIrUBChlTdGF0dXNBbGxSZXNwb25z",
+            "ZVByb3RvYnVmEgwKBFR5cGUYASABKAUSEAoIRXhlY3V0ZWQYAiABKAgSGAoQ",
+            "Tm9FeGVjdXRlTWVzc2FnZRgDIAEoCRIdChVVbml0UHJvdG9idWZBcnJheVNp",
+            "emUYBCABKAUSPwoRVW5pdFByb3RvYnVmQXJyYXkYBSADKAsyJC53aW5kLkVu",
+            "dGl0aWVzLlByb3RvYnVmLlVuaXRQcm90b2J1ZiJUChhTdGFydEFsbFJlc3Bv",
+            "bnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIY",
+            "ChBOb0V4ZWN1dGVNZXNzYWdlGAMgASgJIlMKF1N0b3BBbGxSZXNwb25zZVBy",
+            "b3RvYnVmEgwKBFR5cGUYASABKAUSEAoIRXhlY3V0ZWQYAiABKAgSGAoQTm9F",
+            "eGVjdXRlTWVzc2FnZRgDIAEoCSJWChpSZXN0YXJ0QWxsUmVzcG9uc2VQcm90",
+            "b2J1ZhIMCgRUeXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIgASgIEhgKEE5vRXhl",
+            "Y3V0ZU1lc3NhZ2UYAyABKAkiywEKF0xvYWRBbGxSZXNwb25zZVByb3RvYnVm",
             "EgwKBFR5cGUYASABKAUSEAoIRXhlY3V0ZWQYAiABKAgSGAoQTm9FeGVjdXRl",
-            "TWVzc2FnZRgDIAEoCSLLAQoXTG9hZEFsbFJlc3BvbnNlUHJvdG9idWYSDAoE",
-            "VHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIYChBOb0V4ZWN1dGVNZXNz",
-            "YWdlGAMgASgJEiUKHVVuaXRTZXR0aW5nc1Byb3RvYnVmQXJyYXlTaXplGAQg",
-            "ASgFEk8KGVVuaXRTZXR0aW5nc1Byb3RvYnVmQXJyYXkYBSADKAsyLC53aW5k",
-            "LkVudGl0aWVzLlByb3RvYnVmLlVuaXRTZXR0aW5nc1Byb3RvYnVmIlUKGVJl",
-            "bW92ZUFsbFJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIQCghFeGVj",
-            "dXRlZBgCIAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAMgASgJImwKHURhZW1v",
-            "blZlcnNpb25SZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUSDQoFTWFq",
-            "b3IYAiABKAUSDQoFTWlub3IYAyABKAUSDQoFQnVpbGQYBCABKAUSEAoIUmV2",
-            "aXNpb24YBSABKAUibAocRGFlbW9uU3RhdHVzUmVzcG9uc2VQcm90b2J1ZhIM",
-            "CgRUeXBlGAEgASgFEj4KDkRhZW1vblByb3RvYnVmGAIgASgLMiYud2luZC5F",
-            "bnRpdGllcy5Qcm90b2J1Zi5EYWVtb25Qcm90b2J1ZiJaCh5EYWVtb25TaHV0",
-            "ZG93blJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIQCghFeGVjdXRl",
-            "ZBgCIAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAMgASgJQhtIA6oCFndpbmQu",
-            "RW50aXRpZXMuUHJvdG9idWZiBnByb3RvMw=="));
+            "TWVzc2FnZRgDIAEoCRIlCh1Vbml0U2V0dGluZ3NQcm90b2J1ZkFycmF5U2l6",
+            "ZRgEIAEoBRJPChlVbml0U2V0dGluZ3NQcm90b2J1ZkFycmF5GAUgAygLMiwu",
+            "d2luZC5FbnRpdGllcy5Qcm90b2J1Zi5Vbml0U2V0dGluZ3NQcm90b2J1ZiJV",
+            "ChlSZW1vdmVBbGxSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUSEAoI",
+            "RXhlY3V0ZWQYAiABKAgSGAoQTm9FeGVjdXRlTWVzc2FnZRgDIAEoCSJsCh1E",
+            "YWVtb25WZXJzaW9uUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg0K",
+            "BU1ham9yGAIgASgFEg0KBU1pbm9yGAMgASgFEg0KBUJ1aWxkGAQgASgFEhAK",
+            "CFJldmlzaW9uGAUgASgFImwKHERhZW1vblN0YXR1c1Jlc3BvbnNlUHJvdG9i",
+            "dWYSDAoEVHlwZRgBIAEoBRI+Cg5EYWVtb25Qcm90b2J1ZhgCIAEoCzImLndp",
+            "bmQuRW50aXRpZXMuUHJvdG9idWYuRGFlbW9uUHJvdG9idWYiWgoeRGFlbW9u",
+            "U2h1dGRvd25SZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUSEAoIRXhl",
+            "Y3V0ZWQYAiABKAgSGAoQTm9FeGVjdXRlTWVzc2FnZRgDIAEoCUIbSAOqAhZ3",
+            "aW5kLkVudGl0aWVzLlByb3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -159,6 +162,7 @@ namespace wind.Entities.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.RestartResponseProtobuf), global::wind.Entities.Protobuf.RestartResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.LoadResponseProtobuf), global::wind.Entities.Protobuf.LoadResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage", "UnitSettingsProtobuf" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.RemoveResponseProtobuf), global::wind.Entities.Protobuf.RemoveResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.LogsResponseProtobuf), global::wind.Entities.Protobuf.LogsResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage", "LogFilePath", "LogLines" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StatusAllResponseProtobuf), global::wind.Entities.Protobuf.StatusAllResponseProtobuf.Parser, new[]{ "Type", "Executed", "NoExecuteMessage", "UnitProtobufArraySize", "UnitProtobufArray" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StartAllResponseProtobuf), global::wind.Entities.Protobuf.StartAllResponseProtobuf.Parser, new[]{ "Type", "Executed", "NoExecuteMessage" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StopAllResponseProtobuf), global::wind.Entities.Protobuf.StopAllResponseProtobuf.Parser, new[]{ "Type", "Executed", "NoExecuteMessage" }, null, null, null, null),
@@ -6525,6 +6529,273 @@ namespace wind.Entities.Protobuf {
   }
 
   /// <summary>
+  /// windctl logs unitKey
+  /// </summary>
+  public sealed partial class LogsResponseProtobuf : pb::IMessage<LogsResponseProtobuf> {
+    private static readonly pb::MessageParser<LogsResponseProtobuf> _parser = new pb::MessageParser<LogsResponseProtobuf>(() => new LogsResponseProtobuf());
+    private pb::UnknownFieldSet _unknownFields;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pb::MessageParser<LogsResponseProtobuf> Parser { get { return _parser; } }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public static pbr::MessageDescriptor Descriptor {
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[34]; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    pbr::MessageDescriptor pb::IMessage.Descriptor {
+      get { return Descriptor; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LogsResponseProtobuf() {
+      OnConstruction();
+    }
+
+    partial void OnConstruction();
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LogsResponseProtobuf(LogsResponseProtobuf other) : this() {
+      type_ = other.type_;
+      unitKey_ = other.unitKey_;
+      executed_ = other.executed_;
+      noExecuteMessage_ = other.noExecuteMessage_;
+      logFilePath_ = other.logFilePath_;
+      logLines_ = other.logLines_.Clone();
+      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public LogsResponseProtobuf Clone() {
+      return new LogsResponseProtobuf(this);
+    }
+
+    /// <summary>Field number for the "Type" field.</summary>
+    public const int TypeFieldNumber = 1;
+    private int type_;
+    /// <summary>
+    ///2007
+    /// </summary>
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Type {
+      get { return type_; }
+      set {
+        type_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "UnitKey" field.</summary>
+    public const int UnitKeyFieldNumber = 2;
+    private string unitKey_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string UnitKey {
+      get { return unitKey_; }
+      set {
+        unitKey_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "Executed" field.</summary>
+    public const int ExecutedFieldNumber = 3;
+    private bool executed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Executed {
+      get { return executed_; }
+      set {
+        executed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "NoExecuteMessage" field.</summary>
+    public const int NoExecuteMessageFieldNumber = 4;
+    private string noExecuteMessage_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string NoExecuteMessage {
+      get { return noExecuteMessage_; }
+      set {
+        noExecuteMessage_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "LogFilePath" field.</summary>
+    public const int LogFilePathFieldNumber = 5;
+    private string logFilePath_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string LogFilePath {
+      get { return logFilePath_; }
+      set {
+        logFilePath_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
+    /// <summary>Field number for the "LogLines" field.</summary>
+    public const int LogLinesFieldNumber = 6;
+    private static readonly pb::FieldCodec<string> _repeated_logLines_codec
+        = pb::FieldCodec.ForString(50);
+    private readonly pbc::RepeatedField<string> logLines_ = new pbc::RepeatedField<string>();
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public pbc::RepeatedField<string> LogLines {
+      get { return logLines_; }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override bool Equals(object other) {
+      return Equals(other as LogsResponseProtobuf);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public bool Equals(LogsResponseProtobuf other) {
+      if (ReferenceEquals(other, null)) {
+        return false;
+      }
+      if (ReferenceEquals(other, this)) {
+        return true;
+      }
+      if (Type != other.Type) return false;
+      if (UnitKey != other.UnitKey) return false;
+      if (Executed != other.Executed) return false;
+      if (NoExecuteMessage != other.NoExecuteMessage) return false;
+      if (LogFilePath != other.LogFilePath) return false;
+      if(!logLines_.Equals(other.logLines_)) return false;
+      return Equals(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override int GetHashCode() {
+      int hash = 1;
+      if (Type != 0) hash ^= Type.GetHashCode();
+      if (UnitKey.Length != 0) hash ^= UnitKey.GetHashCode();
+      if (Executed != false) hash ^= Executed.GetHashCode();
+      if (NoExecuteMessage.Length != 0) hash ^= NoExecuteMessage.GetHashCode();
+      if (LogFilePath.Length != 0) hash ^= LogFilePath.GetHashCode();
+      hash ^= logLines_.GetHashCode();
+      if (_unknownFields != null) {
+        hash ^= _unknownFields.GetHashCode();
+      }
+      return hash;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public override string ToString() {
+      return pb::JsonFormatter.ToDiagnosticString(this);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void WriteTo(pb::CodedOutputStream output) {
+      if (Type != 0) {
+        output.WriteRawTag(8);
+        output.WriteInt32(Type);
+      }
+      if (UnitKey.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteString(UnitKey);
+      }
+      if (Executed != false) {
+        output.WriteRawTag(24);
+        output.WriteBool(Executed);
+      }
+      if (NoExecuteMessage.Length != 0) {
+        output.WriteRawTag(34);
+        output.WriteString(NoExecuteMessage);
+      }
+      if (LogFilePath.Length != 0) {
+        output.WriteRawTag(42);
+        output.WriteString(LogFilePath);
+      }
+      logLines_.WriteTo(output, _repeated_logLines_codec);
+      if (_unknownFields != null) {
+        _unknownFields.WriteTo(output);
+      }
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int CalculateSize() {
+      int size = 0;
+      if (Type != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Type);
+      }
+      if (UnitKey.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(UnitKey);
+      }
+      if (Executed != false) {
+        size += 1 + 1;
+      }
+      if (NoExecuteMessage.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(NoExecuteMessage);
+      }
+      if (LogFilePath.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(LogFilePath);
+      }
+      size += logLines_.CalculateSize(_repeated_logLines_codec);
+      if (_unknownFields != null) {
+        size += _unknownFields.CalculateSize();
+      }
+      return size;
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(LogsResponseProtobuf other) {
+      if (other == null) {
+        return;
+      }
+      if (other.Type != 0) {
+        Type = other.Type;
+      }
+      if (other.UnitKey.Length != 0) {
+        UnitKey = other.UnitKey;
+      }
+      if (other.Executed != false) {
+        Executed = other.Executed;
+      }
+      if (other.NoExecuteMessage.Length != 0) {
+        NoExecuteMessage = other.NoExecuteMessage;
+      }
+      if (other.LogFilePath.Length != 0) {
+        LogFilePath = other.LogFilePath;
+      }
+      logLines_.Add(other.logLines_);
+      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
+    }
+
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public void MergeFrom(pb::CodedInputStream input) {
+      uint tag;
+      while ((tag = input.ReadTag()) != 0) {
+        switch(tag) {
+          default:
+            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
+            break;
+          case 8: {
+            Type = input.ReadInt32();
+            break;
+          }
+          case 18: {
+            UnitKey = input.ReadString();
+            break;
+          }
+          case 24: {
+            Executed = input.ReadBool();
+            break;
+          }
+          case 34: {
+            NoExecuteMessage = input.ReadString();
+            break;
+          }
+          case 42: {
+            LogFilePath = input.ReadString();
+            break;
+          }
+          case 50: {
+            logLines_.AddEntriesFrom(input, _repeated_logLines_codec);
+            break;
+          }
+        }
+      }
+    }
+
+  }
+
+  /// <summary>
   /// windctl status-all
   /// </summary>
   public sealed partial class StatusAllResponseProtobuf : pb::IMessage<StatusAllResponseProtobuf> {
@@ -6535,7 +6806,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[34]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[35]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6774,7 +7045,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[35]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[36]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6965,7 +7236,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[36]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[37]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7156,7 +7427,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[37]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[38]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7347,7 +7618,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[38]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[39]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7586,7 +7857,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[39]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[40]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7777,7 +8048,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[40]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[41]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8024,7 +8295,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[41]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[42]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8193,7 +8464,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[42]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[43]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

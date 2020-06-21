@@ -78,7 +78,8 @@ namespace wind.Modules {
             exitedProcess.ErrorDataReceived-=this.OnProcessErrorDataReceived;
             exitedProcess.Exited-=this.OnUnitProcessExited;
             exitedProcess.Dispose();
-            LoggerModuleHelper.TryLog("Modules.UnitManageModule.OnUnitProcessExited",$"进程[#{exitedProcessId}]退出,退出代码[{exitedProcessExitCode}]");
+            LoggerModuleHelper.TryLog(
+                "Modules.UnitManageModule.OnUnitProcessExited",$"进程[#{exitedProcessId}]退出,退出代码[{exitedProcessExitCode}]");
             Unit unit=null;
             foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
                 if(item.Value.ProcessId!=exitedProcessId){continue;}
@@ -97,15 +98,41 @@ namespace wind.Modules {
             this.StartUnit(unit.Key,false);
             Program.LoggerModule.Log("Modules.UnitManageModule.OnUnitProcessExited",$"单元\"{unit.Key}\"已重新启动");
         }
+        /// <summary>
+        /// 收到单元进程stdout
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="dataReceivedEventArgs"></param>
         private void OnProcessOutputDataReceived(object sender,DataReceivedEventArgs dataReceivedEventArgs) {
-            /*Process theProcess=sender as Process;
-            Console.WriteLine($"#{theProcess.Id}[stdout] => {dataReceivedEventArgs.Data}");*/
-            //仅通知到websocket控制端
+            if(!Program.UnitLoggerModule.Useable || this.UnitDictionary.Count<1){return;}
+            Process process=sender as Process;
+            Int32 processId=process.Id;
+            Unit unit=null;
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
+                if(item.Value.ProcessId!=processId){continue;}
+                unit=item.Value;
+                break;
+            }
+            if(unit==null){return;}
+            Program.UnitLoggerModule.Log(unit.Key,dataReceivedEventArgs.Data);
         }
+        /// <summary>
+        /// 收到单元进程stderr
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="dataReceivedEventArgs"></param>
         private void OnProcessErrorDataReceived(object sender,DataReceivedEventArgs dataReceivedEventArgs) {
-            /*Process theProcess=sender as Process;
-            Console.WriteLine($"#{theProcess.Id}[error] => {dataReceivedEventArgs.Data}");*/
-            //仅通知到websocket控制端
+            if(!Program.UnitLoggerModule.Useable || this.UnitDictionary.Count<1){return;}
+            Process process=sender as Process;
+            Int32 processId=process.Id;
+            Unit unit=null;
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary) {
+                if(item.Value.ProcessId!=processId){continue;}
+                unit=item.Value;
+                break;
+            }
+            if(unit==null){return;}
+            Program.UnitLoggerModule.Log(unit.Key,dataReceivedEventArgs.Data);
         }
 
         /// <summary>
@@ -151,7 +178,9 @@ namespace wind.Modules {
                         default:unit.Process.Kill(true);break;
                     }
                 } catch(Exception exception) {
-                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnit[Error]",$"停止\"{unitKey}\"单元异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    LoggerModuleHelper.TryLog(
+                        "Modules.UnitManageModule.StopUnit[Error]",
+                        $"停止\"{unitKey}\"单元异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
                 } finally {
                     unit.Process.Dispose();
                     unit.Process=null;
@@ -193,7 +222,9 @@ namespace wind.Modules {
             try {
                 b1=unit.Process.Start();
             }catch(Exception exception) {
-                LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit[Error]",$"启动\"{unitKey}\"单元异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                LoggerModuleHelper.TryLog(
+                    "Modules.UnitManageModule.StartUnit[Error]",
+                    $"启动\"{unitKey}\"单元异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
             }
             if(b1) {
                 unit.Process.BeginOutputReadLine();
@@ -271,7 +302,7 @@ namespace wind.Modules {
             }catch(Exception exception) {
                 LoggerModuleHelper.TryLog(
                     "Modules.UnitManageModule.LoadUnit[Error]",
-                    $"单元配置文件 {unitFilePath} 不存在\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    $"单元配置文件 {unitFilePath} 文件信息异常,: {exception.Message}\n异常堆栈: {exception.StackTrace}");
                 return null;
             }
             //setting
@@ -305,7 +336,7 @@ namespace wind.Modules {
             }catch(Exception exception) {
                 LoggerModuleHelper.TryLog(
                     "Modules.UnitManageModule.LoadAllUnits[Error]",
-                    $"读取单元存放目录异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    $"读取单元存放目录异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
                 return null;
             }
             if(fileInfoArray.Length<1){return null;}

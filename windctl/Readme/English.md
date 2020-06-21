@@ -25,6 +25,8 @@ restart unit
 try load/update unit's settings from file
 - windctl remove **\<unitKey\>**  
 stop unit and remove it,it can not be start again
+- windctl logs **\<unitKey\>**  
+print unit's last lines logs
 - windctl start-all  
 start all unit
 - windctl stop-all  
@@ -41,12 +43,6 @@ print daemon service's version
 print daemon service's status
 - windctl daemon-shutdown  
 shutdown daemon service
-
-### Commands(not available)
-- windctl logs **\<unitKey\>**  
-print unit's last 32 times console print
-- windctl attach **\<unitKey\>**  
-attach to the unit's console,`ctrl+c` will de-attach,input `>cc` to send unit break
 
 ### Showcase
 ![windctl status <unitKey>](status.png)

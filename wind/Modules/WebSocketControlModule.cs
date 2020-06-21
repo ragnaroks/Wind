@@ -99,7 +99,8 @@ namespace wind.Modules {
             try {
                 this.Timer=new System.Threading.Timer(this.TimerCallback,null,0,16000);
             }catch(Exception exception) {
-                LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup[Error]",$"初始化定时器异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.Setup[Error]",$"初始化定时器异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return false;
             }
             this.TimerEnable=true;
@@ -114,7 +115,8 @@ namespace wind.Modules {
                 this.Server=new WebSocketServer(location,false);
                 this.Server.ListenerSocket.NoDelay=false;
             }catch(Exception exception) {
-                LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup[Error]",$"初始化服务端异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.Setup[Error]",$"初始化服务端异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return false;
             }
             LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup",$"服务端监听在 {location}");
@@ -182,7 +184,8 @@ namespace wind.Modules {
                     };
                 });
             }catch(Exception exception) {
-                LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Start[Error]",$"启动服务端异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.Start[Error]",$"启动服务端异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 return false;
             }
             return true;
@@ -257,7 +260,7 @@ namespace wind.Modules {
         private void OnClientConnectionError(ClientConnection clientConnection,Exception exception){
             LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.OnClientConnectionError",
-                    $"客户端 {clientConnection.Id} 出现异常\n异常消息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"客户端 {clientConnection.Id} 出现异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
             if(clientConnection.WebSocketConnection.IsAvailable) {
                 clientConnection.WebSocketConnection.Close();
             } else {
@@ -312,7 +315,7 @@ namespace wind.Modules {
             }catch(Exception exception) {
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.OnClientConnectionBinary",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -328,7 +331,7 @@ namespace wind.Modules {
                 case 1004:this.RestartRequest(clientConnection,binary);break;
                 case 1005:this.LoadRequest(clientConnection,binary);break;
                 case 1006:this.RemoveRequest(clientConnection,binary);break;
-                //case 1007:this.LogRequest(clientConnection,binary);break;
+                case 1007:this.LogsRequest(clientConnection,binary);break;
                 //case 1008:this.AttachRequest(clientConnection,binary);break;
                 //case 1101:this.StatusAllRequest(clientConnection,binary);break;
                 case 1102:this.StartAllRequest(clientConnection,binary);break;
@@ -359,7 +362,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.ClientOfferControlKey[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -382,7 +385,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.StatusRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -464,7 +467,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.StartRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -515,7 +518,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.StopRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -566,7 +569,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.RestartRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -617,7 +620,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.LoadRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -664,7 +667,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.RemoveRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -701,8 +704,54 @@ namespace wind.Modules {
         /// </summary>
         /// <param name="clientConnection"></param>
         /// <param name="binary"></param>
-        [Obsolete]
-        private void LogsRequest(ClientConnection clientConnection,Byte[] binary)=>throw new NotImplementedException();
+        private void LogsRequest(ClientConnection clientConnection,Byte[] binary){
+            //解析数据包
+            LogsRequestProtobuf logsRequestProtobuf;
+            try {
+                logsRequestProtobuf=LogsRequestProtobuf.Parser.ParseFrom(binary);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.LogsRequest[Error]",
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                _=clientConnection.WebSocketConnection.Send(binary);
+                return;
+            }
+            //初始化响应体
+            LogsResponseProtobuf logsResponseProtobuf=new LogsResponseProtobuf{Type=2007,UnitKey=logsRequestProtobuf.UnitKey};
+            //无效unit
+            if(String.IsNullOrWhiteSpace(logsRequestProtobuf.UnitKey)){
+                logsResponseProtobuf.NoExecuteMessage="unitKey invalid";
+                _=clientConnection.WebSocketConnection.Send(logsResponseProtobuf.ToByteArray());
+                return;
+            }
+            if(!Program.UnitManageModule.Useable){
+                logsResponseProtobuf.NoExecuteMessage="unit manager not available";
+                _=clientConnection.WebSocketConnection.Send(logsResponseProtobuf.ToByteArray());
+                return;
+            }
+            if(!Program.UnitLoggerModule.Useable) {
+                logsResponseProtobuf.NoExecuteMessage="unit logger not available";
+                _=clientConnection.WebSocketConnection.Send(logsResponseProtobuf.ToByteArray());
+                return;
+            }
+            //虽然是直接读文件来获取日志,但是此时还是要求单元必须已经加载
+            Entities.Common.Unit unit=Program.UnitManageModule.GetUnit(logsRequestProtobuf.UnitKey);
+            if(unit==null) {
+                logsResponseProtobuf.NoExecuteMessage="unit not found";
+                _=clientConnection.WebSocketConnection.Send(logsResponseProtobuf.ToByteArray());
+                return;
+            }
+            //读取日志
+            if(!Program.UnitLoggerModule.GetLogLastLines(logsRequestProtobuf.UnitKey,16,out String logFilePath,out String[] logLines)) {
+                logsResponseProtobuf.NoExecuteMessage="unit not have logs";
+            } else {
+                logsResponseProtobuf.LogLines.Add(logLines);
+                logsResponseProtobuf.LogFilePath=logFilePath;
+                logsResponseProtobuf.Executed=true;
+            }
+            //回复
+            _=clientConnection.WebSocketConnection.Send(logsResponseProtobuf.ToByteArray());
+        }
         /// <summary>
         /// windctl attach unitKey
         /// </summary>
@@ -730,7 +779,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.StartAllRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -761,7 +810,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.StopAllRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -792,7 +841,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.RestartAllRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -823,7 +872,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.LoadAllRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -868,7 +917,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.RemoveAllRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -900,7 +949,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.DaemonVersionRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -928,7 +977,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.DaemonStatusRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }
@@ -970,7 +1019,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.DaemonShutdownRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
                 _=clientConnection.WebSocketConnection.Send(binary);
                 return;
             }

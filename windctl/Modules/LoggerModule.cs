@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -95,7 +96,7 @@ namespace windctl.Modules {
         private void TimerCallback(object state) {
             if(!this.Useable || !this.TimerEnable || this.Logs.Count<1){return;}
             this.TimerEnable=false;
-            String filename=DateTime.Now.ToString("yyyy-MM-dd",System.Globalization.DateTimeFormatInfo.InvariantInfo);
+            String filename=String.Concat(DateTime.Now.ToString("yyyy-MM-dd",DateTimeFormatInfo.InvariantInfo),".log");
             foreach (KeyValuePair<String,StringBuilder> log in this.Logs) {
                 if(log.Value==null || log.Value.Length<1){continue;}
                 String keyToPath=log.Key.Replace('.',Path.DirectorySeparatorChar);
@@ -108,7 +109,7 @@ namespace windctl.Modules {
                         continue;
                     }
                 }
-                String logFilePath=$"{this.LogsDirectory}{Path.DirectorySeparatorChar}{keyToPath}{Path.DirectorySeparatorChar}{filename}.log";
+                String logFilePath=$"{logFileDirectory}{Path.DirectorySeparatorChar}{filename}";
                 try{
                     FileStream fs=File.Open(logFilePath,FileMode.Append,FileAccess.Write,FileShare.Read);
                     Byte[] bytes=Encoding.UTF8.GetBytes(log.Value.ToString());
@@ -117,7 +118,7 @@ namespace windctl.Modules {
                     //清空引用的值
                     log.Value.Clear();
                 }catch(Exception exception){
-                    Console.Error.WriteLine($"Modules.LoggerModule.TimerCallback[Error] => 异常信息:{exception.Message} | 异常栈:{exception.StackTrace}");
+                    Console.Error.WriteLine($"Modules.LoggerModule.TimerCallback[Error] => 异常信息:{exception.Message} | 异常堆栈:{exception.StackTrace}");
                     //异常直接跳过
                     continue;
                 }
@@ -138,7 +139,8 @@ namespace windctl.Modules {
             if(title[0]=='.' || title[title.Length-1]=='.'){return;}
             if(!this.Logs.ContainsKey(title) || this.Logs[title]==null){ this.Logs[title]=new StringBuilder(); }
             this.Logs[title]
-                .Append('[').Append(DateTime.Now.ToString("HH:mm:ss",System.Globalization.DateTimeFormatInfo.InvariantInfo)).Append(']').AppendLine()
+                .Append('[').Append(DateTime.Now.ToString("HH:mm:ss",DateTimeFormatInfo.InvariantInfo)).Append(']')
+                .AppendLine()
                 .Append(text)
                 .AppendLine()
                 .AppendLine();

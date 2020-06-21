@@ -60,7 +60,7 @@ namespace windctl {
                 fs.Dispose();
                 appSettings=JsonSerializer.Deserialize<Entities.Common.AppSettings>(bufferSpan);
             }catch(Exception exception){
-                Helpers.LoggerModuleHelper.TryLog("Program.Initialize[Error]",$"读取应用程序配置文件异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                Helpers.LoggerModuleHelper.TryLog("Program.Initialize[Error]",$"读取应用程序配置文件异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
                 return false;
             }finally{
                 fs?.Dispose();
@@ -103,7 +103,7 @@ namespace windctl {
                 return;
             }
             //需要验证unitKey
-            if(!CommandHelper.ValidUnitKey(command,argumentValue1)){
+            if(!CommandHelper.RequireUnitKey(command,argumentValue1)){
                 Console.WriteLine("command execute failed,invalid unitKey");
                 return;
             }
@@ -128,7 +128,7 @@ namespace windctl {
                 case "restart":Program.RemoteControlModule.RestartRequest(argumentValue1);break;
                 case "load":Program.RemoteControlModule.LoadRequest(argumentValue1);break;
                 case "remove":Program.RemoteControlModule.RemoveRequest(argumentValue1);break;
-                //case "logs": [1007]
+                case "logs":Program.RemoteControlModule.LogsRequest(argumentValue1);break;
                 //case "attach": [1008]
                 //case "status-all": [1101]
                 case "start-all":Program.RemoteControlModule.StartAllRequest(argumentValue1);break;
@@ -141,8 +141,6 @@ namespace windctl {
                 case "daemon-shutdown":Program.RemoteControlModule.DaemonShutdownRequest(argumentValue1);break;
                 default:CommandHelper.Help();break;
             }
-            //故意等待1秒
-            //SpinWait.SpinUntil(()=>false,1000);
             //等待查询完成
             SpinWait.SpinUntil(()=>!InAction,8000);
         }

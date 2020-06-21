@@ -15,7 +15,7 @@ namespace windctl.Helpers {
             +"windctl restart <unitKey>    =>  restart unit\n"
             +"windctl load <unitKey>       =>  try load/update unit's settings from file,need restart to apply\n"
             +"windctl remove <unitKey>     =>  stop unit and remove it,it can not be start again\n"
-            //+"windctl logs <unitKey>       =>  get all unit's lite status\n"
+            +"windctl logs <unitKey>       =>  print unit's last 16 line logs\n"
             //+"windctl attach <unitKey>     =>  get all unit's lite status\n"
             //+"windctl status-all           =>  get all unit's lite status\n"
             +"windctl start-all            =>  start all unit\n"
@@ -41,7 +41,7 @@ namespace windctl.Helpers {
                 case "restart":
                 case "load":
                 case "remove":
-                //case "logs"
+                case "logs":
                 //case "attach":
                 //case "status-all":
                 case "start-all":
@@ -64,7 +64,7 @@ namespace windctl.Helpers {
         /// <param name="command"></param>
         /// <param name="unitKey"></param>
         /// <returns></returns>
-        public static Boolean ValidUnitKey(String command,String unitKey){
+        public static Boolean RequireUnitKey(String command,String unitKey){
             switch(command){
                 case "status":
                 case "start":
@@ -72,7 +72,7 @@ namespace windctl.Helpers {
                 case "restart":
                 case "load":
                 case "remove":
-                //case "logs":
+                case "logs":
                 //case "attach":
                     break;
                 default:return true;
@@ -224,6 +224,24 @@ namespace windctl.Helpers {
                 return;
             }
             Console.WriteLine($"command executed,unit {removeResponseProtobuf.UnitKey} stopping and removing");
+        }
+
+        /// <summary>
+        /// windctl logs unitKey
+        /// </summary>
+        public static void Logs(LogsResponseProtobuf logsResponseProtobuf){
+            if(logsResponseProtobuf==null){
+                Console.WriteLine(ERROR_RESPONSE);
+                return;
+            }
+            if(!logsResponseProtobuf.Executed) {
+                Console.WriteLine(String.Concat("command execute failed,",logsResponseProtobuf.NoExecuteMessage));
+                return;
+            }
+            Console.WriteLine($"↓↓↓↓ {logsResponseProtobuf.LogFilePath} ↓↓↓↓");
+            for(Int32 i1 = 0;i1<logsResponseProtobuf.LogLines.Count;i1++){
+                Console.WriteLine(logsResponseProtobuf.LogLines[i1]);
+            }
         }
 
         /// <summary>

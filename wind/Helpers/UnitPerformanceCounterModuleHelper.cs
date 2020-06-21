@@ -17,7 +17,7 @@ namespace wind.Helpers {
             }catch(Exception exception) {
                 Helpers.LoggerModuleHelper.TryLog(
                     "Modules.UnitPerformanceCounterModule.GetActuallyInstanceNameByProcessId[Error]",
-                    $"创建性能计数器分类异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    $"创建性能计数器分类异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
                 return null;
             }
             String[] instanceNameArray;
@@ -26,7 +26,7 @@ namespace wind.Helpers {
             }catch(Exception exception) {
                 Helpers.LoggerModuleHelper.TryLog(
                     "Modules.UnitPerformanceCounterModule.GetActuallyInstanceNameByProcessId[Error]",
-                    $"获取性能计数器分类下的实例名称异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    $"获取性能计数器分类下的实例名称异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
                 return null;
             }
             String instanceName=null;

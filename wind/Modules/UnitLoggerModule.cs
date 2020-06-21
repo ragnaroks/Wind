@@ -3,23 +3,25 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using wind.Helpers;
 
 namespace wind.Modules {
-    /// <summary>日志模块</summary>
-    public class LoggerModule:IDisposable {
+    /// <summary>单元日志模块</summary>
+    public class UnitLoggerModule:IDisposable {
         public Boolean Useable{get;private set;}=false;
 
         /// <summary>日志目录</summary>
-        private String LogsDirectory{get;set;}=null;
+        private String UnitLogsDirectory{get;set;}=null;
         /// <summary>定时器</summary>
         private Timer Timer{get;set;}=null;
         /// <summary>是否启用定时器</summary>
         private Boolean TimerEnable{get;set;}=false;
         /// <summary>日志</summary>
-        private ConcurrentDictionary<String,StringBuilder> Logs{get;set;}=new ConcurrentDictionary<String, StringBuilder>();
+        private ConcurrentDictionary<String,StringBuilder> UnitLogs{get;set;}=new ConcurrentDictionary<String, StringBuilder>();
         
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用
@@ -36,15 +38,14 @@ namespace wind.Modules {
 
                 // TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。
                 // TODO: 将大型字段设置为 null。
-                this.LogsDirectory=null;
-                this.Logs=null;
+                this.UnitLogs=null;
 
                 disposedValue=true;
             }
         }
 
         // TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。
-        ~LoggerModule() {
+        ~UnitLoggerModule() {
             // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
             Dispose(false);
         }
@@ -54,33 +55,30 @@ namespace wind.Modules {
             // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。
             Dispose(true);
             // TODO: 如果在以上内容中替代了终结器，则取消注释以下行。
-             GC.SuppressFinalize(this);
+            GC.SuppressFinalize(this);
         }
         #endregion
 
         /// <summary>
         /// 初始化模块
         /// </summary>
-        /// <param name="logsDirectory">日志目录</param>
+        /// <param name="unitLogsDirectory">日志目录</param>
         /// <param name="writePeriod">写入间隔</param>
-        /// <exception cref="Exception">目录不存在可能异常</exception>
-        public Boolean Setup(String logsDirectory,Int32 writePeriod) {
+        public Boolean Setup(String unitLogsDirectory,Int32 writePeriod) {
             if(this.Useable){return true;}
             //检查日志目录
-            if(!Directory.Exists(logsDirectory)){
+            if(!Directory.Exists(unitLogsDirectory)){
                 try{
-                    _=Directory.CreateDirectory(logsDirectory);
+                    _=Directory.CreateDirectory(unitLogsDirectory);
                 }catch{
-                    //throw;
                     return false;
                 }
             }
-            this.LogsDirectory=logsDirectory;
+            this.UnitLogsDirectory=unitLogsDirectory;
             //初始化定时器
             try {
                 this.Timer=new Timer(this.TimerCallback,null,0,writePeriod<1000?1000:writePeriod);
             } catch {
-                //throw;
                 return false;
             }
             this.TimerEnable=true;
@@ -95,13 +93,12 @@ namespace wind.Modules {
         /// </summary>
         /// <param name="state"></param>
         private void TimerCallback(object state) {
-            if(!this.Useable || !this.TimerEnable || this.Logs.Count<1){return;}
+            if(!this.Useable || !this.TimerEnable || this.UnitLogs.Count<1){return;}
             this.TimerEnable=false;
             String filename=String.Concat(DateTime.Now.ToString("yyyy-MM-dd",DateTimeFormatInfo.InvariantInfo),".log");
-            foreach (KeyValuePair<String,StringBuilder> log in this.Logs) {
+            foreach (KeyValuePair<String,StringBuilder> log in this.UnitLogs) {
                 if(log.Value==null || log.Value.Length<1){continue;}
-                String keyToPath=log.Key.Replace('.',Path.DirectorySeparatorChar);
-                String logFileDirectory=String.Concat(this.LogsDirectory,Path.DirectorySeparatorChar,keyToPath);
+                String logFileDirectory=String.Concat(this.UnitLogsDirectory,Path.DirectorySeparatorChar,log.Key);
                 if(!Directory.Exists(logFileDirectory)) {
                     try {
                         _=Directory.CreateDirectory(logFileDirectory);
@@ -119,7 +116,7 @@ namespace wind.Modules {
                     //清空引用的值
                     log.Value.Clear();
                 }catch(Exception exception){
-                    Console.WriteLine($"Modules.LoggerModule.TimerCallback[Error] => 异常信息:{exception.Message} | 异常堆栈:{exception.StackTrace}");
+                    Console.WriteLine($"Modules.UnitLoggerModule.TimerCallback[Error] => 异常信息:{exception.Message} | 异常栈:{exception.StackTrace}");
                     //异常直接跳过
                     continue;
                 }
@@ -130,20 +127,47 @@ namespace wind.Modules {
         /// <summary>
         /// 记录
         /// </summary>
-        /// <param name="title"></param>
+        /// <param name="unitKey"></param>
         /// <param name="text"></param>
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Style","IDE0056:使用索引运算符",Justification = "<挂起>")]
-        public void Log(String title,String text){
-            if(String.IsNullOrWhiteSpace(title) || String.IsNullOrWhiteSpace(text)){return;}
-            Regex regex=new Regex(@"^[a-zA-Z0-9\.\[\]]{1,64}$",RegexOptions.Compiled);
-            if(!regex.IsMatch(title)){return;}
-            if(title[0]=='.' || title[title.Length-1]=='.'){return;}
-            if(!this.Logs.ContainsKey(title) || this.Logs[title]==null){ this.Logs[title]=new StringBuilder(); }
-            this.Logs[title]
-                .Append('[').Append(DateTime.Now.ToString("HH:mm:ss",DateTimeFormatInfo.InvariantInfo)).Append(']').AppendLine()
-                .Append(text)
-                .AppendLine()
-                .AppendLine();
+        public void Log(String unitKey,String text){
+            if(!this.Useable){return;}
+            if(String.IsNullOrWhiteSpace(unitKey) || String.IsNullOrWhiteSpace(unitKey)){return;}
+            if(!this.UnitLogs.ContainsKey(unitKey) || this.UnitLogs[unitKey]==null){ this.UnitLogs[unitKey]=new StringBuilder(); }
+            this.UnitLogs[unitKey].Append(text).AppendLine();//收到的消息会丢失换行
+        }
+
+        /// <summary>
+        /// 读取日志的最后 N 行
+        /// </summary>
+        /// <param name="unitKey"></param>
+        /// <param name="lineSize"></param>
+        /// <returns></returns>
+        public Boolean GetLogLastLines(String unitKey,Int32 lineSize,out String logFilePath,out String[] logLines){
+            logFilePath=null;
+            logLines=null;
+            if(!this.Useable || String.IsNullOrWhiteSpace(unitKey)){return false;}
+            String logDirectory=String.Concat(this.UnitLogsDirectory,Path.DirectorySeparatorChar,unitKey);
+            if(!Directory.Exists(logDirectory)){return false;}
+            String filename=String.Concat(DateTime.Now.ToString("yyyy-MM-dd",DateTimeFormatInfo.InvariantInfo),".log");
+            logFilePath=String.Concat(logDirectory,Path.DirectorySeparatorChar,filename);
+            if(!File.Exists(logFilePath)){return false;}
+            String[] lines;
+            try {
+                lines=File.ReadLines(logFilePath,Encoding.UTF8).ToArray();
+            }catch(Exception exception) {
+                LoggerModuleHelper.TryLog(
+                    "Modules.UnitLoggerModule.GetLogLastLines[Error]",
+                    $"打开日志文件异常,:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return false;
+            }
+            if(lines==null || lines.GetLength(0)<1){return false;}
+            if(lines.GetLength(0)<=lineSize){
+                logLines=lines;
+            } else {
+                logLines=lines.AsSpan(lines.GetLength(0)-lineSize).ToArray();
+            }
+            return true;
         }
     }
 }

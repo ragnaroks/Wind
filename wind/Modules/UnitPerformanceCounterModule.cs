@@ -72,7 +72,7 @@ namespace wind.Modules {
             }catch(Exception exception){
                 Helpers.LoggerModuleHelper.TryLog(
                     "Modules.UnitPerformanceCounterModule.Add[Error]",
-                    $"创建CPU性能计数器异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    $"创建CPU性能计数器异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
             }
             
             try {
@@ -84,7 +84,7 @@ namespace wind.Modules {
             }catch(Exception exception) {
                 Helpers.LoggerModuleHelper.TryLog(
                     "Modules.UnitPerformanceCounterModule.Add[Error]",
-                    $"创建RAM性能计数器异常\n异常信息: {exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    $"创建RAM性能计数器异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
             }
         }
 
