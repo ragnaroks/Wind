@@ -6,7 +6,7 @@
     <Authors>ragnaroks</Authors>
     <Company>skydust</Company>
     <Description>Wind Daemon Service Command-Line Controller</Description>
-    <Version>2.4.2</Version>
+    <Version>2.4.3</Version>
     <PackageProjectUrl>https://github.com/ragnaroks/Wind</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
   </PropertyGroup>

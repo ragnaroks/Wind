@@ -130,7 +130,7 @@ namespace windctl {
                 case "remove":Program.RemoteControlModule.RemoveRequest(argumentValue1);break;
                 case "logs":Program.RemoteControlModule.LogsRequest(argumentValue1);break;
                 //case "attach": [1008]
-                //case "status-all": [1101]
+                case "status-all":Program.RemoteControlModule.StatusAllRequest(argumentValue1);break;
                 case "start-all":Program.RemoteControlModule.StartAllRequest(argumentValue1);break;
                 case "stop-all":Program.RemoteControlModule.StopAllRequest(argumentValue1);break;
                 case "restart-all":Program.RemoteControlModule.RestartAllRequest(argumentValue1);break;

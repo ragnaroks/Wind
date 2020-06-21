@@ -92,8 +92,8 @@
 - [kcptun](https://github.com/xtaci/kcptun)
 - [frp](https://github.com/fatedier/frp)
 
-### Compatible ?
-- any hold std-in application (like minecraft server or srcds.exe),**but i'm on it**
+### WorkInProgress
+- any hold std-in application (like minecraft server or srcds.exe)
 
 ### Imcompatible
 - GUI application

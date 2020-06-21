@@ -170,7 +170,9 @@ namespace windctl.Modules {
                 return;
             }
             //分拣处理
-            LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.ClientMessageReceived",$"分拣处理 {packetTestProtobuf.Type}");
+            LoggerModuleHelper.TryLog(
+                "Modules.WebSocketControlModule.ClientMessageReceived",
+                $"分拣处理 {packetTestProtobuf.Type} in {messageReceivedEventArgs.Data.GetLength(0)} bytes");
             switch(packetTestProtobuf.Type) {
                 case 21:this.ServerAcceptConnection(messageReceivedEventArgs.Data);break;
                 case 22:this.ServerValidateConnection(messageReceivedEventArgs.Data);break;
@@ -182,7 +184,7 @@ namespace windctl.Modules {
                 case 2006:this.RemoveResponse(messageReceivedEventArgs.Data);break;
                 case 2007:this.LogsResponse(messageReceivedEventArgs.Data);break;
                 //case 2008:this.AttachResponse(messageReceivedEventArgs.Data);break;
-                //case 2101:this.StatusAllResponse(messageReceivedEventArgs.Data);break;
+                case 2101:this.StatusAllResponse(messageReceivedEventArgs.Data);break;
                 case 2102:this.StartAllResponse(messageReceivedEventArgs.Data);break;
                 case 2103:this.StopAllResponse(messageReceivedEventArgs.Data);break;
                 case 2104:this.RestartAllResponse(messageReceivedEventArgs.Data);break;
@@ -568,7 +570,6 @@ namespace windctl.Modules {
             Program.InAction=false;
         }
         ////////////////////////////////////////////////////////////////
-        /*
         /// <summary>
         /// windctl status-all
         /// </summary>
@@ -587,7 +588,7 @@ namespace windctl.Modules {
             //调用
             CommandHelper.StatusAll(statusAllResponseProtobuf);
             Program.InAction=false;
-        }*/
+        }
         /// <summary>
         /// windctl start-all
         /// </summary>

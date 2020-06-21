@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace wind.Modules {
     /// <summary>单元管理模块,逻辑上应只提供同步方法,避免此模块出现线程同步问题</summary>
@@ -141,9 +142,20 @@ namespace wind.Modules {
         /// <param name="unitKey"></param>
         /// <returns></returns>
         public Unit GetUnit(String unitKey){
-            if(!Useable){return null;}
+            if(!this.Useable){return null;}
             if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return null;}
             return this.UnitDictionary[unitKey];
+        }
+        /// <summary>
+        /// 获取全部单元
+        /// </summary>
+        /// <returns></returns>
+        public List<Unit> GetUnitList(){
+            if(!this.Useable){return null;}
+            if(this.UnitDictionary.Count<1){return null;}
+            List<Unit> unitList=new List<Unit>();
+            foreach(KeyValuePair<String,Unit> item in this.UnitDictionary){ unitList.Add(item.Value); }
+            return unitList;
         }
 
         /// <summary>

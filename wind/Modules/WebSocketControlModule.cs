@@ -205,11 +205,7 @@ namespace wind.Modules {
             }
             //检查失效客户端
             LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.TimerCallback",$"当前有 {this.ClientConnectionDictionary.Count} 个客户端等待检查");
-            #if DEBUG
-            Int64 ts=DateTimeOffset.Now.ToUnixTimeSeconds()-16;
-            #else
-            Int64 ts=DateTimeOffset.Now.ToUnixTimeSeconds()-60;
-            #endif
+            Int64 ts=DateTimeOffset.Now.ToUnixTimeSeconds()-(Program.AppEnvironment.DevelopMode?16:60);
             List<String> listToClose=new List<String>();
             foreach(KeyValuePair<String,ClientConnection> item in this.ClientConnectionDictionary){
                 if(item.Value.LastOnlineTime<ts) {
@@ -333,7 +329,7 @@ namespace wind.Modules {
                 case 1006:this.RemoveRequest(clientConnection,binary);break;
                 case 1007:this.LogsRequest(clientConnection,binary);break;
                 //case 1008:this.AttachRequest(clientConnection,binary);break;
-                //case 1101:this.StatusAllRequest(clientConnection,binary);break;
+                case 1101:this.StatusAllRequest(clientConnection,binary);break;
                 case 1102:this.StartAllRequest(clientConnection,binary);break;
                 case 1103:this.StopAllRequest(clientConnection,binary);break;
                 case 1104:this.RestartAllRequest(clientConnection,binary);break;
@@ -415,9 +411,11 @@ namespace wind.Modules {
                 unitProcessProtobuf.StartTime=unit.Process.StartTime.ToLocalTimestamp();
             }
             UnitSettingsProtobuf unitSettingsProtobuf=new UnitSettingsProtobuf{
-                Name=unit.Settings.Name,Description=unit.Settings.Description,Type=unit.Settings.Type,AbsoluteExecutePath=unit.Settings.AbsoluteExecutePath,
-                AbsoluteWorkDirectory=unit.Settings.AbsoluteWorkDirectory,Arguments=String.IsNullOrWhiteSpace(unit.Settings.Arguments)?String.Empty:unit.Settings.Arguments,
-                AutoStart=unit.Settings.AutoStart,AutoStartDelay=unit.Settings.AutoStartDelay,RestartWhenException=unit.Settings.RestartWhenException,
+                Name=unit.Settings.Name,Description=unit.Settings.Description,Type=unit.Settings.Type,
+                AbsoluteExecutePath=unit.Settings.AbsoluteExecutePath,AbsoluteWorkDirectory=unit.Settings.AbsoluteWorkDirectory,
+                Arguments=String.IsNullOrWhiteSpace(unit.Settings.Arguments)?String.Empty:unit.Settings.Arguments,
+                HasArguments=!String.IsNullOrWhiteSpace(unit.Settings.Arguments),AutoStart=unit.Settings.AutoStart,
+                AutoStartDelay=unit.Settings.AutoStartDelay,RestartWhenException=unit.Settings.RestartWhenException,
                 MonitorPerformanceUsage=unit.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.Settings.MonitorNetworkUsage};
             UnitSettingsProtobuf unitRunningSettingsProtobuf=new UnitSettingsProtobuf();
             if(unit.State==2){
@@ -425,9 +423,9 @@ namespace wind.Modules {
                     Name=unit.RunningSettings.Name,Description=unit.RunningSettings.Description,Type=unit.RunningSettings.Type,
                     AbsoluteExecutePath=unit.RunningSettings.AbsoluteExecutePath,AbsoluteWorkDirectory=unit.RunningSettings.AbsoluteWorkDirectory,
                     Arguments=String.IsNullOrWhiteSpace(unit.RunningSettings.Arguments)?String.Empty:unit.RunningSettings.Arguments,
-                    AutoStart=unit.RunningSettings.AutoStart,AutoStartDelay=unit.RunningSettings.AutoStartDelay,
-                    RestartWhenException=unit.RunningSettings.RestartWhenException,MonitorPerformanceUsage=unit.RunningSettings.MonitorPerformanceUsage,
-                    MonitorNetworkUsage=unit.RunningSettings.MonitorNetworkUsage};
+                    HasArguments=!String.IsNullOrWhiteSpace(unit.RunningSettings.Arguments),AutoStart=unit.RunningSettings.AutoStart,
+                    AutoStartDelay=unit.RunningSettings.AutoStartDelay,RestartWhenException=unit.RunningSettings.RestartWhenException,
+                    MonitorPerformanceUsage=unit.RunningSettings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.RunningSettings.MonitorNetworkUsage};
             }            
             UnitPerformanceCounterProtobuf unitPerformanceCounterProtobuf=new UnitPerformanceCounterProtobuf();
             if(Program.UnitPerformanceCounterModule.Useable && unit.State==2 && unitRunningSettingsProtobuf.MonitorPerformanceUsage){
@@ -764,8 +762,83 @@ namespace wind.Modules {
         /// </summary>
         /// <param name="clientConnection"></param>
         /// <param name="binary"></param>
-        [Obsolete]
-        private void StatusAllRequest(ClientConnection clientConnection,Byte[] binary)=>throw new NotImplementedException();
+        private void StatusAllRequest(ClientConnection clientConnection,Byte[] binary){
+            //解析数据包
+            StatusAllRequestProtobuf statusAllRequestProtobuf;
+            try {
+                statusAllRequestProtobuf=StatusAllRequestProtobuf.Parser.ParseFrom(binary);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.StatusAllRequest[Error]",
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                _=clientConnection.WebSocketConnection.Send(binary);
+                return;
+            }
+            //初始化响应体
+            StatusAllResponseProtobuf statusAllResponseProtobuf=new StatusAllResponseProtobuf{Type=2101};
+            //无效unit
+            if(!Program.UnitManageModule.Useable){
+                statusAllResponseProtobuf.NoExecuteMessage="unit manager not available";
+                _=clientConnection.WebSocketConnection.Send(statusAllResponseProtobuf.ToByteArray());
+                return;
+            }
+            List<Unit> unitList=Program.UnitManageModule.GetUnitList();
+            if(unitList==null || unitList.Count<1) {
+                statusAllResponseProtobuf.NoExecuteMessage="not have any unit";
+                _=clientConnection.WebSocketConnection.Send(statusAllResponseProtobuf.ToByteArray());
+                return;
+            }
+            //构造数据
+            foreach(Unit item in unitList) {
+                UnitProcessProtobuf unitProcessProtobuf=new UnitProcessProtobuf();
+                if(item.State==2) {
+                    unitProcessProtobuf.Id=item.ProcessId;
+                    unitProcessProtobuf.StartTime=item.Process.StartTime.ToLocalTimestamp();
+                }
+                UnitSettingsProtobuf unitSettingsProtobuf=new UnitSettingsProtobuf{
+                    Name=item.Settings.Name,Description=item.Settings.Description,Type=item.Settings.Type,
+                    AbsoluteExecutePath=item.Settings.AbsoluteExecutePath,AbsoluteWorkDirectory=item.Settings.AbsoluteWorkDirectory,
+                    Arguments=String.IsNullOrWhiteSpace(item.Settings.Arguments)?String.Empty:item.Settings.Arguments,
+                    HasArguments=!String.IsNullOrWhiteSpace(item.Settings.Arguments),
+                    AutoStart=item.Settings.AutoStart,AutoStartDelay=item.Settings.AutoStartDelay,RestartWhenException=item.Settings.RestartWhenException,
+                    MonitorPerformanceUsage=item.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=item.Settings.MonitorNetworkUsage};
+                UnitSettingsProtobuf unitRunningSettingsProtobuf=new UnitSettingsProtobuf();
+                if(item.State==2){
+                    unitRunningSettingsProtobuf=new UnitSettingsProtobuf{
+                        Name=item.RunningSettings.Name,Description=item.RunningSettings.Description,Type=item.RunningSettings.Type,
+                        AbsoluteExecutePath=item.RunningSettings.AbsoluteExecutePath,AbsoluteWorkDirectory=item.RunningSettings.AbsoluteWorkDirectory,
+                        Arguments=String.IsNullOrWhiteSpace(item.RunningSettings.Arguments)?String.Empty:item.RunningSettings.Arguments,
+                        HasArguments=!String.IsNullOrWhiteSpace(item.RunningSettings.Arguments),AutoStart=item.RunningSettings.AutoStart,
+                        AutoStartDelay=item.RunningSettings.AutoStartDelay,RestartWhenException=item.RunningSettings.RestartWhenException,
+                        MonitorPerformanceUsage=item.RunningSettings.MonitorPerformanceUsage,MonitorNetworkUsage=item.RunningSettings.MonitorNetworkUsage};
+                }            
+                UnitPerformanceCounterProtobuf unitPerformanceCounterProtobuf=new UnitPerformanceCounterProtobuf();
+                if(Program.UnitPerformanceCounterModule.Useable && item.State==2 && unitRunningSettingsProtobuf.MonitorPerformanceUsage){
+                    unitPerformanceCounterProtobuf.CPU=Program.UnitPerformanceCounterModule.GetCpuValue(item.ProcessId);
+                    unitPerformanceCounterProtobuf.RAM=Program.UnitPerformanceCounterModule.GetRamValue(item.ProcessId);
+                }
+                UnitNetworkCounterProtobuf unitNetworkCounterProtobuf=new UnitNetworkCounterProtobuf();
+                if(Program.UnitNetworkCounterModule.Useable && item.State==2 && unitRunningSettingsProtobuf.MonitorNetworkUsage){
+                    UnitNetworkCounter unitNetworkCounter=Program.UnitNetworkCounterModule.GetValue(item.ProcessId);
+                    if(unitNetworkCounter!=null){
+                        unitNetworkCounterProtobuf.SendSpeed=unitNetworkCounter.SendSpeed;
+                        unitNetworkCounterProtobuf.ReceiveSpeed=unitNetworkCounter.ReceiveSpeed;
+                        unitNetworkCounterProtobuf.TotalSent=unitNetworkCounter.TotalSent;
+                        unitNetworkCounterProtobuf.TotalReceived=unitNetworkCounter.TotalReceived;
+                    }
+                }
+                UnitProtobuf unitProtobuf=new UnitProtobuf{
+                    Key=item.Key,State=item.State,
+                    SettingsFilePath=String.Concat(Program.AppEnvironment.UnitsDirectory,Path.DirectorySeparatorChar,item.Key,".json"),
+                    ProcessProtobuf=unitProcessProtobuf,SettingsProtobuf=unitSettingsProtobuf,RunningSettingsProtobuf=unitRunningSettingsProtobuf,
+                    PerformanceCounterProtobuf=unitPerformanceCounterProtobuf,NetworkCounterProtobuf=unitNetworkCounterProtobuf};
+                statusAllResponseProtobuf.UnitProtobufArray.Add(unitProtobuf);
+            }
+            statusAllResponseProtobuf.UnitProtobufArraySize=unitList.Count;
+            statusAllResponseProtobuf.Executed=true;
+            //回复
+            _=clientConnection.WebSocketConnection.Send(statusAllResponseProtobuf.ToByteArray());
+        }
         /// <summary>
         /// windctl start-all
         /// </summary>

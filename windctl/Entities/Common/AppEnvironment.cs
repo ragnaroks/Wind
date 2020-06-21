@@ -14,13 +14,9 @@ namespace windctl.Entities.Common {
         /// <summary>数据根路径,无路径分隔符</summary>
         public String DataDirectory{get;}=AppDomain.CurrentDomain.BaseDirectory+"Data";
         #if DEBUG
-        /// <summary>命名管道</summary>
-        public String PipelineName{get;}="WIND_DAEMON_PIPELINE_DEBUG";
         /// <summary>是否开发模式</summary>
         public Boolean DevelopMode{get;}=true;
         #else
-        /// <summary>命名管道</summary>
-        public String PipelineName{get;}="WIND_DAEMON_PIPELINE";
         /// <summary>是否开发模式</summary>
         public Boolean DevelopMode{get;}=false;
         #endif

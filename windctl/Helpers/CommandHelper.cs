@@ -43,7 +43,7 @@ namespace windctl.Helpers {
                 case "remove":
                 case "logs":
                 //case "attach":
-                //case "status-all":
+                case "status-all":
                 case "start-all":
                 case "stop-all":
                 case "restart-all":
@@ -135,12 +135,15 @@ namespace windctl.Helpers {
                 default:Console.Write("unknown");break;
             }
             //第四行
+            Console.Write($"\nCommandLine:  {unitSettingsProtobuf.AbsoluteExecutePath}");
+            if(unitSettingsProtobuf.HasArguments){ Console.Write($" {unitSettingsProtobuf.Arguments}"); }
+            //第五行
             if(statusResponseProtobuf.UnitProtobuf.State==2 && unitSettingsProtobuf.MonitorPerformanceUsage) {
                 String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",statusResponseProtobuf.UnitProtobuf.PerformanceCounterProtobuf.CPU);
                 String ramValue=statusResponseProtobuf.UnitProtobuf.PerformanceCounterProtobuf.RAM.FixedByteSize();
                 Console.Write($"\nPerformance:  {cpuValue}; {ramValue}");
             }
-            //第五行
+            //第六行
             if(statusResponseProtobuf.UnitProtobuf.State==2 && unitSettingsProtobuf.MonitorNetworkUsage) {
                 String sendSpeed=statusResponseProtobuf.UnitProtobuf.NetworkCounterProtobuf.SendSpeed.FixedByteSize();
                 String receiveSpeed=statusResponseProtobuf.UnitProtobuf.NetworkCounterProtobuf.ReceiveSpeed.FixedByteSize();
@@ -241,6 +244,57 @@ namespace windctl.Helpers {
             Console.WriteLine($"↓↓↓↓ {logsResponseProtobuf.LogFilePath} ↓↓↓↓");
             for(Int32 i1 = 0;i1<logsResponseProtobuf.LogLines.Count;i1++){
                 Console.WriteLine(logsResponseProtobuf.LogLines[i1]);
+            }
+        }
+
+        /// <summary>
+        /// windctl status-all
+        /// </summary>
+        public static void StatusAll(StatusAllResponseProtobuf statusallResponseProtobuf){
+            if(statusallResponseProtobuf==null){
+                Console.WriteLine(ERROR_RESPONSE);
+                return;
+            }
+            if(!statusallResponseProtobuf.Executed) {
+                Console.WriteLine(String.Concat("command execute failed,",statusallResponseProtobuf.NoExecuteMessage));
+                return;
+            }
+            if(statusallResponseProtobuf.UnitProtobufArraySize<1) {
+                Console.WriteLine("command execute failed,not have any unit");
+                return;
+            }
+            foreach(UnitProtobuf item in statusallResponseProtobuf.UnitProtobufArray) {
+                //第一行
+                if(item.State==2){ Console.ForegroundColor=ConsoleColor.Green; }
+                Console.Write("● ");
+                if(item.State==2){ Console.ResetColor(); }
+                UnitSettingsProtobuf unitSettingsProtobuf=item.State==2
+                    ?item.RunningSettingsProtobuf
+                    :item.SettingsProtobuf;
+                Console.Write($"{unitSettingsProtobuf.Name} - {unitSettingsProtobuf.Description}");
+                //第二行
+                Console.Write($"\n     Loaded:  {item.SettingsFilePath}");
+                if(unitSettingsProtobuf.AutoStart){ Console.Write(" (auto)"); }
+                //第三行
+                Console.Write($"\n      State:  ");
+                switch(item.State) {
+                    case 0:Console.Write("stopped");break;
+                    case 1:Console.Write("starting");break;
+                    case 2:
+                        Console.ForegroundColor=ConsoleColor.Green;
+                        Console.Write("running");
+                        Console.ResetColor();
+                        Console.Write(' ');
+                        Console.ForegroundColor=ConsoleColor.Cyan;
+                        Console.Write($"#{item.ProcessProtobuf.Id}");
+                        Console.ResetColor();
+                        String startTimeString=item.ProcessProtobuf.StartTime.ToLocalTimestampString();
+                        Console.Write($" (since {startTimeString})");
+                        break;
+                    case 3:Console.Write("stopping");break;
+                    default:Console.Write("unknown");break;
+                }
+                Console.WriteLine();
             }
         }
 

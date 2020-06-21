@@ -27,6 +27,8 @@ try load/update unit's settings from file
 stop unit and remove it,it can not be start again
 - windctl logs **\<unitKey\>**  
 print unit's last lines logs
+- windctl status-all  
+print all unit's status(lite)
 - windctl start-all  
 start all unit
 - windctl stop-all  
