@@ -1,13 +1,7 @@
-﻿using Google.Protobuf;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Globalization;
-using System.IO.Pipes;
-using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Xml;
 using wind.Entities.Protobuf;
 
 namespace windctl.Helpers {
@@ -29,10 +23,9 @@ namespace windctl.Helpers {
             +"windctl restart-all          =>  restart all unit\n"
             +"windctl load-all             =>  try load/update all units's settings from file,need restart to apply\n"
             +"windctl remove-all           =>  stop all unit and remove them,they can not be start again\n"
-            //+"windctl daemon-version       =>  get daemon service's version\n"
-            //+"windctl daemon-status        =>  get daemon service's status\n"
-            //+"windctl daemon-shutdown      =>  shutdown daemon service\n";
-            ;
+            +"windctl daemon-version       =>  get daemon service's version\n"
+            +"windctl daemon-status        =>  get daemon service's status\n"
+            +"windctl daemon-shutdown      =>  shutdown daemon service\n";
         private const String ERROR_RESPONSE="command execute failed,response is empty or incorrect";
 
         /// <summary>
