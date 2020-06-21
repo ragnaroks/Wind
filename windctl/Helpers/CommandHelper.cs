@@ -15,18 +15,20 @@ namespace windctl.Helpers {
         private const String HELP
             ="windctl [Any]                =>  print this help\n"
             +"windctl version              =>  print windctl's version\n"
-            +"windctl status <unitKey>     =>  get unit's status\n"
-            //+"windctl start <unitKey>      =>  start unit\n"
-            //+"windctl stop <unitKey>       =>  stop unit\n"
-            //+"windctl restart <unitKey>    =>  restart unit\n"
-            //+"windctl load <unitKey>       =>  try load/update unit's settings from file,need restart to apply\n"
-            //+"windctl remove <unitKey>     =>  stop unit and remove it,it can not be start again\n"
+            +"windctl status <unitKey>     =>  print unit's status\n"
+            +"windctl start <unitKey>      =>  start unit\n"
+            +"windctl stop <unitKey>       =>  stop unit\n"
+            +"windctl restart <unitKey>    =>  restart unit\n"
+            +"windctl load <unitKey>       =>  try load/update unit's settings from file,need restart to apply\n"
+            +"windctl remove <unitKey>     =>  stop unit and remove it,it can not be start again\n"
+            //+"windctl logs <unitKey>       =>  get all unit's lite status\n"
+            //+"windctl attach <unitKey>     =>  get all unit's lite status\n"
             //+"windctl status-all           =>  get all unit's lite status\n"
-            //+"windctl start-all            =>  start all unit\n"
-            //+"windctl stop-all             =>  stop all unit\n"
-            //+"windctl restart-all          =>  restart all unit\n"
-            //+"windctl load-all             =>  try load/update all units's settings from file,need restart to apply\n"
-            //+"windctl remove-all           =>  stop all unit and remove them,they can not be start again\n"
+            +"windctl start-all            =>  start all unit\n"
+            +"windctl stop-all             =>  stop all unit\n"
+            +"windctl restart-all          =>  restart all unit\n"
+            +"windctl load-all             =>  try load/update all units's settings from file,need restart to apply\n"
+            +"windctl remove-all           =>  stop all unit and remove them,they can not be start again\n"
             //+"windctl daemon-version       =>  get daemon service's version\n"
             //+"windctl daemon-status        =>  get daemon service's status\n"
             //+"windctl daemon-shutdown      =>  shutdown daemon service\n";
@@ -46,8 +48,9 @@ namespace windctl.Helpers {
                 case "restart":
                 case "load":
                 case "remove":
-                case "attach":
-                case "status-all":
+                //case "logs"
+                //case "attach":
+                //case "status-all":
                 case "start-all":
                 case "stop-all":
                 case "restart-all":
@@ -76,7 +79,8 @@ namespace windctl.Helpers {
                 case "restart":
                 case "load":
                 case "remove":
-                case "attach":
+                //case "logs":
+                //case "attach":
                     break;
                 default:return true;
             }
@@ -93,10 +97,7 @@ namespace windctl.Helpers {
         /// <summary>
         /// windctl version
         /// </summary>
-        public static void Version() {
-            Version version=Assembly.GetExecutingAssembly().GetName().Version;
-            Console.WriteLine($"windctl v{version}");
-        }
+        public static void Version()=>Console.WriteLine($"windctl v{Assembly.GetExecutingAssembly().GetName().Version}");
 
         /// <summary>
         /// windctl status unitKey
@@ -184,7 +185,7 @@ namespace windctl.Helpers {
                 Console.WriteLine(String.Concat("command execute failed,",stopResponseProtobuf.NoExecuteMessage));
                 return;
             }
-            Console.WriteLine($"command executed,unit {stopResponseProtobuf.UnitKey} Stopping");
+            Console.WriteLine($"command executed,unit {stopResponseProtobuf.UnitKey} stopping");
         }
 
         /// <summary>
@@ -232,84 +233,110 @@ namespace windctl.Helpers {
             Console.WriteLine($"command executed,unit {removeResponseProtobuf.UnitKey} stopping and removing");
         }
 
-        /*        
         /// <summary>
-        /// windctl daemon-version
+        /// windctl start-all
         /// </summary>
-        public static void DaemonVersion() {
-            DaemonVersionRequestProtobuf daemonVersionRequestProtobuf=new DaemonVersionRequestProtobuf{Type=1200};
-            Byte[] request=daemonVersionRequestProtobuf.ToByteArray();
-            if(request.GetLength(0)>100){return;}
-            Byte[] buffer;
-            Int32 bufferSize;
-            try {
-                NamedPipeClientStream namedPipeClientStream=new NamedPipeClientStream(".",Program.AppEnvironment.PipelineName,PipeDirection.InOut,PipeOptions.WriteThrough);
-                namedPipeClientStream.Connect(1000);
-                //发送
-                namedPipeClientStream.Write(request);
-                namedPipeClientStream.Flush();
-                //回复
-                buffer=new Byte[1048576];
-                bufferSize=namedPipeClientStream.Read(buffer);
-                //释放
-                namedPipeClientStream.Dispose();
-            }catch(Exception exception){
-                LoggerModuleHelper.TryLog("Helpers.CommandHelper.DaemonVersion[Error]",$"管道通信异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
-                Console.WriteLine($"command execute error,{exception.Message}");
-                return;
-            }
-            if(bufferSize<1){
-                Console.WriteLine(NO_RESPONSE);
-                return;
-            }
-            Byte[] response=buffer.AsSpan(0,bufferSize).ToArray();
-            DaemonVersionResponseProtobuf daemonVersionResponseProtobuf=DaemonVersionResponseProtobuf.Parser.ParseFrom(response);
-            if(daemonVersionResponseProtobuf==null || daemonVersionResponseProtobuf.Type!=2200){
+        public static void StartAll(StartAllResponseProtobuf startallResponseProtobuf){
+            if(startallResponseProtobuf==null){
                 Console.WriteLine(ERROR_RESPONSE);
                 return;
             }
-            Version version=Assembly.GetExecutingAssembly().GetName().Version;
-            if(version.Major==daemonVersionResponseProtobuf.MajorVersion
-            && version.Minor==daemonVersionResponseProtobuf.MinorVersion
-            && version.Build==daemonVersionResponseProtobuf.BuildVersion
-            && version.Revision==daemonVersionResponseProtobuf.RevisionVersion){
-                Console.WriteLine($"wind v{daemonVersionResponseProtobuf.MajorVersion}.{daemonVersionResponseProtobuf.MinorVersion}.{daemonVersionResponseProtobuf.BuildVersion}.{daemonVersionResponseProtobuf.RevisionVersion},same version with windctl");
-            } else {
-                Console.WriteLine($"wind v{daemonVersionResponseProtobuf.MajorVersion}.{daemonVersionResponseProtobuf.MinorVersion}.{daemonVersionResponseProtobuf.BuildVersion}.{daemonVersionResponseProtobuf.RevisionVersion}");
+            if(!startallResponseProtobuf.Executed) {
+                Console.WriteLine(String.Concat("command execute failed,",startallResponseProtobuf.NoExecuteMessage));
+                return;
             }
+            Console.WriteLine($"command executed,all units starting");
         }
+
+        /// <summary>
+        /// windctl stop-all
+        /// </summary>
+        public static void StopAll(StopAllResponseProtobuf stopAllResponseProtobuf){
+            if(stopAllResponseProtobuf==null){
+                Console.WriteLine(ERROR_RESPONSE);
+                return;
+            }
+            if(!stopAllResponseProtobuf.Executed) {
+                Console.WriteLine(String.Concat("command execute failed,",stopAllResponseProtobuf.NoExecuteMessage));
+                return;
+            }
+            Console.WriteLine($"command executed,all units stopping");
+        }
+
+        /// <summary>
+        /// windctl restart-all
+        /// </summary>
+        public static void RestartAll(RestartAllResponseProtobuf restartAllResponseProtobuf){
+            if(restartAllResponseProtobuf==null){
+                Console.WriteLine(ERROR_RESPONSE);
+                return;
+            }
+            if(!restartAllResponseProtobuf.Executed) {
+                Console.WriteLine(String.Concat("command execute failed,",restartAllResponseProtobuf.NoExecuteMessage));
+                return;
+            }
+            Console.WriteLine($"command executed,all units restarting");
+        }
+
+        /// <summary>
+        /// windctl load-all
+        /// </summary>
+        public static void LoadAll(LoadAllResponseProtobuf loadAllResponseProtobuf){
+            if(loadAllResponseProtobuf==null){
+                Console.WriteLine(ERROR_RESPONSE);
+                return;
+            }
+            if(!loadAllResponseProtobuf.Executed) {
+                Console.WriteLine(String.Concat("command execute failed,",loadAllResponseProtobuf.NoExecuteMessage));
+                return;
+            }
+            Console.WriteLine($"command executed,all units loading");
+        }
+
+        /// <summary>
+        /// windctl remove-all
+        /// </summary>
+        public static void RemoveAll(RemoveAllResponseProtobuf removeAllResponseProtobuf){
+            if(removeAllResponseProtobuf==null){
+                Console.WriteLine(ERROR_RESPONSE);
+                return;
+            }
+            if(!removeAllResponseProtobuf.Executed) {
+                Console.WriteLine(String.Concat("command execute failed,",removeAllResponseProtobuf.NoExecuteMessage));
+                return;
+            }
+            Console.WriteLine($"command executed,all units stopping and removing");
+        }
+        
+        /// <summary>
+        /// windctl daemon-version
+        /// </summary>
+        public static void DaemonVersion(DaemonVersionResponseProtobuf daemonVersionResponseProtobuf){
+            if(daemonVersionResponseProtobuf==null){
+                Console.WriteLine(ERROR_RESPONSE);
+                return;
+            }
+            String versionString=String.Concat(
+                "wind v",
+                daemonVersionResponseProtobuf.Major,".",
+                daemonVersionResponseProtobuf.Minor,".",
+                daemonVersionResponseProtobuf.Build,".",
+                daemonVersionResponseProtobuf.Revision);
+            Version version=Assembly.GetExecutingAssembly().GetName().Version;
+            if(version.Major==daemonVersionResponseProtobuf.Major
+            && version.Minor==daemonVersionResponseProtobuf.Minor
+            && version.Build==daemonVersionResponseProtobuf.Build
+            && version.Revision==daemonVersionResponseProtobuf.Revision){
+                versionString=String.Concat(versionString,",same version with windctl");
+            }
+            Console.WriteLine(versionString);
+        }
+
         /// <summary>
         /// windctl daemon-status
         /// </summary>
-        public static void DaemonStatus() {
-            DaemonStatusRequestProtobuf daemonStatusRequestProtobuf=new DaemonStatusRequestProtobuf{Type=1201};
-            Byte[] request=daemonStatusRequestProtobuf.ToByteArray();
-            if(request.GetLength(0)>100){return;}
-            Byte[] buffer;
-            Int32 bufferSize;
-            try {
-                NamedPipeClientStream namedPipeClientStream=new NamedPipeClientStream(".",Program.AppEnvironment.PipelineName,PipeDirection.InOut,PipeOptions.WriteThrough);
-                namedPipeClientStream.Connect(1000);
-                //发送
-                namedPipeClientStream.Write(request);
-                namedPipeClientStream.Flush();
-                //回复
-                buffer=new Byte[1048576];
-                bufferSize=namedPipeClientStream.Read(buffer);
-                //释放
-                namedPipeClientStream.Dispose();
-            }catch(Exception exception){
-                LoggerModuleHelper.TryLog("Helpers.CommandHelper.DaemonStatus[Error]",$"管道通信异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
-                Console.WriteLine($"command execute error,{exception.Message}");
-                return;
-            }
-            if(bufferSize<1){
-                Console.WriteLine(NO_RESPONSE);
-                return;
-            }
-            Byte[] response=buffer.AsSpan(0,bufferSize).ToArray();
-            DaemonStatusResponseProtobuf daemonStatusResponseProtobuf=DaemonStatusResponseProtobuf.Parser.ParseFrom(response);
-            if(daemonStatusResponseProtobuf==null || daemonStatusResponseProtobuf.Type!=2201){
+        public static void DaemonStatus(DaemonStatusResponseProtobuf daemonStatusResponseProtobuf) {
+            if(daemonStatusResponseProtobuf==null){
                 Console.WriteLine(ERROR_RESPONSE);
                 return;
             }
@@ -343,43 +370,18 @@ namespace windctl.Helpers {
             Console.Write($"\n    Network:  ↑ {sendSpeed}/s,{totalSent}; ↓ {receiveSpeed}/s,{totalReceived}");
             Console.WriteLine();
         }
+
         /// <summary>
         /// windctl daemon-shutdoown
         /// </summary>
-        public static void DaemonShutdown() {
-            DaemonShutdownRequestProtobuf daemonShutdownRequestProtobuf=new DaemonShutdownRequestProtobuf{Type=1299};
-            Byte[] request=daemonShutdownRequestProtobuf.ToByteArray();
-            if(request.GetLength(0)>100){return;}
-            Byte[] buffer;
-            Int32 bufferSize;
-            try {
-                NamedPipeClientStream namedPipeClientStream=new NamedPipeClientStream(".",Program.AppEnvironment.PipelineName,PipeDirection.InOut,PipeOptions.WriteThrough);
-                namedPipeClientStream.Connect(1000);
-                //发送
-                namedPipeClientStream.Write(request);
-                namedPipeClientStream.Flush();
-                //回复
-                buffer=new Byte[1048576];
-                bufferSize=namedPipeClientStream.Read(buffer);
-                //释放
-                namedPipeClientStream.Dispose();
-            }catch(Exception exception){
-                LoggerModuleHelper.TryLog("Helpers.CommandHelper.DaemonShutdown[Error]",$"管道通信异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
-                Console.WriteLine($"command execute error,{exception.Message}");
-                return;
-            }
-            if(bufferSize<1){
-                Console.WriteLine(NO_RESPONSE);
-                return;
-            }
-            Byte[] response=buffer.AsSpan(0,bufferSize).ToArray();
-            DaemonShutdownResponseProtobuf daemonShutdownResponseProtobuf=DaemonShutdownResponseProtobuf.Parser.ParseFrom(response);
+        public static void DaemonShutdown(DaemonShutdownResponseProtobuf daemonShutdownResponseProtobuf) {
             if(daemonShutdownResponseProtobuf==null || daemonShutdownResponseProtobuf.Type!=2299){
                 Console.WriteLine(ERROR_RESPONSE);
                 return;
             }
+            Console.ForegroundColor=ConsoleColor.Red;
             Console.WriteLine("wind is shutting");
+            Console.ResetColor();
         }
-        */
     }
 }

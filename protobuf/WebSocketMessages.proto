@@ -117,6 +117,16 @@ message RemoveRequestProtobuf{
   int32 Type=1;//1006
   string UnitKey=2;
 }
+// windctl logs unitKey
+message LogsRequestProtobuf{
+  int32 Type=1;//1007
+  string UnitKey=2;
+}
+// windctl attach unitKey
+message AttachRequestProtobuf{
+  int32 Type=1;//1008
+  string UnitKey=2;
+}
 
 // windctl status-all
 message StatusAllRequestProtobuf{
@@ -141,6 +151,19 @@ message LoadAllRequestProtobuf{
 // windctl remove-all
 message RemoveAllRequestProtobuf{
   int32 Type=1;//1106
+}
+
+// windctl daemon-version
+message DaemonVersionRequestProtobuf{
+  int32 Type=1;//1200
+}
+// windctl daemon-status
+message DaemonStatusRequestProtobuf{
+  int32 Type=1;//1201
+}
+// windctl daemon-shutdown
+message DaemonShutdownRequestProtobuf{
+  int32 Type=1;//1299
 }
 
 ////////////////////////////////////////////////////////////////
@@ -227,6 +250,26 @@ message LoadAllResponseProtobuf{
 // windctl remove-all
 message RemoveAllResponseProtobuf{
   int32 Type=1;//2106
+  bool Executed=2;
+  string NoExecuteMessage=3;
+}
+
+// windctl daemon-version
+message DaemonVersionResponseProtobuf{
+  int32 Type=1;//2200
+  int32 Major=2;
+  int32 Minor=3;
+  int32 Build=4;
+  int32 Revision=5;
+}
+// windctl daemon-status
+message DaemonStatusResponseProtobuf{
+  int32 Type=1;//2201
+  DaemonProtobuf DaemonProtobuf=2;
+}
+// windctl daemon-shutdown
+message DaemonShutdownResponseProtobuf{
+  int32 Type=1;//2299
   bool Executed=2;
   string NoExecuteMessage=3;
 }

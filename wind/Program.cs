@@ -66,7 +66,7 @@ namespace wind {
                 Environment.Exit(0);
                 return;
             }
-            if(!InitializeRemoveControlModule()) {
+            if(AppSettings.EnableRemoteControl && !InitializeRemoveControlModule()) {
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化远程管理模块失败");
                 Environment.Exit(0);
                 return;

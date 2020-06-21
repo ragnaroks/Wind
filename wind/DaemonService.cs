@@ -32,8 +32,8 @@ namespace wind {
             //停止网络监控模块
             _=Program.UnitNetworkCounterModule.StopTraceEventSession();
             //停止所有单元
-            Program.UnitManageModule.StopAllUnits();
-            Program.UnitManageModule.RemoveAllUnits();
+            Program.UnitManageModule.StopAllUnits(false);
+            Program.UnitManageModule.RemoveAllUnits(false);
             Helpers.LoggerModuleHelper.TryLog("DaemonService.Stop[Warning]","已停止服务");
         }
     }

@@ -7,6 +7,8 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using wind.Entities.Common;
 using wind.Entities.Protobuf;
 using wind.Helpers;
@@ -326,13 +328,17 @@ namespace wind.Modules {
                 case 1004:this.RestartRequest(clientConnection,binary);break;
                 case 1005:this.LoadRequest(clientConnection,binary);break;
                 case 1006:this.RemoveRequest(clientConnection,binary);break;
-                //case 1007:this.AttachRequest(clientConnection,binary);break;
+                //case 1007:this.LogRequest(clientConnection,binary);break;
+                //case 1008:this.AttachRequest(clientConnection,binary);break;
                 //case 1101:this.StatusAllRequest(clientConnection,binary);break;
                 case 1102:this.StartAllRequest(clientConnection,binary);break;
                 case 1103:this.StopAllRequest(clientConnection,binary);break;
                 case 1104:this.RestartAllRequest(clientConnection,binary);break;
                 case 1105:this.LoadAllRequest(clientConnection,binary);break;
                 case 1106:this.RemoveAllRequest(clientConnection,binary);break;
+                case 1200:this.DaemonVersionRequest(clientConnection,binary);break;
+                case 1201:this.DaemonStatusRequest(clientConnection,binary);break;
+                case 1299:this.DaemonShutdownRequest(clientConnection,binary);break;
                 default:_=clientConnection.WebSocketConnection.Send(binary);break;//无法识别则原样回复
             }
             LoggerModuleHelper.TryLog(
@@ -691,16 +697,25 @@ namespace wind.Modules {
             _=clientConnection.WebSocketConnection.Send(removeResponseProtobuf.ToByteArray());
         }
         /// <summary>
+        /// windctl logs unitKey
+        /// </summary>
+        /// <param name="clientConnection"></param>
+        /// <param name="binary"></param>
+        [Obsolete]
+        private void LogsRequest(ClientConnection clientConnection,Byte[] binary)=>throw new NotImplementedException();
+        /// <summary>
         /// windctl attach unitKey
         /// </summary>
         /// <param name="clientConnection"></param>
         /// <param name="binary"></param>
+        [Obsolete]
         private void AttachRequest(ClientConnection clientConnection,Byte[] binary)=>throw new NotImplementedException();
         /// <summary>
         /// windctl status-all
         /// </summary>
         /// <param name="clientConnection"></param>
         /// <param name="binary"></param>
+        [Obsolete]
         private void StatusAllRequest(ClientConnection clientConnection,Byte[] binary)=>throw new NotImplementedException();
         /// <summary>
         /// windctl start-all
@@ -829,7 +844,8 @@ namespace wind.Modules {
                     UnitSettingsProtobuf unitSettingsProtobuf=new UnitSettingsProtobuf{
                         Name=item.Name,Description=item.Description,Type=item.Type,
                         AbsoluteExecutePath=item.AbsoluteExecutePath,AbsoluteWorkDirectory=item.AbsoluteWorkDirectory,
-                        Arguments=item.Arguments,HasArguments=!String.IsNullOrWhiteSpace(item.Arguments),
+                        Arguments=String.IsNullOrWhiteSpace(item.Arguments)?String.Empty:item.Arguments,
+                        HasArguments=!String.IsNullOrWhiteSpace(item.Arguments),
                         AutoStart=item.AutoStart,AutoStartDelay=item.AutoStartDelay,
                         RestartWhenException=item.RestartWhenException,MonitorPerformanceUsage=item.MonitorPerformanceUsage,
                         MonitorNetworkUsage=item.MonitorNetworkUsage};
@@ -869,6 +885,106 @@ namespace wind.Modules {
             removeAllResponseProtobuf.Executed=true;
             //回复
             _=clientConnection.WebSocketConnection.Send(removeAllResponseProtobuf.ToByteArray());
+        }
+
+        /// <summary>
+        /// windctl daemon-version
+        /// </summary>
+        /// <param name="clientConnection"></param>
+        /// <param name="binary"></param>
+        private void DaemonVersionRequest(ClientConnection clientConnection,Byte[] binary){
+            //解析数据包
+            DaemonVersionRequestProtobuf daemonVersionRequestProtobuf;
+            try {
+                daemonVersionRequestProtobuf=DaemonVersionRequestProtobuf.Parser.ParseFrom(binary);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.DaemonVersionRequest[Error]",
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                _=clientConnection.WebSocketConnection.Send(binary);
+                return;
+            }
+            //初始化响应体
+            DaemonVersionResponseProtobuf daemonVersionResponseProtobuf=new DaemonVersionResponseProtobuf{Type=2200};
+            //构造数据
+            Version version=System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
+            daemonVersionResponseProtobuf.Major=version.Major;
+            daemonVersionResponseProtobuf.Minor=version.Minor;
+            daemonVersionResponseProtobuf.Build=version.Build;
+            daemonVersionResponseProtobuf.Revision=version.Revision;
+            //回复
+            _=clientConnection.WebSocketConnection.Send(daemonVersionResponseProtobuf.ToByteArray());
+        }
+        /// <summary>
+        /// windctl daemon-status
+        /// </summary>
+        /// <param name="clientConnection"></param>
+        /// <param name="binary"></param>
+        private void DaemonStatusRequest(ClientConnection clientConnection,Byte[] binary){
+            //解析数据包
+            DaemonStatusRequestProtobuf daemonStatusRequestProtobuf;
+            try {
+                daemonStatusRequestProtobuf=DaemonStatusRequestProtobuf.Parser.ParseFrom(binary);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.DaemonStatusRequest[Error]",
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                _=clientConnection.WebSocketConnection.Send(binary);
+                return;
+            }
+            //初始化响应体
+            DaemonStatusResponseProtobuf daemonStatusResponseProtobuf=new DaemonStatusResponseProtobuf{Type=2201};
+            //构造数据
+            UnitProcessProtobuf unitProcessProtobuf=new UnitProcessProtobuf{Id=Program.AppProcess.Id,StartTime=Program.AppProcess.StartTime.ToLocalTimestamp()};
+            UnitPerformanceCounterProtobuf unitPerformanceCounter=new UnitPerformanceCounterProtobuf{RAM=0F,CPU=0F};
+            UnitNetworkCounterProtobuf unitNetworkCounter =new UnitNetworkCounterProtobuf { SendSpeed=0,ReceiveSpeed=0,TotalSent=0,TotalReceived=0};
+            if(Program.UnitPerformanceCounterModule.Useable) {
+                unitPerformanceCounter.CPU=Program.UnitPerformanceCounterModule.GetCpuValue(Program.AppProcess.Id);
+                unitPerformanceCounter.RAM=Program.UnitPerformanceCounterModule.GetRamValue(Program.AppProcess.Id);
+            }
+            if(Program.UnitNetworkCounterModule.Useable) {
+                UnitNetworkCounter counter =Program.UnitNetworkCounterModule.GetValue(Program.AppProcess.Id);
+                unitNetworkCounter.SendSpeed=counter.SendSpeed;
+                unitNetworkCounter.ReceiveSpeed=counter.ReceiveSpeed;
+                unitNetworkCounter.TotalSent=counter.TotalSent;
+                unitNetworkCounter.TotalReceived=counter.TotalReceived;
+            }
+            DaemonProtobuf daemonProtobuf=new DaemonProtobuf{
+                Name="wind",Description="a systemd for windows",ProcessProtobuf=unitProcessProtobuf,
+                PerformanceCounterProtobuf=unitPerformanceCounter,NetworkCounterProtobuf=unitNetworkCounter,
+                AbsoluteExecutePath=Program.AppEnvironment.BaseDirectory+"wind.exe",AbsoluteWorkDirectory=Program.AppEnvironment.BaseDirectory};
+            daemonStatusResponseProtobuf.DaemonProtobuf=daemonProtobuf;
+            //回复
+            _=clientConnection.WebSocketConnection.Send(daemonStatusResponseProtobuf.ToByteArray());
+        }
+        /// <summary>
+        /// windctl daemon-shutdown
+        /// </summary>
+        /// <param name="clientConnection"></param>
+        /// <param name="binary"></param>
+        private void DaemonShutdownRequest(ClientConnection clientConnection,Byte[] binary){
+            //解析数据包
+            DaemonShutdownRequestProtobuf daemonShutdownRequestProtobuf;
+            try {
+                daemonShutdownRequestProtobuf=DaemonShutdownRequestProtobuf.Parser.ParseFrom(binary);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.DaemonShutdownRequest[Error]",
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                _=clientConnection.WebSocketConnection.Send(binary);
+                return;
+            }
+            //初始化响应体
+            DaemonShutdownResponseProtobuf daemonShutdownResponseProtobuf=new DaemonShutdownResponseProtobuf{Type=2299};
+            //后台停止
+            Task.Run(()=>{
+                SpinWait.SpinUntil(()=>false,1000);
+                Program.DaemonServiceController.Stop();
+                SpinWait.SpinUntil(()=>false,3000);
+                Environment.Exit(0);
+            });
+            //回复
+            _=clientConnection.WebSocketConnection.Send(daemonShutdownResponseProtobuf.ToByteArray());
         }
         #endregion
     }

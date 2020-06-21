@@ -128,18 +128,17 @@ namespace windctl {
                 case "restart":Program.RemoteControlModule.RestartRequest(argumentValue1);break;
                 case "load":Program.RemoteControlModule.LoadRequest(argumentValue1);break;
                 case "remove":Program.RemoteControlModule.RemoveRequest(argumentValue1);break;
-                //case "attach": [1007]
-                //
+                //case "logs": [1007]
+                //case "attach": [1008]
                 //case "status-all": [1101]
-                //case "start-all": [1102]
-                //case "stop-all": [1103]
-                //case "restart-all": [1104]//只对已启动的有效
-                //case "load-all": [1105]
-                //case "remove-all": [1106]
-                //
-                //case "daemon-version":CommandHelper.DaemonVersion();break;
-                //case "daemon-status":CommandHelper.DaemonStatus();break;
-                //case "daemon-shutdown":CommandHelper.DaemonShutdown();break;
+                case "start-all":Program.RemoteControlModule.StartAllRequest(argumentValue1);break;
+                case "stop-all":Program.RemoteControlModule.StopAllRequest(argumentValue1);break;
+                case "restart-all":Program.RemoteControlModule.RestartAllRequest(argumentValue1);break;
+                case "load-all":Program.RemoteControlModule.LoadAllRequest(argumentValue1);break;
+                case "remove-all":Program.RemoteControlModule.RemoveAllRequest(argumentValue1);break;
+                case "daemon-version":Program.RemoteControlModule.DaemonVersionRequest(argumentValue1);break;
+                case "daemon-status":Program.RemoteControlModule.DaemonStatusRequest(argumentValue1);break;
+                case "daemon-shutdown":Program.RemoteControlModule.DaemonShutdownRequest(argumentValue1);break;
                 default:CommandHelper.Help();break;
             }
             //故意等待1秒

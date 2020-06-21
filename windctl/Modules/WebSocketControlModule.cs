@@ -118,7 +118,7 @@ namespace windctl.Modules {
         }
 
         /// <summary>
-        /// 链接服务段
+        /// 链接服务端
         /// </summary>
         /// <returns></returns>
         public Boolean Start() {
@@ -180,6 +180,17 @@ namespace windctl.Modules {
                 case 2004:this.RestartResponse(messageReceivedEventArgs.Data);break;
                 case 2005:this.LoadResponse(messageReceivedEventArgs.Data);break;
                 case 2006:this.RemoveResponse(messageReceivedEventArgs.Data);break;
+                //case 2007:this.LogsResponse(messageReceivedEventArgs.Data);break;
+                //case 2008:this.AttachResponse(messageReceivedEventArgs.Data);break;
+                //case 2101:this.StatusAllResponse(messageReceivedEventArgs.Data);break;
+                case 2102:this.StartAllResponse(messageReceivedEventArgs.Data);break;
+                case 2103:this.StopAllResponse(messageReceivedEventArgs.Data);break;
+                case 2104:this.RestartAllResponse(messageReceivedEventArgs.Data);break;
+                case 2105:this.LoadAllResponse(messageReceivedEventArgs.Data);break;
+                case 2106:this.RemoveAllResponse(messageReceivedEventArgs.Data);break;
+                case 2200:this.DaemonVersionResponse(messageReceivedEventArgs.Data);break;
+                case 2201:this.DaemonStatusResponse(messageReceivedEventArgs.Data);break;
+                case 2299:this.DaemonShutdownResponse(messageReceivedEventArgs.Data);break;
                 default:break;
             }
         }
@@ -309,6 +320,27 @@ namespace windctl.Modules {
             Program.InAction=true;
         }
         /// <summary>
+        /// windctl logs unitKey
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void LogsRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            LogsRequestProtobuf logsRequestProtobuf=new LogsRequestProtobuf{Type=1007,UnitKey=unitKey};
+            _=this.Client.SendAsync(logsRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        /// <summary>
+        /// windctl attach unitKey
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void AttachRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            AttachRequestProtobuf attachRequestProtobuf=new AttachRequestProtobuf{Type=1008,UnitKey=unitKey};
+            _=this.Client.SendAsync(attachRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        ////////////////////////////////////////////////////////////////
+        /// <summary>
         /// windctl status-all
         /// </summary>
         /// <param name="unitKey"></param>
@@ -366,6 +398,37 @@ namespace windctl.Modules {
             if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
             RemoveAllRequestProtobuf removeAllRequestProtobuf=new RemoveAllRequestProtobuf{Type=1106};
             _=this.Client.SendAsync(removeAllRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        ////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// windctl daemon-version
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void DaemonVersionRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            DaemonVersionRequestProtobuf daemonVersionRequestProtobuf=new DaemonVersionRequestProtobuf{Type=1200};
+            _=this.Client.SendAsync(daemonVersionRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        /// <summary>
+        /// windctl daemon-status
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void DaemonStatusRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            DaemonStatusRequestProtobuf daemonStatusRequestProtobuf=new DaemonStatusRequestProtobuf{Type=1201};
+            _=this.Client.SendAsync(daemonStatusRequestProtobuf.ToByteArray());
+            Program.InAction=true;
+        }
+        /// <summary>
+        /// windctl daemon-shutdown
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void DaemonShutdownRequest(String unitKey) {
+            if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
+            DaemonShutdownRequestProtobuf daemonShutdownRequestProtobuf=new DaemonShutdownRequestProtobuf{Type=1299};
+            _=this.Client.SendAsync(daemonShutdownRequestProtobuf.ToByteArray());
             Program.InAction=true;
         }
         #endregion
@@ -485,6 +548,8 @@ namespace windctl.Modules {
             CommandHelper.Remove(removeResponseProtobuf);
             Program.InAction=false;
         }
+        ////////////////////////////////////////////////////////////////
+        /*
         /// <summary>
         /// windctl status-all
         /// </summary>
@@ -503,7 +568,7 @@ namespace windctl.Modules {
             //调用
             CommandHelper.StatusAll(statusAllResponseProtobuf);
             Program.InAction=false;
-        }
+        }*/
         /// <summary>
         /// windctl start-all
         /// </summary>
@@ -597,6 +662,64 @@ namespace windctl.Modules {
             }
             //调用
             CommandHelper.RemoveAll(removeAllResponseProtobuf);
+            Program.InAction=false;
+        }
+        ////////////////////////////////////////////////////////////////
+        /// <summary>
+        /// windctl daemon-version
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void DaemonVersionResponse(Byte[] bytes) {
+            //解析数据
+            DaemonVersionResponseProtobuf daemonVersionResponseProtobuf;
+            try {
+                daemonVersionResponseProtobuf=DaemonVersionResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.DaemonVersionResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.DaemonVersion(daemonVersionResponseProtobuf);
+            Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl daemon-status
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void DaemonStatusResponse(Byte[] bytes) {
+            //解析数据
+            DaemonStatusResponseProtobuf daemonStatusResponseProtobuf;
+            try {
+                daemonStatusResponseProtobuf=DaemonStatusResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.DaemonStatusResponse[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.DaemonStatus(daemonStatusResponseProtobuf);
+            Program.InAction=false;
+        }
+        /// <summary>
+        /// windctl daemon-shutdown
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void DaemonShutdownResponse(Byte[] bytes) {
+            //解析数据
+            DaemonShutdownResponseProtobuf daemonShutdownResponseProtobuf;
+            try {
+                daemonShutdownResponseProtobuf=DaemonShutdownResponseProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.DaemonShutdown[Error]",
+                    $"解析数据包时异常\n异常信息:{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            CommandHelper.DaemonShutdown(daemonShutdownResponseProtobuf);
             Program.InAction=false;
         }
         #endregion
