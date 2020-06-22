@@ -91,10 +91,11 @@
 - [v2ray](https://github.com/v2ray/v2ray-core)
 - [kcptun](https://github.com/xtaci/kcptun)
 - [frp](https://github.com/fatedier/frp)
+- [webd](https://webd.cf/) require **-h** argv
+- [minecraft-server](https://github.com/PaperMC) like `java -jar paperclip.jar`
 
 ### WorkInProgress
-- any hold std-in application (like minecraft server or srcds.exe)
+- any hold std-in application (like srcds.exe)
 
 ### Imcompatible
 - GUI application
-- [webd](https://webd.cf/)

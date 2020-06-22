@@ -1,5 +1,5 @@
 syntax = "proto3";
-package wind.Entities.Protobuf;
+package wind.Entities.Protobuf.WebSocketMessages;
 option csharp_namespace = "wind.Entities.Protobuf";
 option optimize_for = LITE_RUNTIME;
 
@@ -17,38 +17,34 @@ message UnitSettingsProtobuf{
   bool MonitorNetworkUsage=11;
   bool HasArguments=12;
 }
-message UnitProcessProtobuf{
-  int32 Id=1;
-  int64 StartTime=2;
-}
-message UnitPerformanceCounterProtobuf{
-  float CPU=1;
-  float RAM=2;
-}
-message UnitNetworkCounterProtobuf{
-  int64 TotalSent=1;
-  int64 TotalReceived=2;
-  int64 SendSpeed=3;
-  int64 ReceiveSpeed=4;
-}
 message UnitProtobuf{
   string Key=1;
   int32 State=2;
   string SettingsFilePath=3;
-  UnitSettingsProtobuf SettingsProtobuf=4;
-  UnitSettingsProtobuf RunningSettingsProtobuf=5;
-  UnitProcessProtobuf ProcessProtobuf=6;
-  UnitPerformanceCounterProtobuf PerformanceCounterProtobuf=7;
-  UnitNetworkCounterProtobuf NetworkCounterProtobuf=8;
+  int32 ProcessId=4;
+  int64 ProcessStartTime=5;
+  float PerformanceCounterCPU=6;
+  float PerformanceCounterRAM=7;
+  int64 NetworkCounterTotalSent=8;
+  int64 NetworkCounterTotalReceived=9;
+  int64 NetworkCounterSendSpeed=10;
+  int64 NetworkCounterReceiveSpeed=11;
+  UnitSettingsProtobuf SettingsProtobuf=12;
+  UnitSettingsProtobuf RunningSettingsProtobuf=13;
 }
 message DaemonProtobuf{
   string Name=1;
   string Description=2;
   string AbsoluteExecutePath=3;
   string AbsoluteWorkDirectory=4;
-  UnitProcessProtobuf ProcessProtobuf=5;
-  UnitPerformanceCounterProtobuf PerformanceCounterProtobuf=6;
-  UnitNetworkCounterProtobuf NetworkCounterProtobuf=7;
+  int32 ProcessId=5;
+  int64 ProcessStartTime=6;
+  float PerformanceCounterCPU=7;
+  float PerformanceCounterRAM=8;
+  int64 NetworkCounterTotalSent=9;
+  int64 NetworkCounterTotalReceived=10;
+  int64 NetworkCounterSendSpeed=11;
+  int64 NetworkCounterReceiveSpeed=12;
 }
 
 ////////////////////////////////////////////////////////////////

@@ -24,130 +24,125 @@ namespace wind.Entities.Protobuf {
     static WebSocketMessagesReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChdXZWJTb2NrZXRNZXNzYWdlcy5wcm90bxIWd2luZC5FbnRpdGllcy5Qcm90",
-            "b2J1ZiKzAgoUVW5pdFNldHRpbmdzUHJvdG9idWYSDAoETmFtZRgBIAEoCRIT",
-            "CgtEZXNjcmlwdGlvbhgCIAEoCRIMCgRUeXBlGAMgASgFEhsKE0Fic29sdXRl",
-            "RXhlY3V0ZVBhdGgYBCABKAkSHQoVQWJzb2x1dGVXb3JrRGlyZWN0b3J5GAUg",
-            "ASgJEhEKCUFyZ3VtZW50cxgGIAEoCRIRCglBdXRvU3RhcnQYByABKAgSFgoO",
-            "QXV0b1N0YXJ0RGVsYXkYCCABKAUSHAoUUmVzdGFydFdoZW5FeGNlcHRpb24Y",
-            "CSABKAgSHwoXTW9uaXRvclBlcmZvcm1hbmNlVXNhZ2UYCiABKAgSGwoTTW9u",
-            "aXRvck5ldHdvcmtVc2FnZRgLIAEoCBIUCgxIYXNBcmd1bWVudHMYDCABKAgi",
-            "NAoTVW5pdFByb2Nlc3NQcm90b2J1ZhIKCgJJZBgBIAEoBRIRCglTdGFydFRp",
-            "bWUYAiABKAMiOgoeVW5pdFBlcmZvcm1hbmNlQ291bnRlclByb3RvYnVmEgsK",
-            "A0NQVRgBIAEoAhILCgNSQU0YAiABKAIibwoaVW5pdE5ldHdvcmtDb3VudGVy",
-            "UHJvdG9idWYSEQoJVG90YWxTZW50GAEgASgDEhUKDVRvdGFsUmVjZWl2ZWQY",
-            "AiABKAMSEQoJU2VuZFNwZWVkGAMgASgDEhQKDFJlY2VpdmVTcGVlZBgEIAEo",
-            "AyLRAwoMVW5pdFByb3RvYnVmEgsKA0tleRgBIAEoCRINCgVTdGF0ZRgCIAEo",
-            "BRIYChBTZXR0aW5nc0ZpbGVQYXRoGAMgASgJEkYKEFNldHRpbmdzUHJvdG9i",
-            "dWYYBCABKAsyLC53aW5kLkVudGl0aWVzLlByb3RvYnVmLlVuaXRTZXR0aW5n",
-            "c1Byb3RvYnVmEk0KF1J1bm5pbmdTZXR0aW5nc1Byb3RvYnVmGAUgASgLMiwu",
-            "d2luZC5FbnRpdGllcy5Qcm90b2J1Zi5Vbml0U2V0dGluZ3NQcm90b2J1ZhJE",
-            "Cg9Qcm9jZXNzUHJvdG9idWYYBiABKAsyKy53aW5kLkVudGl0aWVzLlByb3Rv",
-            "YnVmLlVuaXRQcm9jZXNzUHJvdG9idWYSWgoaUGVyZm9ybWFuY2VDb3VudGVy",
-            "UHJvdG9idWYYByABKAsyNi53aW5kLkVudGl0aWVzLlByb3RvYnVmLlVuaXRQ",
-            "ZXJmb3JtYW5jZUNvdW50ZXJQcm90b2J1ZhJSChZOZXR3b3JrQ291bnRlclBy",
-            "b3RvYnVmGAggASgLMjIud2luZC5FbnRpdGllcy5Qcm90b2J1Zi5Vbml0TmV0",
-            "d29ya0NvdW50ZXJQcm90b2J1ZiLlAgoORGFlbW9uUHJvdG9idWYSDAoETmFt",
-            "ZRgBIAEoCRITCgtEZXNjcmlwdGlvbhgCIAEoCRIbChNBYnNvbHV0ZUV4ZWN1",
-            "dGVQYXRoGAMgASgJEh0KFUFic29sdXRlV29ya0RpcmVjdG9yeRgEIAEoCRJE",
-            "Cg9Qcm9jZXNzUHJvdG9idWYYBSABKAsyKy53aW5kLkVudGl0aWVzLlByb3Rv",
-            "YnVmLlVuaXRQcm9jZXNzUHJvdG9idWYSWgoaUGVyZm9ybWFuY2VDb3VudGVy",
-            "UHJvdG9idWYYBiABKAsyNi53aW5kLkVudGl0aWVzLlByb3RvYnVmLlVuaXRQ",
-            "ZXJmb3JtYW5jZUNvdW50ZXJQcm90b2J1ZhJSChZOZXR3b3JrQ291bnRlclBy",
-            "b3RvYnVmGAcgASgLMjIud2luZC5FbnRpdGllcy5Qcm90b2J1Zi5Vbml0TmV0",
-            "d29ya0NvdW50ZXJQcm90b2J1ZiIiChJQYWNrZXRUZXN0UHJvdG9idWYSDAoE",
-            "VHlwZRgBIAEoBSInChdDbGllbnRLZWVwQWxpdmVQcm90b2J1ZhIMCgRUeXBl",
-            "GAEgASgFIkQKHlNlcnZlckFjY2VwdENvbm5lY3Rpb25Qcm90b2J1ZhIMCgRU",
-            "eXBlGAEgASgFEhQKDENvbm5lY3Rpb25JZBgCIAEoCSKFAQodQ2xpZW50T2Zm",
-            "ZXJDb250cm9sS2V5UHJvdG9idWYSDAoEVHlwZRgBIAEoBRIUCgxDb25uZWN0",
-            "aW9uSWQYAiABKAkSEgoKQ29udHJvbEtleRgDIAEoCRIVCg1TdXBwb3J0Tm90",
-            "aWZ5GAQgASgIEhUKDVN1cHBvcnRBdHRhY2gYBSABKAgiVQogU2VydmVyVmFs",
-            "aWRhdGVDb25uZWN0aW9uUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIUCgxDb25u",
-            "ZWN0aW9uSWQYAiABKAkSDQoFVmFsaWQYAyABKAgiNgoVU3RhdHVzUmVxdWVz",
-            "dFByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEoCSI1ChRT",
-            "dGFydFJlcXVlc3RQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkY",
-            "AiABKAkiNAoTU3RvcFJlcXVlc3RQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8K",
-            "B1VuaXRLZXkYAiABKAkiNwoWUmVzdGFydFJlcXVlc3RQcm90b2J1ZhIMCgRU",
-            "eXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkiNAoTTG9hZFJlcXVlc3RQcm90",
-            "b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkiNgoVUmVtb3Zl",
-            "UmVxdWVzdFByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEo",
-            "CSI0ChNMb2dzUmVxdWVzdFByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5p",
-            "dEtleRgCIAEoCSJgChVBdHRhY2hSZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgB",
-            "IAEoBRIPCgdVbml0S2V5GAIgASgJEhMKC0NvbW1hbmRUeXBlGAMgASgFEhMK",
-            "C0NvbW1hbmRMaW5lGAQgASgJIigKGFN0YXR1c0FsbFJlcXVlc3RQcm90b2J1",
-            "ZhIMCgRUeXBlGAEgASgFIicKF1N0YXJ0QWxsUmVxdWVzdFByb3RvYnVmEgwK",
-            "BFR5cGUYASABKAUiJgoWU3RvcEFsbFJlcXVlc3RQcm90b2J1ZhIMCgRUeXBl",
-            "GAEgASgFIikKGVJlc3RhcnRBbGxSZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgB",
-            "IAEoBSImChZMb2FkQWxsUmVxdWVzdFByb3RvYnVmEgwKBFR5cGUYASABKAUi",
-            "KAoYUmVtb3ZlQWxsUmVxdWVzdFByb3RvYnVmEgwKBFR5cGUYASABKAUiLAoc",
-            "RGFlbW9uVmVyc2lvblJlcXVlc3RQcm90b2J1ZhIMCgRUeXBlGAEgASgFIisK",
-            "G0RhZW1vblN0YXR1c1JlcXVlc3RQcm90b2J1ZhIMCgRUeXBlGAEgASgFIi0K",
-            "HURhZW1vblNodXRkb3duUmVxdWVzdFByb3RvYnVmEgwKBFR5cGUYASABKAUi",
-            "nwEKFlN0YXR1c1Jlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdV",
-            "bml0S2V5GAIgASgJEhAKCEV4ZWN1dGVkGAMgASgIEhgKEE5vRXhlY3V0ZU1l",
-            "c3NhZ2UYBCABKAkSOgoMVW5pdFByb3RvYnVmGAUgASgLMiQud2luZC5FbnRp",
-            "dGllcy5Qcm90b2J1Zi5Vbml0UHJvdG9idWYiYgoVU3RhcnRSZXNwb25zZVBy",
+            "ChdXZWJTb2NrZXRNZXNzYWdlcy5wcm90bxIod2luZC5FbnRpdGllcy5Qcm90",
+            "b2J1Zi5XZWJTb2NrZXRNZXNzYWdlcyKzAgoUVW5pdFNldHRpbmdzUHJvdG9i",
+            "dWYSDAoETmFtZRgBIAEoCRITCgtEZXNjcmlwdGlvbhgCIAEoCRIMCgRUeXBl",
+            "GAMgASgFEhsKE0Fic29sdXRlRXhlY3V0ZVBhdGgYBCABKAkSHQoVQWJzb2x1",
+            "dGVXb3JrRGlyZWN0b3J5GAUgASgJEhEKCUFyZ3VtZW50cxgGIAEoCRIRCglB",
+            "dXRvU3RhcnQYByABKAgSFgoOQXV0b1N0YXJ0RGVsYXkYCCABKAUSHAoUUmVz",
+            "dGFydFdoZW5FeGNlcHRpb24YCSABKAgSHwoXTW9uaXRvclBlcmZvcm1hbmNl",
+            "VXNhZ2UYCiABKAgSGwoTTW9uaXRvck5ldHdvcmtVc2FnZRgLIAEoCBIUCgxI",
+            "YXNBcmd1bWVudHMYDCABKAgi9QMKDFVuaXRQcm90b2J1ZhILCgNLZXkYASAB",
+            "KAkSDQoFU3RhdGUYAiABKAUSGAoQU2V0dGluZ3NGaWxlUGF0aBgDIAEoCRIR",
+            "CglQcm9jZXNzSWQYBCABKAUSGAoQUHJvY2Vzc1N0YXJ0VGltZRgFIAEoAxId",
+            "ChVQZXJmb3JtYW5jZUNvdW50ZXJDUFUYBiABKAISHQoVUGVyZm9ybWFuY2VD",
+            "b3VudGVyUkFNGAcgASgCEh8KF05ldHdvcmtDb3VudGVyVG90YWxTZW50GAgg",
+            "ASgDEiMKG05ldHdvcmtDb3VudGVyVG90YWxSZWNlaXZlZBgJIAEoAxIfChdO",
+            "ZXR3b3JrQ291bnRlclNlbmRTcGVlZBgKIAEoAxIiChpOZXR3b3JrQ291bnRl",
+            "clJlY2VpdmVTcGVlZBgLIAEoAxJYChBTZXR0aW5nc1Byb3RvYnVmGAwgASgL",
+            "Mj4ud2luZC5FbnRpdGllcy5Qcm90b2J1Zi5XZWJTb2NrZXRNZXNzYWdlcy5V",
+            "bml0U2V0dGluZ3NQcm90b2J1ZhJfChdSdW5uaW5nU2V0dGluZ3NQcm90b2J1",
+            "ZhgNIAEoCzI+LndpbmQuRW50aXRpZXMuUHJvdG9idWYuV2ViU29ja2V0TWVz",
+            "c2FnZXMuVW5pdFNldHRpbmdzUHJvdG9idWYi5QIKDkRhZW1vblByb3RvYnVm",
+            "EgwKBE5hbWUYASABKAkSEwoLRGVzY3JpcHRpb24YAiABKAkSGwoTQWJzb2x1",
+            "dGVFeGVjdXRlUGF0aBgDIAEoCRIdChVBYnNvbHV0ZVdvcmtEaXJlY3RvcnkY",
+            "BCABKAkSEQoJUHJvY2Vzc0lkGAUgASgFEhgKEFByb2Nlc3NTdGFydFRpbWUY",
+            "BiABKAMSHQoVUGVyZm9ybWFuY2VDb3VudGVyQ1BVGAcgASgCEh0KFVBlcmZv",
+            "cm1hbmNlQ291bnRlclJBTRgIIAEoAhIfChdOZXR3b3JrQ291bnRlclRvdGFs",
+            "U2VudBgJIAEoAxIjChtOZXR3b3JrQ291bnRlclRvdGFsUmVjZWl2ZWQYCiAB",
+            "KAMSHwoXTmV0d29ya0NvdW50ZXJTZW5kU3BlZWQYCyABKAMSIgoaTmV0d29y",
+            "a0NvdW50ZXJSZWNlaXZlU3BlZWQYDCABKAMiIgoSUGFja2V0VGVzdFByb3Rv",
+            "YnVmEgwKBFR5cGUYASABKAUiJwoXQ2xpZW50S2VlcEFsaXZlUHJvdG9idWYS",
+            "DAoEVHlwZRgBIAEoBSJECh5TZXJ2ZXJBY2NlcHRDb25uZWN0aW9uUHJvdG9i",
+            "dWYSDAoEVHlwZRgBIAEoBRIUCgxDb25uZWN0aW9uSWQYAiABKAkihQEKHUNs",
+            "aWVudE9mZmVyQ29udHJvbEtleVByb3RvYnVmEgwKBFR5cGUYASABKAUSFAoM",
+            "Q29ubmVjdGlvbklkGAIgASgJEhIKCkNvbnRyb2xLZXkYAyABKAkSFQoNU3Vw",
+            "cG9ydE5vdGlmeRgEIAEoCBIVCg1TdXBwb3J0QXR0YWNoGAUgASgIIlUKIFNl",
+            "cnZlclZhbGlkYXRlQ29ubmVjdGlvblByb3RvYnVmEgwKBFR5cGUYASABKAUS",
+            "FAoMQ29ubmVjdGlvbklkGAIgASgJEg0KBVZhbGlkGAMgASgIIjYKFVN0YXR1",
+            "c1JlcXVlc3RQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiAB",
+            "KAkiNQoUU3RhcnRSZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdV",
+            "bml0S2V5GAIgASgJIjQKE1N0b3BSZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgB",
+            "IAEoBRIPCgdVbml0S2V5GAIgASgJIjcKFlJlc3RhcnRSZXF1ZXN0UHJvdG9i",
+            "dWYSDAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJIjQKE0xvYWRSZXF1",
+            "ZXN0UHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJIjYK",
+            "FVJlbW92ZVJlcXVlc3RQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRL",
+            "ZXkYAiABKAkiNAoTTG9nc1JlcXVlc3RQcm90b2J1ZhIMCgRUeXBlGAEgASgF",
+            "Eg8KB1VuaXRLZXkYAiABKAkiYAoVQXR0YWNoUmVxdWVzdFByb3RvYnVmEgwK",
+            "BFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEoCRITCgtDb21tYW5kVHlwZRgD",
+            "IAEoBRITCgtDb21tYW5kTGluZRgEIAEoCSIoChhTdGF0dXNBbGxSZXF1ZXN0",
+            "UHJvdG9idWYSDAoEVHlwZRgBIAEoBSInChdTdGFydEFsbFJlcXVlc3RQcm90",
+            "b2J1ZhIMCgRUeXBlGAEgASgFIiYKFlN0b3BBbGxSZXF1ZXN0UHJvdG9idWYS",
+            "DAoEVHlwZRgBIAEoBSIpChlSZXN0YXJ0QWxsUmVxdWVzdFByb3RvYnVmEgwK",
+            "BFR5cGUYASABKAUiJgoWTG9hZEFsbFJlcXVlc3RQcm90b2J1ZhIMCgRUeXBl",
+            "GAEgASgFIigKGFJlbW92ZUFsbFJlcXVlc3RQcm90b2J1ZhIMCgRUeXBlGAEg",
+            "ASgFIiwKHERhZW1vblZlcnNpb25SZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgB",
+            "IAEoBSIrChtEYWVtb25TdGF0dXNSZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgB",
+            "IAEoBSItCh1EYWVtb25TaHV0ZG93blJlcXVlc3RQcm90b2J1ZhIMCgRUeXBl",
+            "GAEgASgFIrEBChZTdGF0dXNSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASAB",
+            "KAUSDwoHVW5pdEtleRgCIAEoCRIQCghFeGVjdXRlZBgDIAEoCBIYChBOb0V4",
+            "ZWN1dGVNZXNzYWdlGAQgASgJEkwKDFVuaXRQcm90b2J1ZhgFIAEoCzI2Lndp",
+            "bmQuRW50aXRpZXMuUHJvdG9idWYuV2ViU29ja2V0TWVzc2FnZXMuVW5pdFBy",
+            "b3RvYnVmImIKFVN0YXJ0UmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgF",
+            "Eg8KB1VuaXRLZXkYAiABKAkSEAoIRXhlY3V0ZWQYAyABKAgSGAoQTm9FeGVj",
+            "dXRlTWVzc2FnZRgEIAEoCSJhChRTdG9wUmVzcG9uc2VQcm90b2J1ZhIMCgRU",
+            "eXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkSEAoIRXhlY3V0ZWQYAyABKAgS",
+            "GAoQTm9FeGVjdXRlTWVzc2FnZRgEIAEoCSJkChdSZXN0YXJ0UmVzcG9uc2VQ",
+            "cm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkSEAoIRXhl",
+            "Y3V0ZWQYAyABKAgSGAoQTm9FeGVjdXRlTWVzc2FnZRgEIAEoCSK/AQoUTG9h",
+            "ZFJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIg",
+            "ASgJEhAKCEV4ZWN1dGVkGAMgASgIEhgKEE5vRXhlY3V0ZU1lc3NhZ2UYBCAB",
+            "KAkSXAoUVW5pdFNldHRpbmdzUHJvdG9idWYYBSABKAsyPi53aW5kLkVudGl0",
+            "aWVzLlByb3RvYnVmLldlYlNvY2tldE1lc3NhZ2VzLlVuaXRTZXR0aW5nc1By",
+            "b3RvYnVmImMKFlJlbW92ZVJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEo",
+            "BRIPCgdVbml0S2V5GAIgASgJEhAKCEV4ZWN1dGVkGAMgASgIEhgKEE5vRXhl",
+            "Y3V0ZU1lc3NhZ2UYBCABKAkijAEKFExvZ3NSZXNwb25zZVByb3RvYnVmEgwK",
+            "BFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEoCRIQCghFeGVjdXRlZBgDIAEo",
+            "CBIYChBOb0V4ZWN1dGVNZXNzYWdlGAQgASgJEhMKC0xvZ0ZpbGVQYXRoGAUg",
+            "ASgJEhQKDExvZ0xpbmVBcnJheRgGIAMoCSJ8ChZBdHRhY2hSZXNwb25zZVBy",
             "b3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEoCRIQCghFeGVj",
-            "dXRlZBgDIAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAQgASgJImEKFFN0b3BS",
-            "ZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEo",
-            "CRIQCghFeGVjdXRlZBgDIAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAQgASgJ",
-            "ImQKF1Jlc3RhcnRSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoH",
-            "VW5pdEtleRgCIAEoCRIQCghFeGVjdXRlZBgDIAEoCBIYChBOb0V4ZWN1dGVN",
-            "ZXNzYWdlGAQgASgJIq0BChRMb2FkUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBl",
-            "GAEgASgFEg8KB1VuaXRLZXkYAiABKAkSEAoIRXhlY3V0ZWQYAyABKAgSGAoQ",
-            "Tm9FeGVjdXRlTWVzc2FnZRgEIAEoCRJKChRVbml0U2V0dGluZ3NQcm90b2J1",
-            "ZhgFIAEoCzIsLndpbmQuRW50aXRpZXMuUHJvdG9idWYuVW5pdFNldHRpbmdz",
-            "UHJvdG9idWYiYwoWUmVtb3ZlUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEg",
-            "ASgFEg8KB1VuaXRLZXkYAiABKAkSEAoIRXhlY3V0ZWQYAyABKAgSGAoQTm9F",
-            "eGVjdXRlTWVzc2FnZRgEIAEoCSKMAQoUTG9nc1Jlc3BvbnNlUHJvdG9idWYS",
-            "DAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJEhAKCEV4ZWN1dGVkGAMg",
-            "ASgIEhgKEE5vRXhlY3V0ZU1lc3NhZ2UYBCABKAkSEwoLTG9nRmlsZVBhdGgY",
-            "BSABKAkSFAoMTG9nTGluZUFycmF5GAYgAygJInwKFkF0dGFjaFJlc3BvbnNl",
-            "UHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJEhAKCEV4",
-            "ZWN1dGVkGAMgASgIEhgKEE5vRXhlY3V0ZU1lc3NhZ2UYBCABKAkSFwoPT3V0",
-            "cHV0TGluZUFycmF5GAUgAygJIrUBChlTdGF0dXNBbGxSZXNwb25zZVByb3Rv",
-            "YnVmEgwKBFR5cGUYASABKAUSEAoIRXhlY3V0ZWQYAiABKAgSGAoQTm9FeGVj",
-            "dXRlTWVzc2FnZRgDIAEoCRIdChVVbml0UHJvdG9idWZBcnJheVNpemUYBCAB",
-            "KAUSPwoRVW5pdFByb3RvYnVmQXJyYXkYBSADKAsyJC53aW5kLkVudGl0aWVz",
-            "LlByb3RvYnVmLlVuaXRQcm90b2J1ZiJUChhTdGFydEFsbFJlc3BvbnNlUHJv",
-            "dG9idWYSDAoEVHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIYChBOb0V4",
-            "ZWN1dGVNZXNzYWdlGAMgASgJIlMKF1N0b3BBbGxSZXNwb25zZVByb3RvYnVm",
-            "EgwKBFR5cGUYASABKAUSEAoIRXhlY3V0ZWQYAiABKAgSGAoQTm9FeGVjdXRl",
-            "TWVzc2FnZRgDIAEoCSJWChpSZXN0YXJ0QWxsUmVzcG9uc2VQcm90b2J1ZhIM",
-            "CgRUeXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIgASgIEhgKEE5vRXhlY3V0ZU1l",
-            "c3NhZ2UYAyABKAkiywEKF0xvYWRBbGxSZXNwb25zZVByb3RvYnVmEgwKBFR5",
-            "cGUYASABKAUSEAoIRXhlY3V0ZWQYAiABKAgSGAoQTm9FeGVjdXRlTWVzc2Fn",
-            "ZRgDIAEoCRIlCh1Vbml0U2V0dGluZ3NQcm90b2J1ZkFycmF5U2l6ZRgEIAEo",
-            "BRJPChlVbml0U2V0dGluZ3NQcm90b2J1ZkFycmF5GAUgAygLMiwud2luZC5F",
-            "bnRpdGllcy5Qcm90b2J1Zi5Vbml0U2V0dGluZ3NQcm90b2J1ZiJVChlSZW1v",
-            "dmVBbGxSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUSEAoIRXhlY3V0",
-            "ZWQYAiABKAgSGAoQTm9FeGVjdXRlTWVzc2FnZRgDIAEoCSJsCh1EYWVtb25W",
-            "ZXJzaW9uUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg0KBU1ham9y",
-            "GAIgASgFEg0KBU1pbm9yGAMgASgFEg0KBUJ1aWxkGAQgASgFEhAKCFJldmlz",
-            "aW9uGAUgASgFImwKHERhZW1vblN0YXR1c1Jlc3BvbnNlUHJvdG9idWYSDAoE",
-            "VHlwZRgBIAEoBRI+Cg5EYWVtb25Qcm90b2J1ZhgCIAEoCzImLndpbmQuRW50",
-            "aXRpZXMuUHJvdG9idWYuRGFlbW9uUHJvdG9idWYiWgoeRGFlbW9uU2h1dGRv",
-            "d25SZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUSEAoIRXhlY3V0ZWQY",
-            "AiABKAgSGAoQTm9FeGVjdXRlTWVzc2FnZRgDIAEoCSI0ChNTdGFydE5vdGlm",
-            "eVByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEoCSIzChJT",
-            "dG9wTm90aWZ5UHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIg",
-            "ASgJIn8KEkxvYWROb3RpZnlQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1Vu",
-            "aXRLZXkYAiABKAkSSgoUVW5pdFNldHRpbmdzUHJvdG9idWYYAyABKAsyLC53",
-            "aW5kLkVudGl0aWVzLlByb3RvYnVmLlVuaXRTZXR0aW5nc1Byb3RvYnVmIjUK",
-            "FFJlbW92ZU5vdGlmeVByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtl",
-            "eRgCIAEoCSJaChJMb2dzTm90aWZ5UHJvdG9idWYSDAoEVHlwZRgBIAEoBRIP",
-            "CgdVbml0S2V5GAIgASgJEg8KB0xvZ1R5cGUYAyABKAUSFAoMTG9nTGluZUFy",
-            "cmF5GAQgAygJQhtIA6oCFndpbmQuRW50aXRpZXMuUHJvdG9idWZiBnByb3Rv",
-            "Mw=="));
+            "dXRlZBgDIAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAQgASgJEhcKD091dHB1",
+            "dExpbmVBcnJheRgFIAMoCSLHAQoZU3RhdHVzQWxsUmVzcG9uc2VQcm90b2J1",
+            "ZhIMCgRUeXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIgASgIEhgKEE5vRXhlY3V0",
+            "ZU1lc3NhZ2UYAyABKAkSHQoVVW5pdFByb3RvYnVmQXJyYXlTaXplGAQgASgF",
+            "ElEKEVVuaXRQcm90b2J1ZkFycmF5GAUgAygLMjYud2luZC5FbnRpdGllcy5Q",
+            "cm90b2J1Zi5XZWJTb2NrZXRNZXNzYWdlcy5Vbml0UHJvdG9idWYiVAoYU3Rh",
+            "cnRBbGxSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUSEAoIRXhlY3V0",
+            "ZWQYAiABKAgSGAoQTm9FeGVjdXRlTWVzc2FnZRgDIAEoCSJTChdTdG9wQWxs",
+            "UmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIg",
+            "ASgIEhgKEE5vRXhlY3V0ZU1lc3NhZ2UYAyABKAkiVgoaUmVzdGFydEFsbFJl",
+            "c3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEo",
+            "CBIYChBOb0V4ZWN1dGVNZXNzYWdlGAMgASgJIt0BChdMb2FkQWxsUmVzcG9u",
+            "c2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIgASgIEhgK",
+            "EE5vRXhlY3V0ZU1lc3NhZ2UYAyABKAkSJQodVW5pdFNldHRpbmdzUHJvdG9i",
+            "dWZBcnJheVNpemUYBCABKAUSYQoZVW5pdFNldHRpbmdzUHJvdG9idWZBcnJh",
+            "eRgFIAMoCzI+LndpbmQuRW50aXRpZXMuUHJvdG9idWYuV2ViU29ja2V0TWVz",
+            "c2FnZXMuVW5pdFNldHRpbmdzUHJvdG9idWYiVQoZUmVtb3ZlQWxsUmVzcG9u",
+            "c2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIgASgIEhgK",
+            "EE5vRXhlY3V0ZU1lc3NhZ2UYAyABKAkibAodRGFlbW9uVmVyc2lvblJlc3Bv",
+            "bnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRINCgVNYWpvchgCIAEoBRINCgVN",
+            "aW5vchgDIAEoBRINCgVCdWlsZBgEIAEoBRIQCghSZXZpc2lvbhgFIAEoBSJ+",
+            "ChxEYWVtb25TdGF0dXNSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUS",
+            "UAoORGFlbW9uUHJvdG9idWYYAiABKAsyOC53aW5kLkVudGl0aWVzLlByb3Rv",
+            "YnVmLldlYlNvY2tldE1lc3NhZ2VzLkRhZW1vblByb3RvYnVmIloKHkRhZW1v",
+            "blNodXRkb3duUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEhAKCEV4",
+            "ZWN1dGVkGAIgASgIEhgKEE5vRXhlY3V0ZU1lc3NhZ2UYAyABKAkiNAoTU3Rh",
+            "cnROb3RpZnlQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiAB",
+            "KAkiMwoSU3RvcE5vdGlmeVByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5p",
+            "dEtleRgCIAEoCSKRAQoSTG9hZE5vdGlmeVByb3RvYnVmEgwKBFR5cGUYASAB",
+            "KAUSDwoHVW5pdEtleRgCIAEoCRJcChRVbml0U2V0dGluZ3NQcm90b2J1ZhgD",
+            "IAEoCzI+LndpbmQuRW50aXRpZXMuUHJvdG9idWYuV2ViU29ja2V0TWVzc2Fn",
+            "ZXMuVW5pdFNldHRpbmdzUHJvdG9idWYiNQoUUmVtb3ZlTm90aWZ5UHJvdG9i",
+            "dWYSDAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJIloKEkxvZ3NOb3Rp",
+            "ZnlQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkSDwoH",
+            "TG9nVHlwZRgDIAEoBRIUCgxMb2dMaW5lQXJyYXkYBCADKAlCG0gDqgIWd2lu",
+            "ZC5FbnRpdGllcy5Qcm90b2J1ZmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.UnitSettingsProtobuf), global::wind.Entities.Protobuf.UnitSettingsProtobuf.Parser, new[]{ "Name", "Description", "Type", "AbsoluteExecutePath", "AbsoluteWorkDirectory", "Arguments", "AutoStart", "AutoStartDelay", "RestartWhenException", "MonitorPerformanceUsage", "MonitorNetworkUsage", "HasArguments" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.UnitProcessProtobuf), global::wind.Entities.Protobuf.UnitProcessProtobuf.Parser, new[]{ "Id", "StartTime" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.UnitPerformanceCounterProtobuf), global::wind.Entities.Protobuf.UnitPerformanceCounterProtobuf.Parser, new[]{ "CPU", "RAM" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.UnitNetworkCounterProtobuf), global::wind.Entities.Protobuf.UnitNetworkCounterProtobuf.Parser, new[]{ "TotalSent", "TotalReceived", "SendSpeed", "ReceiveSpeed" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.UnitProtobuf), global::wind.Entities.Protobuf.UnitProtobuf.Parser, new[]{ "Key", "State", "SettingsFilePath", "SettingsProtobuf", "RunningSettingsProtobuf", "ProcessProtobuf", "PerformanceCounterProtobuf", "NetworkCounterProtobuf" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.DaemonProtobuf), global::wind.Entities.Protobuf.DaemonProtobuf.Parser, new[]{ "Name", "Description", "AbsoluteExecutePath", "AbsoluteWorkDirectory", "ProcessProtobuf", "PerformanceCounterProtobuf", "NetworkCounterProtobuf" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.UnitProtobuf), global::wind.Entities.Protobuf.UnitProtobuf.Parser, new[]{ "Key", "State", "SettingsFilePath", "ProcessId", "ProcessStartTime", "PerformanceCounterCPU", "PerformanceCounterRAM", "NetworkCounterTotalSent", "NetworkCounterTotalReceived", "NetworkCounterSendSpeed", "NetworkCounterReceiveSpeed", "SettingsProtobuf", "RunningSettingsProtobuf" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.DaemonProtobuf), global::wind.Entities.Protobuf.DaemonProtobuf.Parser, new[]{ "Name", "Description", "AbsoluteExecutePath", "AbsoluteWorkDirectory", "ProcessId", "ProcessStartTime", "PerformanceCounterCPU", "PerformanceCounterRAM", "NetworkCounterTotalSent", "NetworkCounterTotalReceived", "NetworkCounterSendSpeed", "NetworkCounterReceiveSpeed" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.PacketTestProtobuf), global::wind.Entities.Protobuf.PacketTestProtobuf.Parser, new[]{ "Type" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.ClientKeepAliveProtobuf), global::wind.Entities.Protobuf.ClientKeepAliveProtobuf.Parser, new[]{ "Type" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.ServerAcceptConnectionProtobuf), global::wind.Entities.Protobuf.ServerAcceptConnectionProtobuf.Parser, new[]{ "Type", "ConnectionId" }, null, null, null, null),
@@ -635,533 +630,6 @@ namespace wind.Entities.Protobuf {
 
   }
 
-  public sealed partial class UnitProcessProtobuf : pb::IMessage<UnitProcessProtobuf> {
-    private static readonly pb::MessageParser<UnitProcessProtobuf> _parser = new pb::MessageParser<UnitProcessProtobuf>(() => new UnitProcessProtobuf());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<UnitProcessProtobuf> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[1]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public UnitProcessProtobuf() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public UnitProcessProtobuf(UnitProcessProtobuf other) : this() {
-      id_ = other.id_;
-      startTime_ = other.startTime_;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public UnitProcessProtobuf Clone() {
-      return new UnitProcessProtobuf(this);
-    }
-
-    /// <summary>Field number for the "Id" field.</summary>
-    public const int IdFieldNumber = 1;
-    private int id_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int Id {
-      get { return id_; }
-      set {
-        id_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "StartTime" field.</summary>
-    public const int StartTimeFieldNumber = 2;
-    private long startTime_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long StartTime {
-      get { return startTime_; }
-      set {
-        startTime_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as UnitProcessProtobuf);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(UnitProcessProtobuf other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (Id != other.Id) return false;
-      if (StartTime != other.StartTime) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (Id != 0) hash ^= Id.GetHashCode();
-      if (StartTime != 0L) hash ^= StartTime.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      if (Id != 0) {
-        output.WriteRawTag(8);
-        output.WriteInt32(Id);
-      }
-      if (StartTime != 0L) {
-        output.WriteRawTag(16);
-        output.WriteInt64(StartTime);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (Id != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Id);
-      }
-      if (StartTime != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(StartTime);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(UnitProcessProtobuf other) {
-      if (other == null) {
-        return;
-      }
-      if (other.Id != 0) {
-        Id = other.Id;
-      }
-      if (other.StartTime != 0L) {
-        StartTime = other.StartTime;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 8: {
-            Id = input.ReadInt32();
-            break;
-          }
-          case 16: {
-            StartTime = input.ReadInt64();
-            break;
-          }
-        }
-      }
-    }
-
-  }
-
-  public sealed partial class UnitPerformanceCounterProtobuf : pb::IMessage<UnitPerformanceCounterProtobuf> {
-    private static readonly pb::MessageParser<UnitPerformanceCounterProtobuf> _parser = new pb::MessageParser<UnitPerformanceCounterProtobuf>(() => new UnitPerformanceCounterProtobuf());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<UnitPerformanceCounterProtobuf> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[2]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public UnitPerformanceCounterProtobuf() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public UnitPerformanceCounterProtobuf(UnitPerformanceCounterProtobuf other) : this() {
-      cPU_ = other.cPU_;
-      rAM_ = other.rAM_;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public UnitPerformanceCounterProtobuf Clone() {
-      return new UnitPerformanceCounterProtobuf(this);
-    }
-
-    /// <summary>Field number for the "CPU" field.</summary>
-    public const int CPUFieldNumber = 1;
-    private float cPU_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public float CPU {
-      get { return cPU_; }
-      set {
-        cPU_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "RAM" field.</summary>
-    public const int RAMFieldNumber = 2;
-    private float rAM_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public float RAM {
-      get { return rAM_; }
-      set {
-        rAM_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as UnitPerformanceCounterProtobuf);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(UnitPerformanceCounterProtobuf other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(CPU, other.CPU)) return false;
-      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(RAM, other.RAM)) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (CPU != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(CPU);
-      if (RAM != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(RAM);
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      if (CPU != 0F) {
-        output.WriteRawTag(13);
-        output.WriteFloat(CPU);
-      }
-      if (RAM != 0F) {
-        output.WriteRawTag(21);
-        output.WriteFloat(RAM);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (CPU != 0F) {
-        size += 1 + 4;
-      }
-      if (RAM != 0F) {
-        size += 1 + 4;
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(UnitPerformanceCounterProtobuf other) {
-      if (other == null) {
-        return;
-      }
-      if (other.CPU != 0F) {
-        CPU = other.CPU;
-      }
-      if (other.RAM != 0F) {
-        RAM = other.RAM;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 13: {
-            CPU = input.ReadFloat();
-            break;
-          }
-          case 21: {
-            RAM = input.ReadFloat();
-            break;
-          }
-        }
-      }
-    }
-
-  }
-
-  public sealed partial class UnitNetworkCounterProtobuf : pb::IMessage<UnitNetworkCounterProtobuf> {
-    private static readonly pb::MessageParser<UnitNetworkCounterProtobuf> _parser = new pb::MessageParser<UnitNetworkCounterProtobuf>(() => new UnitNetworkCounterProtobuf());
-    private pb::UnknownFieldSet _unknownFields;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<UnitNetworkCounterProtobuf> Parser { get { return _parser; } }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[3]; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    pbr::MessageDescriptor pb::IMessage.Descriptor {
-      get { return Descriptor; }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public UnitNetworkCounterProtobuf() {
-      OnConstruction();
-    }
-
-    partial void OnConstruction();
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public UnitNetworkCounterProtobuf(UnitNetworkCounterProtobuf other) : this() {
-      totalSent_ = other.totalSent_;
-      totalReceived_ = other.totalReceived_;
-      sendSpeed_ = other.sendSpeed_;
-      receiveSpeed_ = other.receiveSpeed_;
-      _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public UnitNetworkCounterProtobuf Clone() {
-      return new UnitNetworkCounterProtobuf(this);
-    }
-
-    /// <summary>Field number for the "TotalSent" field.</summary>
-    public const int TotalSentFieldNumber = 1;
-    private long totalSent_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long TotalSent {
-      get { return totalSent_; }
-      set {
-        totalSent_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "TotalReceived" field.</summary>
-    public const int TotalReceivedFieldNumber = 2;
-    private long totalReceived_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long TotalReceived {
-      get { return totalReceived_; }
-      set {
-        totalReceived_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "SendSpeed" field.</summary>
-    public const int SendSpeedFieldNumber = 3;
-    private long sendSpeed_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long SendSpeed {
-      get { return sendSpeed_; }
-      set {
-        sendSpeed_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "ReceiveSpeed" field.</summary>
-    public const int ReceiveSpeedFieldNumber = 4;
-    private long receiveSpeed_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public long ReceiveSpeed {
-      get { return receiveSpeed_; }
-      set {
-        receiveSpeed_ = value;
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override bool Equals(object other) {
-      return Equals(other as UnitNetworkCounterProtobuf);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(UnitNetworkCounterProtobuf other) {
-      if (ReferenceEquals(other, null)) {
-        return false;
-      }
-      if (ReferenceEquals(other, this)) {
-        return true;
-      }
-      if (TotalSent != other.TotalSent) return false;
-      if (TotalReceived != other.TotalReceived) return false;
-      if (SendSpeed != other.SendSpeed) return false;
-      if (ReceiveSpeed != other.ReceiveSpeed) return false;
-      return Equals(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override int GetHashCode() {
-      int hash = 1;
-      if (TotalSent != 0L) hash ^= TotalSent.GetHashCode();
-      if (TotalReceived != 0L) hash ^= TotalReceived.GetHashCode();
-      if (SendSpeed != 0L) hash ^= SendSpeed.GetHashCode();
-      if (ReceiveSpeed != 0L) hash ^= ReceiveSpeed.GetHashCode();
-      if (_unknownFields != null) {
-        hash ^= _unknownFields.GetHashCode();
-      }
-      return hash;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public override string ToString() {
-      return pb::JsonFormatter.ToDiagnosticString(this);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void WriteTo(pb::CodedOutputStream output) {
-      if (TotalSent != 0L) {
-        output.WriteRawTag(8);
-        output.WriteInt64(TotalSent);
-      }
-      if (TotalReceived != 0L) {
-        output.WriteRawTag(16);
-        output.WriteInt64(TotalReceived);
-      }
-      if (SendSpeed != 0L) {
-        output.WriteRawTag(24);
-        output.WriteInt64(SendSpeed);
-      }
-      if (ReceiveSpeed != 0L) {
-        output.WriteRawTag(32);
-        output.WriteInt64(ReceiveSpeed);
-      }
-      if (_unknownFields != null) {
-        _unknownFields.WriteTo(output);
-      }
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public int CalculateSize() {
-      int size = 0;
-      if (TotalSent != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(TotalSent);
-      }
-      if (TotalReceived != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(TotalReceived);
-      }
-      if (SendSpeed != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(SendSpeed);
-      }
-      if (ReceiveSpeed != 0L) {
-        size += 1 + pb::CodedOutputStream.ComputeInt64Size(ReceiveSpeed);
-      }
-      if (_unknownFields != null) {
-        size += _unknownFields.CalculateSize();
-      }
-      return size;
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(UnitNetworkCounterProtobuf other) {
-      if (other == null) {
-        return;
-      }
-      if (other.TotalSent != 0L) {
-        TotalSent = other.TotalSent;
-      }
-      if (other.TotalReceived != 0L) {
-        TotalReceived = other.TotalReceived;
-      }
-      if (other.SendSpeed != 0L) {
-        SendSpeed = other.SendSpeed;
-      }
-      if (other.ReceiveSpeed != 0L) {
-        ReceiveSpeed = other.ReceiveSpeed;
-      }
-      _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
-    }
-
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(pb::CodedInputStream input) {
-      uint tag;
-      while ((tag = input.ReadTag()) != 0) {
-        switch(tag) {
-          default:
-            _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
-            break;
-          case 8: {
-            TotalSent = input.ReadInt64();
-            break;
-          }
-          case 16: {
-            TotalReceived = input.ReadInt64();
-            break;
-          }
-          case 24: {
-            SendSpeed = input.ReadInt64();
-            break;
-          }
-          case 32: {
-            ReceiveSpeed = input.ReadInt64();
-            break;
-          }
-        }
-      }
-    }
-
-  }
-
   public sealed partial class UnitProtobuf : pb::IMessage<UnitProtobuf> {
     private static readonly pb::MessageParser<UnitProtobuf> _parser = new pb::MessageParser<UnitProtobuf>(() => new UnitProtobuf());
     private pb::UnknownFieldSet _unknownFields;
@@ -1170,7 +638,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[4]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[1]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1190,11 +658,16 @@ namespace wind.Entities.Protobuf {
       key_ = other.key_;
       state_ = other.state_;
       settingsFilePath_ = other.settingsFilePath_;
+      processId_ = other.processId_;
+      processStartTime_ = other.processStartTime_;
+      performanceCounterCPU_ = other.performanceCounterCPU_;
+      performanceCounterRAM_ = other.performanceCounterRAM_;
+      networkCounterTotalSent_ = other.networkCounterTotalSent_;
+      networkCounterTotalReceived_ = other.networkCounterTotalReceived_;
+      networkCounterSendSpeed_ = other.networkCounterSendSpeed_;
+      networkCounterReceiveSpeed_ = other.networkCounterReceiveSpeed_;
       settingsProtobuf_ = other.settingsProtobuf_ != null ? other.settingsProtobuf_.Clone() : null;
       runningSettingsProtobuf_ = other.runningSettingsProtobuf_ != null ? other.runningSettingsProtobuf_.Clone() : null;
-      processProtobuf_ = other.processProtobuf_ != null ? other.processProtobuf_.Clone() : null;
-      performanceCounterProtobuf_ = other.performanceCounterProtobuf_ != null ? other.performanceCounterProtobuf_.Clone() : null;
-      networkCounterProtobuf_ = other.networkCounterProtobuf_ != null ? other.networkCounterProtobuf_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1236,8 +709,96 @@ namespace wind.Entities.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "ProcessId" field.</summary>
+    public const int ProcessIdFieldNumber = 4;
+    private int processId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int ProcessId {
+      get { return processId_; }
+      set {
+        processId_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "ProcessStartTime" field.</summary>
+    public const int ProcessStartTimeFieldNumber = 5;
+    private long processStartTime_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long ProcessStartTime {
+      get { return processStartTime_; }
+      set {
+        processStartTime_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PerformanceCounterCPU" field.</summary>
+    public const int PerformanceCounterCPUFieldNumber = 6;
+    private float performanceCounterCPU_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float PerformanceCounterCPU {
+      get { return performanceCounterCPU_; }
+      set {
+        performanceCounterCPU_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PerformanceCounterRAM" field.</summary>
+    public const int PerformanceCounterRAMFieldNumber = 7;
+    private float performanceCounterRAM_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float PerformanceCounterRAM {
+      get { return performanceCounterRAM_; }
+      set {
+        performanceCounterRAM_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "NetworkCounterTotalSent" field.</summary>
+    public const int NetworkCounterTotalSentFieldNumber = 8;
+    private long networkCounterTotalSent_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long NetworkCounterTotalSent {
+      get { return networkCounterTotalSent_; }
+      set {
+        networkCounterTotalSent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "NetworkCounterTotalReceived" field.</summary>
+    public const int NetworkCounterTotalReceivedFieldNumber = 9;
+    private long networkCounterTotalReceived_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long NetworkCounterTotalReceived {
+      get { return networkCounterTotalReceived_; }
+      set {
+        networkCounterTotalReceived_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "NetworkCounterSendSpeed" field.</summary>
+    public const int NetworkCounterSendSpeedFieldNumber = 10;
+    private long networkCounterSendSpeed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long NetworkCounterSendSpeed {
+      get { return networkCounterSendSpeed_; }
+      set {
+        networkCounterSendSpeed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "NetworkCounterReceiveSpeed" field.</summary>
+    public const int NetworkCounterReceiveSpeedFieldNumber = 11;
+    private long networkCounterReceiveSpeed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long NetworkCounterReceiveSpeed {
+      get { return networkCounterReceiveSpeed_; }
+      set {
+        networkCounterReceiveSpeed_ = value;
+      }
+    }
+
     /// <summary>Field number for the "SettingsProtobuf" field.</summary>
-    public const int SettingsProtobufFieldNumber = 4;
+    public const int SettingsProtobufFieldNumber = 12;
     private global::wind.Entities.Protobuf.UnitSettingsProtobuf settingsProtobuf_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::wind.Entities.Protobuf.UnitSettingsProtobuf SettingsProtobuf {
@@ -1248,46 +809,13 @@ namespace wind.Entities.Protobuf {
     }
 
     /// <summary>Field number for the "RunningSettingsProtobuf" field.</summary>
-    public const int RunningSettingsProtobufFieldNumber = 5;
+    public const int RunningSettingsProtobufFieldNumber = 13;
     private global::wind.Entities.Protobuf.UnitSettingsProtobuf runningSettingsProtobuf_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::wind.Entities.Protobuf.UnitSettingsProtobuf RunningSettingsProtobuf {
       get { return runningSettingsProtobuf_; }
       set {
         runningSettingsProtobuf_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "ProcessProtobuf" field.</summary>
-    public const int ProcessProtobufFieldNumber = 6;
-    private global::wind.Entities.Protobuf.UnitProcessProtobuf processProtobuf_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::wind.Entities.Protobuf.UnitProcessProtobuf ProcessProtobuf {
-      get { return processProtobuf_; }
-      set {
-        processProtobuf_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "PerformanceCounterProtobuf" field.</summary>
-    public const int PerformanceCounterProtobufFieldNumber = 7;
-    private global::wind.Entities.Protobuf.UnitPerformanceCounterProtobuf performanceCounterProtobuf_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::wind.Entities.Protobuf.UnitPerformanceCounterProtobuf PerformanceCounterProtobuf {
-      get { return performanceCounterProtobuf_; }
-      set {
-        performanceCounterProtobuf_ = value;
-      }
-    }
-
-    /// <summary>Field number for the "NetworkCounterProtobuf" field.</summary>
-    public const int NetworkCounterProtobufFieldNumber = 8;
-    private global::wind.Entities.Protobuf.UnitNetworkCounterProtobuf networkCounterProtobuf_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::wind.Entities.Protobuf.UnitNetworkCounterProtobuf NetworkCounterProtobuf {
-      get { return networkCounterProtobuf_; }
-      set {
-        networkCounterProtobuf_ = value;
       }
     }
 
@@ -1307,11 +835,16 @@ namespace wind.Entities.Protobuf {
       if (Key != other.Key) return false;
       if (State != other.State) return false;
       if (SettingsFilePath != other.SettingsFilePath) return false;
+      if (ProcessId != other.ProcessId) return false;
+      if (ProcessStartTime != other.ProcessStartTime) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PerformanceCounterCPU, other.PerformanceCounterCPU)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PerformanceCounterRAM, other.PerformanceCounterRAM)) return false;
+      if (NetworkCounterTotalSent != other.NetworkCounterTotalSent) return false;
+      if (NetworkCounterTotalReceived != other.NetworkCounterTotalReceived) return false;
+      if (NetworkCounterSendSpeed != other.NetworkCounterSendSpeed) return false;
+      if (NetworkCounterReceiveSpeed != other.NetworkCounterReceiveSpeed) return false;
       if (!object.Equals(SettingsProtobuf, other.SettingsProtobuf)) return false;
       if (!object.Equals(RunningSettingsProtobuf, other.RunningSettingsProtobuf)) return false;
-      if (!object.Equals(ProcessProtobuf, other.ProcessProtobuf)) return false;
-      if (!object.Equals(PerformanceCounterProtobuf, other.PerformanceCounterProtobuf)) return false;
-      if (!object.Equals(NetworkCounterProtobuf, other.NetworkCounterProtobuf)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1321,11 +854,16 @@ namespace wind.Entities.Protobuf {
       if (Key.Length != 0) hash ^= Key.GetHashCode();
       if (State != 0) hash ^= State.GetHashCode();
       if (SettingsFilePath.Length != 0) hash ^= SettingsFilePath.GetHashCode();
+      if (ProcessId != 0) hash ^= ProcessId.GetHashCode();
+      if (ProcessStartTime != 0L) hash ^= ProcessStartTime.GetHashCode();
+      if (PerformanceCounterCPU != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PerformanceCounterCPU);
+      if (PerformanceCounterRAM != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PerformanceCounterRAM);
+      if (NetworkCounterTotalSent != 0L) hash ^= NetworkCounterTotalSent.GetHashCode();
+      if (NetworkCounterTotalReceived != 0L) hash ^= NetworkCounterTotalReceived.GetHashCode();
+      if (NetworkCounterSendSpeed != 0L) hash ^= NetworkCounterSendSpeed.GetHashCode();
+      if (NetworkCounterReceiveSpeed != 0L) hash ^= NetworkCounterReceiveSpeed.GetHashCode();
       if (settingsProtobuf_ != null) hash ^= SettingsProtobuf.GetHashCode();
       if (runningSettingsProtobuf_ != null) hash ^= RunningSettingsProtobuf.GetHashCode();
-      if (processProtobuf_ != null) hash ^= ProcessProtobuf.GetHashCode();
-      if (performanceCounterProtobuf_ != null) hash ^= PerformanceCounterProtobuf.GetHashCode();
-      if (networkCounterProtobuf_ != null) hash ^= NetworkCounterProtobuf.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1351,25 +889,45 @@ namespace wind.Entities.Protobuf {
         output.WriteRawTag(26);
         output.WriteString(SettingsFilePath);
       }
+      if (ProcessId != 0) {
+        output.WriteRawTag(32);
+        output.WriteInt32(ProcessId);
+      }
+      if (ProcessStartTime != 0L) {
+        output.WriteRawTag(40);
+        output.WriteInt64(ProcessStartTime);
+      }
+      if (PerformanceCounterCPU != 0F) {
+        output.WriteRawTag(53);
+        output.WriteFloat(PerformanceCounterCPU);
+      }
+      if (PerformanceCounterRAM != 0F) {
+        output.WriteRawTag(61);
+        output.WriteFloat(PerformanceCounterRAM);
+      }
+      if (NetworkCounterTotalSent != 0L) {
+        output.WriteRawTag(64);
+        output.WriteInt64(NetworkCounterTotalSent);
+      }
+      if (NetworkCounterTotalReceived != 0L) {
+        output.WriteRawTag(72);
+        output.WriteInt64(NetworkCounterTotalReceived);
+      }
+      if (NetworkCounterSendSpeed != 0L) {
+        output.WriteRawTag(80);
+        output.WriteInt64(NetworkCounterSendSpeed);
+      }
+      if (NetworkCounterReceiveSpeed != 0L) {
+        output.WriteRawTag(88);
+        output.WriteInt64(NetworkCounterReceiveSpeed);
+      }
       if (settingsProtobuf_ != null) {
-        output.WriteRawTag(34);
+        output.WriteRawTag(98);
         output.WriteMessage(SettingsProtobuf);
       }
       if (runningSettingsProtobuf_ != null) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(106);
         output.WriteMessage(RunningSettingsProtobuf);
-      }
-      if (processProtobuf_ != null) {
-        output.WriteRawTag(50);
-        output.WriteMessage(ProcessProtobuf);
-      }
-      if (performanceCounterProtobuf_ != null) {
-        output.WriteRawTag(58);
-        output.WriteMessage(PerformanceCounterProtobuf);
-      }
-      if (networkCounterProtobuf_ != null) {
-        output.WriteRawTag(66);
-        output.WriteMessage(NetworkCounterProtobuf);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -1388,20 +946,35 @@ namespace wind.Entities.Protobuf {
       if (SettingsFilePath.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(SettingsFilePath);
       }
+      if (ProcessId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ProcessId);
+      }
+      if (ProcessStartTime != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(ProcessStartTime);
+      }
+      if (PerformanceCounterCPU != 0F) {
+        size += 1 + 4;
+      }
+      if (PerformanceCounterRAM != 0F) {
+        size += 1 + 4;
+      }
+      if (NetworkCounterTotalSent != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(NetworkCounterTotalSent);
+      }
+      if (NetworkCounterTotalReceived != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(NetworkCounterTotalReceived);
+      }
+      if (NetworkCounterSendSpeed != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(NetworkCounterSendSpeed);
+      }
+      if (NetworkCounterReceiveSpeed != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(NetworkCounterReceiveSpeed);
+      }
       if (settingsProtobuf_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(SettingsProtobuf);
       }
       if (runningSettingsProtobuf_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(RunningSettingsProtobuf);
-      }
-      if (processProtobuf_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ProcessProtobuf);
-      }
-      if (performanceCounterProtobuf_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PerformanceCounterProtobuf);
-      }
-      if (networkCounterProtobuf_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(NetworkCounterProtobuf);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1423,6 +996,30 @@ namespace wind.Entities.Protobuf {
       if (other.SettingsFilePath.Length != 0) {
         SettingsFilePath = other.SettingsFilePath;
       }
+      if (other.ProcessId != 0) {
+        ProcessId = other.ProcessId;
+      }
+      if (other.ProcessStartTime != 0L) {
+        ProcessStartTime = other.ProcessStartTime;
+      }
+      if (other.PerformanceCounterCPU != 0F) {
+        PerformanceCounterCPU = other.PerformanceCounterCPU;
+      }
+      if (other.PerformanceCounterRAM != 0F) {
+        PerformanceCounterRAM = other.PerformanceCounterRAM;
+      }
+      if (other.NetworkCounterTotalSent != 0L) {
+        NetworkCounterTotalSent = other.NetworkCounterTotalSent;
+      }
+      if (other.NetworkCounterTotalReceived != 0L) {
+        NetworkCounterTotalReceived = other.NetworkCounterTotalReceived;
+      }
+      if (other.NetworkCounterSendSpeed != 0L) {
+        NetworkCounterSendSpeed = other.NetworkCounterSendSpeed;
+      }
+      if (other.NetworkCounterReceiveSpeed != 0L) {
+        NetworkCounterReceiveSpeed = other.NetworkCounterReceiveSpeed;
+      }
       if (other.settingsProtobuf_ != null) {
         if (settingsProtobuf_ == null) {
           SettingsProtobuf = new global::wind.Entities.Protobuf.UnitSettingsProtobuf();
@@ -1434,24 +1031,6 @@ namespace wind.Entities.Protobuf {
           RunningSettingsProtobuf = new global::wind.Entities.Protobuf.UnitSettingsProtobuf();
         }
         RunningSettingsProtobuf.MergeFrom(other.RunningSettingsProtobuf);
-      }
-      if (other.processProtobuf_ != null) {
-        if (processProtobuf_ == null) {
-          ProcessProtobuf = new global::wind.Entities.Protobuf.UnitProcessProtobuf();
-        }
-        ProcessProtobuf.MergeFrom(other.ProcessProtobuf);
-      }
-      if (other.performanceCounterProtobuf_ != null) {
-        if (performanceCounterProtobuf_ == null) {
-          PerformanceCounterProtobuf = new global::wind.Entities.Protobuf.UnitPerformanceCounterProtobuf();
-        }
-        PerformanceCounterProtobuf.MergeFrom(other.PerformanceCounterProtobuf);
-      }
-      if (other.networkCounterProtobuf_ != null) {
-        if (networkCounterProtobuf_ == null) {
-          NetworkCounterProtobuf = new global::wind.Entities.Protobuf.UnitNetworkCounterProtobuf();
-        }
-        NetworkCounterProtobuf.MergeFrom(other.NetworkCounterProtobuf);
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1476,39 +1055,50 @@ namespace wind.Entities.Protobuf {
             SettingsFilePath = input.ReadString();
             break;
           }
-          case 34: {
+          case 32: {
+            ProcessId = input.ReadInt32();
+            break;
+          }
+          case 40: {
+            ProcessStartTime = input.ReadInt64();
+            break;
+          }
+          case 53: {
+            PerformanceCounterCPU = input.ReadFloat();
+            break;
+          }
+          case 61: {
+            PerformanceCounterRAM = input.ReadFloat();
+            break;
+          }
+          case 64: {
+            NetworkCounterTotalSent = input.ReadInt64();
+            break;
+          }
+          case 72: {
+            NetworkCounterTotalReceived = input.ReadInt64();
+            break;
+          }
+          case 80: {
+            NetworkCounterSendSpeed = input.ReadInt64();
+            break;
+          }
+          case 88: {
+            NetworkCounterReceiveSpeed = input.ReadInt64();
+            break;
+          }
+          case 98: {
             if (settingsProtobuf_ == null) {
               SettingsProtobuf = new global::wind.Entities.Protobuf.UnitSettingsProtobuf();
             }
             input.ReadMessage(SettingsProtobuf);
             break;
           }
-          case 42: {
+          case 106: {
             if (runningSettingsProtobuf_ == null) {
               RunningSettingsProtobuf = new global::wind.Entities.Protobuf.UnitSettingsProtobuf();
             }
             input.ReadMessage(RunningSettingsProtobuf);
-            break;
-          }
-          case 50: {
-            if (processProtobuf_ == null) {
-              ProcessProtobuf = new global::wind.Entities.Protobuf.UnitProcessProtobuf();
-            }
-            input.ReadMessage(ProcessProtobuf);
-            break;
-          }
-          case 58: {
-            if (performanceCounterProtobuf_ == null) {
-              PerformanceCounterProtobuf = new global::wind.Entities.Protobuf.UnitPerformanceCounterProtobuf();
-            }
-            input.ReadMessage(PerformanceCounterProtobuf);
-            break;
-          }
-          case 66: {
-            if (networkCounterProtobuf_ == null) {
-              NetworkCounterProtobuf = new global::wind.Entities.Protobuf.UnitNetworkCounterProtobuf();
-            }
-            input.ReadMessage(NetworkCounterProtobuf);
             break;
           }
         }
@@ -1525,7 +1115,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[5]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[2]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1546,9 +1136,14 @@ namespace wind.Entities.Protobuf {
       description_ = other.description_;
       absoluteExecutePath_ = other.absoluteExecutePath_;
       absoluteWorkDirectory_ = other.absoluteWorkDirectory_;
-      processProtobuf_ = other.processProtobuf_ != null ? other.processProtobuf_.Clone() : null;
-      performanceCounterProtobuf_ = other.performanceCounterProtobuf_ != null ? other.performanceCounterProtobuf_.Clone() : null;
-      networkCounterProtobuf_ = other.networkCounterProtobuf_ != null ? other.networkCounterProtobuf_.Clone() : null;
+      processId_ = other.processId_;
+      processStartTime_ = other.processStartTime_;
+      performanceCounterCPU_ = other.performanceCounterCPU_;
+      performanceCounterRAM_ = other.performanceCounterRAM_;
+      networkCounterTotalSent_ = other.networkCounterTotalSent_;
+      networkCounterTotalReceived_ = other.networkCounterTotalReceived_;
+      networkCounterSendSpeed_ = other.networkCounterSendSpeed_;
+      networkCounterReceiveSpeed_ = other.networkCounterReceiveSpeed_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -1601,36 +1196,91 @@ namespace wind.Entities.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "ProcessProtobuf" field.</summary>
-    public const int ProcessProtobufFieldNumber = 5;
-    private global::wind.Entities.Protobuf.UnitProcessProtobuf processProtobuf_;
+    /// <summary>Field number for the "ProcessId" field.</summary>
+    public const int ProcessIdFieldNumber = 5;
+    private int processId_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::wind.Entities.Protobuf.UnitProcessProtobuf ProcessProtobuf {
-      get { return processProtobuf_; }
+    public int ProcessId {
+      get { return processId_; }
       set {
-        processProtobuf_ = value;
+        processId_ = value;
       }
     }
 
-    /// <summary>Field number for the "PerformanceCounterProtobuf" field.</summary>
-    public const int PerformanceCounterProtobufFieldNumber = 6;
-    private global::wind.Entities.Protobuf.UnitPerformanceCounterProtobuf performanceCounterProtobuf_;
+    /// <summary>Field number for the "ProcessStartTime" field.</summary>
+    public const int ProcessStartTimeFieldNumber = 6;
+    private long processStartTime_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::wind.Entities.Protobuf.UnitPerformanceCounterProtobuf PerformanceCounterProtobuf {
-      get { return performanceCounterProtobuf_; }
+    public long ProcessStartTime {
+      get { return processStartTime_; }
       set {
-        performanceCounterProtobuf_ = value;
+        processStartTime_ = value;
       }
     }
 
-    /// <summary>Field number for the "NetworkCounterProtobuf" field.</summary>
-    public const int NetworkCounterProtobufFieldNumber = 7;
-    private global::wind.Entities.Protobuf.UnitNetworkCounterProtobuf networkCounterProtobuf_;
+    /// <summary>Field number for the "PerformanceCounterCPU" field.</summary>
+    public const int PerformanceCounterCPUFieldNumber = 7;
+    private float performanceCounterCPU_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::wind.Entities.Protobuf.UnitNetworkCounterProtobuf NetworkCounterProtobuf {
-      get { return networkCounterProtobuf_; }
+    public float PerformanceCounterCPU {
+      get { return performanceCounterCPU_; }
       set {
-        networkCounterProtobuf_ = value;
+        performanceCounterCPU_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "PerformanceCounterRAM" field.</summary>
+    public const int PerformanceCounterRAMFieldNumber = 8;
+    private float performanceCounterRAM_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public float PerformanceCounterRAM {
+      get { return performanceCounterRAM_; }
+      set {
+        performanceCounterRAM_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "NetworkCounterTotalSent" field.</summary>
+    public const int NetworkCounterTotalSentFieldNumber = 9;
+    private long networkCounterTotalSent_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long NetworkCounterTotalSent {
+      get { return networkCounterTotalSent_; }
+      set {
+        networkCounterTotalSent_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "NetworkCounterTotalReceived" field.</summary>
+    public const int NetworkCounterTotalReceivedFieldNumber = 10;
+    private long networkCounterTotalReceived_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long NetworkCounterTotalReceived {
+      get { return networkCounterTotalReceived_; }
+      set {
+        networkCounterTotalReceived_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "NetworkCounterSendSpeed" field.</summary>
+    public const int NetworkCounterSendSpeedFieldNumber = 11;
+    private long networkCounterSendSpeed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long NetworkCounterSendSpeed {
+      get { return networkCounterSendSpeed_; }
+      set {
+        networkCounterSendSpeed_ = value;
+      }
+    }
+
+    /// <summary>Field number for the "NetworkCounterReceiveSpeed" field.</summary>
+    public const int NetworkCounterReceiveSpeedFieldNumber = 12;
+    private long networkCounterReceiveSpeed_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public long NetworkCounterReceiveSpeed {
+      get { return networkCounterReceiveSpeed_; }
+      set {
+        networkCounterReceiveSpeed_ = value;
       }
     }
 
@@ -1651,9 +1301,14 @@ namespace wind.Entities.Protobuf {
       if (Description != other.Description) return false;
       if (AbsoluteExecutePath != other.AbsoluteExecutePath) return false;
       if (AbsoluteWorkDirectory != other.AbsoluteWorkDirectory) return false;
-      if (!object.Equals(ProcessProtobuf, other.ProcessProtobuf)) return false;
-      if (!object.Equals(PerformanceCounterProtobuf, other.PerformanceCounterProtobuf)) return false;
-      if (!object.Equals(NetworkCounterProtobuf, other.NetworkCounterProtobuf)) return false;
+      if (ProcessId != other.ProcessId) return false;
+      if (ProcessStartTime != other.ProcessStartTime) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PerformanceCounterCPU, other.PerformanceCounterCPU)) return false;
+      if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PerformanceCounterRAM, other.PerformanceCounterRAM)) return false;
+      if (NetworkCounterTotalSent != other.NetworkCounterTotalSent) return false;
+      if (NetworkCounterTotalReceived != other.NetworkCounterTotalReceived) return false;
+      if (NetworkCounterSendSpeed != other.NetworkCounterSendSpeed) return false;
+      if (NetworkCounterReceiveSpeed != other.NetworkCounterReceiveSpeed) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -1664,9 +1319,14 @@ namespace wind.Entities.Protobuf {
       if (Description.Length != 0) hash ^= Description.GetHashCode();
       if (AbsoluteExecutePath.Length != 0) hash ^= AbsoluteExecutePath.GetHashCode();
       if (AbsoluteWorkDirectory.Length != 0) hash ^= AbsoluteWorkDirectory.GetHashCode();
-      if (processProtobuf_ != null) hash ^= ProcessProtobuf.GetHashCode();
-      if (performanceCounterProtobuf_ != null) hash ^= PerformanceCounterProtobuf.GetHashCode();
-      if (networkCounterProtobuf_ != null) hash ^= NetworkCounterProtobuf.GetHashCode();
+      if (ProcessId != 0) hash ^= ProcessId.GetHashCode();
+      if (ProcessStartTime != 0L) hash ^= ProcessStartTime.GetHashCode();
+      if (PerformanceCounterCPU != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PerformanceCounterCPU);
+      if (PerformanceCounterRAM != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PerformanceCounterRAM);
+      if (NetworkCounterTotalSent != 0L) hash ^= NetworkCounterTotalSent.GetHashCode();
+      if (NetworkCounterTotalReceived != 0L) hash ^= NetworkCounterTotalReceived.GetHashCode();
+      if (NetworkCounterSendSpeed != 0L) hash ^= NetworkCounterSendSpeed.GetHashCode();
+      if (NetworkCounterReceiveSpeed != 0L) hash ^= NetworkCounterReceiveSpeed.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -1696,17 +1356,37 @@ namespace wind.Entities.Protobuf {
         output.WriteRawTag(34);
         output.WriteString(AbsoluteWorkDirectory);
       }
-      if (processProtobuf_ != null) {
-        output.WriteRawTag(42);
-        output.WriteMessage(ProcessProtobuf);
+      if (ProcessId != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(ProcessId);
       }
-      if (performanceCounterProtobuf_ != null) {
-        output.WriteRawTag(50);
-        output.WriteMessage(PerformanceCounterProtobuf);
+      if (ProcessStartTime != 0L) {
+        output.WriteRawTag(48);
+        output.WriteInt64(ProcessStartTime);
       }
-      if (networkCounterProtobuf_ != null) {
-        output.WriteRawTag(58);
-        output.WriteMessage(NetworkCounterProtobuf);
+      if (PerformanceCounterCPU != 0F) {
+        output.WriteRawTag(61);
+        output.WriteFloat(PerformanceCounterCPU);
+      }
+      if (PerformanceCounterRAM != 0F) {
+        output.WriteRawTag(69);
+        output.WriteFloat(PerformanceCounterRAM);
+      }
+      if (NetworkCounterTotalSent != 0L) {
+        output.WriteRawTag(72);
+        output.WriteInt64(NetworkCounterTotalSent);
+      }
+      if (NetworkCounterTotalReceived != 0L) {
+        output.WriteRawTag(80);
+        output.WriteInt64(NetworkCounterTotalReceived);
+      }
+      if (NetworkCounterSendSpeed != 0L) {
+        output.WriteRawTag(88);
+        output.WriteInt64(NetworkCounterSendSpeed);
+      }
+      if (NetworkCounterReceiveSpeed != 0L) {
+        output.WriteRawTag(96);
+        output.WriteInt64(NetworkCounterReceiveSpeed);
       }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
@@ -1728,14 +1408,29 @@ namespace wind.Entities.Protobuf {
       if (AbsoluteWorkDirectory.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(AbsoluteWorkDirectory);
       }
-      if (processProtobuf_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(ProcessProtobuf);
+      if (ProcessId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ProcessId);
       }
-      if (performanceCounterProtobuf_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(PerformanceCounterProtobuf);
+      if (ProcessStartTime != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(ProcessStartTime);
       }
-      if (networkCounterProtobuf_ != null) {
-        size += 1 + pb::CodedOutputStream.ComputeMessageSize(NetworkCounterProtobuf);
+      if (PerformanceCounterCPU != 0F) {
+        size += 1 + 4;
+      }
+      if (PerformanceCounterRAM != 0F) {
+        size += 1 + 4;
+      }
+      if (NetworkCounterTotalSent != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(NetworkCounterTotalSent);
+      }
+      if (NetworkCounterTotalReceived != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(NetworkCounterTotalReceived);
+      }
+      if (NetworkCounterSendSpeed != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(NetworkCounterSendSpeed);
+      }
+      if (NetworkCounterReceiveSpeed != 0L) {
+        size += 1 + pb::CodedOutputStream.ComputeInt64Size(NetworkCounterReceiveSpeed);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -1760,23 +1455,29 @@ namespace wind.Entities.Protobuf {
       if (other.AbsoluteWorkDirectory.Length != 0) {
         AbsoluteWorkDirectory = other.AbsoluteWorkDirectory;
       }
-      if (other.processProtobuf_ != null) {
-        if (processProtobuf_ == null) {
-          ProcessProtobuf = new global::wind.Entities.Protobuf.UnitProcessProtobuf();
-        }
-        ProcessProtobuf.MergeFrom(other.ProcessProtobuf);
+      if (other.ProcessId != 0) {
+        ProcessId = other.ProcessId;
       }
-      if (other.performanceCounterProtobuf_ != null) {
-        if (performanceCounterProtobuf_ == null) {
-          PerformanceCounterProtobuf = new global::wind.Entities.Protobuf.UnitPerformanceCounterProtobuf();
-        }
-        PerformanceCounterProtobuf.MergeFrom(other.PerformanceCounterProtobuf);
+      if (other.ProcessStartTime != 0L) {
+        ProcessStartTime = other.ProcessStartTime;
       }
-      if (other.networkCounterProtobuf_ != null) {
-        if (networkCounterProtobuf_ == null) {
-          NetworkCounterProtobuf = new global::wind.Entities.Protobuf.UnitNetworkCounterProtobuf();
-        }
-        NetworkCounterProtobuf.MergeFrom(other.NetworkCounterProtobuf);
+      if (other.PerformanceCounterCPU != 0F) {
+        PerformanceCounterCPU = other.PerformanceCounterCPU;
+      }
+      if (other.PerformanceCounterRAM != 0F) {
+        PerformanceCounterRAM = other.PerformanceCounterRAM;
+      }
+      if (other.NetworkCounterTotalSent != 0L) {
+        NetworkCounterTotalSent = other.NetworkCounterTotalSent;
+      }
+      if (other.NetworkCounterTotalReceived != 0L) {
+        NetworkCounterTotalReceived = other.NetworkCounterTotalReceived;
+      }
+      if (other.NetworkCounterSendSpeed != 0L) {
+        NetworkCounterSendSpeed = other.NetworkCounterSendSpeed;
+      }
+      if (other.NetworkCounterReceiveSpeed != 0L) {
+        NetworkCounterReceiveSpeed = other.NetworkCounterReceiveSpeed;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -1805,25 +1506,36 @@ namespace wind.Entities.Protobuf {
             AbsoluteWorkDirectory = input.ReadString();
             break;
           }
-          case 42: {
-            if (processProtobuf_ == null) {
-              ProcessProtobuf = new global::wind.Entities.Protobuf.UnitProcessProtobuf();
-            }
-            input.ReadMessage(ProcessProtobuf);
+          case 40: {
+            ProcessId = input.ReadInt32();
             break;
           }
-          case 50: {
-            if (performanceCounterProtobuf_ == null) {
-              PerformanceCounterProtobuf = new global::wind.Entities.Protobuf.UnitPerformanceCounterProtobuf();
-            }
-            input.ReadMessage(PerformanceCounterProtobuf);
+          case 48: {
+            ProcessStartTime = input.ReadInt64();
             break;
           }
-          case 58: {
-            if (networkCounterProtobuf_ == null) {
-              NetworkCounterProtobuf = new global::wind.Entities.Protobuf.UnitNetworkCounterProtobuf();
-            }
-            input.ReadMessage(NetworkCounterProtobuf);
+          case 61: {
+            PerformanceCounterCPU = input.ReadFloat();
+            break;
+          }
+          case 69: {
+            PerformanceCounterRAM = input.ReadFloat();
+            break;
+          }
+          case 72: {
+            NetworkCounterTotalSent = input.ReadInt64();
+            break;
+          }
+          case 80: {
+            NetworkCounterTotalReceived = input.ReadInt64();
+            break;
+          }
+          case 88: {
+            NetworkCounterSendSpeed = input.ReadInt64();
+            break;
+          }
+          case 96: {
+            NetworkCounterReceiveSpeed = input.ReadInt64();
             break;
           }
         }
@@ -1843,7 +1555,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[6]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[3]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -1978,7 +1690,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[7]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[4]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2113,7 +1825,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[8]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[5]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2276,7 +1988,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[9]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[6]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2523,7 +2235,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[10]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[7]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2714,7 +2426,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[11]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[8]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -2877,7 +2589,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[12]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[9]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3040,7 +2752,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[13]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[10]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3203,7 +2915,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[14]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[11]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3366,7 +3078,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[15]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[12]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3529,7 +3241,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[16]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[13]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3692,7 +3404,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[17]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[14]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3855,7 +3567,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[18]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[15]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -3913,7 +3625,7 @@ namespace wind.Entities.Protobuf {
     public const int CommandTypeFieldNumber = 3;
     private int commandType_;
     /// <summary>
-    ///0:attach,1:text,2:^c
+    ///0:attach,1:text,2:^c,9:dettch
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CommandType {
@@ -4077,7 +3789,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[19]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[16]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4212,7 +3924,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[20]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[17]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4347,7 +4059,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[21]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[18]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4482,7 +4194,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[22]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[19]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4617,7 +4329,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[23]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[20]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4752,7 +4464,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[24]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[21]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -4887,7 +4599,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[25]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[22]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5022,7 +4734,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[26]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[23]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5157,7 +4869,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[27]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[24]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5292,7 +5004,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[28]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[25]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5545,7 +5257,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[29]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[26]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5764,7 +5476,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[30]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[27]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -5983,7 +5695,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[31]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[28]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6202,7 +5914,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[32]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[29]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6455,7 +6167,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[33]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[30]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6674,7 +6386,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[34]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[31]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -6941,7 +6653,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[35]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[32]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7180,7 +6892,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[36]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[33]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7419,7 +7131,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[37]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[34]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7610,7 +7322,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[38]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[35]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7801,7 +7513,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[39]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[36]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -7992,7 +7704,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[40]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[37]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8231,7 +7943,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[41]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[38]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8422,7 +8134,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[42]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[39]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8669,7 +8381,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[43]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[40]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -8838,7 +8550,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[44]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[41]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9026,7 +8738,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[45]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[42]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9186,7 +8898,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[46]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[43]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9346,7 +9058,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[47]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[44]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9540,7 +9252,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[48]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[45]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -9700,7 +9412,7 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
-      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[49]; }
+      get { return global::wind.Entities.Protobuf.WebSocketMessagesReflection.Descriptor.MessageTypes[46]; }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]

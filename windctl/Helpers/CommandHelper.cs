@@ -104,20 +104,19 @@ namespace windctl.Helpers {
                 Console.WriteLine(String.Concat("command execute failed,",statusResponseProtobuf.NoExecuteMessage));
                 return;
             }
+            UnitProtobuf unitProtobuf=statusResponseProtobuf.UnitProtobuf;
             //第一行
-            if(statusResponseProtobuf.UnitProtobuf.State==2){ Console.ForegroundColor=ConsoleColor.Green; }
+            if(unitProtobuf.State==2){ Console.ForegroundColor=ConsoleColor.Green; }
             Console.Write("● ");
-            if(statusResponseProtobuf.UnitProtobuf.State==2){ Console.ResetColor(); }
-            UnitSettingsProtobuf unitSettingsProtobuf=statusResponseProtobuf.UnitProtobuf.State==2
-                ?statusResponseProtobuf.UnitProtobuf.RunningSettingsProtobuf
-                :statusResponseProtobuf.UnitProtobuf.SettingsProtobuf;
+            if(unitProtobuf.State==2){ Console.ResetColor(); }
+            UnitSettingsProtobuf unitSettingsProtobuf=unitProtobuf.State==2?unitProtobuf.RunningSettingsProtobuf:unitProtobuf.SettingsProtobuf;
             Console.Write($"{unitSettingsProtobuf.Name} - {unitSettingsProtobuf.Description}");
             //第二行
-            Console.Write($"\n     Loaded:  {statusResponseProtobuf.UnitProtobuf.SettingsFilePath}");
+            Console.Write($"\n     Loaded:  {unitProtobuf.SettingsFilePath}");
             if(unitSettingsProtobuf.AutoStart){ Console.Write(" (auto)"); }
             //第三行
             Console.Write($"\n      State:  ");
-            switch(statusResponseProtobuf.UnitProtobuf.State) {
+            switch(unitProtobuf.State) {
                 case 0:Console.Write("stopped");break;
                 case 1:Console.Write("starting");break;
                 case 2:
@@ -126,10 +125,9 @@ namespace windctl.Helpers {
                     Console.ResetColor();
                     Console.Write(' ');
                     Console.ForegroundColor=ConsoleColor.Cyan;
-                    Console.Write($"#{statusResponseProtobuf.UnitProtobuf.ProcessProtobuf.Id}");
+                    Console.Write($"#{unitProtobuf.ProcessId}");
                     Console.ResetColor();
-                    String startTimeString=statusResponseProtobuf.UnitProtobuf.ProcessProtobuf.StartTime.ToLocalTimestampString();
-                    Console.Write($" (since {startTimeString})");
+                    Console.Write($" (since {unitProtobuf.ProcessStartTime.ToLocalTimestampString()})");
                     break;
                 case 3:Console.Write("stopping");break;
                 default:Console.Write("unknown");break;
@@ -138,17 +136,17 @@ namespace windctl.Helpers {
             Console.Write($"\nCommandLine:  {unitSettingsProtobuf.AbsoluteExecutePath}");
             if(unitSettingsProtobuf.HasArguments){ Console.Write($" {unitSettingsProtobuf.Arguments}"); }
             //第五行
-            if(statusResponseProtobuf.UnitProtobuf.State==2 && unitSettingsProtobuf.MonitorPerformanceUsage) {
-                String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",statusResponseProtobuf.UnitProtobuf.PerformanceCounterProtobuf.CPU);
-                String ramValue=statusResponseProtobuf.UnitProtobuf.PerformanceCounterProtobuf.RAM.FixedByteSize();
+            if(unitProtobuf.State==2 && unitSettingsProtobuf.MonitorPerformanceUsage) {
+                String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",unitProtobuf.PerformanceCounterCPU);
+                String ramValue=unitProtobuf.PerformanceCounterRAM.FixedByteSize();
                 Console.Write($"\nPerformance:  {cpuValue}; {ramValue}");
             }
             //第六行
-            if(statusResponseProtobuf.UnitProtobuf.State==2 && unitSettingsProtobuf.MonitorNetworkUsage) {
-                String sendSpeed=statusResponseProtobuf.UnitProtobuf.NetworkCounterProtobuf.SendSpeed.FixedByteSize();
-                String receiveSpeed=statusResponseProtobuf.UnitProtobuf.NetworkCounterProtobuf.ReceiveSpeed.FixedByteSize();
-                String totalSent=statusResponseProtobuf.UnitProtobuf.NetworkCounterProtobuf.TotalSent.FixedByteSize();
-                String totalReceived=statusResponseProtobuf.UnitProtobuf.NetworkCounterProtobuf.TotalReceived.FixedByteSize();
+            if(unitProtobuf.State==2 && unitSettingsProtobuf.MonitorNetworkUsage) {
+                String sendSpeed=unitProtobuf.NetworkCounterSendSpeed.FixedByteSize();
+                String receiveSpeed=unitProtobuf.NetworkCounterReceiveSpeed.FixedByteSize();
+                String totalSent=unitProtobuf.NetworkCounterTotalSent.FixedByteSize();
+                String totalReceived=unitProtobuf.NetworkCounterTotalReceived.FixedByteSize();
                 Console.Write($"\n    Network:  ↑ {sendSpeed}/s,{totalSent}; ↓ {receiveSpeed}/s,{totalReceived}");
             }
             Console.WriteLine();
@@ -301,10 +299,9 @@ namespace windctl.Helpers {
                         Console.ResetColor();
                         Console.Write(' ');
                         Console.ForegroundColor=ConsoleColor.Cyan;
-                        Console.Write($"#{item.ProcessProtobuf.Id}");
+                        Console.Write($"#{item.ProcessId}");
                         Console.ResetColor();
-                        String startTimeString=item.ProcessProtobuf.StartTime.ToLocalTimestampString();
-                        Console.Write($" (since {startTimeString})");
+                        Console.Write($" (since {item.ProcessStartTime.ToLocalTimestampString()})");
                         break;
                     case 3:Console.Write("stopping");break;
                     default:Console.Write("unknown");break;
@@ -420,13 +417,14 @@ namespace windctl.Helpers {
                 Console.WriteLine(ERROR_RESPONSE);
                 return;
             }
+            DaemonProtobuf daemonProtobuf=daemonStatusResponseProtobuf.DaemonProtobuf;
             //第一行
             Console.ForegroundColor=ConsoleColor.Green;
             Console.Write("● ");
             Console.ResetColor();
-            Console.Write($"{daemonStatusResponseProtobuf.DaemonProtobuf.Name} - {daemonStatusResponseProtobuf.DaemonProtobuf.Description}");
+            Console.Write($"{daemonProtobuf.Name} - {daemonProtobuf.Description}");
             //第二行
-            Console.Write($"\n     Loaded:  {daemonStatusResponseProtobuf.DaemonProtobuf.AbsoluteWorkDirectory}Data\\AppSettings.json");
+            Console.Write($"\n     Loaded:  {daemonProtobuf.AbsoluteWorkDirectory}Data\\AppSettings.json");
             //第三行
             Console.Write($"\n      State:  ");
             Console.ForegroundColor=ConsoleColor.Green;
@@ -434,19 +432,18 @@ namespace windctl.Helpers {
             Console.ResetColor();
             Console.Write(' ');
             Console.ForegroundColor=ConsoleColor.Cyan;
-            Console.Write($" #{daemonStatusResponseProtobuf.DaemonProtobuf.ProcessProtobuf.Id}");
+            Console.Write($" #{daemonProtobuf.ProcessId}");
             Console.ResetColor();
-            String startTimeString=daemonStatusResponseProtobuf.DaemonProtobuf.ProcessProtobuf.StartTime.ToLocalTimestampString();
-            Console.Write($" (since {startTimeString})");
+            Console.Write($" (since {daemonProtobuf.ProcessStartTime.ToLocalTimestampString()})");
             //第四行
-            String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",daemonStatusResponseProtobuf.DaemonProtobuf.PerformanceCounterProtobuf.CPU);
-            String ramValue=daemonStatusResponseProtobuf.DaemonProtobuf.PerformanceCounterProtobuf.RAM.FixedByteSize();
+            String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",daemonProtobuf.PerformanceCounterCPU);
+            String ramValue=daemonProtobuf.PerformanceCounterRAM.FixedByteSize();
             Console.Write($"\nPerformance:  {cpuValue}; {ramValue}");
             //第五行
-            String sendSpeed=daemonStatusResponseProtobuf.DaemonProtobuf.NetworkCounterProtobuf.SendSpeed.FixedByteSize();
-            String receiveSpeed=daemonStatusResponseProtobuf.DaemonProtobuf.NetworkCounterProtobuf.ReceiveSpeed.FixedByteSize();
-            String totalSent=daemonStatusResponseProtobuf.DaemonProtobuf.NetworkCounterProtobuf.TotalSent.FixedByteSize();
-            String totalReceived=daemonStatusResponseProtobuf.DaemonProtobuf.NetworkCounterProtobuf.TotalReceived.FixedByteSize();
+            String sendSpeed=daemonProtobuf.NetworkCounterSendSpeed.FixedByteSize();
+            String receiveSpeed=daemonProtobuf.NetworkCounterReceiveSpeed.FixedByteSize();
+            String totalSent=daemonProtobuf.NetworkCounterTotalSent.FixedByteSize();
+            String totalReceived=daemonProtobuf.NetworkCounterTotalReceived.FixedByteSize();
             Console.Write($"\n    Network:  ↑ {sendSpeed}/s,{totalSent}; ↓ {receiveSpeed}/s,{totalReceived}");
             Console.WriteLine();
         }

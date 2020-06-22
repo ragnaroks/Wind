@@ -3,9 +3,9 @@
         "path": "protoc.exe",
         "compile_on_save": false,
         "options": [
-            //"--proto_path=protos/v3",
             "--proto_path=.",
-            "--csharp_out=."
+            "--csharp_out=.",
+            "--js_out=import_style=commonjs,binary:."
         ]
     }
 }
