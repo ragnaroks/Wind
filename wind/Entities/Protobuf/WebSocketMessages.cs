@@ -83,62 +83,62 @@ namespace wind.Entities.Protobuf {
             "KAUSDwoHVW5pdEtleRgCIAEoCRIQCghFeGVjdXRlZBgDIAEoCBIYChBOb0V4",
             "ZWN1dGVNZXNzYWdlGAQgASgJEkwKDFVuaXRQcm90b2J1ZhgFIAEoCzI2Lndp",
             "bmQuRW50aXRpZXMuUHJvdG9idWYuV2ViU29ja2V0TWVzc2FnZXMuVW5pdFBy",
-            "b3RvYnVmIscBChVTdGFydFJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEo",
+            "b3RvYnVmItoBChVTdGFydFJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEo",
             "BRIPCgdVbml0S2V5GAIgASgJEhAKCEV4ZWN1dGVkGAMgASgIEhgKEE5vRXhl",
-            "Y3V0ZU1lc3NhZ2UYBCABKAkSYwobVW5pdFJ1bm5pbmdTZXR0aW5nc1Byb3Rv",
-            "YnVmGAUgASgLMj4ud2luZC5FbnRpdGllcy5Qcm90b2J1Zi5XZWJTb2NrZXRN",
-            "ZXNzYWdlcy5Vbml0U2V0dGluZ3NQcm90b2J1ZiJhChRTdG9wUmVzcG9uc2VQ",
-            "cm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkSEAoIRXhl",
-            "Y3V0ZWQYAyABKAgSGAoQTm9FeGVjdXRlTWVzc2FnZRgEIAEoCSJkChdSZXN0",
-            "YXJ0UmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkY",
-            "AiABKAkSEAoIRXhlY3V0ZWQYAyABKAgSGAoQTm9FeGVjdXRlTWVzc2FnZRgE",
-            "IAEoCSK/AQoUTG9hZFJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIP",
-            "CgdVbml0S2V5GAIgASgJEhAKCEV4ZWN1dGVkGAMgASgIEhgKEE5vRXhlY3V0",
-            "ZU1lc3NhZ2UYBCABKAkSXAoUVW5pdFNldHRpbmdzUHJvdG9idWYYBSABKAsy",
-            "Pi53aW5kLkVudGl0aWVzLlByb3RvYnVmLldlYlNvY2tldE1lc3NhZ2VzLlVu",
-            "aXRTZXR0aW5nc1Byb3RvYnVmImMKFlJlbW92ZVJlc3BvbnNlUHJvdG9idWYS",
-            "DAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJEhAKCEV4ZWN1dGVkGAMg",
-            "ASgIEhgKEE5vRXhlY3V0ZU1lc3NhZ2UYBCABKAkijAEKFExvZ3NSZXNwb25z",
-            "ZVByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEoCRIQCghF",
-            "eGVjdXRlZBgDIAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAQgASgJEhMKC0xv",
-            "Z0ZpbGVQYXRoGAUgASgJEhQKDExvZ0xpbmVBcnJheRgGIAMoCSJ8ChZBdHRh",
-            "Y2hSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgC",
+            "Y3V0ZU1lc3NhZ2UYBCABKAkSEQoJUHJvY2Vzc0lkGAUgASgFEmMKG1VuaXRS",
+            "dW5uaW5nU2V0dGluZ3NQcm90b2J1ZhgGIAEoCzI+LndpbmQuRW50aXRpZXMu",
+            "UHJvdG9idWYuV2ViU29ja2V0TWVzc2FnZXMuVW5pdFNldHRpbmdzUHJvdG9i",
+            "dWYiYQoUU3RvcFJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdV",
+            "bml0S2V5GAIgASgJEhAKCEV4ZWN1dGVkGAMgASgIEhgKEE5vRXhlY3V0ZU1l",
+            "c3NhZ2UYBCABKAkiZAoXUmVzdGFydFJlc3BvbnNlUHJvdG9idWYSDAoEVHlw",
+            "ZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJEhAKCEV4ZWN1dGVkGAMgASgIEhgK",
+            "EE5vRXhlY3V0ZU1lc3NhZ2UYBCABKAkivwEKFExvYWRSZXNwb25zZVByb3Rv",
+            "YnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEoCRIQCghFeGVjdXRl",
+            "ZBgDIAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAQgASgJElwKFFVuaXRTZXR0",
+            "aW5nc1Byb3RvYnVmGAUgASgLMj4ud2luZC5FbnRpdGllcy5Qcm90b2J1Zi5X",
+            "ZWJTb2NrZXRNZXNzYWdlcy5Vbml0U2V0dGluZ3NQcm90b2J1ZiJjChZSZW1v",
+            "dmVSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgC",
             "IAEoCRIQCghFeGVjdXRlZBgDIAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAQg",
-            "ASgJEhcKD091dHB1dExpbmVBcnJheRgFIAMoCSLHAQoZU3RhdHVzQWxsUmVz",
-            "cG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIgASgI",
-            "EhgKEE5vRXhlY3V0ZU1lc3NhZ2UYAyABKAkSHQoVVW5pdFByb3RvYnVmQXJy",
-            "YXlTaXplGAQgASgFElEKEVVuaXRQcm90b2J1ZkFycmF5GAUgAygLMjYud2lu",
-            "ZC5FbnRpdGllcy5Qcm90b2J1Zi5XZWJTb2NrZXRNZXNzYWdlcy5Vbml0UHJv",
-            "dG9idWYiVAoYU3RhcnRBbGxSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASAB",
-            "KAUSEAoIRXhlY3V0ZWQYAiABKAgSGAoQTm9FeGVjdXRlTWVzc2FnZRgDIAEo",
-            "CSJTChdTdG9wQWxsUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEhAK",
-            "CEV4ZWN1dGVkGAIgASgIEhgKEE5vRXhlY3V0ZU1lc3NhZ2UYAyABKAkiVgoa",
-            "UmVzdGFydEFsbFJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIQCghF",
-            "eGVjdXRlZBgCIAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAMgASgJIt0BChdM",
-            "b2FkQWxsUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEhAKCEV4ZWN1",
-            "dGVkGAIgASgIEhgKEE5vRXhlY3V0ZU1lc3NhZ2UYAyABKAkSJQodVW5pdFNl",
-            "dHRpbmdzUHJvdG9idWZBcnJheVNpemUYBCABKAUSYQoZVW5pdFNldHRpbmdz",
-            "UHJvdG9idWZBcnJheRgFIAMoCzI+LndpbmQuRW50aXRpZXMuUHJvdG9idWYu",
-            "V2ViU29ja2V0TWVzc2FnZXMuVW5pdFNldHRpbmdzUHJvdG9idWYiVQoZUmVt",
-            "b3ZlQWxsUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEhAKCEV4ZWN1",
-            "dGVkGAIgASgIEhgKEE5vRXhlY3V0ZU1lc3NhZ2UYAyABKAkibAodRGFlbW9u",
-            "VmVyc2lvblJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRINCgVNYWpv",
-            "chgCIAEoBRINCgVNaW5vchgDIAEoBRINCgVCdWlsZBgEIAEoBRIQCghSZXZp",
-            "c2lvbhgFIAEoBSJ+ChxEYWVtb25TdGF0dXNSZXNwb25zZVByb3RvYnVmEgwK",
-            "BFR5cGUYASABKAUSUAoORGFlbW9uUHJvdG9idWYYAiABKAsyOC53aW5kLkVu",
-            "dGl0aWVzLlByb3RvYnVmLldlYlNvY2tldE1lc3NhZ2VzLkRhZW1vblByb3Rv",
-            "YnVmIloKHkRhZW1vblNodXRkb3duUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBl",
-            "GAEgASgFEhAKCEV4ZWN1dGVkGAIgASgIEhgKEE5vRXhlY3V0ZU1lc3NhZ2UY",
-            "AyABKAkiNAoTU3RhcnROb3RpZnlQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8K",
-            "B1VuaXRLZXkYAiABKAkiMwoSU3RvcE5vdGlmeVByb3RvYnVmEgwKBFR5cGUY",
-            "ASABKAUSDwoHVW5pdEtleRgCIAEoCSKRAQoSTG9hZE5vdGlmeVByb3RvYnVm",
-            "EgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEoCRJcChRVbml0U2V0dGlu",
-            "Z3NQcm90b2J1ZhgDIAEoCzI+LndpbmQuRW50aXRpZXMuUHJvdG9idWYuV2Vi",
-            "U29ja2V0TWVzc2FnZXMuVW5pdFNldHRpbmdzUHJvdG9idWYiNQoUUmVtb3Zl",
-            "Tm90aWZ5UHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJ",
-            "IkQKEkxvZ3NOb3RpZnlQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRL",
-            "ZXkYAiABKAkSDwoHTG9nTGluZRgDIAEoCUIbSAOqAhZ3aW5kLkVudGl0aWVz",
-            "LlByb3RvYnVmYgZwcm90bzM="));
+            "ASgJIowBChRMb2dzUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8K",
+            "B1VuaXRLZXkYAiABKAkSEAoIRXhlY3V0ZWQYAyABKAgSGAoQTm9FeGVjdXRl",
+            "TWVzc2FnZRgEIAEoCRITCgtMb2dGaWxlUGF0aBgFIAEoCRIUCgxMb2dMaW5l",
+            "QXJyYXkYBiADKAkifAoWQXR0YWNoUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBl",
+            "GAEgASgFEg8KB1VuaXRLZXkYAiABKAkSEAoIRXhlY3V0ZWQYAyABKAgSGAoQ",
+            "Tm9FeGVjdXRlTWVzc2FnZRgEIAEoCRIXCg9PdXRwdXRMaW5lQXJyYXkYBSAD",
+            "KAkixwEKGVN0YXR1c0FsbFJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEo",
+            "BRIQCghFeGVjdXRlZBgCIAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAMgASgJ",
+            "Eh0KFVVuaXRQcm90b2J1ZkFycmF5U2l6ZRgEIAEoBRJRChFVbml0UHJvdG9i",
+            "dWZBcnJheRgFIAMoCzI2LndpbmQuRW50aXRpZXMuUHJvdG9idWYuV2ViU29j",
+            "a2V0TWVzc2FnZXMuVW5pdFByb3RvYnVmIlQKGFN0YXJ0QWxsUmVzcG9uc2VQ",
+            "cm90b2J1ZhIMCgRUeXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIgASgIEhgKEE5v",
+            "RXhlY3V0ZU1lc3NhZ2UYAyABKAkiUwoXU3RvcEFsbFJlc3BvbnNlUHJvdG9i",
+            "dWYSDAoEVHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIYChBOb0V4ZWN1",
+            "dGVNZXNzYWdlGAMgASgJIlYKGlJlc3RhcnRBbGxSZXNwb25zZVByb3RvYnVm",
+            "EgwKBFR5cGUYASABKAUSEAoIRXhlY3V0ZWQYAiABKAgSGAoQTm9FeGVjdXRl",
+            "TWVzc2FnZRgDIAEoCSLdAQoXTG9hZEFsbFJlc3BvbnNlUHJvdG9idWYSDAoE",
+            "VHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIYChBOb0V4ZWN1dGVNZXNz",
+            "YWdlGAMgASgJEiUKHVVuaXRTZXR0aW5nc1Byb3RvYnVmQXJyYXlTaXplGAQg",
+            "ASgFEmEKGVVuaXRTZXR0aW5nc1Byb3RvYnVmQXJyYXkYBSADKAsyPi53aW5k",
+            "LkVudGl0aWVzLlByb3RvYnVmLldlYlNvY2tldE1lc3NhZ2VzLlVuaXRTZXR0",
+            "aW5nc1Byb3RvYnVmIlUKGVJlbW92ZUFsbFJlc3BvbnNlUHJvdG9idWYSDAoE",
+            "VHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIYChBOb0V4ZWN1dGVNZXNz",
+            "YWdlGAMgASgJImwKHURhZW1vblZlcnNpb25SZXNwb25zZVByb3RvYnVmEgwK",
+            "BFR5cGUYASABKAUSDQoFTWFqb3IYAiABKAUSDQoFTWlub3IYAyABKAUSDQoF",
+            "QnVpbGQYBCABKAUSEAoIUmV2aXNpb24YBSABKAUifgocRGFlbW9uU3RhdHVz",
+            "UmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFElAKDkRhZW1vblByb3Rv",
+            "YnVmGAIgASgLMjgud2luZC5FbnRpdGllcy5Qcm90b2J1Zi5XZWJTb2NrZXRN",
+            "ZXNzYWdlcy5EYWVtb25Qcm90b2J1ZiJaCh5EYWVtb25TaHV0ZG93blJlc3Bv",
+            "bnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIY",
+            "ChBOb0V4ZWN1dGVNZXNzYWdlGAMgASgJIjQKE1N0YXJ0Tm90aWZ5UHJvdG9i",
+            "dWYSDAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJIjMKElN0b3BOb3Rp",
+            "ZnlQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkikQEK",
+            "EkxvYWROb3RpZnlQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkY",
+            "AiABKAkSXAoUVW5pdFNldHRpbmdzUHJvdG9idWYYAyABKAsyPi53aW5kLkVu",
+            "dGl0aWVzLlByb3RvYnVmLldlYlNvY2tldE1lc3NhZ2VzLlVuaXRTZXR0aW5n",
+            "c1Byb3RvYnVmIjUKFFJlbW92ZU5vdGlmeVByb3RvYnVmEgwKBFR5cGUYASAB",
+            "KAUSDwoHVW5pdEtleRgCIAEoCSJEChJMb2dzTm90aWZ5UHJvdG9idWYSDAoE",
+            "VHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJEg8KB0xvZ0xpbmUYAyABKAlC",
+            "G0gDqgIWd2luZC5FbnRpdGllcy5Qcm90b2J1ZmIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
@@ -168,7 +168,7 @@ namespace wind.Entities.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.DaemonStatusRequestProtobuf), global::wind.Entities.Protobuf.DaemonStatusRequestProtobuf.Parser, new[]{ "Type" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.DaemonShutdownRequestProtobuf), global::wind.Entities.Protobuf.DaemonShutdownRequestProtobuf.Parser, new[]{ "Type" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StatusResponseProtobuf), global::wind.Entities.Protobuf.StatusResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage", "UnitProtobuf" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StartResponseProtobuf), global::wind.Entities.Protobuf.StartResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage", "UnitRunningSettingsProtobuf" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StartResponseProtobuf), global::wind.Entities.Protobuf.StartResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage", "ProcessId", "UnitRunningSettingsProtobuf" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StopResponseProtobuf), global::wind.Entities.Protobuf.StopResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.RestartResponseProtobuf), global::wind.Entities.Protobuf.RestartResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.LoadResponseProtobuf), global::wind.Entities.Protobuf.LoadResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage", "UnitSettingsProtobuf" }, null, null, null, null),
@@ -5280,6 +5280,7 @@ namespace wind.Entities.Protobuf {
       unitKey_ = other.unitKey_;
       executed_ = other.executed_;
       noExecuteMessage_ = other.noExecuteMessage_;
+      processId_ = other.processId_;
       unitRunningSettingsProtobuf_ = other.unitRunningSettingsProtobuf_ != null ? other.unitRunningSettingsProtobuf_.Clone() : null;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -5336,8 +5337,19 @@ namespace wind.Entities.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "ProcessId" field.</summary>
+    public const int ProcessIdFieldNumber = 5;
+    private int processId_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int ProcessId {
+      get { return processId_; }
+      set {
+        processId_ = value;
+      }
+    }
+
     /// <summary>Field number for the "UnitRunningSettingsProtobuf" field.</summary>
-    public const int UnitRunningSettingsProtobufFieldNumber = 5;
+    public const int UnitRunningSettingsProtobufFieldNumber = 6;
     private global::wind.Entities.Protobuf.UnitSettingsProtobuf unitRunningSettingsProtobuf_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::wind.Entities.Protobuf.UnitSettingsProtobuf UnitRunningSettingsProtobuf {
@@ -5364,6 +5376,7 @@ namespace wind.Entities.Protobuf {
       if (UnitKey != other.UnitKey) return false;
       if (Executed != other.Executed) return false;
       if (NoExecuteMessage != other.NoExecuteMessage) return false;
+      if (ProcessId != other.ProcessId) return false;
       if (!object.Equals(UnitRunningSettingsProtobuf, other.UnitRunningSettingsProtobuf)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -5375,6 +5388,7 @@ namespace wind.Entities.Protobuf {
       if (UnitKey.Length != 0) hash ^= UnitKey.GetHashCode();
       if (Executed != false) hash ^= Executed.GetHashCode();
       if (NoExecuteMessage.Length != 0) hash ^= NoExecuteMessage.GetHashCode();
+      if (ProcessId != 0) hash ^= ProcessId.GetHashCode();
       if (unitRunningSettingsProtobuf_ != null) hash ^= UnitRunningSettingsProtobuf.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -5405,8 +5419,12 @@ namespace wind.Entities.Protobuf {
         output.WriteRawTag(34);
         output.WriteString(NoExecuteMessage);
       }
+      if (ProcessId != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(ProcessId);
+      }
       if (unitRunningSettingsProtobuf_ != null) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(50);
         output.WriteMessage(UnitRunningSettingsProtobuf);
       }
       if (_unknownFields != null) {
@@ -5428,6 +5446,9 @@ namespace wind.Entities.Protobuf {
       }
       if (NoExecuteMessage.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(NoExecuteMessage);
+      }
+      if (ProcessId != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ProcessId);
       }
       if (unitRunningSettingsProtobuf_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(UnitRunningSettingsProtobuf);
@@ -5454,6 +5475,9 @@ namespace wind.Entities.Protobuf {
       }
       if (other.NoExecuteMessage.Length != 0) {
         NoExecuteMessage = other.NoExecuteMessage;
+      }
+      if (other.ProcessId != 0) {
+        ProcessId = other.ProcessId;
       }
       if (other.unitRunningSettingsProtobuf_ != null) {
         if (unitRunningSettingsProtobuf_ == null) {
@@ -5488,7 +5512,11 @@ namespace wind.Entities.Protobuf {
             NoExecuteMessage = input.ReadString();
             break;
           }
-          case 42: {
+          case 40: {
+            ProcessId = input.ReadInt32();
+            break;
+          }
+          case 50: {
             if (unitRunningSettingsProtobuf_ == null) {
               UnitRunningSettingsProtobuf = new global::wind.Entities.Protobuf.UnitSettingsProtobuf();
             }

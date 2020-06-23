@@ -182,7 +182,8 @@ message StartResponseProtobuf{
   string UnitKey=2;
   bool Executed=3;
   string NoExecuteMessage=4;
-  UnitSettingsProtobuf UnitRunningSettingsProtobuf=5;
+  int32 ProcessId=5;
+  UnitSettingsProtobuf UnitRunningSettingsProtobuf=6;
 }
 // windctl stop unitKey
 message StopResponseProtobuf{

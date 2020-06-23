@@ -1,6 +1,6 @@
 {
     "Name": "Example",
-    "Description": "Example Unit Description",
+    "Description": "Example Unit Description 超长描述测试 示例单元 描3述",
     "Type": 0,
     "AbsoluteExecutePath": "D:\\Projects\\Wind2\\ExampleUnit\\bin\\Debug\\netcoreapp3.1\\ExampleUnit.exe",
     "AbsoluteWorkDirectory": "D:\\Projects\\Wind2\\ExampleUnit\\bin\\Debug\\netcoreapp3.1",

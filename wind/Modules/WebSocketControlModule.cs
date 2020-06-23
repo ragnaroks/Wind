@@ -506,8 +506,17 @@ namespace wind.Modules {
                 return;
             }
             //启动unit
-            if(Program.UnitManageModule.StartUnit(startRequestProtobuf.UnitKey,false)) {
+            Int32 processId=Program.UnitManageModule.StartUnit(startRequestProtobuf.UnitKey,false);
+            if(processId>0){
                 startResponseProtobuf.Executed=true;
+                startResponseProtobuf.ProcessId=processId;
+                startResponseProtobuf.UnitRunningSettingsProtobuf=new UnitSettingsProtobuf{
+                    Name=unit.RunningSettings.Name,Description=unit.RunningSettings.Description,Type=unit.RunningSettings.Type,
+                    AbsoluteExecutePath=unit.RunningSettings.AbsoluteExecutePath,AbsoluteWorkDirectory=unit.RunningSettings.AbsoluteWorkDirectory,
+                    Arguments=String.IsNullOrWhiteSpace(unit.RunningSettings.Arguments)?String.Empty:unit.RunningSettings.Arguments,
+                    HasArguments=!String.IsNullOrWhiteSpace(unit.RunningSettings.Arguments),AutoStart=unit.RunningSettings.AutoStart,
+                    AutoStartDelay=unit.RunningSettings.AutoStartDelay,RestartWhenException=unit.RunningSettings.RestartWhenException,
+                    MonitorPerformanceUsage=unit.RunningSettings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.RunningSettings.MonitorNetworkUsage};
             } else {
                 startResponseProtobuf.NoExecuteMessage="start unit failed";
             }
@@ -834,7 +843,7 @@ namespace wind.Modules {
                 _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
             }else if(attachRequestProtobuf.CommandType==1) {
                 //命令行指令
-                Program.UnitManageModule.ExecuteCommand(attachRequestProtobuf.UnitKey,attachRequestProtobuf.CommandLine);
+                Program.UnitManageModule.ExecuteCommand(attachRequestProtobuf.UnitKey,attachRequestProtobuf.CommandLine.Trim().Trim('\0'));
             }else if(attachRequestProtobuf.CommandType==2) {
                 //^c,but not work
                 Program.UnitManageModule.ExecuteExitCommand(attachRequestProtobuf.UnitKey);
@@ -1046,7 +1055,7 @@ namespace wind.Modules {
                 _=clientConnection.WebSocketConnection.Send(loadAllResponseProtobuf.ToByteArray());
                 return;
             }
-            //启动全部unit
+            //加载全部unit配置
             List<UnitSettings> unitSettingsList=Program.UnitManageModule.LoadAllUnits();
             loadAllResponseProtobuf.Executed=true;
             if(unitSettingsList!=null && unitSettingsList.Count>0){

@@ -225,12 +225,12 @@ namespace wind.Modules {
         /// </summary>
         /// <param name="unitKey"></param>
         /// <param name="forAutoStart"></param>
-        public Boolean StartUnit(String unitKey,Boolean forAutoStart){
-            if(!this.Useable){return false;}
-            if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return false;}
+        public Int32 StartUnit(String unitKey,Boolean forAutoStart){
+            if(!this.Useable){return 0;}
+            if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return 0;}
             LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit",$"正在启动\"{unitKey}\"单元");
             Unit unit=this.UnitDictionary[unitKey];
-            if(unit.State==1 || unit.State==2){return true;}
+            if(unit.State==1 || unit.State==2){return unit.ProcessId;}
             if(unit.State==3){ SpinWait.SpinUntil(()=>false,1000); }
             unit.State=1;
             unit.RunningSettings=unit.Settings.DeepClone();
@@ -265,11 +265,12 @@ namespace wind.Modules {
                     _=Program.UnitNetworkCounterModule.Add(unit.ProcessId);
                 }
                 LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit",$"已启动\"{unitKey}\"单元");
+                return unit.ProcessId;
             } else {
                 unit.State=0;
                 LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit",$"启动\"{unitKey}\"单元失败");
+                return 0;
             }
-            return b1;
         }
 
         /// <summary>
@@ -281,8 +282,8 @@ namespace wind.Modules {
             if(!this.Useable){return false;}
             if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return false;}
             switch(this.UnitDictionary[unitKey].State) {
-                case 0:return this.StartUnit(unitKey,false);
-                case 2:return this.StopUnit(unitKey) && this.StartUnit(unitKey,false);
+                case 0:return this.StartUnit(unitKey,false)>0;
+                case 2:return this.StopUnit(unitKey) && this.StartUnit(unitKey,false)>0;
                 default:return false;
             }
         }
@@ -483,9 +484,16 @@ namespace wind.Modules {
             if(!this.Useable){return false;}
             if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return false;}
             if(this.UnitDictionary[unitKey].State!=2){return false;}
+            if(String.IsNullOrWhiteSpace(commandLine)){return false;}
             try {
                 this.UnitDictionary[unitKey].Process.StandardInput.WriteLine(commandLine);
                 this.UnitDictionary[unitKey].Process.StandardInput.Flush();
+                //记录日志
+                Program.UnitLoggerModule.Log(unitKey,"> "+commandLine);
+                //记录输出
+                Program.UnitLoggerModule.LogOutput(unitKey,"> "+commandLine);
+                //记录通知
+                Program.RemoteControlModule.LogsNotify(unitKey,"> "+commandLine);
             }catch(Exception exception) {
                 LoggerModuleHelper.TryLog(
                     "Modules.UnitManageModule.ExecuteCommand[Error]",$"单元输入指令异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
