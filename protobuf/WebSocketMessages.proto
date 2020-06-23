@@ -182,6 +182,7 @@ message StartResponseProtobuf{
   string UnitKey=2;
   bool Executed=3;
   string NoExecuteMessage=4;
+  UnitSettingsProtobuf UnitRunningSettingsProtobuf=5;
 }
 // windctl stop unitKey
 message StopResponseProtobuf{
@@ -313,6 +314,5 @@ message RemoveNotifyProtobuf{
 message LogsNotifyProtobuf{
   int32 Type=1;//3007
   string UnitKey=2;
-  int32 LogType=3;//0:stdout,1:stderr,2:stdin
-  repeated string LogLineArray=4;
+  string LogLine=3;
 }

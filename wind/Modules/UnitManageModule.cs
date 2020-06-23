@@ -122,7 +122,7 @@ namespace wind.Modules {
             //记录输出
             Program.UnitLoggerModule.LogOutput(unit.Key,dataReceivedEventArgs.Data);
             //记录通知
-            Program.RemoteControlModule.LogsNotify(unit.Key,new String[]{dataReceivedEventArgs.Data});
+            Program.RemoteControlModule.LogsNotify(unit.Key,dataReceivedEventArgs.Data);
         }
         /// <summary>
         /// 收到单元进程stderr
@@ -145,7 +145,7 @@ namespace wind.Modules {
             //记录输出
             Program.UnitLoggerModule.LogOutput(unit.Key,dataReceivedEventArgs.Data);
             //记录通知
-            Program.RemoteControlModule.LogsNotify(unit.Key,new String[]{dataReceivedEventArgs.Data});
+            Program.RemoteControlModule.LogsNotify(unit.Key,dataReceivedEventArgs.Data);
         }
 
         /// <summary>

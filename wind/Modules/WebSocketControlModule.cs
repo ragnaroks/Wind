@@ -655,7 +655,8 @@ namespace wind.Modules {
                 loadResponseProtobuf.UnitSettingsProtobuf=new UnitSettingsProtobuf{
                     Name=unitSettings.Name,Description=unitSettings.Description,Type=unitSettings.Type,
                     AbsoluteExecutePath=unitSettings.AbsoluteExecutePath,AbsoluteWorkDirectory=unitSettings.AbsoluteWorkDirectory,
-                    Arguments=unitSettings.Arguments,HasArguments=!String.IsNullOrWhiteSpace(unitSettings.Arguments),
+                    Arguments=!String.IsNullOrWhiteSpace(unitSettings.Arguments)?unitSettings.Arguments:String.Empty,
+                    HasArguments=!String.IsNullOrWhiteSpace(unitSettings.Arguments),
                     AutoStart=unitSettings.AutoStart,AutoStartDelay=unitSettings.AutoStartDelay,
                     RestartWhenException=unitSettings.RestartWhenException,MonitorPerformanceUsage=unitSettings.MonitorPerformanceUsage,
                     MonitorNetworkUsage=unitSettings.MonitorNetworkUsage};
@@ -1199,16 +1200,11 @@ namespace wind.Modules {
         /// 单元产生新的日志,通知符合条件的客户端
         /// </summary>
         /// <param name="unitKey"></param>
-        /// <param name="log"></param>
-        public void LogsNotify(String unitKey,String[] logArray){
-            if(!this.Useable || this.ClientConnectionDictionary.Count<1 || String.IsNullOrWhiteSpace(unitKey)){return;}
-            if(logArray==null || logArray.GetLength(0)<1){return;}
-            LogsNotifyProtobuf logsNotifyProtobuf=new LogsNotifyProtobuf{Type=3007,UnitKey=unitKey};
-            foreach(String item in logArray){
-                if(String.IsNullOrWhiteSpace(item)){continue;}
-                logsNotifyProtobuf.LogLineArray.Add(item);
-            }
-            if(logsNotifyProtobuf.LogLineArray.Count<1){return;}
+        /// <param name="logLine"></param>
+        public void LogsNotify(String unitKey,String logLine){
+            if(!this.Useable || this.ClientConnectionDictionary.Count<1){return;}
+            if(String.IsNullOrWhiteSpace(unitKey) || String.IsNullOrWhiteSpace(logLine)){return;}
+            LogsNotifyProtobuf logsNotifyProtobuf=new LogsNotifyProtobuf{Type=3007,UnitKey=unitKey,LogLine=logLine};
             Byte[] bytes=logsNotifyProtobuf.ToByteArray();
             foreach(KeyValuePair<String,ClientConnection> item in this.ClientConnectionDictionary) {
                 if(!item.Value.Valid){continue;}

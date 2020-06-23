@@ -27,7 +27,7 @@ namespace windctl.Helpers {
         public static void Logs(LogsNotifyProtobuf logsNotifyProtobuf) {
             if(logsNotifyProtobuf==null){return;}
             if(!String.IsNullOrWhiteSpace(Program.AttachedUnitKey) && logsNotifyProtobuf.UnitKey==Program.AttachedUnitKey) {
-                foreach(String item in logsNotifyProtobuf.LogLineArray){ Console.WriteLine(item); }
+                Console.WriteLine(logsNotifyProtobuf.LogLine);
             }
         }
     }

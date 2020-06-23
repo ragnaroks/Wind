@@ -1036,7 +1036,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.repeatedFields_, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -6174,7 +6174,8 @@ proto.wind.Entities.Protobuf.WebSocketMessages.StartResponseProtobuf.toObject = 
     type: jspb.Message.getFieldWithDefault(msg, 1, 0),
     unitkey: jspb.Message.getFieldWithDefault(msg, 2, ""),
     executed: jspb.Message.getBooleanFieldWithDefault(msg, 3, false),
-    noexecutemessage: jspb.Message.getFieldWithDefault(msg, 4, "")
+    noexecutemessage: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    unitrunningsettingsprotobuf: (f = msg.getUnitrunningsettingsprotobuf()) && proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -6226,6 +6227,11 @@ proto.wind.Entities.Protobuf.WebSocketMessages.StartResponseProtobuf.deserialize
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setNoexecutemessage(value);
+      break;
+    case 5:
+      var value = new proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf;
+      reader.readMessage(value,proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.deserializeBinaryFromReader);
+      msg.setUnitrunningsettingsprotobuf(value);
       break;
     default:
       reader.skipField();
@@ -6282,6 +6288,14 @@ proto.wind.Entities.Protobuf.WebSocketMessages.StartResponseProtobuf.serializeBi
     writer.writeString(
       4,
       f
+    );
+  }
+  f = message.getUnitrunningsettingsprotobuf();
+  if (f != null) {
+    writer.writeMessage(
+      5,
+      f,
+      proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.serializeBinaryToWriter
     );
   }
 };
@@ -6356,6 +6370,43 @@ proto.wind.Entities.Protobuf.WebSocketMessages.StartResponseProtobuf.prototype.g
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.StartResponseProtobuf.prototype.setNoexecutemessage = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * optional UnitSettingsProtobuf UnitRunningSettingsProtobuf = 5;
+ * @return {?proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf}
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.StartResponseProtobuf.prototype.getUnitrunningsettingsprotobuf = function() {
+  return /** @type{?proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} */ (
+    jspb.Message.getWrapperField(this, proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf, 5));
+};
+
+
+/**
+ * @param {?proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf|undefined} value
+ * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.StartResponseProtobuf} returns this
+*/
+proto.wind.Entities.Protobuf.WebSocketMessages.StartResponseProtobuf.prototype.setUnitrunningsettingsprotobuf = function(value) {
+  return jspb.Message.setWrapperField(this, 5, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.StartResponseProtobuf} returns this
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.StartResponseProtobuf.prototype.clearUnitrunningsettingsprotobuf = function() {
+  return this.setUnitrunningsettingsprotobuf(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.StartResponseProtobuf.prototype.hasUnitrunningsettingsprotobuf = function() {
+  return jspb.Message.getField(this, 5) != null;
 };
 
 
@@ -10505,13 +10556,6 @@ proto.wind.Entities.Protobuf.WebSocketMessages.RemoveNotifyProtobuf.prototype.se
 
 
 
-/**
- * List of repeated fields within this message type.
- * @private {!Array<number>}
- * @const
- */
-proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.repeatedFields_ = [4];
-
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -10545,8 +10589,7 @@ proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.toObject = fun
   var f, obj = {
     type: jspb.Message.getFieldWithDefault(msg, 1, 0),
     unitkey: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    logtype: jspb.Message.getFieldWithDefault(msg, 3, 0),
-    loglinearrayList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f
+    logline: jspb.Message.getFieldWithDefault(msg, 3, "")
   };
 
   if (includeInstance) {
@@ -10592,12 +10635,8 @@ proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.deserializeBin
       msg.setUnitkey(value);
       break;
     case 3:
-      var value = /** @type {number} */ (reader.readInt32());
-      msg.setLogtype(value);
-      break;
-    case 4:
       var value = /** @type {string} */ (reader.readString());
-      msg.addLoglinearray(value);
+      msg.setLogline(value);
       break;
     default:
       reader.skipField();
@@ -10642,17 +10681,10 @@ proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.serializeBinar
       f
     );
   }
-  f = message.getLogtype();
-  if (f !== 0) {
-    writer.writeInt32(
-      3,
-      f
-    );
-  }
-  f = message.getLoglinearrayList();
+  f = message.getLogline();
   if (f.length > 0) {
-    writer.writeRepeatedString(
-      4,
+    writer.writeString(
+      3,
       f
     );
   }
@@ -10696,57 +10728,20 @@ proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.prototype.setU
 
 
 /**
- * optional int32 LogType = 3;
- * @return {number}
+ * optional string LogLine = 3;
+ * @return {string}
  */
-proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.prototype.getLogtype = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf} returns this
- */
-proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.prototype.setLogtype = function(value) {
-  return jspb.Message.setProto3IntField(this, 3, value);
-};
-
-
-/**
- * repeated string LogLineArray = 4;
- * @return {!Array<string>}
- */
-proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.prototype.getLoglinearrayList = function() {
-  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 4));
-};
-
-
-/**
- * @param {!Array<string>} value
- * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf} returns this
- */
-proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.prototype.setLoglinearrayList = function(value) {
-  return jspb.Message.setField(this, 4, value || []);
+proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.prototype.getLogline = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
 /**
  * @param {string} value
- * @param {number=} opt_index
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf} returns this
  */
-proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.prototype.addLoglinearray = function(value, opt_index) {
-  return jspb.Message.addToRepeatedField(this, 4, value, opt_index);
-};
-
-
-/**
- * Clears the list making it empty but non-null.
- * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf} returns this
- */
-proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.prototype.clearLoglinearrayList = function() {
-  return this.setLoglinearrayList([]);
+proto.wind.Entities.Protobuf.WebSocketMessages.LogsNotifyProtobuf.prototype.setLogline = function(value) {
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 
