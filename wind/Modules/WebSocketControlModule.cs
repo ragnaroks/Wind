@@ -417,7 +417,7 @@ namespace wind.Modules {
             }
             //构造数据
             UnitProtobuf unitProtobuf=new UnitProtobuf{
-                Key=unit.Key,State=unit.State,
+                Key=unit.Key,State=unit.State,ProcessorCount=Environment.ProcessorCount,
                 SettingsFilePath=String.Concat(Program.AppEnvironment.UnitsDirectory,Path.DirectorySeparatorChar,unit.Key,".json")};
             if(unit.State==2) {
                 unitProtobuf.ProcessId=unit.ProcessId;
