@@ -21,9 +21,11 @@ namespace wind.Modules {
         /// <summary>是否启用定时器</summary>
         private Boolean TimerEnable{get;set;}=false;
         /// <summary>日志</summary>
-        private Dictionary<String,StringBuilder> UnitLogs{get;set;}=new Dictionary<String, StringBuilder>();
+        private ConcurrentDictionary<String,StringBuilder> UnitLogs{get;set;}=new ConcurrentDictionary<String, StringBuilder>();
         /// <summary>单元输出</summary>
-        private Dictionary<String,Queue<String>> UnitOutputs{get;set;}=new Dictionary<String,Queue<String>>();
+        private ConcurrentDictionary<String,Queue<String>> UnitOutputs{get;set;}=new ConcurrentDictionary<String,Queue<String>>();
+        /// <summary>输出保留长度</summary>
+        private Int32 MaxUnitOutputLine{get;}=4096;
         
         #region IDisposable Support
         private bool disposedValue = false; // 要检测冗余调用
@@ -149,7 +151,7 @@ namespace wind.Modules {
             if(!this.Useable){return;}
             if(String.IsNullOrWhiteSpace(unitKey) || String.IsNullOrWhiteSpace(text)){return;}
             if(!this.UnitOutputs.ContainsKey(unitKey) || this.UnitOutputs[unitKey]==null){ this.UnitOutputs[unitKey]=new Queue<String>(); }
-            if(this.UnitOutputs[unitKey].Count>63){ _=this.UnitOutputs[unitKey].Dequeue(); }
+            if(this.UnitOutputs[unitKey].Count>this.MaxUnitOutputLine){ _=this.UnitOutputs[unitKey].Dequeue(); }
             this.UnitOutputs[unitKey].Enqueue(text);
         }
 

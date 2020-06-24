@@ -13,10 +13,6 @@ namespace wind.Entities.Common {
         public Int64 LastOnlineTime{get;set;}=0;
         /// <summary>是否支持通知</summary>
         public Boolean SupportNotify{get;set;}=false;
-        /// <summary>是否支持附加</summary>
-        public Boolean SupportAttach{get;set;}=false;
-        /// <summary>已附加的unitKey</summary>
-        public String AttachedUnitKey{get;set;}=null;
         /// <summary>链接</summary>
         public IWebSocketConnection WebSocketConnection{get;set;}=null;
     }

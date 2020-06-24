@@ -23,14 +23,15 @@ message UnitProtobuf{
   string SettingsFilePath=3;
   int32 ProcessId=4;
   int64 ProcessStartTime=5;
-  float PerformanceCounterCPU=6;
-  float PerformanceCounterRAM=7;
-  int64 NetworkCounterTotalSent=8;
-  int64 NetworkCounterTotalReceived=9;
-  int64 NetworkCounterSendSpeed=10;
-  int64 NetworkCounterReceiveSpeed=11;
-  UnitSettingsProtobuf SettingsProtobuf=12;
-  UnitSettingsProtobuf RunningSettingsProtobuf=13;
+  int32 ProcessorCount=6;
+  float PerformanceCounterCPU=7;
+  float PerformanceCounterRAM=8;
+  int64 NetworkCounterTotalSent=9;
+  int64 NetworkCounterTotalReceived=10;
+  int64 NetworkCounterSendSpeed=11;
+  int64 NetworkCounterReceiveSpeed=12;
+  UnitSettingsProtobuf SettingsProtobuf=13;
+  UnitSettingsProtobuf RunningSettingsProtobuf=14;
 }
 message DaemonProtobuf{
   string Name=1;
@@ -39,12 +40,13 @@ message DaemonProtobuf{
   string AbsoluteWorkDirectory=4;
   int32 ProcessId=5;
   int64 ProcessStartTime=6;
-  float PerformanceCounterCPU=7;
-  float PerformanceCounterRAM=8;
-  int64 NetworkCounterTotalSent=9;
-  int64 NetworkCounterTotalReceived=10;
-  int64 NetworkCounterSendSpeed=11;
-  int64 NetworkCounterReceiveSpeed=12;
+  int32 ProcessorCount=7;
+  float PerformanceCounterCPU=8;
+  float PerformanceCounterRAM=9;
+  int64 NetworkCounterTotalSent=10;
+  int64 NetworkCounterTotalReceived=11;
+  int64 NetworkCounterSendSpeed=12;
+  int64 NetworkCounterReceiveSpeed=13;
 }
 
 ////////////////////////////////////////////////////////////////
@@ -74,7 +76,6 @@ message ClientOfferControlKeyProtobuf{
   string ConnectionId=2;
   string ControlKey=3;
   bool SupportNotify=4;
-  bool SupportAttach=5;
 }
 // 服务端回复客户端ControlKey验证结果
 message ServerValidateConnectionProtobuf{
@@ -119,9 +120,10 @@ message RemoveRequestProtobuf{
 message LogsRequestProtobuf{
   int32 Type=1;//1007
   string UnitKey=2;
+  int32 Line=3;
 }
 // windctl attach unitKey
-message AttachRequestProtobuf{
+message CommandlineRequestProtobuf{
   int32 Type=1;//1008
   string UnitKey=2;
   int32 CommandType=3;//0:attach,1:text,2:^c,9:dettch
@@ -224,12 +226,12 @@ message LogsResponseProtobuf{
   repeated string LogLineArray=6;
 }
 // windctl attach unitKey
-message AttachResponseProtobuf{
+message CommandlineResponseProtobuf{
   int32 Type=1;//2008
   string UnitKey=2;
   bool Executed=3;
   string NoExecuteMessage=4;
-  repeated string OutputLineArray=5;
+  int32 CommandType=5;//0:attach,1:text,2:^c,9:dettch
 }
 
 // windctl status-all

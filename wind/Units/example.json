@@ -8,6 +8,6 @@
     "AutoStart": false,
     "AutoStartDelay": 3,
     "RestartWhenException": false,
-    "MonitorPerformanceUsage": false,
+    "MonitorPerformanceUsage": true,
     "MonitorNetworkUsage": false
 }

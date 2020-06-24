@@ -148,6 +148,7 @@ namespace wind.Modules {
                             clientWebSocketConnection.Close();
                             return;
                         }
+                        if(this.ClientConnectionDictionary==null){return;}
                         this.OnClientConnectionError(this.ClientConnectionDictionary[clientConnectionId],exception);
                     };
                     clientWebSocketConnection.OnPing=(bytes)=>{
@@ -156,6 +157,7 @@ namespace wind.Modules {
                             clientWebSocketConnection.Close();
                             return;
                         }
+                        if(this.ClientConnectionDictionary==null){return;}
                         this.OnClientConnectionPing(this.ClientConnectionDictionary[clientConnectionId],bytes);
                     };
                     clientWebSocketConnection.OnPong=(bytes)=>{
@@ -164,6 +166,7 @@ namespace wind.Modules {
                             clientWebSocketConnection.Close();
                             return;
                         }
+                        if(this.ClientConnectionDictionary==null){return;}
                         this.OnClientConnectionPong(this.ClientConnectionDictionary[clientConnectionId],bytes);
                     };
                     clientWebSocketConnection.OnMessage=(message)=>{
@@ -172,14 +175,16 @@ namespace wind.Modules {
                             clientWebSocketConnection.Close();
                             return;
                         }
+                        if(this.ClientConnectionDictionary==null){return;}
                         this.OnClientConnectionMessage(this.ClientConnectionDictionary[clientConnectionId],message);
                     };
                     clientWebSocketConnection.OnBinary=(binary)=>{
                         String clientConnectionId=clientWebSocketConnection.ConnectionInfo.Id.ToString();
-                        if(!this.ClientConnectionDictionary.ContainsKey(clientConnectionId)){
+                        if(this.ClientConnectionDictionary!=null && !this.ClientConnectionDictionary.ContainsKey(clientConnectionId)){
                             clientWebSocketConnection.Close();
                             return;
                         }
+                        if(this.ClientConnectionDictionary==null){return;}
                         this.OnClientConnectionBinary(this.ClientConnectionDictionary[clientConnectionId],binary);
                     };
                 });
@@ -246,8 +251,6 @@ namespace wind.Modules {
         /// <param name="clientConnection"></param>
         private void OnClientConnectionClose(ClientConnection clientConnection){
             LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.OnClientConnectionClose",$"客户端 {clientConnection.Id} 已断开链接");
-            clientConnection.AttachedUnitKey=null;
-            clientConnection.SupportAttach=false;
             clientConnection.SupportNotify=false;
             this.ClientConnectionDictionary.Remove(clientConnection.Id);
         }
@@ -332,7 +335,7 @@ namespace wind.Modules {
                 case 1005:this.LoadRequest(clientConnection,binary);break;
                 case 1006:this.RemoveRequest(clientConnection,binary);break;
                 case 1007:this.LogsRequest(clientConnection,binary);break;
-                case 1008:this.AttachRequest(clientConnection,binary);break;
+                case 1008:this.CommandlineRequest(clientConnection,binary);break;
                 //
                 case 1101:this.StatusAllRequest(clientConnection,binary);break;
                 case 1102:this.StartAllRequest(clientConnection,binary);break;
@@ -372,10 +375,7 @@ namespace wind.Modules {
             clientConnection.Valid=clientOfferControlKeyProtobuf.ConnectionId==clientConnection.Id && clientOfferControlKeyProtobuf.ControlKey==this.ControlKey;
             ServerValidateConnectionProtobuf serverValidateConnectionProtobuf=new ServerValidateConnectionProtobuf{
                 Type=22,ConnectionId=clientConnection.Id,Valid=clientConnection.Valid};
-            if(clientConnection.Valid) {
-                clientConnection.SupportNotify=clientOfferControlKeyProtobuf.SupportNotify;
-                clientConnection.SupportAttach=clientOfferControlKeyProtobuf.SupportAttach;
-            }
+            if(clientConnection.Valid){ clientConnection.SupportNotify=clientOfferControlKeyProtobuf.SupportNotify; }
             //回复
             _=clientConnection.WebSocketConnection.Send(serverValidateConnectionProtobuf.ToByteArray());
         }
@@ -774,12 +774,18 @@ namespace wind.Modules {
                 _=clientConnection.WebSocketConnection.Send(logsResponseProtobuf.ToByteArray());
                 return;
             }
-            logsResponseProtobuf.LogLineArray.Add(outputs);
+            Int32 outputLength=outputs.GetLength(0);
+            if(outputLength>logsRequestProtobuf.Line) {
+                logsResponseProtobuf.LogLineArray.Add(outputs.AsSpan(outputLength-logsRequestProtobuf.Line,logsRequestProtobuf.Line).ToArray());
+            } else {
+                logsResponseProtobuf.LogLineArray.Add(outputs);
+            }
             logsResponseProtobuf.LogFilePath=Program.UnitLoggerModule.GetLogFilePath(logsRequestProtobuf.UnitKey);
             logsResponseProtobuf.Executed=true;
             //回复
             _=clientConnection.WebSocketConnection.Send(logsResponseProtobuf.ToByteArray());
         }
+        /*
         /// <summary>
         /// windctl attach unitKey
         /// </summary>
@@ -854,6 +860,79 @@ namespace wind.Modules {
                 attachResponseProtobuf.NoExecuteMessage="command type error";
                 _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
             }
+        }*/
+        /// <summary>
+        /// 指令
+        /// </summary>
+        /// <param name="clientConnection"></param>
+        /// <param name="binary"></param>
+        private void CommandlineRequest(ClientConnection clientConnection,Byte[] binary){
+            //解析数据包
+            CommandlineRequestProtobuf commandlineRequestProtobuf;
+            try {
+                commandlineRequestProtobuf=CommandlineRequestProtobuf.Parser.ParseFrom(binary);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.AttachRequest[Error]",
+                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                _=clientConnection.WebSocketConnection.Send(binary);
+                return;
+            }
+            //初始化响应体
+            CommandlineResponseProtobuf commandlineResponseProtobuf=new CommandlineResponseProtobuf{
+                Type=2008,UnitKey=commandlineRequestProtobuf.UnitKey,CommandType=commandlineRequestProtobuf.CommandType};
+            //无效unit
+            if(String.IsNullOrWhiteSpace(commandlineRequestProtobuf.UnitKey)){
+                commandlineResponseProtobuf.NoExecuteMessage="unitKey invalid";
+                _=clientConnection.WebSocketConnection.Send(commandlineResponseProtobuf.ToByteArray());
+                return;
+            }
+            if(!Program.UnitManageModule.Useable){
+                commandlineResponseProtobuf.NoExecuteMessage="unit manager not available";
+                _=clientConnection.WebSocketConnection.Send(commandlineResponseProtobuf.ToByteArray());
+                return;
+            }
+            if(!Program.UnitLoggerModule.Useable) {
+                commandlineResponseProtobuf.NoExecuteMessage="unit logger not available";
+                _=clientConnection.WebSocketConnection.Send(commandlineResponseProtobuf.ToByteArray());
+                return;
+            }
+            Unit unit=Program.UnitManageModule.GetUnit(commandlineRequestProtobuf.UnitKey);
+            if(unit==null) {
+                commandlineResponseProtobuf.NoExecuteMessage="unit not found";
+                _=clientConnection.WebSocketConnection.Send(commandlineResponseProtobuf.ToByteArray());
+                return;
+            }
+            if(unit.State!=2) {
+                commandlineResponseProtobuf.NoExecuteMessage="unit not running";
+                _=clientConnection.WebSocketConnection.Send(commandlineResponseProtobuf.ToByteArray());
+                return;
+            }
+            if(!clientConnection.SupportNotify) {
+                commandlineResponseProtobuf.NoExecuteMessage="controller not support execute command-line";
+                _=clientConnection.WebSocketConnection.Send(commandlineResponseProtobuf.ToByteArray());
+                return;
+            }
+            //指令处理
+            if(commandlineRequestProtobuf.CommandType==0){
+                //申请附加
+                commandlineResponseProtobuf.Executed=true;
+            }else if(commandlineRequestProtobuf.CommandType==1) {
+                //命令行指令
+                Program.UnitManageModule.ExecuteCommand(commandlineRequestProtobuf.UnitKey,commandlineRequestProtobuf.CommandLine.Trim().Trim('\0'));
+                commandlineResponseProtobuf.Executed=true;
+            }else if(commandlineRequestProtobuf.CommandType==2) {
+                //^c,but not work
+                Program.UnitManageModule.ExecuteExitCommand(commandlineRequestProtobuf.UnitKey);
+                commandlineResponseProtobuf.Executed=true;
+            }else if(commandlineRequestProtobuf.CommandType==9) {
+                //dettch
+                commandlineResponseProtobuf.Executed=true;
+                //clientConnection.WebSocketConnection.Close();
+            }else{
+                commandlineResponseProtobuf.NoExecuteMessage="command type error";
+            }
+            _=clientConnection.WebSocketConnection.Send(commandlineResponseProtobuf.ToByteArray());
         }
         /// <summary>
         /// windctl status-all
@@ -889,7 +968,7 @@ namespace wind.Modules {
             //构造数据
             foreach(Unit item in unitList) {
                 UnitProtobuf unitProtobuf=new UnitProtobuf{
-                    Key=item.Key,State=item.State,
+                    Key=item.Key,State=item.State,ProcessorCount=Environment.ProcessorCount,
                     SettingsFilePath=String.Concat(Program.AppEnvironment.UnitsDirectory,Path.DirectorySeparatorChar,item.Key,".json")};
                 if(item.State==2) {
                     unitProtobuf.ProcessId=item.ProcessId;
@@ -1156,10 +1235,10 @@ namespace wind.Modules {
             DaemonStatusResponseProtobuf daemonStatusResponseProtobuf=new DaemonStatusResponseProtobuf{Type=2201};
             DaemonProtobuf daemonProtobuf=new DaemonProtobuf{
                 Name="wind",Description="a systemd for windows",AbsoluteExecutePath=Program.AppEnvironment.BaseDirectory+"wind.exe",
-                AbsoluteWorkDirectory=Program.AppEnvironment.BaseDirectory,ProcessId=Program.AppProcess.Id,
+                AbsoluteWorkDirectory=Program.AppEnvironment.BaseDirectory,ProcessId=Program.AppProcess.Id,ProcessorCount=Environment.ProcessorCount,
                 ProcessStartTime=Program.AppProcess.StartTime.ToLocalTimestamp()};
             if(Program.UnitPerformanceCounterModule.Useable) {
-                daemonProtobuf.PerformanceCounterCPU=Program.UnitPerformanceCounterModule.GetCpuValue(Program.AppProcess.Id)/Environment.ProcessorCount;
+                daemonProtobuf.PerformanceCounterCPU=Program.UnitPerformanceCounterModule.GetCpuValue(Program.AppProcess.Id);
                 daemonProtobuf.PerformanceCounterRAM=Program.UnitPerformanceCounterModule.GetRamValue(Program.AppProcess.Id);
             }
             if(Program.UnitNetworkCounterModule.Useable) {
@@ -1217,7 +1296,21 @@ namespace wind.Modules {
             Byte[] bytes=logsNotifyProtobuf.ToByteArray();
             foreach(KeyValuePair<String,ClientConnection> item in this.ClientConnectionDictionary) {
                 if(!item.Value.Valid){continue;}
-                if(!item.Value.SupportNotify && !item.Value.SupportAttach){continue;}
+                if(!item.Value.SupportNotify){continue;}
+                item.Value.WebSocketConnection.Send(bytes);
+            }
+        }
+        /// <summary>
+        /// 单元停止,通知符合条件的客户端
+        /// </summary>
+        /// <param name="unitKey"></param>
+        public void StartNotify(String unitKey){
+            if(!this.Useable || this.ClientConnectionDictionary.Count<1 || String.IsNullOrWhiteSpace(unitKey)){return;}
+            StartNotifyProtobuf startNotifyProtobuf=new StartNotifyProtobuf{Type=3002,UnitKey=unitKey};
+            Byte[] bytes=startNotifyProtobuf.ToByteArray();
+            foreach(KeyValuePair<String,ClientConnection> item in this.ClientConnectionDictionary) {
+                if(!item.Value.Valid){continue;}
+                if(!item.Value.SupportNotify){continue;}
                 item.Value.WebSocketConnection.Send(bytes);
             }
         }
@@ -1231,7 +1324,7 @@ namespace wind.Modules {
             Byte[] bytes=stopNotifyProtobuf.ToByteArray();
             foreach(KeyValuePair<String,ClientConnection> item in this.ClientConnectionDictionary) {
                 if(!item.Value.Valid){continue;}
-                if(!item.Value.SupportNotify && !item.Value.SupportAttach){continue;}
+                if(!item.Value.SupportNotify){continue;}
                 item.Value.WebSocketConnection.Send(bytes);
             }
         }

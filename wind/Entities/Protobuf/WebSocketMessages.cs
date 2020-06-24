@@ -32,123 +32,124 @@ namespace wind.Entities.Protobuf {
             "dXRvU3RhcnQYByABKAgSFgoOQXV0b1N0YXJ0RGVsYXkYCCABKAUSHAoUUmVz",
             "dGFydFdoZW5FeGNlcHRpb24YCSABKAgSHwoXTW9uaXRvclBlcmZvcm1hbmNl",
             "VXNhZ2UYCiABKAgSGwoTTW9uaXRvck5ldHdvcmtVc2FnZRgLIAEoCBIUCgxI",
-            "YXNBcmd1bWVudHMYDCABKAgi9QMKDFVuaXRQcm90b2J1ZhILCgNLZXkYASAB",
+            "YXNBcmd1bWVudHMYDCABKAgijQQKDFVuaXRQcm90b2J1ZhILCgNLZXkYASAB",
             "KAkSDQoFU3RhdGUYAiABKAUSGAoQU2V0dGluZ3NGaWxlUGF0aBgDIAEoCRIR",
-            "CglQcm9jZXNzSWQYBCABKAUSGAoQUHJvY2Vzc1N0YXJ0VGltZRgFIAEoAxId",
-            "ChVQZXJmb3JtYW5jZUNvdW50ZXJDUFUYBiABKAISHQoVUGVyZm9ybWFuY2VD",
-            "b3VudGVyUkFNGAcgASgCEh8KF05ldHdvcmtDb3VudGVyVG90YWxTZW50GAgg",
-            "ASgDEiMKG05ldHdvcmtDb3VudGVyVG90YWxSZWNlaXZlZBgJIAEoAxIfChdO",
-            "ZXR3b3JrQ291bnRlclNlbmRTcGVlZBgKIAEoAxIiChpOZXR3b3JrQ291bnRl",
-            "clJlY2VpdmVTcGVlZBgLIAEoAxJYChBTZXR0aW5nc1Byb3RvYnVmGAwgASgL",
-            "Mj4ud2luZC5FbnRpdGllcy5Qcm90b2J1Zi5XZWJTb2NrZXRNZXNzYWdlcy5V",
-            "bml0U2V0dGluZ3NQcm90b2J1ZhJfChdSdW5uaW5nU2V0dGluZ3NQcm90b2J1",
-            "ZhgNIAEoCzI+LndpbmQuRW50aXRpZXMuUHJvdG9idWYuV2ViU29ja2V0TWVz",
-            "c2FnZXMuVW5pdFNldHRpbmdzUHJvdG9idWYi5QIKDkRhZW1vblByb3RvYnVm",
-            "EgwKBE5hbWUYASABKAkSEwoLRGVzY3JpcHRpb24YAiABKAkSGwoTQWJzb2x1",
-            "dGVFeGVjdXRlUGF0aBgDIAEoCRIdChVBYnNvbHV0ZVdvcmtEaXJlY3RvcnkY",
-            "BCABKAkSEQoJUHJvY2Vzc0lkGAUgASgFEhgKEFByb2Nlc3NTdGFydFRpbWUY",
-            "BiABKAMSHQoVUGVyZm9ybWFuY2VDb3VudGVyQ1BVGAcgASgCEh0KFVBlcmZv",
-            "cm1hbmNlQ291bnRlclJBTRgIIAEoAhIfChdOZXR3b3JrQ291bnRlclRvdGFs",
-            "U2VudBgJIAEoAxIjChtOZXR3b3JrQ291bnRlclRvdGFsUmVjZWl2ZWQYCiAB",
-            "KAMSHwoXTmV0d29ya0NvdW50ZXJTZW5kU3BlZWQYCyABKAMSIgoaTmV0d29y",
-            "a0NvdW50ZXJSZWNlaXZlU3BlZWQYDCABKAMiIgoSUGFja2V0VGVzdFByb3Rv",
-            "YnVmEgwKBFR5cGUYASABKAUiJwoXQ2xpZW50S2VlcEFsaXZlUHJvdG9idWYS",
-            "DAoEVHlwZRgBIAEoBSJECh5TZXJ2ZXJBY2NlcHRDb25uZWN0aW9uUHJvdG9i",
-            "dWYSDAoEVHlwZRgBIAEoBRIUCgxDb25uZWN0aW9uSWQYAiABKAkihQEKHUNs",
-            "aWVudE9mZmVyQ29udHJvbEtleVByb3RvYnVmEgwKBFR5cGUYASABKAUSFAoM",
-            "Q29ubmVjdGlvbklkGAIgASgJEhIKCkNvbnRyb2xLZXkYAyABKAkSFQoNU3Vw",
-            "cG9ydE5vdGlmeRgEIAEoCBIVCg1TdXBwb3J0QXR0YWNoGAUgASgIIlUKIFNl",
-            "cnZlclZhbGlkYXRlQ29ubmVjdGlvblByb3RvYnVmEgwKBFR5cGUYASABKAUS",
-            "FAoMQ29ubmVjdGlvbklkGAIgASgJEg0KBVZhbGlkGAMgASgIIjYKFVN0YXR1",
-            "c1JlcXVlc3RQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiAB",
-            "KAkiNQoUU3RhcnRSZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdV",
-            "bml0S2V5GAIgASgJIjQKE1N0b3BSZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgB",
-            "IAEoBRIPCgdVbml0S2V5GAIgASgJIjcKFlJlc3RhcnRSZXF1ZXN0UHJvdG9i",
-            "dWYSDAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJIjQKE0xvYWRSZXF1",
-            "ZXN0UHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJIjYK",
-            "FVJlbW92ZVJlcXVlc3RQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRL",
-            "ZXkYAiABKAkiNAoTTG9nc1JlcXVlc3RQcm90b2J1ZhIMCgRUeXBlGAEgASgF",
-            "Eg8KB1VuaXRLZXkYAiABKAkiYAoVQXR0YWNoUmVxdWVzdFByb3RvYnVmEgwK",
-            "BFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEoCRITCgtDb21tYW5kVHlwZRgD",
-            "IAEoBRITCgtDb21tYW5kTGluZRgEIAEoCSIoChhTdGF0dXNBbGxSZXF1ZXN0",
-            "UHJvdG9idWYSDAoEVHlwZRgBIAEoBSInChdTdGFydEFsbFJlcXVlc3RQcm90",
-            "b2J1ZhIMCgRUeXBlGAEgASgFIiYKFlN0b3BBbGxSZXF1ZXN0UHJvdG9idWYS",
-            "DAoEVHlwZRgBIAEoBSIpChlSZXN0YXJ0QWxsUmVxdWVzdFByb3RvYnVmEgwK",
-            "BFR5cGUYASABKAUiJgoWTG9hZEFsbFJlcXVlc3RQcm90b2J1ZhIMCgRUeXBl",
-            "GAEgASgFIigKGFJlbW92ZUFsbFJlcXVlc3RQcm90b2J1ZhIMCgRUeXBlGAEg",
-            "ASgFIiwKHERhZW1vblZlcnNpb25SZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgB",
-            "IAEoBSIrChtEYWVtb25TdGF0dXNSZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgB",
-            "IAEoBSItCh1EYWVtb25TaHV0ZG93blJlcXVlc3RQcm90b2J1ZhIMCgRUeXBl",
-            "GAEgASgFIrEBChZTdGF0dXNSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASAB",
-            "KAUSDwoHVW5pdEtleRgCIAEoCRIQCghFeGVjdXRlZBgDIAEoCBIYChBOb0V4",
-            "ZWN1dGVNZXNzYWdlGAQgASgJEkwKDFVuaXRQcm90b2J1ZhgFIAEoCzI2Lndp",
-            "bmQuRW50aXRpZXMuUHJvdG9idWYuV2ViU29ja2V0TWVzc2FnZXMuVW5pdFBy",
-            "b3RvYnVmItoBChVTdGFydFJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEo",
-            "BRIPCgdVbml0S2V5GAIgASgJEhAKCEV4ZWN1dGVkGAMgASgIEhgKEE5vRXhl",
-            "Y3V0ZU1lc3NhZ2UYBCABKAkSEQoJUHJvY2Vzc0lkGAUgASgFEmMKG1VuaXRS",
-            "dW5uaW5nU2V0dGluZ3NQcm90b2J1ZhgGIAEoCzI+LndpbmQuRW50aXRpZXMu",
-            "UHJvdG9idWYuV2ViU29ja2V0TWVzc2FnZXMuVW5pdFNldHRpbmdzUHJvdG9i",
-            "dWYiYQoUU3RvcFJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdV",
+            "CglQcm9jZXNzSWQYBCABKAUSGAoQUHJvY2Vzc1N0YXJ0VGltZRgFIAEoAxIW",
+            "Cg5Qcm9jZXNzb3JDb3VudBgGIAEoBRIdChVQZXJmb3JtYW5jZUNvdW50ZXJD",
+            "UFUYByABKAISHQoVUGVyZm9ybWFuY2VDb3VudGVyUkFNGAggASgCEh8KF05l",
+            "dHdvcmtDb3VudGVyVG90YWxTZW50GAkgASgDEiMKG05ldHdvcmtDb3VudGVy",
+            "VG90YWxSZWNlaXZlZBgKIAEoAxIfChdOZXR3b3JrQ291bnRlclNlbmRTcGVl",
+            "ZBgLIAEoAxIiChpOZXR3b3JrQ291bnRlclJlY2VpdmVTcGVlZBgMIAEoAxJY",
+            "ChBTZXR0aW5nc1Byb3RvYnVmGA0gASgLMj4ud2luZC5FbnRpdGllcy5Qcm90",
+            "b2J1Zi5XZWJTb2NrZXRNZXNzYWdlcy5Vbml0U2V0dGluZ3NQcm90b2J1ZhJf",
+            "ChdSdW5uaW5nU2V0dGluZ3NQcm90b2J1ZhgOIAEoCzI+LndpbmQuRW50aXRp",
+            "ZXMuUHJvdG9idWYuV2ViU29ja2V0TWVzc2FnZXMuVW5pdFNldHRpbmdzUHJv",
+            "dG9idWYi/QIKDkRhZW1vblByb3RvYnVmEgwKBE5hbWUYASABKAkSEwoLRGVz",
+            "Y3JpcHRpb24YAiABKAkSGwoTQWJzb2x1dGVFeGVjdXRlUGF0aBgDIAEoCRId",
+            "ChVBYnNvbHV0ZVdvcmtEaXJlY3RvcnkYBCABKAkSEQoJUHJvY2Vzc0lkGAUg",
+            "ASgFEhgKEFByb2Nlc3NTdGFydFRpbWUYBiABKAMSFgoOUHJvY2Vzc29yQ291",
+            "bnQYByABKAUSHQoVUGVyZm9ybWFuY2VDb3VudGVyQ1BVGAggASgCEh0KFVBl",
+            "cmZvcm1hbmNlQ291bnRlclJBTRgJIAEoAhIfChdOZXR3b3JrQ291bnRlclRv",
+            "dGFsU2VudBgKIAEoAxIjChtOZXR3b3JrQ291bnRlclRvdGFsUmVjZWl2ZWQY",
+            "CyABKAMSHwoXTmV0d29ya0NvdW50ZXJTZW5kU3BlZWQYDCABKAMSIgoaTmV0",
+            "d29ya0NvdW50ZXJSZWNlaXZlU3BlZWQYDSABKAMiIgoSUGFja2V0VGVzdFBy",
+            "b3RvYnVmEgwKBFR5cGUYASABKAUiJwoXQ2xpZW50S2VlcEFsaXZlUHJvdG9i",
+            "dWYSDAoEVHlwZRgBIAEoBSJECh5TZXJ2ZXJBY2NlcHRDb25uZWN0aW9uUHJv",
+            "dG9idWYSDAoEVHlwZRgBIAEoBRIUCgxDb25uZWN0aW9uSWQYAiABKAkibgod",
+            "Q2xpZW50T2ZmZXJDb250cm9sS2V5UHJvdG9idWYSDAoEVHlwZRgBIAEoBRIU",
+            "CgxDb25uZWN0aW9uSWQYAiABKAkSEgoKQ29udHJvbEtleRgDIAEoCRIVCg1T",
+            "dXBwb3J0Tm90aWZ5GAQgASgIIlUKIFNlcnZlclZhbGlkYXRlQ29ubmVjdGlv",
+            "blByb3RvYnVmEgwKBFR5cGUYASABKAUSFAoMQ29ubmVjdGlvbklkGAIgASgJ",
+            "Eg0KBVZhbGlkGAMgASgIIjYKFVN0YXR1c1JlcXVlc3RQcm90b2J1ZhIMCgRU",
+            "eXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkiNQoUU3RhcnRSZXF1ZXN0UHJv",
+            "dG9idWYSDAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJIjQKE1N0b3BS",
+            "ZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJ",
+            "IjcKFlJlc3RhcnRSZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdV",
+            "bml0S2V5GAIgASgJIjQKE0xvYWRSZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgB",
+            "IAEoBRIPCgdVbml0S2V5GAIgASgJIjYKFVJlbW92ZVJlcXVlc3RQcm90b2J1",
+            "ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkiQgoTTG9nc1JlcXVl",
+            "c3RQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkSDAoE",
+            "TGluZRgDIAEoBSJlChpDb21tYW5kbGluZVJlcXVlc3RQcm90b2J1ZhIMCgRU",
+            "eXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkSEwoLQ29tbWFuZFR5cGUYAyAB",
+            "KAUSEwoLQ29tbWFuZExpbmUYBCABKAkiKAoYU3RhdHVzQWxsUmVxdWVzdFBy",
+            "b3RvYnVmEgwKBFR5cGUYASABKAUiJwoXU3RhcnRBbGxSZXF1ZXN0UHJvdG9i",
+            "dWYSDAoEVHlwZRgBIAEoBSImChZTdG9wQWxsUmVxdWVzdFByb3RvYnVmEgwK",
+            "BFR5cGUYASABKAUiKQoZUmVzdGFydEFsbFJlcXVlc3RQcm90b2J1ZhIMCgRU",
+            "eXBlGAEgASgFIiYKFkxvYWRBbGxSZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgB",
+            "IAEoBSIoChhSZW1vdmVBbGxSZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgBIAEo",
+            "BSIsChxEYWVtb25WZXJzaW9uUmVxdWVzdFByb3RvYnVmEgwKBFR5cGUYASAB",
+            "KAUiKwobRGFlbW9uU3RhdHVzUmVxdWVzdFByb3RvYnVmEgwKBFR5cGUYASAB",
+            "KAUiLQodRGFlbW9uU2h1dGRvd25SZXF1ZXN0UHJvdG9idWYSDAoEVHlwZRgB",
+            "IAEoBSKxAQoWU3RhdHVzUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgF",
+            "Eg8KB1VuaXRLZXkYAiABKAkSEAoIRXhlY3V0ZWQYAyABKAgSGAoQTm9FeGVj",
+            "dXRlTWVzc2FnZRgEIAEoCRJMCgxVbml0UHJvdG9idWYYBSABKAsyNi53aW5k",
+            "LkVudGl0aWVzLlByb3RvYnVmLldlYlNvY2tldE1lc3NhZ2VzLlVuaXRQcm90",
+            "b2J1ZiLaAQoVU3RhcnRSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUS",
+            "DwoHVW5pdEtleRgCIAEoCRIQCghFeGVjdXRlZBgDIAEoCBIYChBOb0V4ZWN1",
+            "dGVNZXNzYWdlGAQgASgJEhEKCVByb2Nlc3NJZBgFIAEoBRJjChtVbml0UnVu",
+            "bmluZ1NldHRpbmdzUHJvdG9idWYYBiABKAsyPi53aW5kLkVudGl0aWVzLlBy",
+            "b3RvYnVmLldlYlNvY2tldE1lc3NhZ2VzLlVuaXRTZXR0aW5nc1Byb3RvYnVm",
+            "ImEKFFN0b3BSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5p",
+            "dEtleRgCIAEoCRIQCghFeGVjdXRlZBgDIAEoCBIYChBOb0V4ZWN1dGVNZXNz",
+            "YWdlGAQgASgJImQKF1Jlc3RhcnRSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUY",
+            "ASABKAUSDwoHVW5pdEtleRgCIAEoCRIQCghFeGVjdXRlZBgDIAEoCBIYChBO",
+            "b0V4ZWN1dGVNZXNzYWdlGAQgASgJIr8BChRMb2FkUmVzcG9uc2VQcm90b2J1",
+            "ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkSEAoIRXhlY3V0ZWQY",
+            "AyABKAgSGAoQTm9FeGVjdXRlTWVzc2FnZRgEIAEoCRJcChRVbml0U2V0dGlu",
+            "Z3NQcm90b2J1ZhgFIAEoCzI+LndpbmQuRW50aXRpZXMuUHJvdG9idWYuV2Vi",
+            "U29ja2V0TWVzc2FnZXMuVW5pdFNldHRpbmdzUHJvdG9idWYiYwoWUmVtb3Zl",
+            "UmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiAB",
+            "KAkSEAoIRXhlY3V0ZWQYAyABKAgSGAoQTm9FeGVjdXRlTWVzc2FnZRgEIAEo",
+            "CSKMAQoUTG9nc1Jlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIPCgdV",
             "bml0S2V5GAIgASgJEhAKCEV4ZWN1dGVkGAMgASgIEhgKEE5vRXhlY3V0ZU1l",
-            "c3NhZ2UYBCABKAkiZAoXUmVzdGFydFJlc3BvbnNlUHJvdG9idWYSDAoEVHlw",
-            "ZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJEhAKCEV4ZWN1dGVkGAMgASgIEhgK",
-            "EE5vRXhlY3V0ZU1lc3NhZ2UYBCABKAkivwEKFExvYWRSZXNwb25zZVByb3Rv",
-            "YnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEoCRIQCghFeGVjdXRl",
-            "ZBgDIAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAQgASgJElwKFFVuaXRTZXR0",
-            "aW5nc1Byb3RvYnVmGAUgASgLMj4ud2luZC5FbnRpdGllcy5Qcm90b2J1Zi5X",
-            "ZWJTb2NrZXRNZXNzYWdlcy5Vbml0U2V0dGluZ3NQcm90b2J1ZiJjChZSZW1v",
-            "dmVSZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgC",
-            "IAEoCRIQCghFeGVjdXRlZBgDIAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAQg",
-            "ASgJIowBChRMb2dzUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8K",
-            "B1VuaXRLZXkYAiABKAkSEAoIRXhlY3V0ZWQYAyABKAgSGAoQTm9FeGVjdXRl",
-            "TWVzc2FnZRgEIAEoCRITCgtMb2dGaWxlUGF0aBgFIAEoCRIUCgxMb2dMaW5l",
-            "QXJyYXkYBiADKAkifAoWQXR0YWNoUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBl",
-            "GAEgASgFEg8KB1VuaXRLZXkYAiABKAkSEAoIRXhlY3V0ZWQYAyABKAgSGAoQ",
-            "Tm9FeGVjdXRlTWVzc2FnZRgEIAEoCRIXCg9PdXRwdXRMaW5lQXJyYXkYBSAD",
-            "KAkixwEKGVN0YXR1c0FsbFJlc3BvbnNlUHJvdG9idWYSDAoEVHlwZRgBIAEo",
-            "BRIQCghFeGVjdXRlZBgCIAEoCBIYChBOb0V4ZWN1dGVNZXNzYWdlGAMgASgJ",
-            "Eh0KFVVuaXRQcm90b2J1ZkFycmF5U2l6ZRgEIAEoBRJRChFVbml0UHJvdG9i",
-            "dWZBcnJheRgFIAMoCzI2LndpbmQuRW50aXRpZXMuUHJvdG9idWYuV2ViU29j",
-            "a2V0TWVzc2FnZXMuVW5pdFByb3RvYnVmIlQKGFN0YXJ0QWxsUmVzcG9uc2VQ",
-            "cm90b2J1ZhIMCgRUeXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIgASgIEhgKEE5v",
-            "RXhlY3V0ZU1lc3NhZ2UYAyABKAkiUwoXU3RvcEFsbFJlc3BvbnNlUHJvdG9i",
-            "dWYSDAoEVHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIYChBOb0V4ZWN1",
-            "dGVNZXNzYWdlGAMgASgJIlYKGlJlc3RhcnRBbGxSZXNwb25zZVByb3RvYnVm",
-            "EgwKBFR5cGUYASABKAUSEAoIRXhlY3V0ZWQYAiABKAgSGAoQTm9FeGVjdXRl",
-            "TWVzc2FnZRgDIAEoCSLdAQoXTG9hZEFsbFJlc3BvbnNlUHJvdG9idWYSDAoE",
-            "VHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIYChBOb0V4ZWN1dGVNZXNz",
-            "YWdlGAMgASgJEiUKHVVuaXRTZXR0aW5nc1Byb3RvYnVmQXJyYXlTaXplGAQg",
-            "ASgFEmEKGVVuaXRTZXR0aW5nc1Byb3RvYnVmQXJyYXkYBSADKAsyPi53aW5k",
-            "LkVudGl0aWVzLlByb3RvYnVmLldlYlNvY2tldE1lc3NhZ2VzLlVuaXRTZXR0",
-            "aW5nc1Byb3RvYnVmIlUKGVJlbW92ZUFsbFJlc3BvbnNlUHJvdG9idWYSDAoE",
-            "VHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIYChBOb0V4ZWN1dGVNZXNz",
-            "YWdlGAMgASgJImwKHURhZW1vblZlcnNpb25SZXNwb25zZVByb3RvYnVmEgwK",
-            "BFR5cGUYASABKAUSDQoFTWFqb3IYAiABKAUSDQoFTWlub3IYAyABKAUSDQoF",
-            "QnVpbGQYBCABKAUSEAoIUmV2aXNpb24YBSABKAUifgocRGFlbW9uU3RhdHVz",
-            "UmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFElAKDkRhZW1vblByb3Rv",
-            "YnVmGAIgASgLMjgud2luZC5FbnRpdGllcy5Qcm90b2J1Zi5XZWJTb2NrZXRN",
-            "ZXNzYWdlcy5EYWVtb25Qcm90b2J1ZiJaCh5EYWVtb25TaHV0ZG93blJlc3Bv",
-            "bnNlUHJvdG9idWYSDAoEVHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIY",
-            "ChBOb0V4ZWN1dGVNZXNzYWdlGAMgASgJIjQKE1N0YXJ0Tm90aWZ5UHJvdG9i",
-            "dWYSDAoEVHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJIjMKElN0b3BOb3Rp",
-            "ZnlQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkikQEK",
-            "EkxvYWROb3RpZnlQcm90b2J1ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkY",
-            "AiABKAkSXAoUVW5pdFNldHRpbmdzUHJvdG9idWYYAyABKAsyPi53aW5kLkVu",
-            "dGl0aWVzLlByb3RvYnVmLldlYlNvY2tldE1lc3NhZ2VzLlVuaXRTZXR0aW5n",
-            "c1Byb3RvYnVmIjUKFFJlbW92ZU5vdGlmeVByb3RvYnVmEgwKBFR5cGUYASAB",
-            "KAUSDwoHVW5pdEtleRgCIAEoCSJEChJMb2dzTm90aWZ5UHJvdG9idWYSDAoE",
-            "VHlwZRgBIAEoBRIPCgdVbml0S2V5GAIgASgJEg8KB0xvZ0xpbmUYAyABKAlC",
-            "G0gDqgIWd2luZC5FbnRpdGllcy5Qcm90b2J1ZmIGcHJvdG8z"));
+            "c3NhZ2UYBCABKAkSEwoLTG9nRmlsZVBhdGgYBSABKAkSFAoMTG9nTGluZUFy",
+            "cmF5GAYgAygJIn0KG0NvbW1hbmRsaW5lUmVzcG9uc2VQcm90b2J1ZhIMCgRU",
+            "eXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkSEAoIRXhlY3V0ZWQYAyABKAgS",
+            "GAoQTm9FeGVjdXRlTWVzc2FnZRgEIAEoCRITCgtDb21tYW5kVHlwZRgFIAEo",
+            "BSLHAQoZU3RhdHVzQWxsUmVzcG9uc2VQcm90b2J1ZhIMCgRUeXBlGAEgASgF",
+            "EhAKCEV4ZWN1dGVkGAIgASgIEhgKEE5vRXhlY3V0ZU1lc3NhZ2UYAyABKAkS",
+            "HQoVVW5pdFByb3RvYnVmQXJyYXlTaXplGAQgASgFElEKEVVuaXRQcm90b2J1",
+            "ZkFycmF5GAUgAygLMjYud2luZC5FbnRpdGllcy5Qcm90b2J1Zi5XZWJTb2Nr",
+            "ZXRNZXNzYWdlcy5Vbml0UHJvdG9idWYiVAoYU3RhcnRBbGxSZXNwb25zZVBy",
+            "b3RvYnVmEgwKBFR5cGUYASABKAUSEAoIRXhlY3V0ZWQYAiABKAgSGAoQTm9F",
+            "eGVjdXRlTWVzc2FnZRgDIAEoCSJTChdTdG9wQWxsUmVzcG9uc2VQcm90b2J1",
+            "ZhIMCgRUeXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIgASgIEhgKEE5vRXhlY3V0",
+            "ZU1lc3NhZ2UYAyABKAkiVgoaUmVzdGFydEFsbFJlc3BvbnNlUHJvdG9idWYS",
+            "DAoEVHlwZRgBIAEoBRIQCghFeGVjdXRlZBgCIAEoCBIYChBOb0V4ZWN1dGVN",
+            "ZXNzYWdlGAMgASgJIt0BChdMb2FkQWxsUmVzcG9uc2VQcm90b2J1ZhIMCgRU",
+            "eXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIgASgIEhgKEE5vRXhlY3V0ZU1lc3Nh",
+            "Z2UYAyABKAkSJQodVW5pdFNldHRpbmdzUHJvdG9idWZBcnJheVNpemUYBCAB",
+            "KAUSYQoZVW5pdFNldHRpbmdzUHJvdG9idWZBcnJheRgFIAMoCzI+LndpbmQu",
+            "RW50aXRpZXMuUHJvdG9idWYuV2ViU29ja2V0TWVzc2FnZXMuVW5pdFNldHRp",
+            "bmdzUHJvdG9idWYiVQoZUmVtb3ZlQWxsUmVzcG9uc2VQcm90b2J1ZhIMCgRU",
+            "eXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIgASgIEhgKEE5vRXhlY3V0ZU1lc3Nh",
+            "Z2UYAyABKAkibAodRGFlbW9uVmVyc2lvblJlc3BvbnNlUHJvdG9idWYSDAoE",
+            "VHlwZRgBIAEoBRINCgVNYWpvchgCIAEoBRINCgVNaW5vchgDIAEoBRINCgVC",
+            "dWlsZBgEIAEoBRIQCghSZXZpc2lvbhgFIAEoBSJ+ChxEYWVtb25TdGF0dXNS",
+            "ZXNwb25zZVByb3RvYnVmEgwKBFR5cGUYASABKAUSUAoORGFlbW9uUHJvdG9i",
+            "dWYYAiABKAsyOC53aW5kLkVudGl0aWVzLlByb3RvYnVmLldlYlNvY2tldE1l",
+            "c3NhZ2VzLkRhZW1vblByb3RvYnVmIloKHkRhZW1vblNodXRkb3duUmVzcG9u",
+            "c2VQcm90b2J1ZhIMCgRUeXBlGAEgASgFEhAKCEV4ZWN1dGVkGAIgASgIEhgK",
+            "EE5vRXhlY3V0ZU1lc3NhZ2UYAyABKAkiNAoTU3RhcnROb3RpZnlQcm90b2J1",
+            "ZhIMCgRUeXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkiMwoSU3RvcE5vdGlm",
+            "eVByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgCIAEoCSKRAQoS",
+            "TG9hZE5vdGlmeVByb3RvYnVmEgwKBFR5cGUYASABKAUSDwoHVW5pdEtleRgC",
+            "IAEoCRJcChRVbml0U2V0dGluZ3NQcm90b2J1ZhgDIAEoCzI+LndpbmQuRW50",
+            "aXRpZXMuUHJvdG9idWYuV2ViU29ja2V0TWVzc2FnZXMuVW5pdFNldHRpbmdz",
+            "UHJvdG9idWYiNQoUUmVtb3ZlTm90aWZ5UHJvdG9idWYSDAoEVHlwZRgBIAEo",
+            "BRIPCgdVbml0S2V5GAIgASgJIkQKEkxvZ3NOb3RpZnlQcm90b2J1ZhIMCgRU",
+            "eXBlGAEgASgFEg8KB1VuaXRLZXkYAiABKAkSDwoHTG9nTGluZRgDIAEoCUIb",
+            "SAOqAhZ3aW5kLkVudGl0aWVzLlByb3RvYnVmYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.UnitSettingsProtobuf), global::wind.Entities.Protobuf.UnitSettingsProtobuf.Parser, new[]{ "Name", "Description", "Type", "AbsoluteExecutePath", "AbsoluteWorkDirectory", "Arguments", "AutoStart", "AutoStartDelay", "RestartWhenException", "MonitorPerformanceUsage", "MonitorNetworkUsage", "HasArguments" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.UnitProtobuf), global::wind.Entities.Protobuf.UnitProtobuf.Parser, new[]{ "Key", "State", "SettingsFilePath", "ProcessId", "ProcessStartTime", "PerformanceCounterCPU", "PerformanceCounterRAM", "NetworkCounterTotalSent", "NetworkCounterTotalReceived", "NetworkCounterSendSpeed", "NetworkCounterReceiveSpeed", "SettingsProtobuf", "RunningSettingsProtobuf" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.DaemonProtobuf), global::wind.Entities.Protobuf.DaemonProtobuf.Parser, new[]{ "Name", "Description", "AbsoluteExecutePath", "AbsoluteWorkDirectory", "ProcessId", "ProcessStartTime", "PerformanceCounterCPU", "PerformanceCounterRAM", "NetworkCounterTotalSent", "NetworkCounterTotalReceived", "NetworkCounterSendSpeed", "NetworkCounterReceiveSpeed" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.UnitProtobuf), global::wind.Entities.Protobuf.UnitProtobuf.Parser, new[]{ "Key", "State", "SettingsFilePath", "ProcessId", "ProcessStartTime", "ProcessorCount", "PerformanceCounterCPU", "PerformanceCounterRAM", "NetworkCounterTotalSent", "NetworkCounterTotalReceived", "NetworkCounterSendSpeed", "NetworkCounterReceiveSpeed", "SettingsProtobuf", "RunningSettingsProtobuf" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.DaemonProtobuf), global::wind.Entities.Protobuf.DaemonProtobuf.Parser, new[]{ "Name", "Description", "AbsoluteExecutePath", "AbsoluteWorkDirectory", "ProcessId", "ProcessStartTime", "ProcessorCount", "PerformanceCounterCPU", "PerformanceCounterRAM", "NetworkCounterTotalSent", "NetworkCounterTotalReceived", "NetworkCounterSendSpeed", "NetworkCounterReceiveSpeed" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.PacketTestProtobuf), global::wind.Entities.Protobuf.PacketTestProtobuf.Parser, new[]{ "Type" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.ClientKeepAliveProtobuf), global::wind.Entities.Protobuf.ClientKeepAliveProtobuf.Parser, new[]{ "Type" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.ServerAcceptConnectionProtobuf), global::wind.Entities.Protobuf.ServerAcceptConnectionProtobuf.Parser, new[]{ "Type", "ConnectionId" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.ClientOfferControlKeyProtobuf), global::wind.Entities.Protobuf.ClientOfferControlKeyProtobuf.Parser, new[]{ "Type", "ConnectionId", "ControlKey", "SupportNotify", "SupportAttach" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.ClientOfferControlKeyProtobuf), global::wind.Entities.Protobuf.ClientOfferControlKeyProtobuf.Parser, new[]{ "Type", "ConnectionId", "ControlKey", "SupportNotify" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.ServerValidateConnectionProtobuf), global::wind.Entities.Protobuf.ServerValidateConnectionProtobuf.Parser, new[]{ "Type", "ConnectionId", "Valid" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StatusRequestProtobuf), global::wind.Entities.Protobuf.StatusRequestProtobuf.Parser, new[]{ "Type", "UnitKey" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StartRequestProtobuf), global::wind.Entities.Protobuf.StartRequestProtobuf.Parser, new[]{ "Type", "UnitKey" }, null, null, null, null),
@@ -156,8 +157,8 @@ namespace wind.Entities.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.RestartRequestProtobuf), global::wind.Entities.Protobuf.RestartRequestProtobuf.Parser, new[]{ "Type", "UnitKey" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.LoadRequestProtobuf), global::wind.Entities.Protobuf.LoadRequestProtobuf.Parser, new[]{ "Type", "UnitKey" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.RemoveRequestProtobuf), global::wind.Entities.Protobuf.RemoveRequestProtobuf.Parser, new[]{ "Type", "UnitKey" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.LogsRequestProtobuf), global::wind.Entities.Protobuf.LogsRequestProtobuf.Parser, new[]{ "Type", "UnitKey" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.AttachRequestProtobuf), global::wind.Entities.Protobuf.AttachRequestProtobuf.Parser, new[]{ "Type", "UnitKey", "CommandType", "CommandLine" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.LogsRequestProtobuf), global::wind.Entities.Protobuf.LogsRequestProtobuf.Parser, new[]{ "Type", "UnitKey", "Line" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.CommandlineRequestProtobuf), global::wind.Entities.Protobuf.CommandlineRequestProtobuf.Parser, new[]{ "Type", "UnitKey", "CommandType", "CommandLine" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StatusAllRequestProtobuf), global::wind.Entities.Protobuf.StatusAllRequestProtobuf.Parser, new[]{ "Type" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StartAllRequestProtobuf), global::wind.Entities.Protobuf.StartAllRequestProtobuf.Parser, new[]{ "Type" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StopAllRequestProtobuf), global::wind.Entities.Protobuf.StopAllRequestProtobuf.Parser, new[]{ "Type" }, null, null, null, null),
@@ -174,7 +175,7 @@ namespace wind.Entities.Protobuf {
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.LoadResponseProtobuf), global::wind.Entities.Protobuf.LoadResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage", "UnitSettingsProtobuf" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.RemoveResponseProtobuf), global::wind.Entities.Protobuf.RemoveResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.LogsResponseProtobuf), global::wind.Entities.Protobuf.LogsResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage", "LogFilePath", "LogLineArray" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.AttachResponseProtobuf), global::wind.Entities.Protobuf.AttachResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage", "OutputLineArray" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.CommandlineResponseProtobuf), global::wind.Entities.Protobuf.CommandlineResponseProtobuf.Parser, new[]{ "Type", "UnitKey", "Executed", "NoExecuteMessage", "CommandType" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StatusAllResponseProtobuf), global::wind.Entities.Protobuf.StatusAllResponseProtobuf.Parser, new[]{ "Type", "Executed", "NoExecuteMessage", "UnitProtobufArraySize", "UnitProtobufArray" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StartAllResponseProtobuf), global::wind.Entities.Protobuf.StartAllResponseProtobuf.Parser, new[]{ "Type", "Executed", "NoExecuteMessage" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::wind.Entities.Protobuf.StopAllResponseProtobuf), global::wind.Entities.Protobuf.StopAllResponseProtobuf.Parser, new[]{ "Type", "Executed", "NoExecuteMessage" }, null, null, null, null),
@@ -662,6 +663,7 @@ namespace wind.Entities.Protobuf {
       settingsFilePath_ = other.settingsFilePath_;
       processId_ = other.processId_;
       processStartTime_ = other.processStartTime_;
+      processorCount_ = other.processorCount_;
       performanceCounterCPU_ = other.performanceCounterCPU_;
       performanceCounterRAM_ = other.performanceCounterRAM_;
       networkCounterTotalSent_ = other.networkCounterTotalSent_;
@@ -733,8 +735,19 @@ namespace wind.Entities.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "ProcessorCount" field.</summary>
+    public const int ProcessorCountFieldNumber = 6;
+    private int processorCount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int ProcessorCount {
+      get { return processorCount_; }
+      set {
+        processorCount_ = value;
+      }
+    }
+
     /// <summary>Field number for the "PerformanceCounterCPU" field.</summary>
-    public const int PerformanceCounterCPUFieldNumber = 6;
+    public const int PerformanceCounterCPUFieldNumber = 7;
     private float performanceCounterCPU_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float PerformanceCounterCPU {
@@ -745,7 +758,7 @@ namespace wind.Entities.Protobuf {
     }
 
     /// <summary>Field number for the "PerformanceCounterRAM" field.</summary>
-    public const int PerformanceCounterRAMFieldNumber = 7;
+    public const int PerformanceCounterRAMFieldNumber = 8;
     private float performanceCounterRAM_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float PerformanceCounterRAM {
@@ -756,7 +769,7 @@ namespace wind.Entities.Protobuf {
     }
 
     /// <summary>Field number for the "NetworkCounterTotalSent" field.</summary>
-    public const int NetworkCounterTotalSentFieldNumber = 8;
+    public const int NetworkCounterTotalSentFieldNumber = 9;
     private long networkCounterTotalSent_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long NetworkCounterTotalSent {
@@ -767,7 +780,7 @@ namespace wind.Entities.Protobuf {
     }
 
     /// <summary>Field number for the "NetworkCounterTotalReceived" field.</summary>
-    public const int NetworkCounterTotalReceivedFieldNumber = 9;
+    public const int NetworkCounterTotalReceivedFieldNumber = 10;
     private long networkCounterTotalReceived_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long NetworkCounterTotalReceived {
@@ -778,7 +791,7 @@ namespace wind.Entities.Protobuf {
     }
 
     /// <summary>Field number for the "NetworkCounterSendSpeed" field.</summary>
-    public const int NetworkCounterSendSpeedFieldNumber = 10;
+    public const int NetworkCounterSendSpeedFieldNumber = 11;
     private long networkCounterSendSpeed_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long NetworkCounterSendSpeed {
@@ -789,7 +802,7 @@ namespace wind.Entities.Protobuf {
     }
 
     /// <summary>Field number for the "NetworkCounterReceiveSpeed" field.</summary>
-    public const int NetworkCounterReceiveSpeedFieldNumber = 11;
+    public const int NetworkCounterReceiveSpeedFieldNumber = 12;
     private long networkCounterReceiveSpeed_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long NetworkCounterReceiveSpeed {
@@ -800,7 +813,7 @@ namespace wind.Entities.Protobuf {
     }
 
     /// <summary>Field number for the "SettingsProtobuf" field.</summary>
-    public const int SettingsProtobufFieldNumber = 12;
+    public const int SettingsProtobufFieldNumber = 13;
     private global::wind.Entities.Protobuf.UnitSettingsProtobuf settingsProtobuf_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::wind.Entities.Protobuf.UnitSettingsProtobuf SettingsProtobuf {
@@ -811,7 +824,7 @@ namespace wind.Entities.Protobuf {
     }
 
     /// <summary>Field number for the "RunningSettingsProtobuf" field.</summary>
-    public const int RunningSettingsProtobufFieldNumber = 13;
+    public const int RunningSettingsProtobufFieldNumber = 14;
     private global::wind.Entities.Protobuf.UnitSettingsProtobuf runningSettingsProtobuf_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::wind.Entities.Protobuf.UnitSettingsProtobuf RunningSettingsProtobuf {
@@ -839,6 +852,7 @@ namespace wind.Entities.Protobuf {
       if (SettingsFilePath != other.SettingsFilePath) return false;
       if (ProcessId != other.ProcessId) return false;
       if (ProcessStartTime != other.ProcessStartTime) return false;
+      if (ProcessorCount != other.ProcessorCount) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PerformanceCounterCPU, other.PerformanceCounterCPU)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PerformanceCounterRAM, other.PerformanceCounterRAM)) return false;
       if (NetworkCounterTotalSent != other.NetworkCounterTotalSent) return false;
@@ -858,6 +872,7 @@ namespace wind.Entities.Protobuf {
       if (SettingsFilePath.Length != 0) hash ^= SettingsFilePath.GetHashCode();
       if (ProcessId != 0) hash ^= ProcessId.GetHashCode();
       if (ProcessStartTime != 0L) hash ^= ProcessStartTime.GetHashCode();
+      if (ProcessorCount != 0) hash ^= ProcessorCount.GetHashCode();
       if (PerformanceCounterCPU != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PerformanceCounterCPU);
       if (PerformanceCounterRAM != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PerformanceCounterRAM);
       if (NetworkCounterTotalSent != 0L) hash ^= NetworkCounterTotalSent.GetHashCode();
@@ -899,36 +914,40 @@ namespace wind.Entities.Protobuf {
         output.WriteRawTag(40);
         output.WriteInt64(ProcessStartTime);
       }
+      if (ProcessorCount != 0) {
+        output.WriteRawTag(48);
+        output.WriteInt32(ProcessorCount);
+      }
       if (PerformanceCounterCPU != 0F) {
-        output.WriteRawTag(53);
+        output.WriteRawTag(61);
         output.WriteFloat(PerformanceCounterCPU);
       }
       if (PerformanceCounterRAM != 0F) {
-        output.WriteRawTag(61);
+        output.WriteRawTag(69);
         output.WriteFloat(PerformanceCounterRAM);
       }
       if (NetworkCounterTotalSent != 0L) {
-        output.WriteRawTag(64);
+        output.WriteRawTag(72);
         output.WriteInt64(NetworkCounterTotalSent);
       }
       if (NetworkCounterTotalReceived != 0L) {
-        output.WriteRawTag(72);
+        output.WriteRawTag(80);
         output.WriteInt64(NetworkCounterTotalReceived);
       }
       if (NetworkCounterSendSpeed != 0L) {
-        output.WriteRawTag(80);
+        output.WriteRawTag(88);
         output.WriteInt64(NetworkCounterSendSpeed);
       }
       if (NetworkCounterReceiveSpeed != 0L) {
-        output.WriteRawTag(88);
+        output.WriteRawTag(96);
         output.WriteInt64(NetworkCounterReceiveSpeed);
       }
       if (settingsProtobuf_ != null) {
-        output.WriteRawTag(98);
+        output.WriteRawTag(106);
         output.WriteMessage(SettingsProtobuf);
       }
       if (runningSettingsProtobuf_ != null) {
-        output.WriteRawTag(106);
+        output.WriteRawTag(114);
         output.WriteMessage(RunningSettingsProtobuf);
       }
       if (_unknownFields != null) {
@@ -953,6 +972,9 @@ namespace wind.Entities.Protobuf {
       }
       if (ProcessStartTime != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(ProcessStartTime);
+      }
+      if (ProcessorCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ProcessorCount);
       }
       if (PerformanceCounterCPU != 0F) {
         size += 1 + 4;
@@ -1003,6 +1025,9 @@ namespace wind.Entities.Protobuf {
       }
       if (other.ProcessStartTime != 0L) {
         ProcessStartTime = other.ProcessStartTime;
+      }
+      if (other.ProcessorCount != 0) {
+        ProcessorCount = other.ProcessorCount;
       }
       if (other.PerformanceCounterCPU != 0F) {
         PerformanceCounterCPU = other.PerformanceCounterCPU;
@@ -1065,38 +1090,42 @@ namespace wind.Entities.Protobuf {
             ProcessStartTime = input.ReadInt64();
             break;
           }
-          case 53: {
-            PerformanceCounterCPU = input.ReadFloat();
+          case 48: {
+            ProcessorCount = input.ReadInt32();
             break;
           }
           case 61: {
+            PerformanceCounterCPU = input.ReadFloat();
+            break;
+          }
+          case 69: {
             PerformanceCounterRAM = input.ReadFloat();
             break;
           }
-          case 64: {
+          case 72: {
             NetworkCounterTotalSent = input.ReadInt64();
             break;
           }
-          case 72: {
+          case 80: {
             NetworkCounterTotalReceived = input.ReadInt64();
             break;
           }
-          case 80: {
+          case 88: {
             NetworkCounterSendSpeed = input.ReadInt64();
             break;
           }
-          case 88: {
+          case 96: {
             NetworkCounterReceiveSpeed = input.ReadInt64();
             break;
           }
-          case 98: {
+          case 106: {
             if (settingsProtobuf_ == null) {
               SettingsProtobuf = new global::wind.Entities.Protobuf.UnitSettingsProtobuf();
             }
             input.ReadMessage(SettingsProtobuf);
             break;
           }
-          case 106: {
+          case 114: {
             if (runningSettingsProtobuf_ == null) {
               RunningSettingsProtobuf = new global::wind.Entities.Protobuf.UnitSettingsProtobuf();
             }
@@ -1140,6 +1169,7 @@ namespace wind.Entities.Protobuf {
       absoluteWorkDirectory_ = other.absoluteWorkDirectory_;
       processId_ = other.processId_;
       processStartTime_ = other.processStartTime_;
+      processorCount_ = other.processorCount_;
       performanceCounterCPU_ = other.performanceCounterCPU_;
       performanceCounterRAM_ = other.performanceCounterRAM_;
       networkCounterTotalSent_ = other.networkCounterTotalSent_;
@@ -1220,8 +1250,19 @@ namespace wind.Entities.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "ProcessorCount" field.</summary>
+    public const int ProcessorCountFieldNumber = 7;
+    private int processorCount_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int ProcessorCount {
+      get { return processorCount_; }
+      set {
+        processorCount_ = value;
+      }
+    }
+
     /// <summary>Field number for the "PerformanceCounterCPU" field.</summary>
-    public const int PerformanceCounterCPUFieldNumber = 7;
+    public const int PerformanceCounterCPUFieldNumber = 8;
     private float performanceCounterCPU_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float PerformanceCounterCPU {
@@ -1232,7 +1273,7 @@ namespace wind.Entities.Protobuf {
     }
 
     /// <summary>Field number for the "PerformanceCounterRAM" field.</summary>
-    public const int PerformanceCounterRAMFieldNumber = 8;
+    public const int PerformanceCounterRAMFieldNumber = 9;
     private float performanceCounterRAM_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public float PerformanceCounterRAM {
@@ -1243,7 +1284,7 @@ namespace wind.Entities.Protobuf {
     }
 
     /// <summary>Field number for the "NetworkCounterTotalSent" field.</summary>
-    public const int NetworkCounterTotalSentFieldNumber = 9;
+    public const int NetworkCounterTotalSentFieldNumber = 10;
     private long networkCounterTotalSent_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long NetworkCounterTotalSent {
@@ -1254,7 +1295,7 @@ namespace wind.Entities.Protobuf {
     }
 
     /// <summary>Field number for the "NetworkCounterTotalReceived" field.</summary>
-    public const int NetworkCounterTotalReceivedFieldNumber = 10;
+    public const int NetworkCounterTotalReceivedFieldNumber = 11;
     private long networkCounterTotalReceived_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long NetworkCounterTotalReceived {
@@ -1265,7 +1306,7 @@ namespace wind.Entities.Protobuf {
     }
 
     /// <summary>Field number for the "NetworkCounterSendSpeed" field.</summary>
-    public const int NetworkCounterSendSpeedFieldNumber = 11;
+    public const int NetworkCounterSendSpeedFieldNumber = 12;
     private long networkCounterSendSpeed_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long NetworkCounterSendSpeed {
@@ -1276,7 +1317,7 @@ namespace wind.Entities.Protobuf {
     }
 
     /// <summary>Field number for the "NetworkCounterReceiveSpeed" field.</summary>
-    public const int NetworkCounterReceiveSpeedFieldNumber = 12;
+    public const int NetworkCounterReceiveSpeedFieldNumber = 13;
     private long networkCounterReceiveSpeed_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public long NetworkCounterReceiveSpeed {
@@ -1305,6 +1346,7 @@ namespace wind.Entities.Protobuf {
       if (AbsoluteWorkDirectory != other.AbsoluteWorkDirectory) return false;
       if (ProcessId != other.ProcessId) return false;
       if (ProcessStartTime != other.ProcessStartTime) return false;
+      if (ProcessorCount != other.ProcessorCount) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PerformanceCounterCPU, other.PerformanceCounterCPU)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(PerformanceCounterRAM, other.PerformanceCounterRAM)) return false;
       if (NetworkCounterTotalSent != other.NetworkCounterTotalSent) return false;
@@ -1323,6 +1365,7 @@ namespace wind.Entities.Protobuf {
       if (AbsoluteWorkDirectory.Length != 0) hash ^= AbsoluteWorkDirectory.GetHashCode();
       if (ProcessId != 0) hash ^= ProcessId.GetHashCode();
       if (ProcessStartTime != 0L) hash ^= ProcessStartTime.GetHashCode();
+      if (ProcessorCount != 0) hash ^= ProcessorCount.GetHashCode();
       if (PerformanceCounterCPU != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PerformanceCounterCPU);
       if (PerformanceCounterRAM != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(PerformanceCounterRAM);
       if (NetworkCounterTotalSent != 0L) hash ^= NetworkCounterTotalSent.GetHashCode();
@@ -1366,28 +1409,32 @@ namespace wind.Entities.Protobuf {
         output.WriteRawTag(48);
         output.WriteInt64(ProcessStartTime);
       }
+      if (ProcessorCount != 0) {
+        output.WriteRawTag(56);
+        output.WriteInt32(ProcessorCount);
+      }
       if (PerformanceCounterCPU != 0F) {
-        output.WriteRawTag(61);
+        output.WriteRawTag(69);
         output.WriteFloat(PerformanceCounterCPU);
       }
       if (PerformanceCounterRAM != 0F) {
-        output.WriteRawTag(69);
+        output.WriteRawTag(77);
         output.WriteFloat(PerformanceCounterRAM);
       }
       if (NetworkCounterTotalSent != 0L) {
-        output.WriteRawTag(72);
+        output.WriteRawTag(80);
         output.WriteInt64(NetworkCounterTotalSent);
       }
       if (NetworkCounterTotalReceived != 0L) {
-        output.WriteRawTag(80);
+        output.WriteRawTag(88);
         output.WriteInt64(NetworkCounterTotalReceived);
       }
       if (NetworkCounterSendSpeed != 0L) {
-        output.WriteRawTag(88);
+        output.WriteRawTag(96);
         output.WriteInt64(NetworkCounterSendSpeed);
       }
       if (NetworkCounterReceiveSpeed != 0L) {
-        output.WriteRawTag(96);
+        output.WriteRawTag(104);
         output.WriteInt64(NetworkCounterReceiveSpeed);
       }
       if (_unknownFields != null) {
@@ -1415,6 +1462,9 @@ namespace wind.Entities.Protobuf {
       }
       if (ProcessStartTime != 0L) {
         size += 1 + pb::CodedOutputStream.ComputeInt64Size(ProcessStartTime);
+      }
+      if (ProcessorCount != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(ProcessorCount);
       }
       if (PerformanceCounterCPU != 0F) {
         size += 1 + 4;
@@ -1462,6 +1512,9 @@ namespace wind.Entities.Protobuf {
       }
       if (other.ProcessStartTime != 0L) {
         ProcessStartTime = other.ProcessStartTime;
+      }
+      if (other.ProcessorCount != 0) {
+        ProcessorCount = other.ProcessorCount;
       }
       if (other.PerformanceCounterCPU != 0F) {
         PerformanceCounterCPU = other.PerformanceCounterCPU;
@@ -1516,27 +1569,31 @@ namespace wind.Entities.Protobuf {
             ProcessStartTime = input.ReadInt64();
             break;
           }
-          case 61: {
-            PerformanceCounterCPU = input.ReadFloat();
+          case 56: {
+            ProcessorCount = input.ReadInt32();
             break;
           }
           case 69: {
+            PerformanceCounterCPU = input.ReadFloat();
+            break;
+          }
+          case 77: {
             PerformanceCounterRAM = input.ReadFloat();
             break;
           }
-          case 72: {
+          case 80: {
             NetworkCounterTotalSent = input.ReadInt64();
             break;
           }
-          case 80: {
+          case 88: {
             NetworkCounterTotalReceived = input.ReadInt64();
             break;
           }
-          case 88: {
+          case 96: {
             NetworkCounterSendSpeed = input.ReadInt64();
             break;
           }
-          case 96: {
+          case 104: {
             NetworkCounterReceiveSpeed = input.ReadInt64();
             break;
           }
@@ -2011,7 +2068,6 @@ namespace wind.Entities.Protobuf {
       connectionId_ = other.connectionId_;
       controlKey_ = other.controlKey_;
       supportNotify_ = other.supportNotify_;
-      supportAttach_ = other.supportAttach_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -2067,17 +2123,6 @@ namespace wind.Entities.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "SupportAttach" field.</summary>
-    public const int SupportAttachFieldNumber = 5;
-    private bool supportAttach_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool SupportAttach {
-      get { return supportAttach_; }
-      set {
-        supportAttach_ = value;
-      }
-    }
-
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as ClientOfferControlKeyProtobuf);
@@ -2095,7 +2140,6 @@ namespace wind.Entities.Protobuf {
       if (ConnectionId != other.ConnectionId) return false;
       if (ControlKey != other.ControlKey) return false;
       if (SupportNotify != other.SupportNotify) return false;
-      if (SupportAttach != other.SupportAttach) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -2106,7 +2150,6 @@ namespace wind.Entities.Protobuf {
       if (ConnectionId.Length != 0) hash ^= ConnectionId.GetHashCode();
       if (ControlKey.Length != 0) hash ^= ControlKey.GetHashCode();
       if (SupportNotify != false) hash ^= SupportNotify.GetHashCode();
-      if (SupportAttach != false) hash ^= SupportAttach.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -2136,10 +2179,6 @@ namespace wind.Entities.Protobuf {
         output.WriteRawTag(32);
         output.WriteBool(SupportNotify);
       }
-      if (SupportAttach != false) {
-        output.WriteRawTag(40);
-        output.WriteBool(SupportAttach);
-      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -2158,9 +2197,6 @@ namespace wind.Entities.Protobuf {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(ControlKey);
       }
       if (SupportNotify != false) {
-        size += 1 + 1;
-      }
-      if (SupportAttach != false) {
         size += 1 + 1;
       }
       if (_unknownFields != null) {
@@ -2185,9 +2221,6 @@ namespace wind.Entities.Protobuf {
       }
       if (other.SupportNotify != false) {
         SupportNotify = other.SupportNotify;
-      }
-      if (other.SupportAttach != false) {
-        SupportAttach = other.SupportAttach;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -2214,10 +2247,6 @@ namespace wind.Entities.Protobuf {
           }
           case 32: {
             SupportNotify = input.ReadBool();
-            break;
-          }
-          case 40: {
-            SupportAttach = input.ReadBool();
             break;
           }
         }
@@ -3425,6 +3454,7 @@ namespace wind.Entities.Protobuf {
     public LogsRequestProtobuf(LogsRequestProtobuf other) : this() {
       type_ = other.type_;
       unitKey_ = other.unitKey_;
+      line_ = other.line_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
@@ -3458,6 +3488,17 @@ namespace wind.Entities.Protobuf {
       }
     }
 
+    /// <summary>Field number for the "Line" field.</summary>
+    public const int LineFieldNumber = 3;
+    private int line_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public int Line {
+      get { return line_; }
+      set {
+        line_ = value;
+      }
+    }
+
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
       return Equals(other as LogsRequestProtobuf);
@@ -3473,6 +3514,7 @@ namespace wind.Entities.Protobuf {
       }
       if (Type != other.Type) return false;
       if (UnitKey != other.UnitKey) return false;
+      if (Line != other.Line) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -3481,6 +3523,7 @@ namespace wind.Entities.Protobuf {
       int hash = 1;
       if (Type != 0) hash ^= Type.GetHashCode();
       if (UnitKey.Length != 0) hash ^= UnitKey.GetHashCode();
+      if (Line != 0) hash ^= Line.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -3502,6 +3545,10 @@ namespace wind.Entities.Protobuf {
         output.WriteRawTag(18);
         output.WriteString(UnitKey);
       }
+      if (Line != 0) {
+        output.WriteRawTag(24);
+        output.WriteInt32(Line);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -3515,6 +3562,9 @@ namespace wind.Entities.Protobuf {
       }
       if (UnitKey.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(UnitKey);
+      }
+      if (Line != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(Line);
       }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
@@ -3532,6 +3582,9 @@ namespace wind.Entities.Protobuf {
       }
       if (other.UnitKey.Length != 0) {
         UnitKey = other.UnitKey;
+      }
+      if (other.Line != 0) {
+        Line = other.Line;
       }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
@@ -3552,6 +3605,10 @@ namespace wind.Entities.Protobuf {
             UnitKey = input.ReadString();
             break;
           }
+          case 24: {
+            Line = input.ReadInt32();
+            break;
+          }
         }
       }
     }
@@ -3561,11 +3618,11 @@ namespace wind.Entities.Protobuf {
   /// <summary>
   /// windctl attach unitKey
   /// </summary>
-  public sealed partial class AttachRequestProtobuf : pb::IMessage<AttachRequestProtobuf> {
-    private static readonly pb::MessageParser<AttachRequestProtobuf> _parser = new pb::MessageParser<AttachRequestProtobuf>(() => new AttachRequestProtobuf());
+  public sealed partial class CommandlineRequestProtobuf : pb::IMessage<CommandlineRequestProtobuf> {
+    private static readonly pb::MessageParser<CommandlineRequestProtobuf> _parser = new pb::MessageParser<CommandlineRequestProtobuf>(() => new CommandlineRequestProtobuf());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<AttachRequestProtobuf> Parser { get { return _parser; } }
+    public static pb::MessageParser<CommandlineRequestProtobuf> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -3578,14 +3635,14 @@ namespace wind.Entities.Protobuf {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public AttachRequestProtobuf() {
+    public CommandlineRequestProtobuf() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public AttachRequestProtobuf(AttachRequestProtobuf other) : this() {
+    public CommandlineRequestProtobuf(CommandlineRequestProtobuf other) : this() {
       type_ = other.type_;
       unitKey_ = other.unitKey_;
       commandType_ = other.commandType_;
@@ -3594,8 +3651,8 @@ namespace wind.Entities.Protobuf {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public AttachRequestProtobuf Clone() {
-      return new AttachRequestProtobuf(this);
+    public CommandlineRequestProtobuf Clone() {
+      return new CommandlineRequestProtobuf(this);
     }
 
     /// <summary>Field number for the "Type" field.</summary>
@@ -3650,11 +3707,11 @@ namespace wind.Entities.Protobuf {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as AttachRequestProtobuf);
+      return Equals(other as CommandlineRequestProtobuf);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(AttachRequestProtobuf other) {
+    public bool Equals(CommandlineRequestProtobuf other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -3731,7 +3788,7 @@ namespace wind.Entities.Protobuf {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(AttachRequestProtobuf other) {
+    public void MergeFrom(CommandlineRequestProtobuf other) {
       if (other == null) {
         return;
       }
@@ -6709,11 +6766,11 @@ namespace wind.Entities.Protobuf {
   /// <summary>
   /// windctl attach unitKey
   /// </summary>
-  public sealed partial class AttachResponseProtobuf : pb::IMessage<AttachResponseProtobuf> {
-    private static readonly pb::MessageParser<AttachResponseProtobuf> _parser = new pb::MessageParser<AttachResponseProtobuf>(() => new AttachResponseProtobuf());
+  public sealed partial class CommandlineResponseProtobuf : pb::IMessage<CommandlineResponseProtobuf> {
+    private static readonly pb::MessageParser<CommandlineResponseProtobuf> _parser = new pb::MessageParser<CommandlineResponseProtobuf>(() => new CommandlineResponseProtobuf());
     private pb::UnknownFieldSet _unknownFields;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public static pb::MessageParser<AttachResponseProtobuf> Parser { get { return _parser; } }
+    public static pb::MessageParser<CommandlineResponseProtobuf> Parser { get { return _parser; } }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public static pbr::MessageDescriptor Descriptor {
@@ -6726,25 +6783,25 @@ namespace wind.Entities.Protobuf {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public AttachResponseProtobuf() {
+    public CommandlineResponseProtobuf() {
       OnConstruction();
     }
 
     partial void OnConstruction();
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public AttachResponseProtobuf(AttachResponseProtobuf other) : this() {
+    public CommandlineResponseProtobuf(CommandlineResponseProtobuf other) : this() {
       type_ = other.type_;
       unitKey_ = other.unitKey_;
       executed_ = other.executed_;
       noExecuteMessage_ = other.noExecuteMessage_;
-      outputLineArray_ = other.outputLineArray_.Clone();
+      commandType_ = other.commandType_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public AttachResponseProtobuf Clone() {
-      return new AttachResponseProtobuf(this);
+    public CommandlineResponseProtobuf Clone() {
+      return new CommandlineResponseProtobuf(this);
     }
 
     /// <summary>Field number for the "Type" field.</summary>
@@ -6794,23 +6851,27 @@ namespace wind.Entities.Protobuf {
       }
     }
 
-    /// <summary>Field number for the "OutputLineArray" field.</summary>
-    public const int OutputLineArrayFieldNumber = 5;
-    private static readonly pb::FieldCodec<string> _repeated_outputLineArray_codec
-        = pb::FieldCodec.ForString(42);
-    private readonly pbc::RepeatedField<string> outputLineArray_ = new pbc::RepeatedField<string>();
+    /// <summary>Field number for the "CommandType" field.</summary>
+    public const int CommandTypeFieldNumber = 5;
+    private int commandType_;
+    /// <summary>
+    ///0:attach,1:text,2:^c,9:dettch
+    /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public pbc::RepeatedField<string> OutputLineArray {
-      get { return outputLineArray_; }
+    public int CommandType {
+      get { return commandType_; }
+      set {
+        commandType_ = value;
+      }
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override bool Equals(object other) {
-      return Equals(other as AttachResponseProtobuf);
+      return Equals(other as CommandlineResponseProtobuf);
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public bool Equals(AttachResponseProtobuf other) {
+    public bool Equals(CommandlineResponseProtobuf other) {
       if (ReferenceEquals(other, null)) {
         return false;
       }
@@ -6821,7 +6882,7 @@ namespace wind.Entities.Protobuf {
       if (UnitKey != other.UnitKey) return false;
       if (Executed != other.Executed) return false;
       if (NoExecuteMessage != other.NoExecuteMessage) return false;
-      if(!outputLineArray_.Equals(other.outputLineArray_)) return false;
+      if (CommandType != other.CommandType) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
 
@@ -6832,7 +6893,7 @@ namespace wind.Entities.Protobuf {
       if (UnitKey.Length != 0) hash ^= UnitKey.GetHashCode();
       if (Executed != false) hash ^= Executed.GetHashCode();
       if (NoExecuteMessage.Length != 0) hash ^= NoExecuteMessage.GetHashCode();
-      hash ^= outputLineArray_.GetHashCode();
+      if (CommandType != 0) hash ^= CommandType.GetHashCode();
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
       }
@@ -6862,7 +6923,10 @@ namespace wind.Entities.Protobuf {
         output.WriteRawTag(34);
         output.WriteString(NoExecuteMessage);
       }
-      outputLineArray_.WriteTo(output, _repeated_outputLineArray_codec);
+      if (CommandType != 0) {
+        output.WriteRawTag(40);
+        output.WriteInt32(CommandType);
+      }
       if (_unknownFields != null) {
         _unknownFields.WriteTo(output);
       }
@@ -6883,7 +6947,9 @@ namespace wind.Entities.Protobuf {
       if (NoExecuteMessage.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(NoExecuteMessage);
       }
-      size += outputLineArray_.CalculateSize(_repeated_outputLineArray_codec);
+      if (CommandType != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeInt32Size(CommandType);
+      }
       if (_unknownFields != null) {
         size += _unknownFields.CalculateSize();
       }
@@ -6891,7 +6957,7 @@ namespace wind.Entities.Protobuf {
     }
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public void MergeFrom(AttachResponseProtobuf other) {
+    public void MergeFrom(CommandlineResponseProtobuf other) {
       if (other == null) {
         return;
       }
@@ -6907,7 +6973,9 @@ namespace wind.Entities.Protobuf {
       if (other.NoExecuteMessage.Length != 0) {
         NoExecuteMessage = other.NoExecuteMessage;
       }
-      outputLineArray_.Add(other.outputLineArray_);
+      if (other.CommandType != 0) {
+        CommandType = other.CommandType;
+      }
       _unknownFields = pb::UnknownFieldSet.MergeFrom(_unknownFields, other._unknownFields);
     }
 
@@ -6935,8 +7003,8 @@ namespace wind.Entities.Protobuf {
             NoExecuteMessage = input.ReadString();
             break;
           }
-          case 42: {
-            outputLineArray_.AddEntriesFrom(input, _repeated_outputLineArray_codec);
+          case 40: {
+            CommandType = input.ReadInt32();
             break;
           }
         }

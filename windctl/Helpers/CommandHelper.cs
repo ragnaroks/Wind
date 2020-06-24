@@ -137,7 +137,7 @@ namespace windctl.Helpers {
             if(unitSettingsProtobuf.HasArguments){ Console.Write($" {unitSettingsProtobuf.Arguments}"); }
             //第五行
             if(unitProtobuf.State==2 && unitSettingsProtobuf.MonitorPerformanceUsage) {
-                String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",unitProtobuf.PerformanceCounterCPU);
+                String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",unitProtobuf.PerformanceCounterCPU/unitProtobuf.ProcessorCount);
                 String ramValue=unitProtobuf.PerformanceCounterRAM.FixedByteSize();
                 Console.Write($"\nPerformance:  {cpuValue}; {ramValue}");
             }
@@ -246,18 +246,20 @@ namespace windctl.Helpers {
         }
 
         /// <summary>
-        /// windctl logs unitKey
+        /// windctl attach unitKey
         /// </summary>
-        public static void Attach(AttachResponseProtobuf attachResponseProtobuf){
-            if(attachResponseProtobuf==null){
+        public static void Commandline(CommandlineResponseProtobuf commandlineResponseProtobuf){
+            if(commandlineResponseProtobuf==null){
                 Console.WriteLine(ERROR_RESPONSE);
                 return;
             }
-            if(!attachResponseProtobuf.Executed) {
-                Console.WriteLine(String.Concat("command execute failed,",attachResponseProtobuf.NoExecuteMessage));
+            if(!commandlineResponseProtobuf.Executed) {
+                Console.WriteLine(String.Concat("command execute failed,",commandlineResponseProtobuf.NoExecuteMessage));
                 return;
             }
-            for(Int32 i1=0;i1<attachResponseProtobuf.OutputLineArray.Count;i1++){ Console.WriteLine(attachResponseProtobuf.OutputLineArray[i1]); }
+            if(commandlineResponseProtobuf.CommandType==9) {
+                Program.AttachedUnitKey=null;
+            }
         }
 
         /// <summary>

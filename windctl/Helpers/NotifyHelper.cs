@@ -6,6 +6,15 @@ using wind.Entities.Protobuf;
 namespace windctl.Helpers {
     public static class NotifyHelper {
         /// <summary>
+        /// 单元启动
+        /// </summary>
+        /// <param name="startNotifyProtobuf"></param>
+        public static void Start(StartNotifyProtobuf startNotifyProtobuf) {
+            if(startNotifyProtobuf==null){return;}
+            //do nothing
+            return;
+        }
+        /// <summary>
         /// 单元停止
         /// </summary>
         /// <param name="stopNotifyProtobuf"></param>

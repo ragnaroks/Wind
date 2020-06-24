@@ -202,7 +202,7 @@ namespace windctl.Modules {
                 case 2005:this.LoadResponse(messageReceivedEventArgs.Data);break;
                 case 2006:this.RemoveResponse(messageReceivedEventArgs.Data);break;
                 case 2007:this.LogsResponse(messageReceivedEventArgs.Data);break;
-                case 2008:this.AttachResponse(messageReceivedEventArgs.Data);break;
+                case 2008:this.CommandlineResponse(messageReceivedEventArgs.Data);break;
                 //
                 case 2101:this.StatusAllResponse(messageReceivedEventArgs.Data);break;
                 case 2102:this.StartAllResponse(messageReceivedEventArgs.Data);break;
@@ -215,6 +215,7 @@ namespace windctl.Modules {
                 case 2201:this.DaemonStatusResponse(messageReceivedEventArgs.Data);break;
                 case 2299:this.DaemonShutdownResponse(messageReceivedEventArgs.Data);break;
                 //
+                case 3002:this.StartNotify(messageReceivedEventArgs.Data);break;
                 case 3003:this.StopNotify(messageReceivedEventArgs.Data);break;
                 case 3007:this.LogsNotify(messageReceivedEventArgs.Data);break;
                 default:break;
@@ -237,7 +238,7 @@ namespace windctl.Modules {
             if(!this.Client.Connected){return;}
             LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.ClientOfferControlKey","向服务端请求验证");
             ClientOfferControlKeyProtobuf clientOfferControlKeyProtobuf=new ClientOfferControlKeyProtobuf{
-                Type=12,ConnectionId=this.ClientConnectionId,ControlKey=this.ControlKey,SupportNotify=false,SupportAttach=true};
+                Type=12,ConnectionId=this.ClientConnectionId,ControlKey=this.ControlKey,SupportNotify=true};
             _=this.Client.SendAsync(clientOfferControlKeyProtobuf.ToByteArray());
         }
         /// <summary>
@@ -351,7 +352,7 @@ namespace windctl.Modules {
         /// <param name="unitKey"></param>
         public void LogsRequest(String unitKey) {
             if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
-            LogsRequestProtobuf logsRequestProtobuf=new LogsRequestProtobuf{Type=1007,UnitKey=unitKey};
+            LogsRequestProtobuf logsRequestProtobuf=new LogsRequestProtobuf{Type=1007,UnitKey=unitKey,Line=64};
             _=this.Client.SendAsync(logsRequestProtobuf.ToByteArray());
             Program.InAction=true;
         }
@@ -359,25 +360,14 @@ namespace windctl.Modules {
         /// windctl attach unitKey
         /// </summary>
         /// <param name="unitKey"></param>
-        public void AttachRequest(String unitKey) {
+        public void CommandlineRequest(String unitKey,Int32 commandType,String commandLine) {
             if(!this.Client.Connected || !this.ClientConnectionValid || Program.InAction){return;}
-            AttachRequestProtobuf attachRequestProtobuf=new AttachRequestProtobuf{Type=1008,UnitKey=unitKey};
-            _=this.Client.SendAsync(attachRequestProtobuf.ToByteArray());
+            CommandlineRequestProtobuf commandlineRequestProtobuf=new CommandlineRequestProtobuf{Type=1008,UnitKey=unitKey,CommandType=commandType};
+            switch(commandlineRequestProtobuf.CommandType){
+                case 1:commandlineRequestProtobuf.CommandLine=commandLine;break;
+            }
+            _=this.Client.SendAsync(commandlineRequestProtobuf.ToByteArray());
             Program.InAction=true;
-        }
-        /// <summary>
-        /// windctl attach unitKey,连上之后发送数据使用
-        /// </summary>
-        /// <param name="unitKey"></param>
-        /// <param name="commandType"></param>
-        /// <param name="commandLine"></param>
-        public void AttachRequest(String unitKey,Int32 commandType,String commandLine) {
-            //注意这里的判断条件与上面相反
-            if(!this.Client.Connected || !this.ClientConnectionValid || !Program.InAction){return;}
-            AttachRequestProtobuf attachRequestProtobuf=new AttachRequestProtobuf{Type=1008,UnitKey=unitKey,CommandType=commandType};
-            if(commandType==1){ attachRequestProtobuf.CommandLine=commandLine; }
-            _=this.Client.SendAsync(attachRequestProtobuf.ToByteArray());
-            //Program.InAction=true;//不变更锁的状态
         }
         ////////////////////////////////////////////////////////////////
         /// <summary>
@@ -602,11 +592,11 @@ namespace windctl.Modules {
         /// windctl attach unitKey
         /// </summary>
         /// <param name="bytes"></param>
-        private void AttachResponse(Byte[] bytes) {
+        private void CommandlineResponse(Byte[] bytes) {
             //解析数据
-            AttachResponseProtobuf attachResponseProtobuf;
+            CommandlineResponseProtobuf commandlineResponseProtobuf;
             try {
-                attachResponseProtobuf=AttachResponseProtobuf.Parser.ParseFrom(bytes);
+                commandlineResponseProtobuf=CommandlineResponseProtobuf.Parser.ParseFrom(bytes);
             }catch(Exception exception){
                 LoggerModuleHelper.TryLog(
                     "Modules.WebSocketControlModule.AttachResponse[Error]",
@@ -614,13 +604,8 @@ namespace windctl.Modules {
                 return;
             }
             //调用
-            CommandHelper.Attach(attachResponseProtobuf);
-            if(attachResponseProtobuf.Executed) {
-                Program.AttachedUnitKey=attachResponseProtobuf.UnitKey;
-                Program.InAction=true;//附加成功,不解锁
-            } else {
-                Program.InAction=false;//附加失败,解锁
-            }
+            CommandHelper.Commandline(commandlineResponseProtobuf);
+            Program.InAction=false;
         }
         ////////////////////////////////////////////////////////////////
         /// <summary>
@@ -798,6 +783,24 @@ namespace windctl.Modules {
         #endregion
 
         #region 服务端通知
+        /// <summary>
+        /// StartNotify
+        /// </summary>
+        /// <param name="bytes"></param>
+        private void StartNotify(Byte[] bytes) {
+            //解析数据
+            StartNotifyProtobuf startNotifyProtobuf;
+            try {
+                startNotifyProtobuf=StartNotifyProtobuf.Parser.ParseFrom(bytes);
+            }catch(Exception exception){
+                LoggerModuleHelper.TryLog(
+                    "Modules.WebSocketControlModule.StartNotify[Error]",
+                    $"解析数据包时异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
+                return;
+            }
+            //调用
+            NotifyHelper.Start(startNotifyProtobuf);
+        }
         /// <summary>
         /// StopNotify
         /// </summary>

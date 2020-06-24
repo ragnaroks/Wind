@@ -264,6 +264,7 @@ namespace wind.Modules {
                 if(unit.RunningSettings.MonitorNetworkUsage && Program.UnitNetworkCounterModule.Useable) {
                     _=Program.UnitNetworkCounterModule.Add(unit.ProcessId);
                 }
+                if(Program.RemoteControlModule.Useable){ Program.RemoteControlModule.StartNotify(unit.Key); }
                 LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit",$"已启动\"{unitKey}\"单元");
                 return unit.ProcessId;
             } else {

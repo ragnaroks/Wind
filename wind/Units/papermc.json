@@ -1,10 +1,10 @@
 {
     "Name": "minecraft",
-    "Description": "v1.15.2 #350",
+    "Description": "v1.15.2 #371",
     "Type": 0,
     "AbsoluteExecutePath": "C:\\Program Files\\AdoptOpenJDK\\jdk-11.0.6.10-openj9\\bin\\java.exe",
     "AbsoluteWorkDirectory": "C:\\Softwares\\Wind2Services\\papermc",
-    "Arguments": "-jar paper.jar",
+    "Arguments": "-jar paper.jar -nogui",
     "AutoStart": false,
     "AutoStartDelay": 0,
     "RestartWhenException": false,

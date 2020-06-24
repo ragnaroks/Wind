@@ -95,8 +95,7 @@ namespace windctl {
             consoleCancelEventArgs.Cancel=true;
             //并转发到已附加的单元
             if(String.IsNullOrWhiteSpace(AttachedUnitKey)){return;}
-            //RemoteControlModule.AttachRequest(AttachedUnitKey,2,String.Empty);
-            RemoteControlModule.AttachRequest(AttachedUnitKey,9,String.Empty);
+            RemoteControlModule.CommandlineRequest(AttachedUnitKey,9,String.Empty);
         }
 
         /// <summary>
@@ -142,7 +141,10 @@ namespace windctl {
                 case "load":RemoteControlModule.LoadRequest(argumentValue1);break;
                 case "remove":RemoteControlModule.RemoveRequest(argumentValue1);break;
                 case "logs":RemoteControlModule.LogsRequest(argumentValue1);break;
-                case "attach":RemoteControlModule.AttachRequest(argumentValue1);break;
+                case "attach":
+                    AttachedUnitKey=argumentValue1;
+                    RemoteControlModule.LogsRequest(AttachedUnitKey);
+                    break;
                 case "status-all":RemoteControlModule.StatusAllRequest();break;
                 case "start-all":RemoteControlModule.StartAllRequest();break;
                 case "stop-all":RemoteControlModule.StopAllRequest();break;
@@ -160,9 +162,8 @@ namespace windctl {
                 while(!String.IsNullOrWhiteSpace(AttachedUnitKey)){
                     String attachedCommandLine=Console.ReadLine();
                     if(String.IsNullOrWhiteSpace(attachedCommandLine)){continue;}
-                    RemoteControlModule.AttachRequest(AttachedUnitKey,1,attachedCommandLine);
+                    RemoteControlModule.CommandlineRequest(AttachedUnitKey,1,attachedCommandLine.Trim());
                 }
-                //SpinWait.SpinUntil(()=>!InAction);
             } else {
                 SpinWait.SpinUntil(()=>!InAction,8000);
             }
