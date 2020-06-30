@@ -419,22 +419,24 @@ namespace wind.Modules {
             UnitProtobuf unitProtobuf=new UnitProtobuf{
                 Key=unit.Key,State=unit.State,ProcessorCount=Environment.ProcessorCount,
                 SettingsFilePath=String.Concat(Program.AppEnvironment.UnitsDirectory,Path.DirectorySeparatorChar,unit.Key,".json")};
+            unitProtobuf.SettingsProtobuf=new UnitSettingsProtobuf{
+                Name=unit.Settings.Name,Description=unit.Settings.Description,Type=unit.Settings.Type,
+                AbsoluteExecutePath=unit.Settings.AbsoluteExecutePath,AbsoluteWorkDirectory=unit.Settings.AbsoluteWorkDirectory,
+                Arguments=String.IsNullOrWhiteSpace(unit.Settings.Arguments)?String.Empty:unit.Settings.Arguments,
+                AutoStart=unit.Settings.AutoStart,AutoStartDelay=unit.Settings.AutoStartDelay,
+                RestartWhenException=unit.Settings.RestartWhenException,PriorityClass=unit.Settings.PriorityClass,
+                MonitorPerformanceUsage=unit.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.Settings.MonitorNetworkUsage};
             if(unit.State==2) {
+                unit.Process.Refresh();
+                unitProtobuf.PriorityClass=(Int32)unit.Process.PriorityClass;
                 unitProtobuf.ProcessId=unit.ProcessId;
                 unitProtobuf.ProcessStartTime=unit.Process.StartTime.ToLocalTimestamp();
-                unitProtobuf.SettingsProtobuf=new UnitSettingsProtobuf{
-                    Name=unit.Settings.Name,Description=unit.Settings.Description,Type=unit.Settings.Type,
-                    AbsoluteExecutePath=unit.Settings.AbsoluteExecutePath,AbsoluteWorkDirectory=unit.Settings.AbsoluteWorkDirectory,
-                    Arguments=String.IsNullOrWhiteSpace(unit.Settings.Arguments)?String.Empty:unit.Settings.Arguments,
-                    HasArguments=!String.IsNullOrWhiteSpace(unit.Settings.Arguments),
-                    AutoStart=unit.Settings.AutoStart,AutoStartDelay=unit.Settings.AutoStartDelay,RestartWhenException=unit.Settings.RestartWhenException,
-                    MonitorPerformanceUsage=unit.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.Settings.MonitorNetworkUsage};
                 unitProtobuf.RunningSettingsProtobuf=new UnitSettingsProtobuf{
                     Name=unit.RunningSettings.Name,Description=unit.RunningSettings.Description,Type=unit.RunningSettings.Type,
                     AbsoluteExecutePath=unit.RunningSettings.AbsoluteExecutePath,AbsoluteWorkDirectory=unit.RunningSettings.AbsoluteWorkDirectory,
                     Arguments=String.IsNullOrWhiteSpace(unit.RunningSettings.Arguments)?String.Empty:unit.RunningSettings.Arguments,
-                    HasArguments=!String.IsNullOrWhiteSpace(unit.RunningSettings.Arguments),AutoStart=unit.RunningSettings.AutoStart,
-                    AutoStartDelay=unit.RunningSettings.AutoStartDelay,RestartWhenException=unit.RunningSettings.RestartWhenException,
+                    AutoStart=unit.RunningSettings.AutoStart,AutoStartDelay=unit.RunningSettings.AutoStartDelay,
+                    RestartWhenException=unit.RunningSettings.RestartWhenException,PriorityClass=unit.Settings.PriorityClass,
                     MonitorPerformanceUsage=unit.RunningSettings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.RunningSettings.MonitorNetworkUsage};
                 if(Program.UnitPerformanceCounterModule.Useable && unit.RunningSettings.MonitorPerformanceUsage){
                     unitProtobuf.PerformanceCounterCPU=Program.UnitPerformanceCounterModule.GetCpuValue(unit.ProcessId);
@@ -449,14 +451,6 @@ namespace wind.Modules {
                         unitProtobuf.NetworkCounterTotalReceived=unitNetworkCounter.TotalReceived;
                     }
                 }
-            } else {
-                unitProtobuf.SettingsProtobuf=new UnitSettingsProtobuf{
-                    Name=unit.Settings.Name,Description=unit.Settings.Description,Type=unit.Settings.Type,
-                    AbsoluteExecutePath=unit.Settings.AbsoluteExecutePath,AbsoluteWorkDirectory=unit.Settings.AbsoluteWorkDirectory,
-                    Arguments=String.IsNullOrWhiteSpace(unit.Settings.Arguments)?String.Empty:unit.Settings.Arguments,
-                    HasArguments=!String.IsNullOrWhiteSpace(unit.Settings.Arguments),
-                    AutoStart=unit.Settings.AutoStart,AutoStartDelay=unit.Settings.AutoStartDelay,RestartWhenException=unit.Settings.RestartWhenException,
-                    MonitorPerformanceUsage=unit.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.Settings.MonitorNetworkUsage};
             }
             statusResponseProtobuf.UnitProtobuf=unitProtobuf;
             statusResponseProtobuf.Executed=true;
@@ -514,8 +508,8 @@ namespace wind.Modules {
                     Name=unit.RunningSettings.Name,Description=unit.RunningSettings.Description,Type=unit.RunningSettings.Type,
                     AbsoluteExecutePath=unit.RunningSettings.AbsoluteExecutePath,AbsoluteWorkDirectory=unit.RunningSettings.AbsoluteWorkDirectory,
                     Arguments=String.IsNullOrWhiteSpace(unit.RunningSettings.Arguments)?String.Empty:unit.RunningSettings.Arguments,
-                    HasArguments=!String.IsNullOrWhiteSpace(unit.RunningSettings.Arguments),AutoStart=unit.RunningSettings.AutoStart,
-                    AutoStartDelay=unit.RunningSettings.AutoStartDelay,RestartWhenException=unit.RunningSettings.RestartWhenException,
+                    AutoStart=unit.RunningSettings.AutoStart,AutoStartDelay=unit.RunningSettings.AutoStartDelay,
+                    RestartWhenException=unit.RunningSettings.RestartWhenException,
                     MonitorPerformanceUsage=unit.RunningSettings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.RunningSettings.MonitorNetworkUsage};
             } else {
                 startResponseProtobuf.NoExecuteMessage="start unit failed";
@@ -665,7 +659,6 @@ namespace wind.Modules {
                     Name=unitSettings.Name,Description=unitSettings.Description,Type=unitSettings.Type,
                     AbsoluteExecutePath=unitSettings.AbsoluteExecutePath,AbsoluteWorkDirectory=unitSettings.AbsoluteWorkDirectory,
                     Arguments=!String.IsNullOrWhiteSpace(unitSettings.Arguments)?unitSettings.Arguments:String.Empty,
-                    HasArguments=!String.IsNullOrWhiteSpace(unitSettings.Arguments),
                     AutoStart=unitSettings.AutoStart,AutoStartDelay=unitSettings.AutoStartDelay,
                     RestartWhenException=unitSettings.RestartWhenException,MonitorPerformanceUsage=unitSettings.MonitorPerformanceUsage,
                     MonitorNetworkUsage=unitSettings.MonitorNetworkUsage};
@@ -970,22 +963,24 @@ namespace wind.Modules {
                 UnitProtobuf unitProtobuf=new UnitProtobuf{
                     Key=item.Key,State=item.State,ProcessorCount=Environment.ProcessorCount,
                     SettingsFilePath=String.Concat(Program.AppEnvironment.UnitsDirectory,Path.DirectorySeparatorChar,item.Key,".json")};
+                unitProtobuf.SettingsProtobuf=new UnitSettingsProtobuf{
+                    Name=item.Settings.Name,Description=item.Settings.Description,Type=item.Settings.Type,
+                    AbsoluteExecutePath=item.Settings.AbsoluteExecutePath,AbsoluteWorkDirectory=item.Settings.AbsoluteWorkDirectory,
+                    Arguments=String.IsNullOrWhiteSpace(item.Settings.Arguments)?String.Empty:item.Settings.Arguments,
+                    AutoStart=item.Settings.AutoStart,AutoStartDelay=item.Settings.AutoStartDelay,
+                    RestartWhenException=item.Settings.RestartWhenException,
+                    MonitorPerformanceUsage=item.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=item.Settings.MonitorNetworkUsage};
                 if(item.State==2) {
+                    item.Process.Refresh();
+                    unitProtobuf.PriorityClass=(Int32)item.Process.PriorityClass;
                     unitProtobuf.ProcessId=item.ProcessId;
                     unitProtobuf.ProcessStartTime=item.Process.StartTime.ToLocalTimestamp();
-                    unitProtobuf.SettingsProtobuf=new UnitSettingsProtobuf{
-                        Name=item.Settings.Name,Description=item.Settings.Description,Type=item.Settings.Type,
-                        AbsoluteExecutePath=item.Settings.AbsoluteExecutePath,AbsoluteWorkDirectory=item.Settings.AbsoluteWorkDirectory,
-                        Arguments=String.IsNullOrWhiteSpace(item.Settings.Arguments)?String.Empty:item.Settings.Arguments,
-                        HasArguments=!String.IsNullOrWhiteSpace(item.Settings.Arguments),
-                        AutoStart=item.Settings.AutoStart,AutoStartDelay=item.Settings.AutoStartDelay,RestartWhenException=item.Settings.RestartWhenException,
-                        MonitorPerformanceUsage=item.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=item.Settings.MonitorNetworkUsage};
                     unitProtobuf.RunningSettingsProtobuf=new UnitSettingsProtobuf{
                         Name=item.RunningSettings.Name,Description=item.RunningSettings.Description,Type=item.RunningSettings.Type,
                         AbsoluteExecutePath=item.RunningSettings.AbsoluteExecutePath,AbsoluteWorkDirectory=item.RunningSettings.AbsoluteWorkDirectory,
                         Arguments=String.IsNullOrWhiteSpace(item.RunningSettings.Arguments)?String.Empty:item.RunningSettings.Arguments,
-                        HasArguments=!String.IsNullOrWhiteSpace(item.RunningSettings.Arguments),AutoStart=item.RunningSettings.AutoStart,
-                        AutoStartDelay=item.RunningSettings.AutoStartDelay,RestartWhenException=item.RunningSettings.RestartWhenException,
+                        AutoStart=item.RunningSettings.AutoStart,AutoStartDelay=item.RunningSettings.AutoStartDelay,
+                        RestartWhenException=item.RunningSettings.RestartWhenException,
                         MonitorPerformanceUsage=item.RunningSettings.MonitorPerformanceUsage,MonitorNetworkUsage=item.RunningSettings.MonitorNetworkUsage};
                     if(Program.UnitPerformanceCounterModule.Useable && item.RunningSettings.MonitorPerformanceUsage){
                         unitProtobuf.PerformanceCounterCPU=Program.UnitPerformanceCounterModule.GetCpuValue(item.ProcessId);
@@ -1000,14 +995,6 @@ namespace wind.Modules {
                             unitProtobuf.NetworkCounterTotalReceived=unitNetworkCounter.TotalReceived;
                         }
                     }
-                } else {
-                    unitProtobuf.SettingsProtobuf=new UnitSettingsProtobuf{
-                        Name=item.Settings.Name,Description=item.Settings.Description,Type=item.Settings.Type,
-                        AbsoluteExecutePath=item.Settings.AbsoluteExecutePath,AbsoluteWorkDirectory=item.Settings.AbsoluteWorkDirectory,
-                        Arguments=String.IsNullOrWhiteSpace(item.Settings.Arguments)?String.Empty:item.Settings.Arguments,
-                        HasArguments=!String.IsNullOrWhiteSpace(item.Settings.Arguments),
-                        AutoStart=item.Settings.AutoStart,AutoStartDelay=item.Settings.AutoStartDelay,RestartWhenException=item.Settings.RestartWhenException,
-                        MonitorPerformanceUsage=item.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=item.Settings.MonitorNetworkUsage};
                 }
                 statusAllResponseProtobuf.UnitProtobufArray.Add(unitProtobuf);
             }
@@ -1144,7 +1131,6 @@ namespace wind.Modules {
                         Name=item.Name,Description=item.Description,Type=item.Type,
                         AbsoluteExecutePath=item.AbsoluteExecutePath,AbsoluteWorkDirectory=item.AbsoluteWorkDirectory,
                         Arguments=String.IsNullOrWhiteSpace(item.Arguments)?String.Empty:item.Arguments,
-                        HasArguments=!String.IsNullOrWhiteSpace(item.Arguments),
                         AutoStart=item.AutoStart,AutoStartDelay=item.AutoStartDelay,
                         RestartWhenException=item.RestartWhenException,MonitorPerformanceUsage=item.MonitorPerformanceUsage,
                         MonitorNetworkUsage=item.MonitorNetworkUsage};
@@ -1234,9 +1220,8 @@ namespace wind.Modules {
             //初始化响应体
             DaemonStatusResponseProtobuf daemonStatusResponseProtobuf=new DaemonStatusResponseProtobuf{Type=2201};
             DaemonProtobuf daemonProtobuf=new DaemonProtobuf{
-                Name="wind",Description="a systemd for windows",AbsoluteExecutePath=Program.AppEnvironment.BaseDirectory+"wind.exe",
-                AbsoluteWorkDirectory=Program.AppEnvironment.BaseDirectory,ProcessId=Program.AppProcess.Id,ProcessorCount=Environment.ProcessorCount,
-                ProcessStartTime=Program.AppProcess.StartTime.ToLocalTimestamp()};
+                AbsoluteExecutePath=Program.AppEnvironment.BaseDirectory+"wind.exe",AbsoluteWorkDirectory=Program.AppEnvironment.BaseDirectory,
+                ProcessId=Program.AppProcess.Id,ProcessorCount=Environment.ProcessorCount,ProcessStartTime=Program.AppProcess.StartTime.ToLocalTimestamp()};
             if(Program.UnitPerformanceCounterModule.Useable) {
                 daemonProtobuf.PerformanceCounterCPU=Program.UnitPerformanceCounterModule.GetCpuValue(Program.AppProcess.Id);
                 daemonProtobuf.PerformanceCounterRAM=Program.UnitPerformanceCounterModule.GetRamValue(Program.AppProcess.Id);
@@ -1248,6 +1233,8 @@ namespace wind.Modules {
                 daemonProtobuf.NetworkCounterTotalSent=counter.TotalSent;
                 daemonProtobuf.NetworkCounterTotalReceived=counter.TotalReceived;
             }
+            Program.AppProcess.Refresh();
+            daemonProtobuf.PriorityClass=(Int32)Program.AppProcess.PriorityClass;
             daemonStatusResponseProtobuf.DaemonProtobuf=daemonProtobuf;
             //回复
             _=clientConnection.WebSocketConnection.Send(daemonStatusResponseProtobuf.ToByteArray());

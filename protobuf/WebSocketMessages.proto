@@ -13,9 +13,9 @@ message UnitSettingsProtobuf{
   bool AutoStart=7;
   int32 AutoStartDelay=8;
   bool RestartWhenException=9;
-  bool MonitorPerformanceUsage=10;
-  bool MonitorNetworkUsage=11;
-  bool HasArguments=12;
+  string PriorityClass=10;
+  bool MonitorPerformanceUsage=11;
+  bool MonitorNetworkUsage=12;
 }
 message UnitProtobuf{
   string Key=1;
@@ -30,23 +30,23 @@ message UnitProtobuf{
   int64 NetworkCounterTotalReceived=10;
   int64 NetworkCounterSendSpeed=11;
   int64 NetworkCounterReceiveSpeed=12;
-  UnitSettingsProtobuf SettingsProtobuf=13;
-  UnitSettingsProtobuf RunningSettingsProtobuf=14;
+  int32 PriorityClass=13;
+  UnitSettingsProtobuf SettingsProtobuf=14;
+  UnitSettingsProtobuf RunningSettingsProtobuf=15;
 }
 message DaemonProtobuf{
-  string Name=1;
-  string Description=2;
-  string AbsoluteExecutePath=3;
-  string AbsoluteWorkDirectory=4;
-  int32 ProcessId=5;
-  int64 ProcessStartTime=6;
-  int32 ProcessorCount=7;
-  float PerformanceCounterCPU=8;
-  float PerformanceCounterRAM=9;
-  int64 NetworkCounterTotalSent=10;
-  int64 NetworkCounterTotalReceived=11;
-  int64 NetworkCounterSendSpeed=12;
-  int64 NetworkCounterReceiveSpeed=13;
+  string AbsoluteExecutePath=1;
+  string AbsoluteWorkDirectory=2;
+  int32 ProcessId=3;
+  int64 ProcessStartTime=4;
+  int32 ProcessorCount=5;
+  float PerformanceCounterCPU=6;
+  float PerformanceCounterRAM=7;
+  int64 NetworkCounterTotalSent=8;
+  int64 NetworkCounterTotalReceived=9;
+  int64 NetworkCounterSendSpeed=10;
+  int64 NetworkCounterReceiveSpeed=11;
+  int32 PriorityClass=12;
 }
 
 ////////////////////////////////////////////////////////////////

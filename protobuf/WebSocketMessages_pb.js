@@ -1087,9 +1087,9 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.toObject = f
     autostart: jspb.Message.getBooleanFieldWithDefault(msg, 7, false),
     autostartdelay: jspb.Message.getFieldWithDefault(msg, 8, 0),
     restartwhenexception: jspb.Message.getBooleanFieldWithDefault(msg, 9, false),
-    monitorperformanceusage: jspb.Message.getBooleanFieldWithDefault(msg, 10, false),
-    monitornetworkusage: jspb.Message.getBooleanFieldWithDefault(msg, 11, false),
-    hasarguments: jspb.Message.getBooleanFieldWithDefault(msg, 12, false)
+    priorityclass: jspb.Message.getFieldWithDefault(msg, 10, ""),
+    monitorperformanceusage: jspb.Message.getBooleanFieldWithDefault(msg, 11, false),
+    monitornetworkusage: jspb.Message.getBooleanFieldWithDefault(msg, 12, false)
   };
 
   if (includeInstance) {
@@ -1163,16 +1163,16 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.deserializeB
       msg.setRestartwhenexception(value);
       break;
     case 10:
-      var value = /** @type {boolean} */ (reader.readBool());
-      msg.setMonitorperformanceusage(value);
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPriorityclass(value);
       break;
     case 11:
       var value = /** @type {boolean} */ (reader.readBool());
-      msg.setMonitornetworkusage(value);
+      msg.setMonitorperformanceusage(value);
       break;
     case 12:
       var value = /** @type {boolean} */ (reader.readBool());
-      msg.setHasarguments(value);
+      msg.setMonitornetworkusage(value);
       break;
     default:
       reader.skipField();
@@ -1266,21 +1266,21 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.serializeBin
       f
     );
   }
-  f = message.getMonitorperformanceusage();
-  if (f) {
-    writer.writeBool(
+  f = message.getPriorityclass();
+  if (f.length > 0) {
+    writer.writeString(
       10,
       f
     );
   }
-  f = message.getMonitornetworkusage();
+  f = message.getMonitorperformanceusage();
   if (f) {
     writer.writeBool(
       11,
       f
     );
   }
-  f = message.getHasarguments();
+  f = message.getMonitornetworkusage();
   if (f) {
     writer.writeBool(
       12,
@@ -1453,28 +1453,28 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.se
 
 
 /**
- * optional bool MonitorPerformanceUsage = 10;
+ * optional string PriorityClass = 10;
+ * @return {string}
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getPriorityclass = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 10, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setPriorityclass = function(value) {
+  return jspb.Message.setProto3StringField(this, 10, value);
+};
+
+
+/**
+ * optional bool MonitorPerformanceUsage = 11;
  * @return {boolean}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getMonitorperformanceusage = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 10, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
- */
-proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setMonitorperformanceusage = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 10, value);
-};
-
-
-/**
- * optional bool MonitorNetworkUsage = 11;
- * @return {boolean}
- */
-proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getMonitornetworkusage = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 11, false));
 };
 
@@ -1483,16 +1483,16 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.ge
  * @param {boolean} value
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
  */
-proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setMonitornetworkusage = function(value) {
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setMonitorperformanceusage = function(value) {
   return jspb.Message.setProto3BooleanField(this, 11, value);
 };
 
 
 /**
- * optional bool HasArguments = 12;
+ * optional bool MonitorNetworkUsage = 12;
  * @return {boolean}
  */
-proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getHasarguments = function() {
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getMonitornetworkusage = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 12, false));
 };
 
@@ -1501,7 +1501,7 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.ge
  * @param {boolean} value
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
  */
-proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setHasarguments = function(value) {
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setMonitornetworkusage = function(value) {
   return jspb.Message.setProto3BooleanField(this, 12, value);
 };
 
@@ -1550,6 +1550,7 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.toObject = function(
     networkcountertotalreceived: jspb.Message.getFieldWithDefault(msg, 10, 0),
     networkcountersendspeed: jspb.Message.getFieldWithDefault(msg, 11, 0),
     networkcounterreceivespeed: jspb.Message.getFieldWithDefault(msg, 12, 0),
+    priorityclass: jspb.Message.getFieldWithDefault(msg, 13, 0),
     settingsprotobuf: (f = msg.getSettingsprotobuf()) && proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.toObject(includeInstance, f),
     runningsettingsprotobuf: (f = msg.getRunningsettingsprotobuf()) && proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.toObject(includeInstance, f)
   };
@@ -1637,11 +1638,15 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.deserializeBinaryFro
       msg.setNetworkcounterreceivespeed(value);
       break;
     case 13:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPriorityclass(value);
+      break;
+    case 14:
       var value = new proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf;
       reader.readMessage(value,proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.deserializeBinaryFromReader);
       msg.setSettingsprotobuf(value);
       break;
-    case 14:
+    case 15:
       var value = new proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf;
       reader.readMessage(value,proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.deserializeBinaryFromReader);
       msg.setRunningsettingsprotobuf(value);
@@ -1759,10 +1764,17 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.serializeBinaryToWri
       f
     );
   }
+  f = message.getPriorityclass();
+  if (f !== 0) {
+    writer.writeInt32(
+      13,
+      f
+    );
+  }
   f = message.getSettingsprotobuf();
   if (f != null) {
     writer.writeMessage(
-      13,
+      14,
       f,
       proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.serializeBinaryToWriter
     );
@@ -1770,7 +1782,7 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.serializeBinaryToWri
   f = message.getRunningsettingsprotobuf();
   if (f != null) {
     writer.writeMessage(
-      14,
+      15,
       f,
       proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.serializeBinaryToWriter
     );
@@ -1995,12 +2007,30 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.prototype.setNetwork
 
 
 /**
- * optional UnitSettingsProtobuf SettingsProtobuf = 13;
+ * optional int32 PriorityClass = 13;
+ * @return {number}
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.prototype.getPriorityclass = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 13, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf} returns this
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.prototype.setPriorityclass = function(value) {
+  return jspb.Message.setProto3IntField(this, 13, value);
+};
+
+
+/**
+ * optional UnitSettingsProtobuf SettingsProtobuf = 14;
  * @return {?proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.prototype.getSettingsprotobuf = function() {
   return /** @type{?proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} */ (
-    jspb.Message.getWrapperField(this, proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf, 13));
+    jspb.Message.getWrapperField(this, proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf, 14));
 };
 
 
@@ -2009,7 +2039,7 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.prototype.getSetting
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf} returns this
 */
 proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.prototype.setSettingsprotobuf = function(value) {
-  return jspb.Message.setWrapperField(this, 13, value);
+  return jspb.Message.setWrapperField(this, 14, value);
 };
 
 
@@ -2027,17 +2057,17 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.prototype.clearSetti
  * @return {boolean}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.prototype.hasSettingsprotobuf = function() {
-  return jspb.Message.getField(this, 13) != null;
+  return jspb.Message.getField(this, 14) != null;
 };
 
 
 /**
- * optional UnitSettingsProtobuf RunningSettingsProtobuf = 14;
+ * optional UnitSettingsProtobuf RunningSettingsProtobuf = 15;
  * @return {?proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.prototype.getRunningsettingsprotobuf = function() {
   return /** @type{?proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} */ (
-    jspb.Message.getWrapperField(this, proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf, 14));
+    jspb.Message.getWrapperField(this, proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf, 15));
 };
 
 
@@ -2046,7 +2076,7 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.prototype.getRunning
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf} returns this
 */
 proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.prototype.setRunningsettingsprotobuf = function(value) {
-  return jspb.Message.setWrapperField(this, 14, value);
+  return jspb.Message.setWrapperField(this, 15, value);
 };
 
 
@@ -2064,7 +2094,7 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.prototype.clearRunni
  * @return {boolean}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.UnitProtobuf.prototype.hasRunningsettingsprotobuf = function() {
-  return jspb.Message.getField(this, 14) != null;
+  return jspb.Message.getField(this, 15) != null;
 };
 
 
@@ -2100,19 +2130,18 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.toObject
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.toObject = function(includeInstance, msg) {
   var f, obj = {
-    name: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    description: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    absoluteexecutepath: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    absoluteworkdirectory: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    processid: jspb.Message.getFieldWithDefault(msg, 5, 0),
-    processstarttime: jspb.Message.getFieldWithDefault(msg, 6, 0),
-    processorcount: jspb.Message.getFieldWithDefault(msg, 7, 0),
-    performancecountercpu: jspb.Message.getFloatingPointFieldWithDefault(msg, 8, 0.0),
-    performancecounterram: jspb.Message.getFloatingPointFieldWithDefault(msg, 9, 0.0),
-    networkcountertotalsent: jspb.Message.getFieldWithDefault(msg, 10, 0),
-    networkcountertotalreceived: jspb.Message.getFieldWithDefault(msg, 11, 0),
-    networkcountersendspeed: jspb.Message.getFieldWithDefault(msg, 12, 0),
-    networkcounterreceivespeed: jspb.Message.getFieldWithDefault(msg, 13, 0)
+    absoluteexecutepath: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    absoluteworkdirectory: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    processid: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    processstarttime: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    processorcount: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    performancecountercpu: jspb.Message.getFloatingPointFieldWithDefault(msg, 6, 0.0),
+    performancecounterram: jspb.Message.getFloatingPointFieldWithDefault(msg, 7, 0.0),
+    networkcountertotalsent: jspb.Message.getFieldWithDefault(msg, 8, 0),
+    networkcountertotalreceived: jspb.Message.getFieldWithDefault(msg, 9, 0),
+    networkcountersendspeed: jspb.Message.getFieldWithDefault(msg, 10, 0),
+    networkcounterreceivespeed: jspb.Message.getFieldWithDefault(msg, 11, 0),
+    priorityclass: jspb.Message.getFieldWithDefault(msg, 12, 0)
   };
 
   if (includeInstance) {
@@ -2151,55 +2180,51 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.deserializeBinaryF
     switch (field) {
     case 1:
       var value = /** @type {string} */ (reader.readString());
-      msg.setName(value);
+      msg.setAbsoluteexecutepath(value);
       break;
     case 2:
       var value = /** @type {string} */ (reader.readString());
-      msg.setDescription(value);
-      break;
-    case 3:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setAbsoluteexecutepath(value);
-      break;
-    case 4:
-      var value = /** @type {string} */ (reader.readString());
       msg.setAbsoluteworkdirectory(value);
       break;
-    case 5:
+    case 3:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setProcessid(value);
       break;
-    case 6:
+    case 4:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setProcessstarttime(value);
       break;
-    case 7:
+    case 5:
       var value = /** @type {number} */ (reader.readInt32());
       msg.setProcessorcount(value);
       break;
-    case 8:
+    case 6:
       var value = /** @type {number} */ (reader.readFloat());
       msg.setPerformancecountercpu(value);
       break;
-    case 9:
+    case 7:
       var value = /** @type {number} */ (reader.readFloat());
       msg.setPerformancecounterram(value);
       break;
-    case 10:
+    case 8:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setNetworkcountertotalsent(value);
       break;
-    case 11:
+    case 9:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setNetworkcountertotalreceived(value);
       break;
-    case 12:
+    case 10:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setNetworkcountersendspeed(value);
       break;
-    case 13:
+    case 11:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setNetworkcounterreceivespeed(value);
+      break;
+    case 12:
+      var value = /** @type {number} */ (reader.readInt32());
+      msg.setPriorityclass(value);
       break;
     default:
       reader.skipField();
@@ -2230,94 +2255,87 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.serializ
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getName();
+  f = message.getAbsoluteexecutepath();
   if (f.length > 0) {
     writer.writeString(
       1,
       f
     );
   }
-  f = message.getDescription();
+  f = message.getAbsoluteworkdirectory();
   if (f.length > 0) {
     writer.writeString(
       2,
       f
     );
   }
-  f = message.getAbsoluteexecutepath();
-  if (f.length > 0) {
-    writer.writeString(
-      3,
-      f
-    );
-  }
-  f = message.getAbsoluteworkdirectory();
-  if (f.length > 0) {
-    writer.writeString(
-      4,
-      f
-    );
-  }
   f = message.getProcessid();
   if (f !== 0) {
     writer.writeInt32(
-      5,
+      3,
       f
     );
   }
   f = message.getProcessstarttime();
   if (f !== 0) {
     writer.writeInt64(
-      6,
+      4,
       f
     );
   }
   f = message.getProcessorcount();
   if (f !== 0) {
     writer.writeInt32(
-      7,
+      5,
       f
     );
   }
   f = message.getPerformancecountercpu();
   if (f !== 0.0) {
     writer.writeFloat(
-      8,
+      6,
       f
     );
   }
   f = message.getPerformancecounterram();
   if (f !== 0.0) {
     writer.writeFloat(
-      9,
+      7,
       f
     );
   }
   f = message.getNetworkcountertotalsent();
   if (f !== 0) {
     writer.writeInt64(
-      10,
+      8,
       f
     );
   }
   f = message.getNetworkcountertotalreceived();
   if (f !== 0) {
     writer.writeInt64(
-      11,
+      9,
       f
     );
   }
   f = message.getNetworkcountersendspeed();
   if (f !== 0) {
     writer.writeInt64(
-      12,
+      10,
       f
     );
   }
   f = message.getNetworkcounterreceivespeed();
   if (f !== 0) {
     writer.writeInt64(
-      13,
+      11,
+      f
+    );
+  }
+  f = message.getPriorityclass();
+  if (f !== 0) {
+    writer.writeInt32(
+      12,
       f
     );
   }
@@ -2325,10 +2343,10 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.serializeBinaryToW
 
 
 /**
- * optional string Name = 1;
+ * optional string AbsoluteExecutePath = 1;
  * @return {string}
  */
-proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getName = function() {
+proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getAbsoluteexecutepath = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -2337,16 +2355,16 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getName 
  * @param {string} value
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
  */
-proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setName = function(value) {
+proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setAbsoluteexecutepath = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
 /**
- * optional string Description = 2;
+ * optional string AbsoluteWorkDirectory = 2;
  * @return {string}
  */
-proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getDescription = function() {
+proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getAbsoluteworkdirectory = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
@@ -2355,53 +2373,17 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getDescr
  * @param {string} value
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
  */
-proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setDescription = function(value) {
+proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setAbsoluteworkdirectory = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
 /**
- * optional string AbsoluteExecutePath = 3;
- * @return {string}
- */
-proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getAbsoluteexecutepath = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
- */
-proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setAbsoluteexecutepath = function(value) {
-  return jspb.Message.setProto3StringField(this, 3, value);
-};
-
-
-/**
- * optional string AbsoluteWorkDirectory = 4;
- * @return {string}
- */
-proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getAbsoluteworkdirectory = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
- */
-proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setAbsoluteworkdirectory = function(value) {
-  return jspb.Message.setProto3StringField(this, 4, value);
-};
-
-
-/**
- * optional int32 ProcessId = 5;
+ * optional int32 ProcessId = 3;
  * @return {number}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getProcessid = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
 };
 
 
@@ -2410,16 +2392,16 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getProce
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setProcessid = function(value) {
-  return jspb.Message.setProto3IntField(this, 5, value);
+  return jspb.Message.setProto3IntField(this, 3, value);
 };
 
 
 /**
- * optional int64 ProcessStartTime = 6;
+ * optional int64 ProcessStartTime = 4;
  * @return {number}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getProcessstarttime = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
 };
 
 
@@ -2428,16 +2410,16 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getProce
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setProcessstarttime = function(value) {
-  return jspb.Message.setProto3IntField(this, 6, value);
+  return jspb.Message.setProto3IntField(this, 4, value);
 };
 
 
 /**
- * optional int32 ProcessorCount = 7;
+ * optional int32 ProcessorCount = 5;
  * @return {number}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getProcessorcount = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
 };
 
 
@@ -2446,16 +2428,16 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getProce
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setProcessorcount = function(value) {
-  return jspb.Message.setProto3IntField(this, 7, value);
+  return jspb.Message.setProto3IntField(this, 5, value);
 };
 
 
 /**
- * optional float PerformanceCounterCPU = 8;
+ * optional float PerformanceCounterCPU = 6;
  * @return {number}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getPerformancecountercpu = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 8, 0.0));
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 6, 0.0));
 };
 
 
@@ -2464,16 +2446,16 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getPerfo
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setPerformancecountercpu = function(value) {
-  return jspb.Message.setProto3FloatField(this, 8, value);
+  return jspb.Message.setProto3FloatField(this, 6, value);
 };
 
 
 /**
- * optional float PerformanceCounterRAM = 9;
+ * optional float PerformanceCounterRAM = 7;
  * @return {number}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getPerformancecounterram = function() {
-  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 9, 0.0));
+  return /** @type {number} */ (jspb.Message.getFloatingPointFieldWithDefault(this, 7, 0.0));
 };
 
 
@@ -2482,16 +2464,16 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getPerfo
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setPerformancecounterram = function(value) {
-  return jspb.Message.setProto3FloatField(this, 9, value);
+  return jspb.Message.setProto3FloatField(this, 7, value);
 };
 
 
 /**
- * optional int64 NetworkCounterTotalSent = 10;
+ * optional int64 NetworkCounterTotalSent = 8;
  * @return {number}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getNetworkcountertotalsent = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 10, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 8, 0));
 };
 
 
@@ -2500,16 +2482,16 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getNetwo
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setNetworkcountertotalsent = function(value) {
-  return jspb.Message.setProto3IntField(this, 10, value);
+  return jspb.Message.setProto3IntField(this, 8, value);
 };
 
 
 /**
- * optional int64 NetworkCounterTotalReceived = 11;
+ * optional int64 NetworkCounterTotalReceived = 9;
  * @return {number}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getNetworkcountertotalreceived = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 11, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 9, 0));
 };
 
 
@@ -2518,16 +2500,16 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getNetwo
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setNetworkcountertotalreceived = function(value) {
-  return jspb.Message.setProto3IntField(this, 11, value);
+  return jspb.Message.setProto3IntField(this, 9, value);
 };
 
 
 /**
- * optional int64 NetworkCounterSendSpeed = 12;
+ * optional int64 NetworkCounterSendSpeed = 10;
  * @return {number}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getNetworkcountersendspeed = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 12, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 10, 0));
 };
 
 
@@ -2536,16 +2518,16 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getNetwo
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setNetworkcountersendspeed = function(value) {
-  return jspb.Message.setProto3IntField(this, 12, value);
+  return jspb.Message.setProto3IntField(this, 10, value);
 };
 
 
 /**
- * optional int64 NetworkCounterReceiveSpeed = 13;
+ * optional int64 NetworkCounterReceiveSpeed = 11;
  * @return {number}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getNetworkcounterreceivespeed = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 13, 0));
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 11, 0));
 };
 
 
@@ -2554,7 +2536,25 @@ proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getNetwo
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setNetworkcounterreceivespeed = function(value) {
-  return jspb.Message.setProto3IntField(this, 13, value);
+  return jspb.Message.setProto3IntField(this, 11, value);
+};
+
+
+/**
+ * optional int32 PriorityClass = 12;
+ * @return {number}
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.getPriorityclass = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 12, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf} returns this
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.DaemonProtobuf.prototype.setPriorityclass = function(value) {
+  return jspb.Message.setProto3IntField(this, 12, value);
 };
 
 

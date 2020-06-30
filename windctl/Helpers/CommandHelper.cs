@@ -127,6 +127,16 @@ namespace windctl.Helpers {
                     Console.ForegroundColor=ConsoleColor.Cyan;
                     Console.Write($"#{unitProtobuf.ProcessId}");
                     Console.ResetColor();
+                    Console.Write(" @");
+                    switch(unitProtobuf.PriorityClass) {
+                        case 256:Console.Write("RealTime");break;
+                        case 128:Console.Write("High");break;
+                        case 32768:Console.Write("AboveNormal");break;
+                        case 32:Console.Write("Normal");break;
+                        case 16384:Console.Write("BelowNormal");break;
+                        case 64:Console.Write("Idle");break;
+                        default:Console.Write("unknown");break;
+                    }
                     Console.Write($" (since {unitProtobuf.ProcessStartTime.ToLocalTimestampString()})");
                     break;
                 case 3:Console.Write("stopping");break;
@@ -134,7 +144,7 @@ namespace windctl.Helpers {
             }
             //第四行
             Console.Write($"\nCommandLine:  {unitSettingsProtobuf.AbsoluteExecutePath}");
-            if(unitSettingsProtobuf.HasArguments){ Console.Write($" {unitSettingsProtobuf.Arguments}"); }
+            if(!String.IsNullOrWhiteSpace(unitSettingsProtobuf.Arguments)){ Console.Write($" {unitSettingsProtobuf.Arguments}"); }
             //第五行
             if(unitProtobuf.State==2 && unitSettingsProtobuf.MonitorPerformanceUsage) {
                 String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",unitProtobuf.PerformanceCounterCPU/unitProtobuf.ProcessorCount);
@@ -303,6 +313,16 @@ namespace windctl.Helpers {
                         Console.ForegroundColor=ConsoleColor.Cyan;
                         Console.Write($"#{item.ProcessId}");
                         Console.ResetColor();
+                        Console.Write(" @");
+                        switch(item.PriorityClass) {
+                            case 256:Console.Write("RealTime");break;
+                            case 128:Console.Write("High");break;
+                            case 32768:Console.Write("AboveNormal");break;
+                            case 32:Console.Write("Normal");break;
+                            case 16384:Console.Write("BelowNormal");break;
+                            case 64:Console.Write("Idle");break;
+                            default:Console.Write("unknown");break;
+                        }
                         Console.Write($" (since {item.ProcessStartTime.ToLocalTimestampString()})");
                         break;
                     case 3:Console.Write("stopping");break;
@@ -424,7 +444,7 @@ namespace windctl.Helpers {
             Console.ForegroundColor=ConsoleColor.Green;
             Console.Write("● ");
             Console.ResetColor();
-            Console.Write($"{daemonProtobuf.Name} - {daemonProtobuf.Description}");
+            Console.Write($"Wind - a systemd for windows");
             //第二行
             Console.Write($"\n     Loaded:  {daemonProtobuf.AbsoluteWorkDirectory}Data\\AppSettings.json");
             //第三行
@@ -436,6 +456,16 @@ namespace windctl.Helpers {
             Console.ForegroundColor=ConsoleColor.Cyan;
             Console.Write($" #{daemonProtobuf.ProcessId}");
             Console.ResetColor();
+            Console.Write(" @");
+            switch(daemonProtobuf.PriorityClass) {
+                case 256:Console.Write("RealTime");break;
+                case 128:Console.Write("High");break;
+                case 32768:Console.Write("AboveNormal");break;
+                case 32:Console.Write("Normal");break;
+                case 16384:Console.Write("BelowNormal");break;
+                case 64:Console.Write("Idle");break;
+                default:Console.Write("unknown");break;
+            }
             Console.Write($" (since {daemonProtobuf.ProcessStartTime.ToLocalTimestampString()})");
             //第四行
             String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",daemonProtobuf.PerformanceCounterCPU);
