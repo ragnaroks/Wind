@@ -244,34 +244,39 @@ namespace wind.Modules {
             unit.Process.OutputDataReceived+=this.OnProcessOutputDataReceived;
             unit.Process.ErrorDataReceived+=this.OnProcessErrorDataReceived;
             if(forAutoStart && unit.RunningSettings.AutoStartDelay>0){ SpinWait.SpinUntil(()=>false,unit.RunningSettings.AutoStartDelay*1000); }
-            Boolean b1=false;
             try {
-                b1=unit.Process.Start();
+                if(!unit.Process.Start()) {
+                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit",$"启动\"{unitKey}\"单元失败");
+                    unit.State=0;
+                    if(Program.RemoteControlModule.Useable){ Program.RemoteControlModule.StopNotify(unitKey); }
+                    return 0;
+                }
             }catch(Exception exception) {
                 LoggerModuleHelper.TryLog(
                     "Modules.UnitManageModule.StartUnit[Error]",
                     $"启动\"{unitKey}\"单元异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
-            }
-            if(b1) {
-                unit.Process.BeginOutputReadLine();
-                unit.Process.BeginErrorReadLine();
-                unit.Process.StandardInput.AutoFlush=true;
-                unit.ProcessId=unit.Process.Id;
-                unit.State=2;
-                if(unit.RunningSettings.MonitorPerformanceUsage && Program.UnitPerformanceCounterModule.Useable){
-                    Program.UnitPerformanceCounterModule.Add(unit.ProcessId);
-                }
-                if(unit.RunningSettings.MonitorNetworkUsage && Program.UnitNetworkCounterModule.Useable) {
-                    _=Program.UnitNetworkCounterModule.Add(unit.ProcessId);
-                }
-                if(Program.RemoteControlModule.Useable){ Program.RemoteControlModule.StartNotify(unit.Key); }
-                LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit",$"已启动\"{unitKey}\"单元");
-                return unit.ProcessId;
-            } else {
                 unit.State=0;
-                LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit",$"启动\"{unitKey}\"单元失败");
+                if(Program.RemoteControlModule.Useable){ Program.RemoteControlModule.StopNotify(unitKey); }
                 return 0;
             }
+            if(unit.RunningSettings.PriorityClass!="Normal") {
+                unit.Process.PriorityClass=UnitManageModuleHelper.GetProcessPriorityClassFromString(unit.RunningSettings.PriorityClass);
+            }
+            unit.Process.BeginOutputReadLine();
+            unit.Process.BeginErrorReadLine();
+            unit.Process.StandardInput.AutoFlush=true;
+            //unit.Process.ProcessorAffinity=(IntPtr)0x02;
+            unit.ProcessId=unit.Process.Id;
+            unit.State=2;
+            if(unit.RunningSettings.MonitorPerformanceUsage && Program.UnitPerformanceCounterModule.Useable){
+                Program.UnitPerformanceCounterModule.Add(unit.ProcessId);
+            }
+            if(unit.RunningSettings.MonitorNetworkUsage && Program.UnitNetworkCounterModule.Useable) {
+                _=Program.UnitNetworkCounterModule.Add(unit.ProcessId);
+            }
+            if(Program.RemoteControlModule.Useable){ Program.RemoteControlModule.StartNotify(unit.Key); }
+            LoggerModuleHelper.TryLog("Modules.UnitManageModule.StartUnit",$"已启动\"{unitKey}\"单元");
+            return unit.ProcessId;
         }
 
         /// <summary>

@@ -5,3 +5,6 @@ dotnet_diagnostic.CA1031.severity = none
 
 # CA1303: 请不要将文本作为本地化参数传递
 dotnet_diagnostic.CA1303.severity = none
+
+# IDE0066: 将 switch 语句转换为表达式
+csharp_style_prefer_switch_expression = true:none

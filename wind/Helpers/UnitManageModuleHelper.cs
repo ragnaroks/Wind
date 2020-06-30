@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.Json;
@@ -91,6 +92,18 @@ namespace wind.Helpers {
                 "Helpers.UnitManageModuleHelper.ParseUnitSettingsFile",
                 $"单元\"{unitSettingsFileInfo.FullName}\"解析完成");
             return unitSettings;
+        }
+
+        public static ProcessPriorityClass GetProcessPriorityClassFromString(String priorityClassString){
+            switch(priorityClassString) {
+                case "RealTime":return ProcessPriorityClass.RealTime;
+                case "High":return ProcessPriorityClass.High;
+                case "AboveNormal":return ProcessPriorityClass.AboveNormal;
+                case "Normal":return ProcessPriorityClass.Normal;
+                case "BelowNormal":return ProcessPriorityClass.BelowNormal;
+                case "Idle":return ProcessPriorityClass.Idle;
+                default:return ProcessPriorityClass.Normal;
+            }
         }
     }
 }

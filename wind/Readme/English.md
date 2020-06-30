@@ -51,6 +51,8 @@
     "AutoStartDelay": 3,
     // unit will restart when unit exit by exception
     "RestartWhenException": false,
+    // unit process priority,do not modify this item if you do not know what it is
+    "PriorityClass": "Normal",
     // monitor unit performance
     "MonitorPerformanceUsage": false,
     // monitor unit network usage

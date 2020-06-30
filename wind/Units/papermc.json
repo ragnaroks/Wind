@@ -8,6 +8,7 @@
     "AutoStart": false,
     "AutoStartDelay": 0,
     "RestartWhenException": false,
+    "PriorityClass": "Idle",
     "MonitorPerformanceUsage": true,
     "MonitorNetworkUsage": true
 }
