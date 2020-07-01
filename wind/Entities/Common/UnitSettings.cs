@@ -22,7 +22,9 @@ namespace wind.Entities.Common {
         /// <summary>守护进程</summary>
         public Boolean RestartWhenException{get;set;}=false;
         /// <summary>进程优先级</summary>
-        public String PriorityClass{get;set;}="Normal";
+        public String PriorityClass{get;set;}=null;
+        /// <summary>CPU亲和性</summary>
+        public String ProcessorAffinity{get;set;}=null;
         /// <summary>是否获取性能使用数据</summary>
         public Boolean MonitorPerformanceUsage{get;set;}=false;
         /// <summary>是否获取网络使用数据</summary>

@@ -259,13 +259,20 @@ namespace wind.Modules {
                 if(Program.RemoteControlModule.Useable){ Program.RemoteControlModule.StopNotify(unitKey); }
                 return 0;
             }
-            if(unit.RunningSettings.PriorityClass!="Normal") {
+            if(!String.IsNullOrWhiteSpace(unit.RunningSettings.PriorityClass)) {
+                unit.Process.Refresh();
                 unit.Process.PriorityClass=UnitManageModuleHelper.GetProcessPriorityClassFromString(unit.RunningSettings.PriorityClass);
+            }
+            if(!String.IsNullOrWhiteSpace(unit.RunningSettings.ProcessorAffinity)){
+                Nullable<IntPtr> ptr=UnitManageModuleHelper.GetProcessorAffinityFormString(unit.RunningSettings.ProcessorAffinity);
+                if(ptr.HasValue){
+                    unit.Process.Refresh();
+                    unit.Process.ProcessorAffinity=ptr.Value;
+                }
             }
             unit.Process.BeginOutputReadLine();
             unit.Process.BeginErrorReadLine();
             unit.Process.StandardInput.AutoFlush=true;
-            //unit.Process.ProcessorAffinity=(IntPtr)0x02;
             unit.ProcessId=unit.Process.Id;
             unit.State=2;
             if(unit.RunningSettings.MonitorPerformanceUsage && Program.UnitPerformanceCounterModule.Useable){

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -94,6 +95,11 @@ namespace wind.Helpers {
             return unitSettings;
         }
 
+        /// <summary>
+        /// 从字符串解析优先级
+        /// </summary>
+        /// <param name="priorityClassString"></param>
+        /// <returns></returns>
         public static ProcessPriorityClass GetProcessPriorityClassFromString(String priorityClassString){
             switch(priorityClassString) {
                 case "RealTime":return ProcessPriorityClass.RealTime;
@@ -104,6 +110,25 @@ namespace wind.Helpers {
                 case "Idle":return ProcessPriorityClass.Idle;
                 default:return ProcessPriorityClass.Normal;
             }
+        }
+
+        /// <summary>
+        /// 从字符串解析CPU亲和性
+        /// </summary>
+        /// <param name="processorAffinity"></param>
+        /// <returns></returns>
+        public static Nullable<IntPtr> GetProcessorAffinityFormString(String processorAffinity){
+            if(String.IsNullOrWhiteSpace(processorAffinity)){return null;}
+            String[] indexArray=processorAffinity.Split(',');
+            if(indexArray.GetLength(0)<1){return null;}
+            Byte[] bitMask=new Byte[8];//8bit=1byte
+            BitArray bitArray=new BitArray(64,false);//64 is logic core count
+            foreach(String item in indexArray) {
+                if(!Int32.TryParse(item,out Int32 result)){continue;}
+                bitArray.Set(result-1,true);
+            }
+            bitArray.CopyTo(bitMask,0);
+            return (IntPtr)BitConverter.ToInt64(bitMask);
         }
     }
 }

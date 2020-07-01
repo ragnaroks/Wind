@@ -14,8 +14,9 @@ message UnitSettingsProtobuf{
   int32 AutoStartDelay=8;
   bool RestartWhenException=9;
   string PriorityClass=10;
-  bool MonitorPerformanceUsage=11;
-  bool MonitorNetworkUsage=12;
+  string ProcessorAffinity=11;
+  bool MonitorPerformanceUsage=12;
+  bool MonitorNetworkUsage=13;
 }
 message UnitProtobuf{
   string Key=1;

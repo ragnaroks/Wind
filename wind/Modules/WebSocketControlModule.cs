@@ -424,7 +424,9 @@ namespace wind.Modules {
                 AbsoluteExecutePath=unit.Settings.AbsoluteExecutePath,AbsoluteWorkDirectory=unit.Settings.AbsoluteWorkDirectory,
                 Arguments=String.IsNullOrWhiteSpace(unit.Settings.Arguments)?String.Empty:unit.Settings.Arguments,
                 AutoStart=unit.Settings.AutoStart,AutoStartDelay=unit.Settings.AutoStartDelay,
-                RestartWhenException=unit.Settings.RestartWhenException,PriorityClass=unit.Settings.PriorityClass,
+                RestartWhenException=unit.Settings.RestartWhenException,
+                PriorityClass=String.IsNullOrWhiteSpace(unit.Settings.PriorityClass)?String.Empty:unit.Settings.PriorityClass,
+                ProcessorAffinity=String.IsNullOrWhiteSpace(unit.Settings.ProcessorAffinity)?String.Empty:unit.Settings.ProcessorAffinity,
                 MonitorPerformanceUsage=unit.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.Settings.MonitorNetworkUsage};
             if(unit.State==2) {
                 unit.Process.Refresh();
@@ -436,7 +438,9 @@ namespace wind.Modules {
                     AbsoluteExecutePath=unit.RunningSettings.AbsoluteExecutePath,AbsoluteWorkDirectory=unit.RunningSettings.AbsoluteWorkDirectory,
                     Arguments=String.IsNullOrWhiteSpace(unit.RunningSettings.Arguments)?String.Empty:unit.RunningSettings.Arguments,
                     AutoStart=unit.RunningSettings.AutoStart,AutoStartDelay=unit.RunningSettings.AutoStartDelay,
-                    RestartWhenException=unit.RunningSettings.RestartWhenException,PriorityClass=unit.Settings.PriorityClass,
+                    RestartWhenException=unit.RunningSettings.RestartWhenException,
+                    PriorityClass=String.IsNullOrWhiteSpace(unit.RunningSettings.PriorityClass)?String.Empty:unit.RunningSettings.PriorityClass,
+                    ProcessorAffinity=String.IsNullOrWhiteSpace(unit.RunningSettings.ProcessorAffinity)?String.Empty:unit.RunningSettings.ProcessorAffinity,
                     MonitorPerformanceUsage=unit.RunningSettings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.RunningSettings.MonitorNetworkUsage};
                 if(Program.UnitPerformanceCounterModule.Useable && unit.RunningSettings.MonitorPerformanceUsage){
                     unitProtobuf.PerformanceCounterCPU=Program.UnitPerformanceCounterModule.GetCpuValue(unit.ProcessId);
@@ -969,6 +973,8 @@ namespace wind.Modules {
                     Arguments=String.IsNullOrWhiteSpace(item.Settings.Arguments)?String.Empty:item.Settings.Arguments,
                     AutoStart=item.Settings.AutoStart,AutoStartDelay=item.Settings.AutoStartDelay,
                     RestartWhenException=item.Settings.RestartWhenException,
+                    PriorityClass=String.IsNullOrWhiteSpace(item.Settings.PriorityClass)?String.Empty:item.Settings.PriorityClass,
+                    ProcessorAffinity=String.IsNullOrWhiteSpace(item.Settings.ProcessorAffinity)?String.Empty:item.Settings.ProcessorAffinity,
                     MonitorPerformanceUsage=item.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=item.Settings.MonitorNetworkUsage};
                 if(item.State==2) {
                     item.Process.Refresh();
@@ -981,6 +987,8 @@ namespace wind.Modules {
                         Arguments=String.IsNullOrWhiteSpace(item.RunningSettings.Arguments)?String.Empty:item.RunningSettings.Arguments,
                         AutoStart=item.RunningSettings.AutoStart,AutoStartDelay=item.RunningSettings.AutoStartDelay,
                         RestartWhenException=item.RunningSettings.RestartWhenException,
+                        PriorityClass=String.IsNullOrWhiteSpace(item.RunningSettings.PriorityClass)?String.Empty:item.RunningSettings.PriorityClass,
+                        ProcessorAffinity=String.IsNullOrWhiteSpace(item.RunningSettings.ProcessorAffinity)?String.Empty:item.RunningSettings.ProcessorAffinity,
                         MonitorPerformanceUsage=item.RunningSettings.MonitorPerformanceUsage,MonitorNetworkUsage=item.RunningSettings.MonitorNetworkUsage};
                     if(Program.UnitPerformanceCounterModule.Useable && item.RunningSettings.MonitorPerformanceUsage){
                         unitProtobuf.PerformanceCounterCPU=Program.UnitPerformanceCounterModule.GetCpuValue(item.ProcessId);

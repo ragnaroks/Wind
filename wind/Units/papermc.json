@@ -9,6 +9,7 @@
     "AutoStartDelay": 0,
     "RestartWhenException": false,
     "PriorityClass": "Idle",
+    "ProcessorAffinity": "2",
     "MonitorPerformanceUsage": true,
     "MonitorNetworkUsage": true
 }

@@ -1088,8 +1088,9 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.toObject = f
     autostartdelay: jspb.Message.getFieldWithDefault(msg, 8, 0),
     restartwhenexception: jspb.Message.getBooleanFieldWithDefault(msg, 9, false),
     priorityclass: jspb.Message.getFieldWithDefault(msg, 10, ""),
-    monitorperformanceusage: jspb.Message.getBooleanFieldWithDefault(msg, 11, false),
-    monitornetworkusage: jspb.Message.getBooleanFieldWithDefault(msg, 12, false)
+    processoraffinity: jspb.Message.getFieldWithDefault(msg, 11, ""),
+    monitorperformanceusage: jspb.Message.getBooleanFieldWithDefault(msg, 12, false),
+    monitornetworkusage: jspb.Message.getBooleanFieldWithDefault(msg, 13, false)
   };
 
   if (includeInstance) {
@@ -1167,10 +1168,14 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.deserializeB
       msg.setPriorityclass(value);
       break;
     case 11:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProcessoraffinity(value);
+      break;
+    case 12:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setMonitorperformanceusage(value);
       break;
-    case 12:
+    case 13:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setMonitornetworkusage(value);
       break;
@@ -1273,17 +1278,24 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.serializeBin
       f
     );
   }
+  f = message.getProcessoraffinity();
+  if (f.length > 0) {
+    writer.writeString(
+      11,
+      f
+    );
+  }
   f = message.getMonitorperformanceusage();
   if (f) {
     writer.writeBool(
-      11,
+      12,
       f
     );
   }
   f = message.getMonitornetworkusage();
   if (f) {
     writer.writeBool(
-      12,
+      13,
       f
     );
   }
@@ -1471,28 +1483,28 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.se
 
 
 /**
- * optional bool MonitorPerformanceUsage = 11;
+ * optional string ProcessorAffinity = 11;
+ * @return {string}
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getProcessoraffinity = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 11, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setProcessoraffinity = function(value) {
+  return jspb.Message.setProto3StringField(this, 11, value);
+};
+
+
+/**
+ * optional bool MonitorPerformanceUsage = 12;
  * @return {boolean}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getMonitorperformanceusage = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 11, false));
-};
-
-
-/**
- * @param {boolean} value
- * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
- */
-proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setMonitorperformanceusage = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 11, value);
-};
-
-
-/**
- * optional bool MonitorNetworkUsage = 12;
- * @return {boolean}
- */
-proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getMonitornetworkusage = function() {
   return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 12, false));
 };
 
@@ -1501,8 +1513,26 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.ge
  * @param {boolean} value
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
  */
-proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setMonitornetworkusage = function(value) {
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setMonitorperformanceusage = function(value) {
   return jspb.Message.setProto3BooleanField(this, 12, value);
+};
+
+
+/**
+ * optional bool MonitorNetworkUsage = 13;
+ * @return {boolean}
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getMonitornetworkusage = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 13, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setMonitornetworkusage = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 13, value);
 };
 
 
