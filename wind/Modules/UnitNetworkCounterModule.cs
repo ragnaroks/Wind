@@ -26,7 +26,7 @@ namespace wind.Modules {
             if(!disposedValue) {
                 if(disposing) {
                     // TODO: 释放托管状态(托管对象)
-                    this.TraceEventSession.Dispose();
+                    if(this.TraceEventSession!=null){ this.TraceEventSession.Dispose(); }
                 }
 
                 // TODO: 释放未托管的资源(未托管的对象)并替代终结器

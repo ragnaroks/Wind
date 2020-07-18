@@ -1,5 +1,4 @@
-﻿using wind.Modules;
-using PeterKottas.DotNetCore.WindowsService;
+﻿using PeterKottas.DotNetCore.WindowsService;
 using PeterKottas.DotNetCore.WindowsService.Interfaces;
 using System;
 using System.Diagnostics;
@@ -26,7 +25,7 @@ namespace wind {
         /// <summary>单元性能监控模块 03</summary>
         public static Modules.UnitPerformanceCounterModule UnitPerformanceCounterModule{get;}=new Modules.UnitPerformanceCounterModule();
         /// <summary>单元网络数据监控模块 04</summary>
-        public static Modules.UnitNetworkCounterModule UnitNetworkCounterModule{get;}=new UnitNetworkCounterModule();
+        public static Modules.UnitNetworkCounterModule UnitNetworkCounterModule{get;}=new Modules.UnitNetworkCounterModule();
         /// <summary>日志模块 05</summary>
         public static Modules.UnitLoggerModule UnitLoggerModule{get;}=new Modules.UnitLoggerModule();
         /// <summary>远程管理模块 06</summary>
@@ -45,41 +44,49 @@ namespace wind {
             Program.AppMutex=new Mutex(true,"WindDaemonAppMutex",out Boolean mutex);
             if(!mutex){
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","已存在实例");
-                Environment.Exit(0);
-                return;
-            }
-            if(!InitializeLoggerModule()) {
-                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化日志模块失败");
+                SpinWait.SpinUntil(()=>false,1000);
                 Environment.Exit(0);
                 return;
             }
             if(!InitializeAppSettings()) {
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","读取应用程序配置失败");
+                SpinWait.SpinUntil(()=>false,1000);
                 Environment.Exit(0);
                 return;
             }
             if(!InitializeUnitPerformanceCounterModule()){
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元性能监控模块失败");
+                SpinWait.SpinUntil(()=>false,1000);
                 Environment.Exit(0);
                 return;
             }
             if(!InitializeUnitNetworkCounterModule()){
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元网络监控模块失败");
+                SpinWait.SpinUntil(()=>false,1000);
                 Environment.Exit(0);
                 return;
             }
-            if(!InitializeUnitLoggerModule()) {
+            if(!InitializeUnitLoggerModule()){
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元日志模块失败");
+                SpinWait.SpinUntil(()=>false,1000);
                 Environment.Exit(0);
                 return;
             }
-            if(!InitializeRemoveControlModule()) {
+            if(!InitializeRemoveControlModule()){
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化远程管理模块失败");
+                SpinWait.SpinUntil(()=>false,1000);
                 Environment.Exit(0);
                 return;
             }
-            if(!InitializeUnitManageModule()) {
+            if(!InitializeUnitManageModule()){
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元管理模块失败");
+                SpinWait.SpinUntil(()=>false,1000);
+                Environment.Exit(0);
+                return;
+            }
+            if(!InitializeLoggerModule()){
+                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]", "初始化日志模块失败");
+                SpinWait.SpinUntil(()=>false,1000);
                 Environment.Exit(0);
                 return;
             }
@@ -174,6 +181,7 @@ namespace wind {
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeUnitNetworkCounterModule(){
+            if(!AppEnvironment.CanCreateTraceEventSession){return true;}
             if(!UnitNetworkCounterModule.Setup()){return false;}
             UnitNetworkCounterModule.Add(AppProcess.Id);
             return true;

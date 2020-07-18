@@ -19,6 +19,10 @@ namespace wind.Entities.Common {
         public String UnitLogsDirectory{get;}=AppDomain.CurrentDomain.BaseDirectory+"UnitLogs";
         /// <summary>数据根路径,无路径分隔符</summary>
         public String DataDirectory{get;}=AppDomain.CurrentDomain.BaseDirectory+"Data";
+        /// <summary>
+        /// A
+        /// </summary>
+        public Boolean CanCreateTraceEventSession{get;}=Environment.OSVersion.Version.Major>9;
         #if DEBUG
         /// <summary>命名管道</summary>
         public String PipelineName{get;}="WIND_DAEMON_PIPELINE_DEBUG";
