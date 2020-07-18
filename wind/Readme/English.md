@@ -85,6 +85,7 @@
 - if Wind exit by excetion,maybe not stop all units,you should stop them manual
 - if add an unit file,but not did what you want,check in `.\Logs\`
 - no plan to use `wss://`,you can use nginx proxy
+- `MonitorNetworkUsage` setting need windows10 or higher
 
 ****
 
@@ -98,8 +99,5 @@
 - [webd](https://webd.cf/) require **-h** argv
 - [minecraft-server](https://github.com/PaperMC) like `java -jar paperclip.jar`
 
-### WorkInProgress
-- any hold std-in application (like srcds.exe)
-
 ### Imcompatible
-- GUI application
+- any GUI application
