@@ -3,6 +3,7 @@ using PeterKottas.DotNetCore.WindowsService.Interfaces;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Security.Principal;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -44,51 +45,46 @@ namespace wind {
             Program.AppMutex=new Mutex(true,"WindDaemonAppMutex",out Boolean mutex);
             if(!mutex){
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","已存在实例");
-                SpinWait.SpinUntil(()=>false,1000);
                 Environment.Exit(0);
                 return;
             }
             if(!InitializeAppSettings()) {
                 Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","读取应用程序配置失败");
-                SpinWait.SpinUntil(()=>false,1000);
                 Environment.Exit(0);
                 return;
             }
-            if(!InitializeUnitPerformanceCounterModule()){
-                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元性能监控模块失败");
-                SpinWait.SpinUntil(()=>false,1000);
-                Environment.Exit(0);
-                return;
-            }
-            if(!InitializeUnitNetworkCounterModule()){
-                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元网络监控模块失败");
-                SpinWait.SpinUntil(()=>false,1000);
-                Environment.Exit(0);
-                return;
-            }
-            if(!InitializeUnitLoggerModule()){
-                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元日志模块失败");
-                SpinWait.SpinUntil(()=>false,1000);
-                Environment.Exit(0);
-                return;
-            }
-            if(!InitializeRemoveControlModule()){
-                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化远程管理模块失败");
-                SpinWait.SpinUntil(()=>false,1000);
-                Environment.Exit(0);
-                return;
-            }
-            if(!InitializeUnitManageModule()){
-                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元管理模块失败");
-                SpinWait.SpinUntil(()=>false,1000);
-                Environment.Exit(0);
-                return;
-            }
-            if(!InitializeLoggerModule()){
-                Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]", "初始化日志模块失败");
-                SpinWait.SpinUntil(()=>false,1000);
-                Environment.Exit(0);
-                return;
+            //Console.WriteLine("IsRun=>"+ IsRun(args));
+            if(IsRun(args)){
+                if(!InitializeLoggerModule()){
+                    Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]", "初始化日志模块失败");
+                    Environment.Exit(0);
+                    return;
+                }
+                if(!InitializeUnitPerformanceCounterModule()){
+                    Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元性能监控模块失败");
+                    Environment.Exit(0);
+                    return;
+                }
+                if(!InitializeUnitNetworkCounterModule()){
+                    Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元网络监控模块失败");
+                    Environment.Exit(0);
+                    return;
+                }
+                if(!InitializeUnitLoggerModule()){
+                    Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元日志模块失败");
+                    Environment.Exit(0);
+                    return;
+                }
+                if(!InitializeRemoveControlModule()){
+                    Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化远程管理模块失败");
+                    Environment.Exit(0);
+                    return;
+                }
+                if(!InitializeUnitManageModule()){
+                    Helpers.LoggerModuleHelper.TryLog("Program.Main[Error]","初始化单元管理模块失败");
+                    Environment.Exit(0);
+                    return;
+                }
             }
             Helpers.LoggerModuleHelper.TryLog("Program.Main",$"服务结果: {ServiceRun()}");
         }
@@ -249,6 +245,16 @@ namespace wind {
         }
 
         /// <summary>
+        /// 是否正常运行模块
+        /// </summary>
+        /// <param name="args">启动参数</param>
+        public static Boolean IsRun(String[] args){
+            if(args==null || args.Length<1){return true;}
+            if(args.Length==1 && args[0]=="action:run"){return true;}
+            return false;
+        }
+
+        /// <summary>
         /// 运行服务
         /// </summary>
         /// <returns>运行结果</returns>
@@ -257,8 +263,8 @@ namespace wind {
                 config.SetDisplayName("Wind");
                 config.SetName("Wind");
                 config.SetDescription("Wind 服务主机");
-                config.SetConsoleTimeout(1000);
-                config.SetServiceTimeout(6000);
+                //config.SetConsoleTimeout(4000);
+                //config.SetServiceTimeout(16000);
                 config.Service(serviceConfigurator=>{
                     serviceConfigurator.ServiceFactory((extraArguments,microServiceController)=>{
                         DaemonServiceController=microServiceController;
