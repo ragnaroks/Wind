@@ -85,8 +85,8 @@ namespace wind.Modules {
                 return false;
             }
             Boolean isV4=this.RegexAddress4.IsMatch(address);
-            Boolean isV6=this.RegexAddress6.IsMatch(address);
-            if(address!="localhost" && !isV4 && !isV6){
+            /*Boolean isV6=this.RegexAddress6.IsMatch(address);*/
+            if(address!="localhost" && !isV4/* && !isV6*/){
                 LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup[Error]",$"初始化模块失败,参数错误\naddress:{address},port:{port}");
                 return false;
             }

@@ -83,10 +83,10 @@ namespace windctl.Modules {
                 LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup[Error]",$"初始化模块失败,参数错误\naddress:{address},port:{port}");
                 return false;
             }
-            if(address=="localhost"){ address="[::1]"; }
+            if(address=="localhost"){ address="127.0.0.1"; }
             Boolean isV4=this.RegexAddress4.IsMatch(address);
-            Boolean isV6=this.RegexAddress6.IsMatch(address);
-            if(!isV4 && !isV6){
+            /*Boolean isV6=this.RegexAddress6.IsMatch(address);*/
+            if(!isV4/* && !isV6*/){
                 LoggerModuleHelper.TryLog("Modules.WebSocketControlModule.Setup[Error]",$"初始化模块失败,参数错误\naddress:{address},port:{port}");
                 return false;
             }
