@@ -87,6 +87,9 @@
 - no plan to use `wss://`,you can use nginx proxy
 - `MonitorNetworkUsage` setting need windows10 or higher
 
+### Known Issues
+- can't auto start service on windows7,even it's set auto-start
+
 ****
 
 ### Compatible
