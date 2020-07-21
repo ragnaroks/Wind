@@ -15,8 +15,11 @@ message UnitSettingsProtobuf{
   bool RestartWhenException=9;
   string PriorityClass=10;
   string ProcessorAffinity=11;
-  bool MonitorPerformanceUsage=12;
-  bool MonitorNetworkUsage=13;
+  string StandardInputEncoding=12;
+  string StandardOutputEncoding=13;
+  string StandardErrorEncoding=14;
+  bool MonitorPerformanceUsage=15;
+  bool MonitorNetworkUsage=16;
 }
 message UnitProtobuf{
   string Key=1;

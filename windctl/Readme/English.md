@@ -50,3 +50,6 @@ shutdown daemon service
 
 ### Showcase
 ![windctl status <unitKey>](status.png)
+
+### Attention
+- when attach to unit console,it's not support **default behaviour**,like `enable function1: (y/N)`,must explicitly input `y` or `n`

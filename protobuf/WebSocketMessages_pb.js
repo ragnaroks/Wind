@@ -1089,8 +1089,11 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.toObject = f
     restartwhenexception: jspb.Message.getBooleanFieldWithDefault(msg, 9, false),
     priorityclass: jspb.Message.getFieldWithDefault(msg, 10, ""),
     processoraffinity: jspb.Message.getFieldWithDefault(msg, 11, ""),
-    monitorperformanceusage: jspb.Message.getBooleanFieldWithDefault(msg, 12, false),
-    monitornetworkusage: jspb.Message.getBooleanFieldWithDefault(msg, 13, false)
+    standardinputencoding: jspb.Message.getFieldWithDefault(msg, 12, ""),
+    standardoutputencoding: jspb.Message.getFieldWithDefault(msg, 13, ""),
+    standarderrorencoding: jspb.Message.getFieldWithDefault(msg, 14, ""),
+    monitorperformanceusage: jspb.Message.getBooleanFieldWithDefault(msg, 15, false),
+    monitornetworkusage: jspb.Message.getBooleanFieldWithDefault(msg, 16, false)
   };
 
   if (includeInstance) {
@@ -1172,10 +1175,22 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.deserializeB
       msg.setProcessoraffinity(value);
       break;
     case 12:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setStandardinputencoding(value);
+      break;
+    case 13:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setStandardoutputencoding(value);
+      break;
+    case 14:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setStandarderrorencoding(value);
+      break;
+    case 15:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setMonitorperformanceusage(value);
       break;
-    case 13:
+    case 16:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setMonitornetworkusage(value);
       break;
@@ -1285,17 +1300,38 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.serializeBin
       f
     );
   }
+  f = message.getStandardinputencoding();
+  if (f.length > 0) {
+    writer.writeString(
+      12,
+      f
+    );
+  }
+  f = message.getStandardoutputencoding();
+  if (f.length > 0) {
+    writer.writeString(
+      13,
+      f
+    );
+  }
+  f = message.getStandarderrorencoding();
+  if (f.length > 0) {
+    writer.writeString(
+      14,
+      f
+    );
+  }
   f = message.getMonitorperformanceusage();
   if (f) {
     writer.writeBool(
-      12,
+      15,
       f
     );
   }
   f = message.getMonitornetworkusage();
   if (f) {
     writer.writeBool(
-      13,
+      16,
       f
     );
   }
@@ -1501,11 +1537,65 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.se
 
 
 /**
- * optional bool MonitorPerformanceUsage = 12;
+ * optional string StandardInputEncoding = 12;
+ * @return {string}
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getStandardinputencoding = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setStandardinputencoding = function(value) {
+  return jspb.Message.setProto3StringField(this, 12, value);
+};
+
+
+/**
+ * optional string StandardOutputEncoding = 13;
+ * @return {string}
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getStandardoutputencoding = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setStandardoutputencoding = function(value) {
+  return jspb.Message.setProto3StringField(this, 13, value);
+};
+
+
+/**
+ * optional string StandardErrorEncoding = 14;
+ * @return {string}
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getStandarderrorencoding = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 14, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setStandarderrorencoding = function(value) {
+  return jspb.Message.setProto3StringField(this, 14, value);
+};
+
+
+/**
+ * optional bool MonitorPerformanceUsage = 15;
  * @return {boolean}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getMonitorperformanceusage = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 12, false));
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 15, false));
 };
 
 
@@ -1514,16 +1604,16 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.ge
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setMonitorperformanceusage = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 12, value);
+  return jspb.Message.setProto3BooleanField(this, 15, value);
 };
 
 
 /**
- * optional bool MonitorNetworkUsage = 13;
+ * optional bool MonitorNetworkUsage = 16;
  * @return {boolean}
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getMonitornetworkusage = function() {
-  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 13, false));
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 16, false));
 };
 
 
@@ -1532,7 +1622,7 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.ge
  * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setMonitornetworkusage = function(value) {
-  return jspb.Message.setProto3BooleanField(this, 13, value);
+  return jspb.Message.setProto3BooleanField(this, 16, value);
 };
 
 

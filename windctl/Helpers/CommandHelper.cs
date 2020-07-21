@@ -269,6 +269,7 @@ namespace windctl.Helpers {
             }
             if(commandlineResponseProtobuf.CommandType==9) {
                 Program.AttachedUnitKey=null;
+                Environment.Exit(0);
             }
         }
 

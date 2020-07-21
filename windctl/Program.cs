@@ -45,7 +45,7 @@ namespace windctl {
             //互斥
             AppMutex=new Mutex(true,"WindCommandLineController",out Boolean mutex);
             if(!mutex){
-                Helpers.LoggerModuleHelper.TryLog("Program.Initialize[Error]","已存在实例");
+                LoggerModuleHelper.TryLog("Program.Initialize[Error]","已存在实例");
                 return false;
             }
             //读取配置
@@ -62,7 +62,7 @@ namespace windctl {
                 fs.Dispose();
                 appSettings=JsonSerializer.Deserialize<Entities.Common.AppSettings>(bufferSpan);
             }catch(Exception exception){
-                Helpers.LoggerModuleHelper.TryLog("Program.Initialize[Error]",$"读取应用程序配置文件异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
+                LoggerModuleHelper.TryLog("Program.Initialize[Error]",$"读取应用程序配置文件异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
                 return false;
             }finally{
                 fs?.Dispose();

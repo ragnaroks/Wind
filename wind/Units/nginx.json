@@ -10,6 +10,9 @@
     "RestartWhenException": false,
     "PriorityClass": "Normal",
     "ProcessorAffinity": null,
+    "StandardInputEncoding": null,
+    "StandardOutputEncoding": null,
+    "StandardErrorEncoding": null,
     "MonitorPerformanceUsage": true,
     "MonitorNetworkUsage": false
 }

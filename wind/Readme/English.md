@@ -51,10 +51,21 @@
     "AutoStartDelay": 3,
     // unit will restart when unit exit by exception
     "RestartWhenException": false,
-    // unit process priority,do not modify this field if you do not know what it is
+    // unit process priority,default is "Normal"
+    // do not modify this field if you do not know what it is
     "PriorityClass": null,
-    // unit process CPU affinity,do not modify this field if you do not know what it is
+    // unit process CPU affinity,default is "0(All)"
+    // do not modify this field if you do not know what it is
     "ProcessorAffinity": null,
+    // input encoding,default is "UTF-8"
+    // do not modify this field if you do not know what it is
+    "ProcessStandardInputEncoding": null,
+    // output encoding,default is "UTF-8"
+    // do not modify this field if you do not know what it is
+    "ProcessStandardOutputEncoding": null,
+    // error output encoding,default is "UTF-8"
+    // do not modify this field if you do not know what it is
+    "ProcessStandardErrorEncoding": null,
     // monitor unit performance
     "MonitorPerformanceUsage": false,
     // monitor unit network usage

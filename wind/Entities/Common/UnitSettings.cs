@@ -25,6 +25,12 @@ namespace wind.Entities.Common {
         public String PriorityClass{get;set;}=null;
         /// <summary>CPU亲和性</summary>
         public String ProcessorAffinity{get;set;}=null;
+        /// <summary>输入编码</summary>
+        public String StandardInputEncoding{get;set;}=null;
+        /// <summary>输出编码</summary>
+        public String StandardOutputEncoding{get;set;}=null;
+        /// <summary>错误输出编码</summary>
+        public String StandardErrorEncoding{get;set;}=null;
         /// <summary>是否获取性能使用数据</summary>
         public Boolean MonitorPerformanceUsage{get;set;}=false;
         /// <summary>是否获取网络使用数据</summary>

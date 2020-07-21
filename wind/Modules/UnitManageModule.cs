@@ -1,14 +1,12 @@
-﻿using wind.Entities.Common;
-using wind.Helpers;
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
-using System.Text;
+using wind.Entities.Common;
+using wind.Helpers;
 
 namespace wind.Modules {
     /// <summary>单元管理模块,逻辑上应只提供同步方法,避免此模块出现线程同步问题</summary>
@@ -235,10 +233,12 @@ namespace wind.Modules {
             unit.State=1;
             unit.RunningSettings=unit.Settings.DeepClone();
             ProcessStartInfo processStartInfo=new ProcessStartInfo{
-                UseShellExecute=false,FileName=unit.RunningSettings.AbsoluteExecutePath,WorkingDirectory=unit.RunningSettings.AbsoluteWorkDirectory,
-                CreateNoWindow=true,WindowStyle=ProcessWindowStyle.Hidden,Arguments=unit.RunningSettings.Arguments,
+                FileName=unit.RunningSettings.AbsoluteExecutePath,WorkingDirectory=unit.RunningSettings.AbsoluteWorkDirectory,Arguments=unit.RunningSettings.Arguments,
+                CreateNoWindow=true,WindowStyle=ProcessWindowStyle.Hidden,UseShellExecute=false,
                 RedirectStandardOutput=true,RedirectStandardError=true,RedirectStandardInput=true,
-                StandardOutputEncoding=Encoding.UTF8,StandardErrorEncoding=Encoding.UTF8,StandardInputEncoding=Encoding.UTF8};
+                StandardOutputEncoding=UnitManageModuleHelper.GetEncoding(unit.RunningSettings.StandardOutputEncoding),
+                StandardErrorEncoding=UnitManageModuleHelper.GetEncoding(unit.RunningSettings.StandardErrorEncoding),
+                StandardInputEncoding=UnitManageModuleHelper.GetEncoding(unit.RunningSettings.StandardInputEncoding)};
             unit.Process=new Process{StartInfo=processStartInfo,EnableRaisingEvents=true};
             unit.Process.Exited+=this.OnUnitProcessExited;
             unit.Process.OutputDataReceived+=this.OnProcessOutputDataReceived;
@@ -260,19 +260,27 @@ namespace wind.Modules {
                 return 0;
             }
             if(!String.IsNullOrWhiteSpace(unit.RunningSettings.PriorityClass)) {
-                unit.Process.Refresh();
-                unit.Process.PriorityClass=UnitManageModuleHelper.GetProcessPriorityClassFromString(unit.RunningSettings.PriorityClass);
+                try{
+                    unit.Process.PriorityClass=UnitManageModuleHelper.GetProcessPriorityClassFromString(unit.RunningSettings.PriorityClass);
+                }catch (Exception exception){
+                    LoggerModuleHelper.TryLog(
+                        "Modules.UnitManageModule.StartUnit[Error]",$"设置\"{unitKey}\"单元优先级异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
+                }
             }
             if(!String.IsNullOrWhiteSpace(unit.RunningSettings.ProcessorAffinity)){
                 Nullable<IntPtr> ptr=UnitManageModuleHelper.GetProcessorAffinityFormString(unit.RunningSettings.ProcessorAffinity);
                 if(ptr.HasValue){
-                    unit.Process.Refresh();
-                    unit.Process.ProcessorAffinity=ptr.Value;
+                    try{
+                        unit.Process.ProcessorAffinity=ptr.Value;
+                    }catch (Exception exception){
+                        LoggerModuleHelper.TryLog(
+                            "Modules.UnitManageModule.StartUnit[Error]",$"设置\"{unitKey}\"单元亲和性异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    }
                 }
             }
             unit.Process.BeginOutputReadLine();
             unit.Process.BeginErrorReadLine();
-            unit.Process.StandardInput.AutoFlush=true;
+            //unit.Process.StandardInput.AutoFlush=true;
             unit.ProcessId=unit.Process.Id;
             unit.State=2;
             if(unit.RunningSettings.MonitorPerformanceUsage && Program.UnitPerformanceCounterModule.Useable){
@@ -499,8 +507,10 @@ namespace wind.Modules {
             if(this.UnitDictionary[unitKey].State!=2){return false;}
             if(String.IsNullOrWhiteSpace(commandLine)){return false;}
             try {
+                this.UnitDictionary[unitKey].Process.Refresh();
                 this.UnitDictionary[unitKey].Process.StandardInput.WriteLine(commandLine);
-                this.UnitDictionary[unitKey].Process.StandardInput.Flush();
+                /*this.UnitDictionary[unitKey].Process.StandardInput.Write(commandLine+this.UnitDictionary[unitKey].Process.StandardInput.NewLine);
+                this.UnitDictionary[unitKey].Process.StandardInput.Flush();*/
                 //记录日志
                 Program.UnitLoggerModule.Log(unitKey,"> "+commandLine);
                 //记录输出
@@ -520,7 +530,8 @@ namespace wind.Modules {
             if(this.UnitDictionary.Count<1 || !this.UnitDictionary.ContainsKey(unitKey)){return false;}
             if(this.UnitDictionary[unitKey].State!=2){return false;}
             try {
-                this.UnitDictionary[unitKey].Process.StandardInput.WriteLine("\x3");
+                this.UnitDictionary[unitKey].Process.Refresh();
+                this.UnitDictionary[unitKey].Process.StandardInput.Write("\x3"+this.UnitDictionary[unitKey].Process.StandardInput.NewLine);
                 this.UnitDictionary[unitKey].Process.StandardInput.Flush();
                 //this.UnitDictionary[unitKey].Process.StandardInput.Close();
             }catch(Exception exception) {

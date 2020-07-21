@@ -427,6 +427,9 @@ namespace wind.Modules {
                 RestartWhenException=unit.Settings.RestartWhenException,
                 PriorityClass=String.IsNullOrWhiteSpace(unit.Settings.PriorityClass)?String.Empty:unit.Settings.PriorityClass,
                 ProcessorAffinity=String.IsNullOrWhiteSpace(unit.Settings.ProcessorAffinity)?String.Empty:unit.Settings.ProcessorAffinity,
+                StandardInputEncoding=String.IsNullOrWhiteSpace(unit.Settings.StandardInputEncoding)?String.Empty:unit.Settings.StandardInputEncoding,
+                StandardOutputEncoding=String.IsNullOrWhiteSpace(unit.Settings.StandardOutputEncoding)?String.Empty:unit.Settings.StandardOutputEncoding,
+                StandardErrorEncoding=String.IsNullOrWhiteSpace(unit.Settings.StandardErrorEncoding)?String.Empty:unit.Settings.StandardErrorEncoding,
                 MonitorPerformanceUsage=unit.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.Settings.MonitorNetworkUsage};
             if(unit.State==2) {
                 unit.Process.Refresh();
@@ -441,6 +444,9 @@ namespace wind.Modules {
                     RestartWhenException=unit.RunningSettings.RestartWhenException,
                     PriorityClass=String.IsNullOrWhiteSpace(unit.RunningSettings.PriorityClass)?String.Empty:unit.RunningSettings.PriorityClass,
                     ProcessorAffinity=String.IsNullOrWhiteSpace(unit.RunningSettings.ProcessorAffinity)?String.Empty:unit.RunningSettings.ProcessorAffinity,
+                    StandardInputEncoding=String.IsNullOrWhiteSpace(unit.RunningSettings.StandardInputEncoding)?String.Empty:unit.RunningSettings.StandardInputEncoding,
+                    StandardOutputEncoding=String.IsNullOrWhiteSpace(unit.RunningSettings.StandardOutputEncoding)?String.Empty:unit.RunningSettings.StandardOutputEncoding,
+                    StandardErrorEncoding=String.IsNullOrWhiteSpace(unit.RunningSettings.StandardErrorEncoding)?String.Empty:unit.RunningSettings.StandardErrorEncoding,
                     MonitorPerformanceUsage=unit.RunningSettings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.RunningSettings.MonitorNetworkUsage};
                 if(Program.UnitPerformanceCounterModule.Useable && unit.RunningSettings.MonitorPerformanceUsage){
                     unitProtobuf.PerformanceCounterCPU=Program.UnitPerformanceCounterModule.GetCpuValue(unit.ProcessId);
@@ -505,6 +511,7 @@ namespace wind.Modules {
             }
             //启动unit
             Int32 processId=Program.UnitManageModule.StartUnit(startRequestProtobuf.UnitKey,false);
+            //Program.UnitManageModule.StartUnitEx(startRequestProtobuf.UnitKey,false,out Int32 processId);
             if(processId>0){
                 startResponseProtobuf.Executed=true;
                 startResponseProtobuf.ProcessId=processId;
@@ -782,82 +789,6 @@ namespace wind.Modules {
             //回复
             _=clientConnection.WebSocketConnection.Send(logsResponseProtobuf.ToByteArray());
         }
-        /*
-        /// <summary>
-        /// windctl attach unitKey
-        /// </summary>
-        /// <param name="clientConnection"></param>
-        /// <param name="binary"></param>
-        private void AttachRequest(ClientConnection clientConnection,Byte[] binary){
-            //解析数据包
-            AttachRequestProtobuf attachRequestProtobuf;
-            try {
-                attachRequestProtobuf=AttachRequestProtobuf.Parser.ParseFrom(binary);
-            }catch(Exception exception){
-                LoggerModuleHelper.TryLog(
-                    "Modules.WebSocketControlModule.AttachRequest[Error]",
-                    $"解析客户端 {clientConnection.Id} 二进制消息异常,{exception.Message}\n异常堆栈:{exception.StackTrace}");
-                _=clientConnection.WebSocketConnection.Send(binary);
-                return;
-            }
-            //初始化响应体
-            AttachResponseProtobuf attachResponseProtobuf=new AttachResponseProtobuf{Type=2008,UnitKey=attachRequestProtobuf.UnitKey};
-            //申请附加
-            if(attachRequestProtobuf.CommandType==0) {
-                //无效unit
-                if(String.IsNullOrWhiteSpace(attachRequestProtobuf.UnitKey)){
-                    attachResponseProtobuf.NoExecuteMessage="unitKey invalid";
-                    _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
-                    return;
-                }
-                if(!Program.UnitManageModule.Useable){
-                    attachResponseProtobuf.NoExecuteMessage="unit manager not available";
-                    _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
-                    return;
-                }
-                if(!Program.UnitLoggerModule.Useable) {
-                    attachResponseProtobuf.NoExecuteMessage="unit logger not available";
-                    _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
-                    return;
-                }
-                Unit unit=Program.UnitManageModule.GetUnit(attachRequestProtobuf.UnitKey);
-                if(unit==null) {
-                    attachResponseProtobuf.NoExecuteMessage="unit not found";
-                    _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
-                    return;
-                }
-                if(unit.State!=2) {
-                    attachResponseProtobuf.NoExecuteMessage="unit not running";
-                    _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
-                    return;
-                }
-                if(!clientConnection.SupportNotify && !clientConnection.SupportAttach) {
-                    attachResponseProtobuf.NoExecuteMessage="controller not support attach command";
-                    _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
-                    return;
-                }
-                //附加
-                clientConnection.AttachedUnitKey=null;
-                String[] outputs=Program.UnitLoggerModule.GetOutputs(attachRequestProtobuf.UnitKey);
-                if(outputs!=null && outputs.GetLength(0)>0){ attachResponseProtobuf.OutputLineArray.Add(outputs); }
-                clientConnection.AttachedUnitKey=attachRequestProtobuf.UnitKey;
-                attachResponseProtobuf.Executed=true;
-                //回复
-                _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
-            }else if(attachRequestProtobuf.CommandType==1) {
-                //命令行指令
-                Program.UnitManageModule.ExecuteCommand(attachRequestProtobuf.UnitKey,attachRequestProtobuf.CommandLine.Trim().Trim('\0'));
-            }else if(attachRequestProtobuf.CommandType==2) {
-                //^c,but not work
-                Program.UnitManageModule.ExecuteExitCommand(attachRequestProtobuf.UnitKey);
-            }else if(attachRequestProtobuf.CommandType==9) {
-                //dettch
-                clientConnection.WebSocketConnection.Close();
-            }else{
-                attachResponseProtobuf.NoExecuteMessage="command type error";
-                _=clientConnection.WebSocketConnection.Send(attachResponseProtobuf.ToByteArray());
-            }
-        }*/
         /// <summary>
         /// 指令
         /// </summary>
@@ -975,6 +906,9 @@ namespace wind.Modules {
                     RestartWhenException=item.Settings.RestartWhenException,
                     PriorityClass=String.IsNullOrWhiteSpace(item.Settings.PriorityClass)?String.Empty:item.Settings.PriorityClass,
                     ProcessorAffinity=String.IsNullOrWhiteSpace(item.Settings.ProcessorAffinity)?String.Empty:item.Settings.ProcessorAffinity,
+                    StandardInputEncoding=String.IsNullOrWhiteSpace(item.Settings.StandardInputEncoding)?String.Empty:item.Settings.StandardInputEncoding,
+                    StandardOutputEncoding=String.IsNullOrWhiteSpace(item.Settings.StandardOutputEncoding)?String.Empty:item.Settings.StandardOutputEncoding,
+                    StandardErrorEncoding=String.IsNullOrWhiteSpace(item.Settings.StandardErrorEncoding)?String.Empty:item.Settings.StandardErrorEncoding,
                     MonitorPerformanceUsage=item.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=item.Settings.MonitorNetworkUsage};
                 if(item.State==2) {
                     item.Process.Refresh();
@@ -989,6 +923,9 @@ namespace wind.Modules {
                         RestartWhenException=item.RunningSettings.RestartWhenException,
                         PriorityClass=String.IsNullOrWhiteSpace(item.RunningSettings.PriorityClass)?String.Empty:item.RunningSettings.PriorityClass,
                         ProcessorAffinity=String.IsNullOrWhiteSpace(item.RunningSettings.ProcessorAffinity)?String.Empty:item.RunningSettings.ProcessorAffinity,
+                        StandardInputEncoding=String.IsNullOrWhiteSpace(item.RunningSettings.StandardInputEncoding)?String.Empty:item.RunningSettings.StandardInputEncoding,
+                        StandardOutputEncoding=String.IsNullOrWhiteSpace(item.RunningSettings.StandardOutputEncoding)?String.Empty:item.RunningSettings.StandardOutputEncoding,
+                        StandardErrorEncoding=String.IsNullOrWhiteSpace(item.RunningSettings.StandardErrorEncoding)?String.Empty:item.RunningSettings.StandardErrorEncoding,
                         MonitorPerformanceUsage=item.RunningSettings.MonitorPerformanceUsage,MonitorNetworkUsage=item.RunningSettings.MonitorNetworkUsage};
                     if(Program.UnitPerformanceCounterModule.Useable && item.RunningSettings.MonitorPerformanceUsage){
                         unitProtobuf.PerformanceCounterCPU=Program.UnitPerformanceCounterModule.GetCpuValue(item.ProcessId);

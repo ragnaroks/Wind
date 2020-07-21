@@ -1,0 +1,18 @@
+{
+    "Name": "terraria",
+    "Description": "terraria v1.4.0.5",
+    "Type": 0,
+    "AbsoluteExecutePath": "C:\\Users\\localhost\\Desktop\\terraria1405\\TerrariaServer.exe",
+    "AbsoluteWorkDirectory": "C:\\Users\\localhost\\Desktop\\terraria1405",
+    "Arguments": null,
+    "AutoStart": false,
+    "AutoStartDelay": 3,
+    "RestartWhenException": false,
+    "PriorityClass": "Idle",
+    "ProcessorAffinity": null,
+    "StandardInputEncoding": "Unicode",
+    "StandardOutputEncoding": null,
+    "StandardErrorEncoding": null,
+    "MonitorPerformanceUsage": true,
+    "MonitorNetworkUsage": true
+}

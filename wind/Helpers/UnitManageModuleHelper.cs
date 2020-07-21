@@ -130,5 +130,16 @@ namespace wind.Helpers {
             bitArray.CopyTo(bitMask,0);
             return (IntPtr)BitConverter.ToInt64(bitMask);
         }
+
+        public static Encoding GetEncoding(String encodingString) {
+            if(String.IsNullOrWhiteSpace(encodingString)){return Encoding.UTF8;}
+            Encoding encoding;
+            try{
+                encoding=Encoding.GetEncoding(encodingString);
+            }catch{
+                encoding=Encoding.UTF8;
+            }
+            return encoding;
+        }
     }
 }

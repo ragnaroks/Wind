@@ -10,6 +10,9 @@
     "RestartWhenException": false,
     "PriorityClass": "Idle",
     "ProcessorAffinity": "2",
+    "StandardInputEncoding": null,
+    "StandardOutputEncoding": null,
+    "StandardErrorEncoding": null,
     "MonitorPerformanceUsage": true,
     "MonitorNetworkUsage": true
 }
