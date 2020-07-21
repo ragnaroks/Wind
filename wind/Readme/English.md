@@ -110,8 +110,9 @@
 - [v2ray](https://github.com/v2ray/v2ray-core)
 - [kcptun](https://github.com/xtaci/kcptun)
 - [frp](https://github.com/fatedier/frp)
-- [webd](https://webd.cf/) require **-h** argv
-- [minecraft-server](https://github.com/PaperMC) like `java -jar paperclip.jar`
+- [webd](https://webd.cf/) require `-h` argument
+- [minecraft-server](https://github.com/PaperMC) like `java -jar paperclip.jar -nogui`
+- [terraria-server](https://www.terraria.org/) require `"StandardInputEncoding":"Unicode"`
 
 ### Imcompatible
 - any GUI application
