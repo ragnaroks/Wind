@@ -113,6 +113,8 @@
 - [webd](https://webd.cf/) require `-h` argument
 - [minecraft-server](https://github.com/PaperMC) like `java -jar paperclip.jar -nogui`
 - [terraria-server](https://www.terraria.org/) require `"StandardInputEncoding":"Unicode"`
+- [cloudreve](https://github.com/cloudreve/Cloudreve)
+- [IPBan](https://github.com/DigitalRuby/IPBan)
 
 ### Imcompatible
 - any GUI application
