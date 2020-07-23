@@ -21,5 +21,17 @@ namespace wind.Helpers {
             DateTime origin=new DateTime(1970,1,1,0,0,0,DateTimeKind.Local);
             return (Int64)(value-origin).TotalSeconds;
         }
+
+        /// <summary>
+        /// 是否可以监控网络统计
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static Boolean CanCreateTraceEventSession(this OperatingSystem value){
+            if(value==null){return false;}
+            if(value.Version.Major<6){return false;}
+            if(value.Version.Major==6 && value.Version.Minor<2){return false;}
+            return true;
+        }
     }
 }

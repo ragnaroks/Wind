@@ -3,11 +3,11 @@ using PeterKottas.DotNetCore.WindowsService.Interfaces;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Security.Principal;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
+using wind.Helpers;
 
 namespace wind {
     public static class Program {
@@ -177,7 +177,10 @@ namespace wind {
         /// </summary>
         /// <returns>是否成功</returns>
         private static Boolean InitializeUnitNetworkCounterModule(){
-            if(!AppEnvironment.CanCreateTraceEventSession){return true;}
+            if(!Environment.OSVersion.CanCreateTraceEventSession()){
+                Helpers.LoggerModuleHelper.TryLog("Program.InitializeUnitNetworkCounterModule[Warning]","当前系统版本无法初始化单元网络监控模块");
+                return true;
+            }
             if(!UnitNetworkCounterModule.Setup()){return false;}
             UnitNetworkCounterModule.Add(AppProcess.Id);
             return true;
@@ -293,6 +296,7 @@ namespace wind {
                         //运行权限
                         WindowsIdentity identity=WindowsIdentity.GetCurrent();
                         Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"运行权限: {identity.Name}");
+                        Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"操作系统版本: {Environment.OSVersion.Version} SP: {Environment.OSVersion.ServicePack}");
                         identity.Dispose();
                         //启动服务
                         Helpers.LoggerModuleHelper.TryLog("Program.ServiceRun[Warning]",$"正在启动 Wind 服务主机");
