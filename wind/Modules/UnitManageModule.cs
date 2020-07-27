@@ -88,8 +88,16 @@ namespace wind.Modules {
             }
             if(unit==null){return;}
             //if(unit.Process!=null){ unit.Process.Dispose(); }
-            if(Program.UnitPerformanceCounterModule.Useable){ _=Program.UnitPerformanceCounterModule.Remove(exitedProcessId); }
-            if(Program.UnitNetworkCounterModule.Useable){ _=Program.UnitNetworkCounterModule.Remove(exitedProcessId); }
+            if(Program.UnitPerformanceCounterModule.Useable){
+                if(!Program.UnitPerformanceCounterModule.Remove(exitedProcessId)){
+                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.OnUnitProcessExited[Warning]",$"进程[#{exitedProcessId}]单元退出时,没有正确移除性能计数器");
+                }
+            }
+            if(Program.UnitNetworkCounterModule.Useable){
+                if(!Program.UnitNetworkCounterModule.Remove(exitedProcessId)){
+                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.OnUnitProcessExited[Warning]",$"进程[#{exitedProcessId}]单元退出时,没有正确移除网络计数器");
+                }
+            }
             //如果是单元停止,此时state==3,否则可能是1||2
             if(unit.State==3){return;}
             unit.State=0;
@@ -200,17 +208,23 @@ namespace wind.Modules {
                         default:unit.Process.Kill(true);break;
                     }
                 } catch(Exception exception) {
-                    LoggerModuleHelper.TryLog(
-                        "Modules.UnitManageModule.StopUnit[Error]",
-                        $"停止\"{unitKey}\"单元异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
+                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnit[Error]",$"停止\"{unitKey}\"单元异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
                 } finally {
                     unit.Process.Dispose();
                     unit.Process=null;
                 }
             }
             unit.RunningSettings=null;
-            if(Program.UnitPerformanceCounterModule.Useable){ _=Program.UnitPerformanceCounterModule.Remove(unit.ProcessId); }
-            if(Program.UnitNetworkCounterModule.Useable){ _=Program.UnitNetworkCounterModule.Remove(unit.ProcessId); }
+            if(Program.UnitPerformanceCounterModule.Useable){
+                if(!Program.UnitPerformanceCounterModule.Remove(unit.ProcessId)){
+                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnit[Error]",$"停止\"{unitKey}\"单元时没有正确移除性能计数器");
+                }
+            }
+            if(Program.UnitNetworkCounterModule.Useable){
+                if(!Program.UnitNetworkCounterModule.Remove(unit.ProcessId)){
+                    LoggerModuleHelper.TryLog("Modules.UnitManageModule.StopUnit[Error]",$"停止\"{unitKey}\"单元时没有正确移除网络计数器");
+                }
+            }
             if(Program.RemoteControlModule.Useable){ Program.RemoteControlModule.StopNotify(unit.Key); }
             unit.ProcessId=0;
             unit.State=0;

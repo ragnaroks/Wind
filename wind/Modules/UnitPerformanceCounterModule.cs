@@ -5,6 +5,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace wind.Modules {
+    /*
+     * 同名进程会附加 #1,#2 之类的标识
+     * 且其中一个同名进程退出后,所有同名进程的 #? 都会发生改变
+     */
+
+    /// <summary>性能计数器模块</summary>
     public class UnitPerformanceCounterModule:IDisposable {
         public Boolean Useable{get;private set;}=false;
         
@@ -82,9 +88,8 @@ namespace wind.Modules {
                     Helpers.LoggerModuleHelper.TryLog("Modules.UnitPerformanceCounterModule.Add[Error]",$"创建RAM性能计数器成功但加入列表失败");
                 }
             }catch(Exception exception) {
-                Helpers.LoggerModuleHelper.TryLog(
-                    "Modules.UnitPerformanceCounterModule.Add[Error]",
-                    $"创建RAM性能计数器异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
+                LoggerModuleHelper.TryLog(
+                    "Modules.UnitPerformanceCounterModule.Add[Error]",$"创建RAM性能计数器异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
             }
         }
 
@@ -106,13 +111,59 @@ namespace wind.Modules {
         public Single GetCpuValue(Int32 processId){
             if(!this.Useable){return 0F;}
             if(this.CpuPerformanceCounterDictionary.Count<1 || !this.CpuPerformanceCounterDictionary.ContainsKey(processId)){return 0F;}
-            return this.CpuPerformanceCounterDictionary[processId].NextValue();
+            Single value;
+            try{
+                value=this.CpuPerformanceCounterDictionary[processId].NextValue();
+            }catch(Exception exception) {
+                LoggerModuleHelper.TryLog(
+                    "Modules.UnitPerformanceCounterModule.GetCpuValue[Error]",$"读取CPU性能计数器异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
+                value=this.GetCpuValueEx(processId);
+            }
+            return value;
+        }
+
+        public Single GetCpuValueEx(Int32 processId){
+            if(!this.Useable){return 0F;}
+            if(this.CpuPerformanceCounterDictionary.Count<1 || !this.CpuPerformanceCounterDictionary.ContainsKey(processId)){return 0F;}
+            this.Remove(processId);
+            this.Add(processId);
+            Single value=0F;
+            try{
+                value=this.CpuPerformanceCounterDictionary[processId].NextValue();
+            }catch(Exception exception) {
+                LoggerModuleHelper.TryLog(
+                    "Modules.UnitPerformanceCounterModule.GetCpuValueEx[Error]",$"读取CPU性能计数器异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
+            }
+            return value;
         }
 
         public Single GetRamValue(Int32 processId){
             if(!this.Useable){return 0F;}
             if(this.RamPerformanceCounterDictionary.Count<1 || !this.RamPerformanceCounterDictionary.ContainsKey(processId)){return 0F;}
-            return this.RamPerformanceCounterDictionary[processId].NextValue();
+            Single value;
+            try{
+                value=this.RamPerformanceCounterDictionary[processId].NextValue();
+            }catch(Exception exception) {
+                LoggerModuleHelper.TryLog(
+                    "Modules.UnitPerformanceCounterModule.GetRamValue[Error]",$"读取RAM性能计数器异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
+                value=this.GetRamValueEx(processId);
+            }
+            return value;
+        }
+
+        public Single GetRamValueEx(Int32 processId){
+            if(!this.Useable){return 0F;}
+            if(this.RamPerformanceCounterDictionary.Count<1 || !this.RamPerformanceCounterDictionary.ContainsKey(processId)){return 0F;}
+            this.Remove(processId);
+            this.Add(processId);
+            Single value=0F;
+            try{
+                value=this.RamPerformanceCounterDictionary[processId].NextValue();
+            }catch(Exception exception) {
+                LoggerModuleHelper.TryLog(
+                    "Modules.UnitPerformanceCounterModule.GetRamValueEx[Error]",$"读取RAM性能计数器异常,{exception.Message}\n异常堆栈: {exception.StackTrace}");
+            }
+            return value;
         }
     }
 }
