@@ -1093,7 +1093,8 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.toObject = f
     standardoutputencoding: jspb.Message.getFieldWithDefault(msg, 13, ""),
     standarderrorencoding: jspb.Message.getFieldWithDefault(msg, 14, ""),
     monitorperformanceusage: jspb.Message.getBooleanFieldWithDefault(msg, 15, false),
-    monitornetworkusage: jspb.Message.getBooleanFieldWithDefault(msg, 16, false)
+    monitornetworkusage: jspb.Message.getBooleanFieldWithDefault(msg, 16, false),
+    environmentvariables: jspb.Message.getFieldWithDefault(msg, 17, "")
   };
 
   if (includeInstance) {
@@ -1193,6 +1194,10 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.deserializeB
     case 16:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setMonitornetworkusage(value);
+      break;
+    case 17:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setEnvironmentvariables(value);
       break;
     default:
       reader.skipField();
@@ -1332,6 +1337,13 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.serializeBin
   if (f) {
     writer.writeBool(
       16,
+      f
+    );
+  }
+  f = message.getEnvironmentvariables();
+  if (f.length > 0) {
+    writer.writeString(
+      17,
       f
     );
   }
@@ -1623,6 +1635,24 @@ proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.ge
  */
 proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setMonitornetworkusage = function(value) {
   return jspb.Message.setProto3BooleanField(this, 16, value);
+};
+
+
+/**
+ * optional string EnvironmentVariables = 17;
+ * @return {string}
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.getEnvironmentvariables = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 17, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf} returns this
+ */
+proto.wind.Entities.Protobuf.WebSocketMessages.UnitSettingsProtobuf.prototype.setEnvironmentvariables = function(value) {
+  return jspb.Message.setProto3StringField(this, 17, value);
 };
 
 

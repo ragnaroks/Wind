@@ -13,6 +13,7 @@
     "StandardInputEncoding": null,
     "StandardOutputEncoding": null,
     "StandardErrorEncoding": null,
+    "EnvironmentVariables": null,
     "MonitorPerformanceUsage": true,
     "MonitorNetworkUsage": false
 }

@@ -252,7 +252,13 @@ namespace wind.Modules {
                 RedirectStandardOutput=true,RedirectStandardError=true,RedirectStandardInput=true,
                 StandardOutputEncoding=UnitManageModuleHelper.GetEncoding(unit.RunningSettings.StandardOutputEncoding),
                 StandardErrorEncoding=UnitManageModuleHelper.GetEncoding(unit.RunningSettings.StandardErrorEncoding),
-                StandardInputEncoding=UnitManageModuleHelper.GetEncoding(unit.RunningSettings.StandardInputEncoding)};
+                StandardInputEncoding=UnitManageModuleHelper.GetEncoding(unit.RunningSettings.StandardInputEncoding)
+            };
+            if(unit.RunningSettings.EnvironmentVariables != null) {
+                foreach (KeyValuePair<String,String> item in unit.RunningSettings.EnvironmentVariables) {
+                    processStartInfo.EnvironmentVariables[item.Key]=item.Value;
+                }
+            }
             unit.Process=new Process{StartInfo=processStartInfo,EnableRaisingEvents=true};
             unit.Process.Exited+=this.OnUnitProcessExited;
             unit.Process.OutputDataReceived+=this.OnProcessOutputDataReceived;

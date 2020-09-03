@@ -14,5 +14,9 @@
     "StandardOutputEncoding": null,
     "StandardErrorEncoding": null,
     "MonitorPerformanceUsage": true,
-    "MonitorNetworkUsage": false
+    "MonitorNetworkUsage": false,
+    "EnvironmentVariables": {
+        "flag": "1",
+        "beep": "true"
+    }
 }

@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -430,7 +431,9 @@ namespace wind.Modules {
                 StandardInputEncoding=String.IsNullOrWhiteSpace(unit.Settings.StandardInputEncoding)?String.Empty:unit.Settings.StandardInputEncoding,
                 StandardOutputEncoding=String.IsNullOrWhiteSpace(unit.Settings.StandardOutputEncoding)?String.Empty:unit.Settings.StandardOutputEncoding,
                 StandardErrorEncoding=String.IsNullOrWhiteSpace(unit.Settings.StandardErrorEncoding)?String.Empty:unit.Settings.StandardErrorEncoding,
-                MonitorPerformanceUsage=unit.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.Settings.MonitorNetworkUsage};
+                MonitorPerformanceUsage=unit.Settings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.Settings.MonitorNetworkUsage,
+                EnvironmentVariables=unit.Settings.EnvironmentVariables==null?String.Empty:JsonSerializer.Serialize(unit.Settings.EnvironmentVariables)
+            };
             if(unit.State==2) {
                 unit.Process.Refresh();
                 unitProtobuf.PriorityClass=(Int32)unit.Process.PriorityClass;
@@ -447,7 +450,9 @@ namespace wind.Modules {
                     StandardInputEncoding=String.IsNullOrWhiteSpace(unit.RunningSettings.StandardInputEncoding)?String.Empty:unit.RunningSettings.StandardInputEncoding,
                     StandardOutputEncoding=String.IsNullOrWhiteSpace(unit.RunningSettings.StandardOutputEncoding)?String.Empty:unit.RunningSettings.StandardOutputEncoding,
                     StandardErrorEncoding=String.IsNullOrWhiteSpace(unit.RunningSettings.StandardErrorEncoding)?String.Empty:unit.RunningSettings.StandardErrorEncoding,
-                    MonitorPerformanceUsage=unit.RunningSettings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.RunningSettings.MonitorNetworkUsage};
+                    MonitorPerformanceUsage=unit.RunningSettings.MonitorPerformanceUsage,MonitorNetworkUsage=unit.RunningSettings.MonitorNetworkUsage,
+                    EnvironmentVariables=unit.RunningSettings.EnvironmentVariables==null?String.Empty:JsonSerializer.Serialize(unit.RunningSettings.EnvironmentVariables)
+                };
                 if(Program.UnitPerformanceCounterModule.Useable && unit.RunningSettings.MonitorPerformanceUsage){
                     unitProtobuf.PerformanceCounterCPU=Program.UnitPerformanceCounterModule.GetCpuValue(unit.ProcessId);
                     unitProtobuf.PerformanceCounterRAM=Program.UnitPerformanceCounterModule.GetRamValue(unit.ProcessId);

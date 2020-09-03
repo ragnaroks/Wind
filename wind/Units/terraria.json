@@ -13,6 +13,7 @@
     "StandardInputEncoding": "Unicode",
     "StandardOutputEncoding": null,
     "StandardErrorEncoding": null,
+    "EnvironmentVariables": null,
     "MonitorPerformanceUsage": true,
     "MonitorNetworkUsage": true
 }

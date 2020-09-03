@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace wind.Entities.Common {
     [Serializable]
@@ -31,6 +32,9 @@ namespace wind.Entities.Common {
         public String StandardOutputEncoding{get;set;}=null;
         /// <summary>错误输出编码</summary>
         public String StandardErrorEncoding{get;set;}=null;
+        /// <summary>环境变量</summary>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Usage","CA2227:集合属性应为只读",Justification = "<挂起>")]
+        public Dictionary<String,String> EnvironmentVariables{get;set;}=null;
         /// <summary>是否获取性能使用数据</summary>
         public Boolean MonitorPerformanceUsage{get;set;}=false;
         /// <summary>是否获取网络使用数据</summary>

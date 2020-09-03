@@ -69,7 +69,13 @@
     // monitor unit performance
     "MonitorPerformanceUsage": false,
     // monitor unit network usage
-    "MonitorNetworkUsage": false
+    "MonitorNetworkUsage": false,
+    // Environment Variables
+    // field value must be String KeyValuePair,use null if you do not need this
+    "EnvironmentVariables": {
+        "key1": "value1",
+        "key2": "value2"
+    }
 }
 ```
 

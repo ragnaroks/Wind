@@ -20,6 +20,7 @@ message UnitSettingsProtobuf{
   string StandardErrorEncoding=14;
   bool MonitorPerformanceUsage=15;
   bool MonitorNetworkUsage=16;
+  string EnvironmentVariables=17;
 }
 message UnitProtobuf{
   string Key=1;
