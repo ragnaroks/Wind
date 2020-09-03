@@ -142,16 +142,20 @@ namespace windctl.Helpers {
                 case 3:Console.Write("stopping");break;
                 default:Console.Write("unknown");break;
             }
-            //第四行
+            //第4行
             Console.Write($"\nCommandLine:  {unitSettingsProtobuf.AbsoluteExecutePath}");
             if(!String.IsNullOrWhiteSpace(unitSettingsProtobuf.Arguments)){ Console.Write($" {unitSettingsProtobuf.Arguments}"); }
-            //第五行
+            //第5行
+            if(!String.IsNullOrWhiteSpace(unitSettingsProtobuf.EnvironmentVariables)){
+                Console.Write($"\nEnvironment:  {unitSettingsProtobuf.EnvironmentVariables}");
+            }
+            //第6行
             if(unitProtobuf.State==2 && unitSettingsProtobuf.MonitorPerformanceUsage) {
                 String cpuValue=String.Format(CultureInfo.InvariantCulture,"{0:N1} %",unitProtobuf.PerformanceCounterCPU/unitProtobuf.ProcessorCount);
                 String ramValue=unitProtobuf.PerformanceCounterRAM.FixedByteSize();
                 Console.Write($"\nPerformance:  {cpuValue}; {ramValue}");
             }
-            //第六行
+            //第7行
             if(unitProtobuf.State==2 && unitSettingsProtobuf.MonitorNetworkUsage) {
                 String sendSpeed=unitProtobuf.NetworkCounterSendSpeed.FixedByteSize();
                 String receiveSpeed=unitProtobuf.NetworkCounterReceiveSpeed.FixedByteSize();
@@ -314,16 +318,6 @@ namespace windctl.Helpers {
                         Console.ForegroundColor=ConsoleColor.Cyan;
                         Console.Write($"#{item.ProcessId}");
                         Console.ResetColor();
-                        Console.Write(" @");
-                        switch(item.PriorityClass) {
-                            case 256:Console.Write("RealTime");break;
-                            case 128:Console.Write("High");break;
-                            case 32768:Console.Write("AboveNormal");break;
-                            case 32:Console.Write("Normal");break;
-                            case 16384:Console.Write("BelowNormal");break;
-                            case 64:Console.Write("Idle");break;
-                            default:Console.Write("unknown");break;
-                        }
                         Console.Write($" (since {item.ProcessStartTime.ToLocalTimestampString()})");
                         break;
                     case 3:Console.Write("stopping");break;
