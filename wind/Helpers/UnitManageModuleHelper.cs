@@ -131,6 +131,11 @@ namespace wind.Helpers {
             return (IntPtr)BitConverter.ToInt64(bitMask);
         }
 
+        /// <summary>
+        /// 从字符串解析编码
+        /// </summary>
+        /// <param name="encodingString"></param>
+        /// <returns></returns>
         public static Encoding GetEncoding(String encodingString) {
             if(String.IsNullOrWhiteSpace(encodingString)){return Encoding.UTF8;}
             Encoding encoding;

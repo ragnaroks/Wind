@@ -9,10 +9,10 @@
     "AutoStartDelay": 0,
     "RestartWhenException": false,
     "PriorityClass": "Idle",
-    "ProcessorAffinity": "2",
+    "ProcessorAffinity": null,
     "StandardInputEncoding": null,
-    "StandardOutputEncoding": null,
-    "StandardErrorEncoding": null,
+    "StandardOutputEncoding": "Unicode",
+    "StandardErrorEncoding": "Unicode",
     "EnvironmentVariables": null,
     "MonitorPerformanceUsage": true,
     "MonitorNetworkUsage": true
