@@ -133,16 +133,17 @@ namespace wind.Helpers {
 
         /// <summary>
         /// 从字符串解析编码
+        /// 默认编码必须是"null",而不是"Encoding.Default"
         /// </summary>
         /// <param name="encodingString"></param>
         /// <returns></returns>
         public static Encoding GetEncoding(String encodingString) {
-            if(String.IsNullOrWhiteSpace(encodingString)){return Encoding.UTF8;}
+            if(String.IsNullOrWhiteSpace(encodingString)){return null;}
             Encoding encoding;
             try{
                 encoding=Encoding.GetEncoding(encodingString);
             }catch{
-                encoding=Encoding.UTF8;
+                encoding=null;
             }
             return encoding;
         }

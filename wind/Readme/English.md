@@ -57,13 +57,13 @@
     // unit process CPU affinity,default is "0(All)"
     // do not modify this field if you do not know what it is
     "ProcessorAffinity": null,
-    // input encoding,default is "UTF-8"
+    // input encoding,default is native codepage,list:https://docs.microsoft.com/zh-cn/dotnet/api/system.text.encoding?view=net-5.0#list-of-encodings
     // do not modify this field if you do not know what it is
     "ProcessStandardInputEncoding": null,
-    // output encoding,default is "UTF-8"
+    // output encoding,default is native codepage,list:https://docs.microsoft.com/zh-cn/dotnet/api/system.text.encoding?view=net-5.0#list-of-encodings
     // do not modify this field if you do not know what it is
     "ProcessStandardOutputEncoding": null,
-    // error output encoding,default is "UTF-8"
+    // error output encoding,default is native codepage,list:https://docs.microsoft.com/zh-cn/dotnet/api/system.text.encoding?view=net-5.0#list-of-encodings
     // do not modify this field if you do not know what it is
     "ProcessStandardErrorEncoding": null,
     // monitor unit performance

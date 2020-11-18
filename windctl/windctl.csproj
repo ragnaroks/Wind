@@ -6,7 +6,7 @@
     <Authors>ragnaroks</Authors>
     <Company>skydust</Company>
     <Description>Wind Daemon Service Command-Line Controller</Description>
-    <Version>2.5.5</Version>
+    <Version>2.5.6</Version>
     <PackageProjectUrl>https://github.com/ragnaroks/Wind</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
   </PropertyGroup>
@@ -27,12 +27,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Google.Protobuf" Version="3.12.3" />
-    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.0.0">
+    <PackageReference Include="Google.Protobuf" Version="3.14.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.FxCopAnalyzers" Version="3.3.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="WatsonWebsocket" Version="2.1.7.2" />
+    <PackageReference Include="WatsonWebsocket" Version="2.2.0.8" />
   </ItemGroup>
 
   <ItemGroup>

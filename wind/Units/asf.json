@@ -1,0 +1,19 @@
+{
+    "Name": "ArchiSteamFarm",
+    "Description": "ArchiSteamFarm",
+    "Type": 0,
+    "AbsoluteExecutePath": "C:\\Program Files\\dotnet\\dotnet.exe",
+    "AbsoluteWorkDirectory": "C:\\Softwares\\Wind2Services\\ArchiSteamFarm",
+    "Arguments": "C:\\Softwares\\Wind2Services\\ArchiSteamFarm\\ArchiSteamFarm.dll",
+    "AutoStart": false,
+    "AutoStartDelay": 3,
+    "RestartWhenException": false,
+    "PriorityClass": null,
+    "ProcessorAffinity": null,
+    "StandardInputEncoding": null,
+    "StandardOutputEncoding": null,
+    "StandardErrorEncoding": null,
+    "EnvironmentVariables": null,
+    "MonitorPerformanceUsage": false,
+    "MonitorNetworkUsage": false
+}
