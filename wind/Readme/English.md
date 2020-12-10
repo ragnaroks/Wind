@@ -12,7 +12,7 @@
 0. require [dotnet core runtime 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1)
 1. download released package file and unzip to local disk,i suggest `C:\ProgramData\wind\`
 2. open an **Administrator** privilege command window
-3. execute `Daemon.exe action:install`
+3. execute `wind.exe action:install`
 4. create a unit file into `.\Units\` directory,example is down below
 5. execute `sc.exe start Wind` to start Wind daemon service
 6. under normal circumstances,your unit has been started
@@ -25,7 +25,7 @@
 1. open an **Administrator** privilege command window
 2. execute `sc.exe stop Wind` to stop Wind daemon service and all units
 3. change directory into Wind directory
-4. execute `Daemon.exe action:uninstall`
+4. execute `wind.exe action:uninstall`
 5. delete Wind directory
 
 ****
